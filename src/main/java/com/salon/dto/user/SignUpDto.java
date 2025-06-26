@@ -21,21 +21,25 @@ public class SignUpDto {
     private String tel;
     private Gender gender;
     private LocalDate birthDate;
-    private boolean agreeAlert;
+    private boolean agreeAlarm;
     private boolean agreeLocation;
 
     public Member to(PasswordEncoder passwordEncoder) {
-        return Member.builder()
-                .loginId(this.loginId)
-                .password(passwordEncoder.encode(this.password))
-                .name(this.name)
-                .email(this.email)
-                .tel(this.tel)
-                .gender(this.gender)
-                .birthDate(this.birthDate)
-                .agreeAlert(this.agreeAlert)
-                .agreeLocation(this.agreeLocation)
-                .build();
+        Member member = new Member();
+
+        member.setLoginId(this.loginId);
+        member.setPassword(passwordEncoder.encode(this.password));
+        member.setName(this.name);
+        member.setEmail(this.email);
+        member.setTel(this.tel);
+        member.setGender(this.gender);
+        member.setBirthDate(this.birthDate);
+        member.setAgreeAlarm(this.agreeAlarm);
+        member.setAgreeLocation(this.agreeLocation);
+
+        return member;
+
 
     }
+
 }
