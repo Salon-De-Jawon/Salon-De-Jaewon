@@ -28,6 +28,7 @@ public class DesignerDetailDto {
 
 
 
+    // ShopDesigner(Entity) -> DesignerDetailDto
     public static DesignerDetailDto from (ShopDesigner shopDesigner){
         DesignerDetailDto designerDetailDto = new DesignerDetailDto();
 

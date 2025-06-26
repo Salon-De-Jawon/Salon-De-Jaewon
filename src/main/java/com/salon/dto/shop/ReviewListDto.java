@@ -21,6 +21,8 @@ public class ReviewListDto {
     private List<ReviewImageDto> reviewImg; // 리뷰이미지
 
 
+
+    // Review(Entity) -> ReviewListDto
     public static ReviewListDto from (Review review, Member member, List<ReviewImageDto> reviewImg){
         ReviewListDto reviewListDto = new ReviewListDto();
 

@@ -18,6 +18,8 @@ public class ReviewImageDto {
     private MultipartFile imgFile; // 이미지 파일
 
 
+
+    // ReviewImage(Entity) -> ReviewImageDto
     public static ReviewImageDto from (ReviewImage reviewImage){
         ReviewImageDto reviewImageDto = new ReviewImageDto();
 

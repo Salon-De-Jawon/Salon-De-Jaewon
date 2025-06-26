@@ -39,6 +39,7 @@ public class Reservation {
 
     private int discountAmount; // 할인된 가격
     private LocalDateTime reservationDate; // 예약 날짜
+    private int ticketUsedAmount; // 정액권 사용금액
     
     @Enumerated(EnumType.STRING)
     private ReservationStatus status; // 예약 상태

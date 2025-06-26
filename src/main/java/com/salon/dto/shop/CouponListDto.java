@@ -21,7 +21,7 @@ public class CouponListDto {
 
 
 
-
+    // Coupon (Entity) -> CouponListDto
     public static CouponListDto from (Coupon coupon, Shop shop){
         CouponListDto couponListDto = new CouponListDto();
 

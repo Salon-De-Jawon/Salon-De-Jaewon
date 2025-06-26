@@ -20,11 +20,15 @@ public class ReviewReplyDto {
     private LocalDateTime replyAt; //답글 작성 날짜
 
 
-    public static ReviewReplyDto from (Review review, ShopDesigner shopDesigner){
+
+    // Review(Entity) -> ReviewReplyDto
+    public static ReviewReplyDto from (Review review){
         ReviewReplyDto reviewReplyDto = new ReviewReplyDto();
 
 
         reviewReplyDto.setReviewId(review.getId());
+        reviewReplyDto.setDesignerName(review.getReservation().getMember().getName());
+        reviewReplyDto.setDesignerPosition(review.getReservation().getDesigner().getPosition());
         reviewReplyDto.setReplyComment(review.getReplyComment());
         reviewReplyDto.setReplyAt(review.getReplyAt());
 
