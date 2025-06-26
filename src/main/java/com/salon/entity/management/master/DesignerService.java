@@ -1,5 +1,7 @@
 package com.salon.entity.management.master;
 
+import com.salon.entity.Member;
+import com.salon.entity.shop.Shop;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
