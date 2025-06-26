@@ -28,7 +28,9 @@ public class ShopDesigner {
     private String originalImgName;
     private String imgName;
     private String imgUrl;
+    // 경력 시작일
     private LocalDate startAt;
+    // 디자이너 연차
     private int workingYears;
     private String position;
     private LocalTime scheduledStartTime;
