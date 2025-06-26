@@ -11,13 +11,13 @@ public class MemberCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_card_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")
-    Reservation reservation;
+    private Reservation reservation;
 
     @Lob
-    String memo;
+    private String memo;
 
 }

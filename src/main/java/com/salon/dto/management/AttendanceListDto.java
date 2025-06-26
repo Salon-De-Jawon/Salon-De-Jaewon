@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class AttendanceListDto {
 
-    Long id; // Attendance Id
-    String designerName;
-    LocalDateTime clockIn;
-    LocalDateTime clockOut;
-    AttendanceStatus status;
-    String note;
+    private Long id; // Attendance Id
+    private String designerName;
+    private LocalDateTime clockIn;
+    private LocalDateTime clockOut;
+    private AttendanceStatus status;
+    private String note;
 
     public static AttendanceListDto from (Attendance attendance) {
 

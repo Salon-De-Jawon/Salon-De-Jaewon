@@ -15,22 +15,22 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "leave_request_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "shop_designer_id")
-    ShopDesigner designer;
+    private ShopDesigner designer;
 
-    LocalDate startDate;
-    LocalDate endDate;
-    LeaveType leaveType;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LeaveType leaveType;
 
     @Lob // varchar -> text
-    String reason;
+    private String reason;
 
-    LeaveStatus status;
-    LocalDateTime requestAt;
-    LocalDateTime approvedAt;
+    private LeaveStatus status;
+    private LocalDateTime requestAt;
+    private LocalDateTime approvedAt;
 
 
 

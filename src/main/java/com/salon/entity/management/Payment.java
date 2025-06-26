@@ -15,23 +15,23 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")
     @Nullable
-    Reservation reservation;
+    private Reservation reservation;
 
-    LocalDateTime date;
-    int total_price;
-    int coupon_discount_price;
-    int ticket_used_price;
-    int final_price;
-    PaymentType type;
+    private LocalDateTime date;
+    private int total_price;
+    private int coupon_discount_price;
+    private int ticket_used_price;
+    private int final_price;
+    private PaymentType type;
 
     @Lob
-    String memo;
+    private String memo;
 
-    LocalDateTime createAt;
+    private LocalDateTime createAt;
 
 }

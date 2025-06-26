@@ -11,16 +11,16 @@ public class MemberMemo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_memo_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    Member member;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "shop_designer_id")
-    ShopDesigner designer;
+    private ShopDesigner designer;
 
-    String memo;
+    private String memo;
 
 }

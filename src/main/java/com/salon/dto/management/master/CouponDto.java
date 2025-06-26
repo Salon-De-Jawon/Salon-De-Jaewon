@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter @Setter
 public class CouponDto {
 
-    Long id; // Coupon ID
+    private Long id; // Coupon ID
 
-    String title;
-    int minimumAmount;
+    private String title;
+    private int minimumAmount;
 
 
 }

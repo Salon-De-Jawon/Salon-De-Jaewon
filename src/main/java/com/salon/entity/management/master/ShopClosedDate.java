@@ -13,14 +13,14 @@ public class ShopClosedDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shop_closed_date_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
-    LocalDate offStartDate;
-    LocalDate offEndDate;
-    String reason;
+    private LocalDate offStartDate;
+    private LocalDate offEndDate;
+    private String reason;
 
 }

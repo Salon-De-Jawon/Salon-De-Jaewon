@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class LeaveRequestDto {
 
-    Long id; // LeaveRequest Id
-    Long designerId; // ShopDesignerId
-    String designerName;
-    LocalDate startDate;
-    LocalDate endDate;
-    LeaveType leaveType;
-    String reason;
-    LeaveStatus status;
-    LocalDateTime requestAt;
-    LocalDateTime approvedAt;
+    private Long id; // LeaveRequest Id
+    private Long designerId; // ShopDesignerId
+    private String designerName;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LeaveType leaveType;
+    private String reason;
+    private LeaveStatus status;
+    private LocalDateTime requestAt;
+    private LocalDateTime approvedAt;
 
     public static LeaveRequestDto from(LeaveRequest leaveRequest) {
 

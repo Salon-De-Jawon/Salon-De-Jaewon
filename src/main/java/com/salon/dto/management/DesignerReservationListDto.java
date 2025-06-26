@@ -10,18 +10,16 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class DesignerReservationListDto {
 
-    Long reservationId;
-    Long memberId;
-    String memberName;
-    String serviceName;
+    private Long reservationId;
+    private String memberName;
+    private String serviceName;
     // 시술 날짜 및 시간
-    LocalDateTime date;
-    ReservationStatus status;
+    private LocalDateTime date;
+    private ReservationStatus status;
 
     public static DesignerReservationListDto from (Reservation reservation){
         DesignerReservationListDto dto = new DesignerReservationListDto();
         dto.setReservationId(reservation.getId());
-        dto.setMemberId(reservation.getMember().getId());
         dto.setMemberName(reservation.getMember().getName());
         dto.setServiceName(reservation.getService().getName());
         dto.setDate(reservation.getReservationDate());
