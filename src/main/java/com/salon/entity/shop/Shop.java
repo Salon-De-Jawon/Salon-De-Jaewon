@@ -28,6 +28,6 @@ public class Shop {
     private String Description; // 상세 설명
     private int timeBeforeClosing; // 분 기준 예약 마감
     private LocalDate dayOff; // 가게 휴무일
-    private boolean isthumbnail; // 이미지 썸네일
+    private boolean isThumbnail; // 이미지 썸네일
     
 }

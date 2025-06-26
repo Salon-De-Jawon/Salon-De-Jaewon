@@ -17,7 +17,7 @@ public class Like {
 
     @JoinColumn(name = "member_id")
     @ManyToOne
-    private Member memberId; // 사용자 아이디
+    private Member member; // 사용자 아이디
 
     @Enumerated(EnumType.STRING)
     private LikeType likeType; // 즐겨찾기 유형

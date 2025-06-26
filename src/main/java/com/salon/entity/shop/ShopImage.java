@@ -16,7 +16,7 @@ public class ShopImage {
     
     @JoinColumn(name = "shop_id")
     @ManyToOne
-    private Shop shopId; // 미용실 테이블 아이디
+    private Shop shop; // 미용실 테이블 아이디
     private String originalName; // 이미지 원본이름
     private String imgName; // 이미지 저장 이름
     private String imgUrl; // 이미지 경로
