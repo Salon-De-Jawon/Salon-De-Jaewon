@@ -5,6 +5,7 @@ import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.management.master.Service;
+import com.salon.entity.management.master.Ticket;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

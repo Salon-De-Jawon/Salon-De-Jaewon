@@ -1,5 +1,7 @@
 package com.salon.dto.user;
 
+import com.salon.constant.Gender;
+import com.salon.entity.Member;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
