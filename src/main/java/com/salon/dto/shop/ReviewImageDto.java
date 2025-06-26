@@ -1,0 +1,17 @@
+package com.salon.dto.shop;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
+@Getter
+@Setter
+public class ReviewImageDto {
+
+    private Long reviewImageId; // 리뷰이미지 아이디
+    private String originalName; // 이미지 원본 이름
+    private String imgName; // 이미지 저장 이름
+    private String imgUrl; // 이미지 저장 경로
+
+    private MultipartFile imgFile; // 이미지 파일
+}
