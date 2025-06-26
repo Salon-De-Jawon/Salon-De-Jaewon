@@ -1,6 +1,7 @@
 package com.salon.entity.shop;
 
 import com.salon.constant.LikeType;
+import com.salon.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

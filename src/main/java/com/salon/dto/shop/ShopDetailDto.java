@@ -23,6 +23,8 @@ public class ShopDetailDto {
     private LocalTime openTime; // 미용실 오픈시간
     private LocalTime closeTime; // 미용실 마감시간
 
+
+    // Shop(Entity) -> ShopDetailDto
     public static ShopDetailDto from (Shop shop, List<ShopImage> shopImages, int likeCount){
         ShopDetailDto shopDetailDto = new ShopDetailDto();
 

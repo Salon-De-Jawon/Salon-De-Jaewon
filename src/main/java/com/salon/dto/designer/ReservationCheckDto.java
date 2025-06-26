@@ -2,8 +2,10 @@ package com.salon.dto.designer;
 
 import com.salon.dto.shop.CouponListDto;
 import com.salon.dto.shop.ReservationWriteDto;
+import com.salon.entity.shop.Reservation;
 import lombok.Getter;
 import lombok.Setter;
+
 
 import java.util.List;
 
@@ -17,4 +19,15 @@ public class ReservationCheckDto {
     private int AmountDiscount; // 할인된 금액
     private int finalAmount; // 최종 금액
     private ReservationWriteDto writeDto; // 예약 작성 Dto
+
+
+
+    // CheckDto -> Reservation (Entity)
+    public Reservation to (ReservationCheckDto reservationCheckDto,List<CouponListDto> couponList){
+        Reservation reservation = new Reservation();
+
+
+        return reservation;
+    }
+
 }

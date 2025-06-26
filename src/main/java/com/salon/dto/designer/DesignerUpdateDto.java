@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,4 +25,29 @@ public class DesignerUpdateDto {
 
 
 
+    // ShopDesigner(Entity) -> DesignerUpdateDto
+    public static DesignerUpdateDto from (ShopDesigner shopDesigner){
+        DesignerUpdateDto designerUpdateDto = new DesignerUpdateDto();
+
+        designerUpdateDto.setDesignerId(shopDesigner.getId());
+        designerUpdateDto.setShopName(shopDesigner.getShop().getName());
+        designerUpdateDto.setName(shopDesigner.getMember().getName());
+        designerUpdateDto.setStartAt(shopDesigner.getStartAt());
+        designerUpdateDto.setPosition(shopDesigner.getPosition());
+        designerUpdateDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
+        designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEntTime());
+
+
+        return designerUpdateDto;
+    }
+
+    // DesignerUpdateDto -> ShopDesigner(Entity)
+    public ShopDesigner to (DesignerUpdateDto designerUpdateDto){
+        ShopDesigner shopDesigner = new ShopDesigner();
+
+
+
+        return shopDesigner;
+
+    }
 }
