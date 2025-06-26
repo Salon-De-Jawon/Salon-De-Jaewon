@@ -12,21 +12,21 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
-    String name;
-    int price;
+    private String name;
+    private int price;
 
     @Lob
-    String description;
+    private String description;
 
-    ServiceCategory category;
-    String originalImgName;
-    String imgName;
-    String imgUrl;
+    private ServiceCategory category;
+    private String originalImgName;
+    private String imgName;
+    private String imgUrl;
 
 }

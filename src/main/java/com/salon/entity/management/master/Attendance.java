@@ -14,18 +14,18 @@ public class Attendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attendance_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "designer_id")
-    ShopDesigner shopDesigner;
+    private ShopDesigner shopDesigner;
 
-    LocalDateTime clockIn;
-    LocalDateTime clockOut;
-    AttendanceStatus status;
+    private LocalDateTime clockIn;
+    private LocalDateTime clockOut;
+    private AttendanceStatus status;
 
     @Lob
-    String note;
+    private String note;
 
 
 

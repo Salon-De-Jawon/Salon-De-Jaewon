@@ -8,13 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter @Setter
 public class ShopImageDto {
 
-    Long id;
-    String originalName;
-    String imgName;
-    String imgUrl;
+    private Long id;
+    private String originalName;
+    private String imgName;
+    private String imgUrl;
 
     // 이미지 파일
-    MultipartFile imgFile;
+    private MultipartFile imgFile;
 
     public static ShopImageDto from (ShopImage image) {
         ShopImageDto dto = new ShopImageDto();

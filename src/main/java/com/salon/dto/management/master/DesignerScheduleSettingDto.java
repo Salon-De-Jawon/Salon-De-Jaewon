@@ -9,10 +9,10 @@ import java.time.LocalTime;
 @Getter @Setter
 public class DesignerScheduleSettingDto {
 
-    Long designerId;
-    String name;
-    LocalTime startTime;
-    LocalTime endTime;
+    private Long designerId;
+    private String name;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     public static DesignerScheduleSettingDto from(ShopDesigner designer){
 

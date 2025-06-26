@@ -9,18 +9,18 @@ import java.time.LocalTime;
 @Getter @Setter
 public class ShopReservationSettingDto {
 
-    Long shopId;
-    LocalTime openTime;
-    LocalTime closeTime;
+    private Long shopId;
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     // 예약마감 시간 설정용
-    int timeBeforeClosing;
+    private int timeBeforeClosing;
 
     // 예약시간 간격
-    int reservationInterval;
+    private int reservationInterval;
 
     // 2진법 표기 ex) 1111011 == 금요일 휴무일
-    int dayOff;
+    private int dayOff;
 
     public static ShopReservationSettingDto from (Shop shop) {
         ShopReservationSettingDto dto = new ShopReservationSettingDto();

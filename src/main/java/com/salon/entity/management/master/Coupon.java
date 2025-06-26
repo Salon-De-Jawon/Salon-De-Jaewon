@@ -14,17 +14,17 @@ public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attendance_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
-    String name;
-    int minimumAmount;
-    CouponType discountType;
-    int discountValue;
-    boolean isActive;
-    LocalDate expireDate;
+    private String name;
+    private int minimumAmount;
+    private CouponType discountType;
+    private int discountValue;
+    private boolean isActive;
+    private LocalDate expireDate;
 
 }

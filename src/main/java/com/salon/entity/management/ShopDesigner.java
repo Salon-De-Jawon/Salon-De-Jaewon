@@ -15,24 +15,24 @@ public class ShopDesigner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shop_designer_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    Member member;
+    private Member member;
 
-    String originalImgName;
-    String imgName;
-    String imgUrl;
-    LocalDate startAt;
-    int workingYears;
-    String position;
-    LocalTime scheduledStartTime;
-    LocalTime scheduledEntTime;
-    boolean isActive;
+    private String originalImgName;
+    private String imgName;
+    private String imgUrl;
+    private LocalDate startAt;
+    private int workingYears;
+    private String position;
+    private LocalTime scheduledStartTime;
+    private LocalTime scheduledEntTime;
+    private boolean isActive;
 
 }

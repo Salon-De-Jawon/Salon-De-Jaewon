@@ -11,7 +11,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CouponListDto {
-    
+
+
     private String shopName; // 미용실 이름
     private String couponName; // 쿠폰 이름
     private int minimumAmount; // 최소 예약 금액

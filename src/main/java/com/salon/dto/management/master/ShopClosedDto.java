@@ -10,11 +10,11 @@ import java.time.LocalDate;
 @Getter @Setter
 public class ShopClosedDto {
 
-    Long id;
-    Long shopId;
-    LocalDate offStartDate;
-    LocalDate offEndDate;
-    String reason;
+    private Long id;
+    private Long shopId;
+    private LocalDate offStartDate;
+    private LocalDate offEndDate;
+    private String reason;
 
     public static ShopClosedDto from (ShopClosedDate closedDate){
         ShopClosedDto dto = new ShopClosedDto();

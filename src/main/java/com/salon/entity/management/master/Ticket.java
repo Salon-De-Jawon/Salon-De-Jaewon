@@ -14,18 +14,18 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    Member member;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
-    int totalAmount;
-    int usedAmount;
-    LocalDateTime createAt;
+    private int totalAmount;
+    private int usedAmount;
+    private LocalDateTime createAt;
 
 }
