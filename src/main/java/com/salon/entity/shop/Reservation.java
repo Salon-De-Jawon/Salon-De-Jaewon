@@ -37,6 +37,10 @@ public class Reservation {
     @ManyToOne
     private Coupon coupon; // 쿠폰 아이디
 
+    @JoinColumn(name = "ticket_id")
+    @ManyToOne
+    private Ticket ticket; // 정액권 아이디
+
     private int discountAmount; // 할인된 가격
     private LocalDateTime reservationDate; // 예약 날짜
     private int ticketUsedAmount; // 정액권 사용금액
