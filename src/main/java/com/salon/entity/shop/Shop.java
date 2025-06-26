@@ -27,7 +27,7 @@ public class Shop {
     private LocalTime closeTime; // 미용실 마감시간
     private String Description; // 상세 설명
     private int timeBeforeClosing; // 분 기준 예약 마감
-    private LocalDate dayOff; // 가게 휴무일
-    private boolean isThumbnail; // 이미지 썸네일
+    private int dayOff; // 가게 휴무일
+    private int reservationInterval; // 예약 간격 (분단위)
     
 }

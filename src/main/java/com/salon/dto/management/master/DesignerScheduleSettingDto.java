@@ -1,0 +1,38 @@
+package com.salon.dto.management.master;
+
+import com.salon.entity.management.ShopDesigner;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalTime;
+
+@Getter @Setter
+public class DesignerScheduleSettingDto {
+
+    Long designerId;
+    String name;
+    LocalTime startTime;
+    LocalTime endTime;
+
+    public static DesignerScheduleSettingDto from(ShopDesigner designer){
+
+        DesignerScheduleSettingDto dto = new DesignerScheduleSettingDto();
+        dto.setDesignerId(designer.getId());
+        dto.setName(designer.getMember().getName());
+        dto.setStartTime(designer.getScheduledStartTime());
+        dto.setEndTime(designer.getScheduledEntTime());
+
+        return dto;
+    }
+
+    public ShopDesigner to (ShopDesigner designer) {
+
+        designer.setScheduledStartTime(this.startTime);
+        designer.setScheduledEntTime(this.endTime);
+
+        return designer;
+    }
+
+
+
+}

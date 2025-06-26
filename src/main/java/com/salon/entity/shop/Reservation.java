@@ -1,6 +1,10 @@
 package com.salon.entity.shop;
 
-import com.salon.constant.RStauts;
+import com.salon.constant.ReservationStatus;
+import com.salon.entity.Member;
+import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.Service;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +27,7 @@ public class Reservation {
 
     @JoinColumn(name = "designer_id")
     @ManyToOne
-    private Designer dsigner; // 디자이너 아이디
+    private ShopDesigner designer; // 디자이너 아이디
 
     @JoinColumn(name = "service_id")
     @ManyToOne
@@ -37,6 +41,6 @@ public class Reservation {
     private LocalDateTime reservationDate; // 예약 날짜
     
     @Enumerated(EnumType.STRING)
-    private RStauts stauts; // 예약 상태
+    private ReservationStatus status; // 예약 상태
     private String comment; // 요청사항
 }
