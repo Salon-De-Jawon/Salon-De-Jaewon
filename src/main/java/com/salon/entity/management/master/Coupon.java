@@ -22,7 +22,10 @@ public class Coupon {
 
     private String name;
     private int minimumAmount;
+
+    @Enumerated(EnumType.STRING)
     private CouponType discountType;
+
     private int discountValue;
     private boolean isActive;
     private LocalDate expireDate;

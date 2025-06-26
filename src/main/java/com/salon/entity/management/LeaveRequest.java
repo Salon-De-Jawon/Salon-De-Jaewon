@@ -28,7 +28,9 @@ public class LeaveRequest {
     @Lob // varchar -> text
     private String reason;
 
+    @Enumerated(EnumType.STRING)
     private LeaveStatus status;
+
     private LocalDateTime requestAt;
     private LocalDateTime approvedAt;
 

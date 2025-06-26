@@ -27,6 +27,8 @@ public class Payment {
     private int coupon_discount_price;
     private int ticket_used_price;
     private int final_price;
+
+    @Enumerated(EnumType.STRING)
     private PaymentType type;
 
     @Lob

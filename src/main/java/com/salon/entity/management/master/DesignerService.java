@@ -1,6 +1,7 @@
 package com.salon.entity.management.master;
 
 import com.salon.entity.Member;
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Shop;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,23 +19,15 @@ public class DesignerService {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "shop_designer_id")
+    private ShopDesigner designer;
 
-    @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private Shop shop;
-
-    private String originalImgName;
-    private String imgName;
-    private String imgUrl;
-    // 경력 시작일
-    private LocalDate startAt;
-    // 디자이너 연차
-    private int workingYears;
-    private String position;
-    private LocalTime scheduledStartTime;
-    private LocalTime scheduledEndTime;
-    private boolean isActive;
+    private boolean cut;
+    private boolean color;
+    private boolean perm;
+    private boolean upstyle;
+    private boolean dry;
+    private boolean hair_extension;
+    private boolean clinic;
 
 }

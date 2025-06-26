@@ -22,6 +22,8 @@ public class Attendance {
 
     private LocalDateTime clockIn;
     private LocalDateTime clockOut;
+
+    @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
     @Lob

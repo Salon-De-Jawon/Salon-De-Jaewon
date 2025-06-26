@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DesignerServiceRepo extends JpaRepository<DesignerService, Long> {
 
+    // 디자이너 담당 시술찾기
+    DesignerService findByDesignerId(Long designerId);
+
 }

@@ -24,7 +24,9 @@ public class Service {
     @Lob
     private String description;
 
+    @Enumerated(EnumType.STRING)
     private ServiceCategory category;
+
     private String originalImgName;
     private String imgName;
     private String imgUrl;
