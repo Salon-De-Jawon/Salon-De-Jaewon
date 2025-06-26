@@ -36,7 +36,7 @@ public class DesignerUpdateDto {
         designerUpdateDto.setPosition(shopDesigner.getPosition());
         designerUpdateDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
         designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEntTime());
-
+        designerUpdateDto.setDesignerImg(shopDesigner.getImgUrl());
 
         return designerUpdateDto;
     }
