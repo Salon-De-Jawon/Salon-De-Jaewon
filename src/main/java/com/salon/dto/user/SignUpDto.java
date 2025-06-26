@@ -31,6 +31,9 @@ public class SignUpDto {
                 .tel(this.tel)
                 .gender(this.gender)
                 .birthDate(this.birthDate)
+                .agreeAlert(this.agreeAlert)
+                .agreeLocation(this.agreeLocation)
+                .build();
 
     }
 }
