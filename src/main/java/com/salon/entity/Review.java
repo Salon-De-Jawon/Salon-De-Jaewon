@@ -1,5 +1,6 @@
 package com.salon.entity;
 
+import com.salon.entity.shop.Reservation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
