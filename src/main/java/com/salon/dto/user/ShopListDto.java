@@ -27,18 +27,20 @@ public class ShopListDto {
         dto.setShopName(shop.getName());
         dto.setShopAddress(shop.getAddress());
 
-        float sum = 0f;
-        int count = 0;
+//        float sum = 0f;
+//        int count = 0;
+//
+//        for(DesignerDetailDto designerDetailDto : designerDetailDtoList) {
+//            if (designerDetailDto.getRating() > 0) {
+//                sum += designerDetailDto.getRating();
+//                count++;
+//            }
+//        }
+//
+//        float avg = count > 0 ? sum / count : 0f;
+//        avg = Math.round(avg * 10) /10f;
 
-        for(DesignerDetailDto designerDetailDto : designerDetailDtoList) {
-            if (designerDetailDto.getRating() > 0) {
-                sum += designerDetailDto.getRating();
-                count++;
-            }
-        }
 
-        float avg = count > 0 ? sum / count : 0f;
-        avg = Math.round(avg * 10) /10f;
 
         return dto;
     }
