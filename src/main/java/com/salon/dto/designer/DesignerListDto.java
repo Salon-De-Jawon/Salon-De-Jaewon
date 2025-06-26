@@ -16,6 +16,8 @@ public class DesignerListDto {
     private String position; // 디자이너 직급
     private String description; // 디자이너 소개
     private String designerImg; // 디자이너 프로필 이미지
+    private int reviewCount; // 디자이너 리뷰 갯수
+    private int rating; // 디자이너 평점 갯수
 
 
     // ShopDesigner(Entity) -> DesignerListDto
@@ -26,7 +28,7 @@ public class DesignerListDto {
         designerListDto.setName(shopDesigner.getMember().getName());
         designerListDto.setWorkingYear(shopDesigner.getWorkingYears());
         designerListDto.setPosition(shopDesigner.getPosition());
-
+        designerListDto.setDesignerImg(shopDesigner.getImgUrl());
         return designerListDto;
     }
 }

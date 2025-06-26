@@ -17,6 +17,7 @@ public class CouponListDto {
     private String couponName; // 쿠폰 이름
     private int minimumAmount; // 최소 예약 금액
     private CouponType couponType; // 할인 유형
+    private int DiscountAmount; // 할인 금액
     private boolean isActive; // 활성화 유무
     private LocalDate expireDate; // 쿠폰 소멸일
 
