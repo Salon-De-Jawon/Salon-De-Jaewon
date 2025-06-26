@@ -18,11 +18,11 @@ public class CouponBanner {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="coupon_id", nullable=false)
+    @JoinColumn(name="coupon_id")
     private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="admin_id", nullable = false)
+    @JoinColumn(name="admin_id")
     private Member admin;
 
     private LocalDate startDate;
@@ -32,6 +32,9 @@ public class CouponBanner {
     private String imgUrl;
     private LocalDateTime createAt;
     private LocalDateTime registerDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="apply_status")
     private ApplyStatus status;
 
 }

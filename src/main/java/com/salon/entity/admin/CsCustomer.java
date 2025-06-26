@@ -28,8 +28,14 @@ public class CsCustomer {
     private String questionText;
     private LocalDateTime questionAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="cs_status")
     private CsStatus status;
+
+    @ManyToOne
+    @JoinColumn(name="admin_id")
     private Member admin;
+
     private LocalDateTime replyAt;
     private String replyText;
 

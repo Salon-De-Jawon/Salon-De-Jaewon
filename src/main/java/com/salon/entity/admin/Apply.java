@@ -29,8 +29,12 @@ public class Apply {
     private String issuedDate;
     private LocalDateTime createAt;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="admin_id")
+    private Member admin;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="apply_status")
     private ApplyStatus status;
 
     private LocalDateTime approveAt;

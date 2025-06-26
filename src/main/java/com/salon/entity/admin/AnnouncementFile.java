@@ -15,8 +15,8 @@ public class AnnouncementFile {
     @Column(name="id")
     private Long id;
     @ManyToOne
-    @JoinColumn(name="annoucement_id")
-    private Announcement annoucement;
+    @JoinColumn(name="announcement_id")
+    private Announcement announcement;
     private String originalName;
     private String fileName;
     private String fileUrl;

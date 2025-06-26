@@ -6,6 +6,7 @@ import lombok.Setter;
 
 @Entity
 @Getter @Setter
+@Table(name="cs_file")
 public class CsFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

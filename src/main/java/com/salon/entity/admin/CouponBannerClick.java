@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-@Table(name="CouponBannerClick")
+@Table(name="coupon_banner_click")
 public class CouponBannerClick {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
