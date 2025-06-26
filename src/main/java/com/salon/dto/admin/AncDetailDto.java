@@ -15,10 +15,5 @@ public class AncDetailDto {
     private LocalDateTime writeAt;
     private String adminName;
 
-    public static AncDetailDto from(Announcement entity){
-        AncDetailDto dto = new AncDetailDto();
-        dto.
 
-        return dto;
-    }
 }

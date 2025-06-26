@@ -15,11 +15,4 @@ public class AncListDto {
     private String title;
     private LocalDateTime writeAt;
 
-    public static AncListDto form(Announcement entity) {
-        AncListDto dto = new AncListDto();
-        dto.setId(entity.getId());
-        dto.setAdminName(entity.getAdmin().getName());
-
-        return dto;
-    }
 }
