@@ -1,6 +1,10 @@
 package com.salon.entity.shop;
 
 import com.salon.constant.RStauts;
+import com.salon.entity.Member;
+import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.Service;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,13 +21,17 @@ public class Reservation {
     @Column(name = "reservation_id")
     private Long id; // 예약테이블 아이디
 
+    @JoinColumn(name = "shop_id")
+    @ManyToOne
+    private Shop shop;
+
     @JoinColumn(name = "member_id")
     @ManyToOne
     private Member member; // 유저 아이디
 
     @JoinColumn(name = "designer_id")
     @ManyToOne
-    private Designer dsigner; // 디자이너 아이디
+    private ShopDesigner dsigner; // 디자이너 아이디
 
     @JoinColumn(name = "service_id")
     @ManyToOne

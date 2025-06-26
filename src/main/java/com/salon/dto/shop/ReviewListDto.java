@@ -1,5 +1,7 @@
 package com.salon.dto.shop;
 
+import com.salon.entity.Member;
+import com.salon.entity.Review;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +19,20 @@ public class ReviewListDto {
     private int rating; // 평점
     private String comment; // 리뷰내용
     private List<ReviewImageDto> reviewImg; // 리뷰이미지
+
+
+    public static ReviewListDto from (Review review, Member member, List<ReviewImageDto> reviewImg){
+        ReviewListDto reviewListDto = new ReviewListDto();
+
+        reviewListDto.setId(review.getId());
+        reviewListDto.setMemberName(member.getName());
+        reviewListDto.setCreateAt(review.getCreateAt());
+        reviewListDto.setRating(review.getRating());
+        reviewListDto.setComment(review.getComment());
+        reviewListDto.setReviewImg(reviewImg);
+
+        return reviewListDto;
+    }
 
 
 }

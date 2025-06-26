@@ -1,5 +1,7 @@
 package com.salon.dto.shop;
 
+
+import com.salon.entity.ReviewImage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,4 +16,17 @@ public class ReviewImageDto {
     private String imgUrl; // 이미지 저장 경로
 
     private MultipartFile imgFile; // 이미지 파일
+
+
+    public static ReviewImageDto from (ReviewImage reviewImage){
+        ReviewImageDto reviewImageDto = new ReviewImageDto();
+
+        reviewImageDto.setReviewImageId(reviewImage.getId());
+        reviewImageDto.setOriginalName(reviewImage.getOriginalName());
+        reviewImageDto.setImgName(reviewImage.getImgName());
+        reviewImageDto.setImgUrl(reviewImage.getImgUrl());
+
+
+        return reviewImageDto;
+    }
 }

@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,5 +27,14 @@ public class DesignerDetailDto {
     private MultipartFile designerProfile;
 
 
+
+    public static DesignerDetailDto from (ShopDesigner shopDesigner){
+        DesignerDetailDto designerDetailDto = new DesignerDetailDto();
+
+        designerDetailDto.setDesignerId(shopDesigner.getId());
+
+
+        return designerDetailDto;
+    }
     
 }

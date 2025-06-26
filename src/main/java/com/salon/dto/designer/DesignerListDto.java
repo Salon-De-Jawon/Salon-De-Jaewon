@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,14 @@ public class DesignerListDto {
     private String position; // 디자이너 직급
     private String description; // 디자이너 소개
     private String designerImg; // 디자이너 프로필 이미지
+
+
+    public static DesignerListDto from (ShopDesigner shopDesigner){
+        DesignerListDto designerListDto = new DesignerListDto();
+
+        designerListDto.setId(shopDesigner.getId());
+
+
+        return designerListDto;
+    }
 }

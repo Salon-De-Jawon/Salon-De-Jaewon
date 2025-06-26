@@ -1,5 +1,7 @@
 package com.salon.dto.shop;
 
+import com.salon.constant.ServiceCategory;
+import com.salon.entity.management.master.Service;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +16,14 @@ public class ServiceListDto {
     private ServiceCategory serviceCategory; // 시술유형
 
 
+
+    public static ServiceListDto from (Service service){
+        ServiceListDto serviceListDto = new ServiceListDto();
+
+        serviceListDto.setId(service.getId());
+        serviceListDto.setName(service.getName());
+
+
+        return serviceListDto;
+    }
 }

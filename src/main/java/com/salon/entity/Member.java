@@ -1,6 +1,7 @@
 package com.salon.entity;
 
 import com.salon.constant.Gender;
+import com.salon.constant.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
