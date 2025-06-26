@@ -1,8 +1,11 @@
 package com.salon.entity.admin;
 
+import com.salon.constant.CsStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
@@ -14,5 +17,20 @@ public class CsCustomer {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="cs_category")
+    private CsCategory category;
+
+    private String questionText;
+    private LocalDateTime questionAt;
+
+    private CsStatus status;
+    private Member admin;
+    private LocalDateTime replyAt;
+    private String replyText;
+
+
 }
