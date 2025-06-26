@@ -1,16 +1,10 @@
 package com.salon.repository.management.master;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import com.salon.entity.management.master.DesignerService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@Getter @Setter
-@Entity
-public class DesignerServiceRepo {
-    @Id
-    @Column(name = "designer_service_id")
-    Long id;
+@Repository
+public interface DesignerServiceRepo extends JpaRepository<DesignerService, Long> {
 
 }
