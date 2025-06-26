@@ -1,5 +1,6 @@
 package com.salon.entity.admin;
 
+import com.salon.constant.ApplyStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.salon.entity.admin;
 
+import com.salon.constant.WebTarget;
 import jakarta.persistence.*;
 import lombok.Generated;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.salon.entity.admin;
 
+import com.salon.constant.CsCategory;
 import com.salon.constant.CsStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
