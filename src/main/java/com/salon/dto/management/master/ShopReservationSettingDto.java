@@ -4,7 +4,10 @@ import com.salon.entity.shop.Shop;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 public class ShopReservationSettingDto {
@@ -21,6 +24,9 @@ public class ShopReservationSettingDto {
 
     // 2진법 표기 ex) 1111011 == 금요일 휴무일
     private int dayOff;
+
+    // 휴무일 요일 ==> dayOff 변환 (DayOffUtil)
+    private List<DayOfWeek> dayOffList;
 
     public static ShopReservationSettingDto from (Shop shop) {
         ShopReservationSettingDto dto = new ShopReservationSettingDto();
