@@ -14,6 +14,4 @@ public class AncDetailDto {
     private String content;
     private LocalDateTime writeAt;
     private String adminName;
-
-
 }
