@@ -1,9 +1,6 @@
-package com.salon.dto.designer;
+package com.salon.dto.shop;
 
 import com.salon.constant.CouponType;
-import com.salon.dto.shop.CouponListDto;
-import com.salon.dto.shop.ReservationWriteDto;
-import com.salon.entity.shop.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,20 +20,21 @@ public class ReservationCheckDto {
     private int amountDiscount; // 할인된 금액
     private int ticketUsedAmount; // 정액권 사용 금액
     private int finalAmount; // 최종 금액
+    private String precaution; // 예약 시 주의사항
     private ReservationWriteDto writeDto; // 예약 작성 Dto
 
 
 
 
     // WriteDto -> CheckDto
-    public static ReservationCheckDto from (ReservationWriteDto reservationWriteDto, List<CouponListDto> couponListDtos,CouponType type){
+    public static ReservationCheckDto from (ReservationWriteDto reservationWriteDto, List<CouponListDto> couponListDtos,CouponType type,String precaution){
         ReservationCheckDto reservationCheckDto = new ReservationCheckDto();
 
         reservationCheckDto.setCouponList(couponListDtos);
         reservationCheckDto.setServiceAmount(reservationWriteDto.getServiceAmount());
         reservationCheckDto.setServiceAmount(reservationWriteDto.getServiceAmount());
         reservationCheckDto.setComment(reservationCheckDto.getComment()); // 요청사항 전달
-
+        reservationCheckDto.setPrecaution(precaution); // 예약 시 주의사항
 
         // 쿠폰이 있을 경우 첫번째 쿠폰 기준으로 할인 적용
         if(couponListDtos != null && !couponListDtos.isEmpty()){

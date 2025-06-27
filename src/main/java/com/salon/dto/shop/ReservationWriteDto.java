@@ -1,7 +1,6 @@
 package com.salon.dto.shop;
 
 
-import com.salon.dto.designer.ReservationCheckDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Service;
