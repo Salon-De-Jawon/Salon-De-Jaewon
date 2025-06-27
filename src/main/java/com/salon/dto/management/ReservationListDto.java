@@ -8,17 +8,21 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter @Setter
-public class DesignerReservationListDto {
+public class ReservationListDto {
 
     private Long reservationId;
-    private String memberName;
+
+
+    private String memberName; // 디자이너 전용
+    private String designerName; // 회원 전용
+
     private String serviceName;
     // 시술 날짜 및 시간
     private LocalDateTime date;
     private ReservationStatus status;
 
-    public static DesignerReservationListDto from (Reservation reservation){
-        DesignerReservationListDto dto = new DesignerReservationListDto();
+    public static ReservationListDto from (Reservation reservation){
+        ReservationListDto dto = new ReservationListDto();
         dto.setReservationId(reservation.getId());
         dto.setMemberName(reservation.getMember().getName());
         dto.setServiceName(reservation.getService().getName());

@@ -1,7 +1,10 @@
 package com.salon.service.management;
 
 import com.salon.constant.AttendanceStatus;
+import com.salon.constant.LeaveStatus;
+import com.salon.dto.management.LeaveRequestDto;
 import com.salon.entity.Member;
+import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
 import com.salon.repository.management.LeaveRequestRepo;
@@ -37,7 +40,7 @@ public class ManageService {
 
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
-        int LATE_MINUTES = 10; // 지각 유예시간
+        int lateMin = designer.getShop().getLateMin(); // 지각 유예시간
 
         // 휴무일인지 확인
         if (DayOffUtil.isDayOff(designer.getShop().getDayOff(), today.getDayOfWeek())) {
@@ -56,7 +59,7 @@ public class ManageService {
 
         // 지각 여부 판단
         LocalTime scheduledStart = designer.getScheduledStartTime();
-        boolean isLate = now.toLocalTime().isAfter(scheduledStart.plusMinutes(LATE_MINUTES));
+        boolean isLate = now.toLocalTime().isAfter(scheduledStart.plusMinutes(lateMin));
 
         Attendance attendance = new Attendance();
         attendance.setDesigner(designer);
@@ -71,7 +74,7 @@ public class ManageService {
     public void clockOut(ShopDesigner designer) {
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
-        int EARLY_MINUTES = 10;
+        int earlyLeaveMin = designer.getShop().getEarlyLeaveMin();
 
         // 오늘 출근 기록 가져오기
         Attendance attendance = attendanceRepo.findByDesignerIdAndClockInBetween(designer.getId(), today.atStartOfDay(),
@@ -85,7 +88,7 @@ public class ManageService {
 
         // 조퇴 여부 판단
         LocalTime scheduledEnd = designer.getScheduledEntTime();
-        boolean isEarly = now.toLocalTime().isBefore(scheduledEnd.minusMinutes(EARLY_MINUTES));
+        boolean isEarly = now.toLocalTime().isBefore(scheduledEnd.minusMinutes(earlyLeaveMin));
 
         attendance.setClockOut(now);
 
@@ -100,11 +103,16 @@ public class ManageService {
 
     // 디자이너 휴가 신청 시
     @Transactional
-    public void saveLeaveRequest(){
+    public void saveLeaveRequest(LeaveRequestDto dto, ShopDesigner designer){
+
+        dto.setStatus(LeaveStatus.REQUESTED);
+        LeaveRequest leaveRequest = dto.to(designer);
+
+        leaveRequestRepo.save(leaveRequest);
 
     }
     
-    // 디자이너 출퇴근 목록
+    // 디자이너 개인 출퇴근 목록
 
 
 
