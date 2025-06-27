@@ -2,6 +2,7 @@ package com.salon.entity.admin;
 
 import com.salon.constant.ApplyStatus;
 import com.salon.constant.ApplyType;
+import com.salon.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name="apply")
 public class Apply {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDETITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
