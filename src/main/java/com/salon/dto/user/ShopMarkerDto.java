@@ -1,6 +1,7 @@
 package com.salon.dto.user;
 
 import com.salon.entity.shop.Shop;
+import com.salon.entity.shop.ShopImage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,13 @@ public class ShopMarkerDto {
     private String imgUrl;
     private String shopName;
 
-    public static ShopMarkerDto from(Shop shop) {
+    public static ShopMarkerDto from(Shop shop, ShopImage shopImage) {
         ShopMarkerDto dto = new ShopMarkerDto();
         dto.setShopId(shop.getId());
         dto.setLatitude(shop.getLatitude());
+        dto.setLongitude(shop.getLongitude());
+        dto.setImgUrl(shopImage.getImgUrl());
+        dto.setShopName(shop.getName());
 
         return dto;
     }
