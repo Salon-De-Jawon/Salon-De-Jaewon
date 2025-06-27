@@ -31,4 +31,10 @@ public class DayOffUtil {
         return result; // (월화금 == 1100100)
     }
 
+    // 해당 요일이 휴무일인지 확인
+    public static boolean isDayOff(int dayOff, DayOfWeek dayOfWeek) {
+        int index = dayOfWeek.getValue() % 7; // 월:1 ~ 일:7 → 0~6
+        return (dayOff & (1 << (6 - index))) != 0;
+    }
+
 }
