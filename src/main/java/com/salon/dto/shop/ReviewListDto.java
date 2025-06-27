@@ -23,15 +23,16 @@ public class ReviewListDto {
 
 
     // Review(Entity) -> ReviewListDto
-    public static ReviewListDto from (Review review, Member member, List<ReviewImageDto> reviewImg){
+    public static ReviewListDto from (Review review, List<ReviewImageDto> reviewImg,int visitCount){
         ReviewListDto reviewListDto = new ReviewListDto();
 
         reviewListDto.setId(review.getId());
-        reviewListDto.setMemberName(member.getName());
+        reviewListDto.setMemberName(review.getReservation().getMember().getName());
         reviewListDto.setCreateAt(review.getCreateAt());
         reviewListDto.setRating(review.getRating());
         reviewListDto.setComment(review.getComment());
         reviewListDto.setReviewImg(reviewImg);
+        reviewListDto.setVisitCount(visitCount);
 
         return reviewListDto;
     }

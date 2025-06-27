@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.dto.shop.ReviewListDto;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,17 +25,28 @@ public class DesignerDetailDto {
     private LocalTime scheduledStartTime; // 출근 시간
     private LocalTime scheduleEndTime; // 퇴근 시간
     private boolean isActive; // 재직 여부
+    private int likeCount; // 디자이너별 찜 갯수
+    private int reviewCount; // 디자이너별 리뷰 갯수
+    private int rating; // 디자이너 평점
+
 
     private MultipartFile designerProfile;
 
 
 
     // ShopDesigner(Entity) -> DesignerDetailDto
-    public static DesignerDetailDto from (ShopDesigner shopDesigner){
+    public static DesignerDetailDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount, List<ReviewListDto> reviewListDtos){
         DesignerDetailDto designerDetailDto = new DesignerDetailDto();
 
         designerDetailDto.setDesignerId(shopDesigner.getId());
-
+        designerDetailDto.setShopName(shopDesigner.getShop().getName());
+        designerDetailDto.setDesignerName(shopDesigner.getMember().getName());
+        designerDetailDto.setStartAt(shopDesigner.getStartAt());
+        designerDetailDto.setPosition(shopDesigner.getPosition());
+        designerDetailDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
+        designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEntTime());
+        designerDetailDto.setLikeCount(likeCount);
+        designerDetailDto.setReviewCount(reviewCount);
 
         return designerDetailDto;
     }
