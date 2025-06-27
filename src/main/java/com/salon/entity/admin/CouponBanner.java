@@ -1,6 +1,8 @@
 package com.salon.entity.admin;
 
 import com.salon.constant.ApplyStatus;
+import com.salon.entity.Member;
+import com.salon.entity.management.master.Coupon;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
