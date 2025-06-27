@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attendance_id")
+    @Column(name = "coupon_id")
     private Long id;
 
     @ManyToOne
