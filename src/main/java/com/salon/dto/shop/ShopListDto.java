@@ -1,12 +1,11 @@
-package com.salon.dto.user;
+package com.salon.dto.shop;
 
-import com.salon.dto.designer.DesignerDetailDto;
 import com.salon.dto.management.master.ShopImageDto;
-import com.salon.dto.shop.ReviewListDto;
 import com.salon.entity.shop.Shop;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -15,17 +14,22 @@ public class ShopListDto {
     private Long id;
     private ShopImageDto shopImageDto;
     private String shopName;
-    private String shopAddress;
+    private LocalTime openTime;
+    private LocalTime closeTime;
+    private String address;
     private Float rating;  // 샵 전체 평균
     private int reviewCount;
+    private boolean hasCoupon;
 
-    public static ShopListDto from (Shop shop, ShopImageDto shopImageDto, List<ReviewListDto> reviewListDtos) {
+    public static ShopListDto from (Shop shop, ShopImageDto shopImageDto, List<ReviewListDto> reviewListDtos, boolean hasCoupon) {
         ShopListDto dto = new ShopListDto();
 
         dto.setId(shop.getId());
         dto.setShopImageDto(shopImageDto);
         dto.setShopName(shop.getName());
-        dto.setShopAddress(shop.getAddress());
+        dto.setOpenTime(shop.getOpenTime());
+        dto.setCloseTime(shop.getCloseTime());
+        dto.setAddress(shop.getAddress());
 
         float sum = 0f;
         int count = 0;
@@ -42,9 +46,12 @@ public class ShopListDto {
 
         dto.setRating(avg);
         dto.setReviewCount(count);
+        dto.setHasCoupon(hasCoupon);
 
 
         return dto;
     }
+
+
 
 }
