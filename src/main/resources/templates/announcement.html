@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>공지사항</h1>
+
+    <input type="text" name="search" id="search" placeholder="제목 또는 내용을 검색하세요">
+    <button onclick="filter()">검색</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>업로드 날짜</th>
+                <th>첨부파일</th>
+            </tr>
+        </thead>
+        <tbody id="noticeTable">
+            <tr data-role="회원">
+                <td>1</td>
+                <td><a href="admin/anc/detail">앱 이용 가이드</a></td>
+                <td>2025-06-28</td>
+                <td></td>
+            </tr>
+            <tr data-role="디자이너">
+                <td>2</td>
+                <td>근무 스케줄 등록 안내</td>
+                <td>2025-06-27</td>
+                <td></td>
+            </tr>
+            <tr data-category="회원">
+                <td>3</td>
+                <td>이벤트 쿠폰 안내</td>
+                <td>2025-06-26</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <form action="admin/anc/create">
+        <button>공지 작성</button>
+    </form>
+    <script>
+        const role = "회원";
+
+        function filter(){
+            const keyword = document.getElementById("search").value;
+            const rows = document.querySelectorAll("#noticeTable tr");
+
+            rows.forEach(row => {
+                const r = row.dataset.role;
+                const title = row.children[1].textContent;
+                row.style.display = (r === role && title.includes(keyword)) ? "" : "none";
+            });
+        }
+
+        window.onload = filter;
+    </script>
+</body>
+</html>

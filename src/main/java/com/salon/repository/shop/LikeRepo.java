@@ -12,8 +12,8 @@ public interface LikeRepo extends JpaRepository<Like,Long> {
     List<Like> findByMemberIdAndLikeType(Long memberId, LikeType likeType);
     
     // 특정 대상(디자이너, 매장)에 대한 찜 여부 확인
-    boolean findByMemberIdAndTypeIdandLiketype(Long memberId, Long typeId, LikeType likeType);
+    boolean findByMemberIdAndTypeIdAndLikeType(Long memberId, Long typeId, LikeType likeType);
     
     // 미용실 / 디자이너 좋아요 수
-    int countByTargetTypeandTargetId(LikeType likeType, Long targetId);
+    int countByLikeTypeAndTypeId(LikeType likeType, Long targetId);
 }

@@ -14,4 +14,9 @@ public class AncDetailDto {
     private String content;
     private LocalDateTime writeAt;
     private String adminName;
+    private String originalName;
+    private String fileName;
+    private String fileUrl;
+
+
 }

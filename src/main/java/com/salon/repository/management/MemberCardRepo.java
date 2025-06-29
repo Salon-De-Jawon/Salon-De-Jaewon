@@ -13,7 +13,7 @@ public interface MemberCardRepo extends JpaRepository<MemberCard, Long> {
     MemberCard findByReservationId(Long reservationId);
 
     // 해당 회원의 회원카드목록 가져오기(최신순)
-    List<MemberCard> findByMemberIdOrderByCreateAtDesc(Long memberId);
+    List<MemberCard> findByReservation_Member_IdOrderByCreateAtDesc(Long memberId);
 
 
 
