@@ -2,11 +2,13 @@ package com.salon.dto.management;
 
 import com.salon.constant.ServiceCategory;
 import com.salon.entity.management.master.Service;
+import com.salon.entity.shop.Shop;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter
-public class ServiceListDto {
+public class ServiceForm {
 
     private Long id;
     private Long shopId;
@@ -18,9 +20,11 @@ public class ServiceListDto {
     private String imgName;
     private String imgUrl;
 
-    public static ServiceListDto from (Service service) {
+    private MultipartFile imgFile;
 
-        ServiceListDto dto = new ServiceListDto();
+    public static ServiceForm from (Service service) {
+
+        ServiceForm dto = new ServiceForm();
 
         dto.setId(service.getId());
         dto.setShopId(service.getShop().getId());
@@ -33,6 +37,19 @@ public class ServiceListDto {
         dto.setImgUrl(service.getImgUrl());
 
         return dto;
+    }
+
+    public Service to (Shop shop) {
+
+        Service service = new Service();
+
+        service.setName(this.name);
+        service.setShop(shop);
+        service.setPrice(this.price);
+        service.setDescription(this.description);
+
+        return service;
+
     }
 
 }

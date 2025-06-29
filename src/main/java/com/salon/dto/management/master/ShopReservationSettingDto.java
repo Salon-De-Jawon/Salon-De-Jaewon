@@ -1,10 +1,15 @@
 package com.salon.dto.management.master;
 
 import com.salon.entity.shop.Shop;
+import com.salon.util.DayOffUtil;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 public class ShopReservationSettingDto {
@@ -22,6 +27,15 @@ public class ShopReservationSettingDto {
     // 2진법 표기 ex) 1111011 == 금요일 휴무일
     private int dayOff;
 
+    // 휴무일 요일 ==> dayOff 변환 (DayOffUtil)
+    private List<DayOfWeek> dayOffList;
+
+    // 지각 설정용 (분단위)
+    private int lateMin;
+
+    // 조퇴 설정용 (분단위)
+    private int earlyLeaveMin;
+
     public static ShopReservationSettingDto from (Shop shop) {
         ShopReservationSettingDto dto = new ShopReservationSettingDto();
 
@@ -30,7 +44,9 @@ public class ShopReservationSettingDto {
         dto.setCloseTime(shop.getCloseTime());
         dto.setTimeBeforeClosing(shop.getTimeBeforeClosing());
         dto.setReservationInterval(shop.getReservationInterval());
-        dto.setDayOff(shop.getDayOff());
+        dto.setDayOffList( DayOffUtil.decodeDayOff( shop.getDayOff() ) );
+        dto.setLateMin(shop.getLateMin());
+        dto.setEarlyLeaveMin(shop.getEarlyLeaveMin());
 
         return dto;
     }

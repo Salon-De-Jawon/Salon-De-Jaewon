@@ -17,11 +17,13 @@ public class DesignerListDto {
     private String description; // 디자이너 소개
     private String designerImg; // 디자이너 프로필 이미지
     private int reviewCount; // 디자이너 리뷰 갯수
-    private int rating; // 디자이너 평점 갯수
+    private int likeCount; // 디자이너 찜 갯수
+    private int rating; // 디자이너 평점
+
 
 
     // ShopDesigner(Entity) -> DesignerListDto
-    public static DesignerListDto from (ShopDesigner shopDesigner){
+    public static DesignerListDto from (ShopDesigner shopDesigner,int likeCount, int reviewCount){
         DesignerListDto designerListDto = new DesignerListDto();
 
         designerListDto.setId(shopDesigner.getId());
@@ -29,6 +31,8 @@ public class DesignerListDto {
         designerListDto.setWorkingYear(shopDesigner.getWorkingYears());
         designerListDto.setPosition(shopDesigner.getPosition());
         designerListDto.setDesignerImg(shopDesigner.getImgUrl());
+        designerListDto.setLikeCount(likeCount);
+        designerListDto.setReviewCount(reviewCount);
         return designerListDto;
     }
 }

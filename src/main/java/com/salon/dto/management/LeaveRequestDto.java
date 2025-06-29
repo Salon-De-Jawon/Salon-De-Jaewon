@@ -51,7 +51,6 @@ public class LeaveRequestDto {
         request.setStartDate(this.startDate);
         request.setEndDate(this.endDate);
         request.setLeaveType(this.leaveType);
-        request.setStatus(this.status);
         request.setRequestAt(LocalDateTime.now());
 
         return request;

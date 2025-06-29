@@ -12,4 +12,6 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
     // 미용실 소속 디자이너 목록 가져오기
     List<ShopDesigner> findByShopIdAndIsActiveTrue(Long shopId);
 
+    // 해당회원의 디자이너 정보 가져오기
+    ShopDesigner findByMemberId(Long memberId);
 }

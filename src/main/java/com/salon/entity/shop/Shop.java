@@ -30,4 +30,9 @@ public class Shop {
     private int dayOff; // 가게 휴무일
     private int reservationInterval; // 예약 간격 (분단위)
     
+    // 디자이너 근태관리를 위한 컬럼
+    private int lateMin;
+    private int earlyLeaveMin;
+    
+    
 }
