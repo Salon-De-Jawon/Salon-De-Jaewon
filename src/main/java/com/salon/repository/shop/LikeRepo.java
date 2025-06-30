@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface LikeRepo extends JpaRepository<Like,Long> {
+public interface LikeRepo extends JpaRepository<SalonLike,Long> {
     
     // 사용자가 찜한 항목 리스트 조회(디자이너, 매장 구분)
     List<Like> findByMemberIdAndLikeType(Long memberId, LikeType likeType);
