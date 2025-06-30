@@ -21,8 +21,8 @@ public class Payment {
     private Reservation reservation;
 
     @ManyToOne
-    @JoinColumn(name = "designer_id", nullable = true) // 방문시
-    private ShopDesigner designer;
+    @JoinColumn(name = "shop_designer_id", nullable = true) // 방문시
+    private ShopDesigner shopDesigner;
 
     private LocalDateTime payDate;
     private int totalPrice;

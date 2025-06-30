@@ -33,7 +33,7 @@ public class ReservationWriteDto {
     public static ReservationWriteDto from (List<ReservationSelectDto> reservationSelectDtos, ShopDesigner shopDesigner, Member member, ShopService shopService){
         ReservationWriteDto reservationWriteDto = new ReservationWriteDto();
 
-        reservationWriteDto.setDesignerName(shopDesigner.getMember().getName());
+        reservationWriteDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
         reservationWriteDto.setShopName(shopDesigner.getShop().getName());
         reservationWriteDto.setMemberName(member.getName());
         reservationWriteDto.setServiceAmount(shopService.getPrice());

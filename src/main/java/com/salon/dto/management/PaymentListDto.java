@@ -21,10 +21,10 @@ public class PaymentListDto {
         PaymentListDto dto = new PaymentListDto();
         dto.setId(payment.getId());
         if(payment.getReservation() != null) { // 예약시
-            dto.setDesignerName(payment.getReservation().getDesigner().getMember().getName());
+            dto.setDesignerName(payment.getReservation().getShopDesigner().getDesigner().getMember().getName());
             dto.setCategory("예약결제");
-        } else if(payment.getDesigner() != null) { // 방문시
-            dto.setDesignerName(payment.getDesigner().getMember().getName());
+        } else if(payment.getShopDesigner() != null) { // 방문시
+            dto.setDesignerName(payment.getShopDesigner().getDesigner().getMember().getName());
             dto.setCategory("방문결제");
         }
 

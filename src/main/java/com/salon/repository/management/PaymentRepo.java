@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface PaymentRepo extends JpaRepository<Payment, Long> {
     @Query("""
-    SELECT p FROM Payment p WHERE (p.reservation.designer.id = :designerId) OR (p.designer.id = :designerId)
+    SELECT p FROM Payment p WHERE (p.reservation.shopDesigner.id = :designerId) OR (p.shopDesigner.id = :designerId)
     """)
     List<Payment> findByDesignerOrderByPayDate(@Param("designerId") Long designerId);
 }

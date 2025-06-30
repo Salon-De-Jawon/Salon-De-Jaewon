@@ -57,7 +57,7 @@ public class ManageService {
         }
 
         // 이미 출근 기록이 있으면 예외
-        boolean exists = attendanceRepo.existsByDesignerIdAndClockInBetween(
+        boolean exists = attendanceRepo.existsByShopDesignerIdAndClockInBetween(
                 designer.getId(),
                 today.atStartOfDay(),
                 today.plusDays(1).atStartOfDay()
@@ -71,7 +71,7 @@ public class ManageService {
         boolean isLate = now.toLocalTime().isAfter(scheduledStart.plusMinutes(lateMin));
 
         Attendance attendance = new Attendance();
-        attendance.setDesigner(designer);
+        attendance.setShopDesigner(designer);
         attendance.setClockIn(now);
         attendance.setStatus(isLate ? AttendanceStatus.LATE : AttendanceStatus.PRESENT);
 
@@ -86,7 +86,7 @@ public class ManageService {
         int earlyLeaveMin = designer.getShop().getEarlyLeaveMin();
 
         // 오늘 출근 기록 가져오기
-        Attendance attendance = attendanceRepo.findByDesignerIdAndClockInBetween(designer.getId(), today.atStartOfDay(),
+        Attendance attendance = attendanceRepo.findByShopDesignerIdAndClockInBetween(designer.getId(), today.atStartOfDay(),
                 today.plusDays(1).atStartOfDay()
         ).orElseThrow(() -> new IllegalStateException("아직 출근 ㄴㄴ"));
 
@@ -131,7 +131,7 @@ public class ManageService {
     // 디자이너 개인 예약 현황
     public List<ReservationListDto> getReservationList(Long designerId){
 
-        List<Reservation> reservationListlist = reservationRepo.findByDesignerIdOrderByReservationDateDesc(designerId);
+        List<Reservation> reservationListlist = reservationRepo.findByShopDesignerIdOrderByReservationDateDesc(designerId);
 
         List<ReservationListDto> dtoList = new ArrayList<>();
         for(Reservation entity : reservationListlist) {
@@ -153,6 +153,8 @@ public class ManageService {
 
         return dtoList;
     }
+    
+    // 결제내역 등록
 
 
 

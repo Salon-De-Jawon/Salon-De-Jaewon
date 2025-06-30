@@ -7,7 +7,10 @@ import lombok.Setter;
 public class PaymentForm {
 
     private Long id;
+    private Long reservationId;
+    private Long designerId;
 
+    
 
 
 }
