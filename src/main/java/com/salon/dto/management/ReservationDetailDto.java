@@ -29,8 +29,8 @@ public class ReservationDetailDto {
 
         dto.setId(reservation.getId());
         dto.setMemberName(reservation.getMember().getName());
-        dto.setServiceName(reservation.getService().getName());
-        dto.setServicePrice(reservation.getService().getPrice());
+        dto.setServiceName(reservation.getShopService().getName());
+        dto.setServicePrice(reservation.getShopService().getPrice());
 
         if(reservation.getCoupon() != null){ // 쿠폰 있을시
             dto.setCouponName(reservation.getCoupon().getName());
@@ -53,7 +53,7 @@ public class ReservationDetailDto {
         }
 
         // 서비스가격 - 할인가격 - 정액권금액
-        dto.setFinalPrice(reservation.getService().getPrice() - discountAmount - ticketUsedAmount);
+        dto.setFinalPrice(reservation.getShopService().getPrice() - discountAmount - ticketUsedAmount);
 
         dto.setStatus(reservation.getStatus());
 

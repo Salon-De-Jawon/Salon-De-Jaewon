@@ -22,7 +22,7 @@ public class DesignerService {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "shop_designer_id")
+    @JoinColumn(name = "designer_id")
     private ShopDesigner designer;
 
     private boolean cut;

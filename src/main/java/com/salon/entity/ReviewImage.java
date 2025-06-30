@@ -14,10 +14,10 @@ public class ReviewImage {
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-    Review review;
+    private Review review;
 
-    String originalName;
-    String imgName;
-    String imgUrl;
+    private String originalName;
+    private String imgName;
+    private String imgUrl;
 
 }

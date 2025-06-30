@@ -18,7 +18,7 @@ public class MemberMemo {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "shop_designer_id")
+    @JoinColumn(name = "designer_id")
     private ShopDesigner designer;
 
     private String memo;

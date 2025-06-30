@@ -1,7 +1,7 @@
 package com.salon.dto.management;
 
 import com.salon.constant.ServiceCategory;
-import com.salon.entity.management.master.Service;
+import com.salon.entity.management.master.ShopService;
 import com.salon.entity.shop.Shop;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,33 +22,33 @@ public class ServiceForm {
 
     private MultipartFile imgFile;
 
-    public static ServiceForm from (Service service) {
+    public static ServiceForm from (ShopService shopService) {
 
         ServiceForm dto = new ServiceForm();
 
-        dto.setId(service.getId());
-        dto.setShopId(service.getShop().getId());
-        dto.setName(service.getName());
-        dto.setPrice(service.getPrice());
-        dto.setDescription(service.getDescription());
-        dto.setCategory(service.getCategory());
-        dto.setOriginalImgName(service.getOriginalImgName());
-        dto.setImgName(service.getImgName());
-        dto.setImgUrl(service.getImgUrl());
+        dto.setId(shopService.getId());
+        dto.setShopId(shopService.getShop().getId());
+        dto.setName(shopService.getName());
+        dto.setPrice(shopService.getPrice());
+        dto.setDescription(shopService.getDescription());
+        dto.setCategory(shopService.getCategory());
+        dto.setOriginalImgName(shopService.getOriginalImgName());
+        dto.setImgName(shopService.getImgName());
+        dto.setImgUrl(shopService.getImgUrl());
 
         return dto;
     }
 
-    public Service to (Shop shop) {
+    public ShopService to (Shop shop) {
 
-        Service service = new Service();
+        ShopService shopService = new ShopService();
 
-        service.setName(this.name);
-        service.setShop(shop);
-        service.setPrice(this.price);
-        service.setDescription(this.description);
+        shopService.setName(this.name);
+        shopService.setShop(shop);
+        shopService.setPrice(this.price);
+        shopService.setDescription(this.description);
 
-        return service;
+        return shopService;
 
     }
 

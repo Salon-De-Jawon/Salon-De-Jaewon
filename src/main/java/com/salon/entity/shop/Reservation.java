@@ -4,7 +4,7 @@ import com.salon.constant.ReservationStatus;
 import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
-import com.salon.entity.management.master.Service;
+import com.salon.entity.management.master.ShopService;
 import com.salon.entity.management.master.Ticket;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class Reservation {
 
     @JoinColumn(name = "service_id")
     @ManyToOne
-    private Service service; // 서비스 아이디
+    private ShopService shopService; // 서비스 아이디
 
     @JoinColumn(name = "coupon_id")
     @ManyToOne

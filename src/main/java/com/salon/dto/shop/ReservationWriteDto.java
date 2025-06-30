@@ -3,7 +3,7 @@ package com.salon.dto.shop;
 
 import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
-import com.salon.entity.management.master.Service;
+import com.salon.entity.management.master.ShopService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,14 +30,14 @@ public class ReservationWriteDto {
 
 
     // SelectDto -> WriteDto
-    public static ReservationWriteDto from (List<ReservationSelectDto> reservationSelectDtos, ShopDesigner shopDesigner, Member member, Service service){
+    public static ReservationWriteDto from (List<ReservationSelectDto> reservationSelectDtos, ShopDesigner shopDesigner, Member member, ShopService shopService){
         ReservationWriteDto reservationWriteDto = new ReservationWriteDto();
 
         reservationWriteDto.setDesignerName(shopDesigner.getMember().getName());
         reservationWriteDto.setShopName(shopDesigner.getShop().getName());
         reservationWriteDto.setMemberName(member.getName());
-        reservationWriteDto.setServiceAmount(service.getPrice());
-        reservationWriteDto.setServiceName(service.getName());
+        reservationWriteDto.setServiceAmount(shopService.getPrice());
+        reservationWriteDto.setServiceName(shopService.getName());
 
         reservationWriteDto.setDateSelect(reservationSelectDtos);
 

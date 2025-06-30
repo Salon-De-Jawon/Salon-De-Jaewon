@@ -3,13 +3,11 @@ package com.salon.dto.shop;
 
 import com.salon.constant.ServiceCategory;
 import com.salon.entity.management.ShopDesigner;
-import com.salon.entity.management.master.Service;
-import com.salon.entity.shop.Shop;
+import com.salon.entity.management.master.ShopService;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -28,14 +26,14 @@ public class ReservationSelectDto {
 
 
 
-    public static ReservationSelectDto from (ShopDesigner shopDesigner, Service service){
+    public static ReservationSelectDto from (ShopDesigner shopDesigner, ShopService shopService){
         ReservationSelectDto reservationSelectDto = new ReservationSelectDto();
         
         reservationSelectDto.setShopDesignerId(shopDesigner.getId());
         reservationSelectDto.setDesignerImg(shopDesigner.getImgUrl());
         reservationSelectDto.setDesignerName(shopDesigner.getMember().getName());
         reservationSelectDto.setDesignerWorkingYear(shopDesigner.getWorkingYears());
-        reservationSelectDto.setServiceCategory(service.getCategory());
+        reservationSelectDto.setServiceCategory(shopService.getCategory());
         
         return reservationSelectDto;
     }

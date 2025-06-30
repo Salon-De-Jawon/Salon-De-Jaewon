@@ -15,22 +15,26 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    Long id;
+    private Long id;
 
-    String loginId;
-    String password;
-    String name;
-    LocalDate birthDate;
-    Gender gender;
-    String email;
-    String tel;
-    Role role;
+    private String loginId;
+    private String password;
+    private String name;
+    private LocalDate birthDate;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    private String email;
+    private String tel;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
     // 계정 생성일
-    LocalDateTime createAt;
+    private LocalDateTime createAt;
 
     // 위치정보제공동의 여부
-    boolean agreeLocation;
+    private boolean agreeLocation;
     // 웹알림전송동의 여부
-    boolean agreeAlarm;
+    private boolean agreeAlarm;
 
 }
