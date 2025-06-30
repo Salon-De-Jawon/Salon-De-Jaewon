@@ -5,6 +5,7 @@ import com.salon.entity.shop.Shop;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ShopListDto {
     private Float rating;  // 샵 전체 평균
     private int reviewCount;
     private boolean hasCoupon;
+    private BigDecimal distance;
 
     public static ShopListDto from (Shop shop, ShopImageDto shopImageDto, List<ReviewListDto> reviewListDtos, boolean hasCoupon) {
         ShopListDto dto = new ShopListDto();
