@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 600px;
+  align-items: center;
+}
+.container > div {
+  margin-bottom: 20px;
+}
+.title,
+.content,
+.file,
+.radio {
+  font-size: 16px;
+  color: #333;
+}
+input[type="text"],
+textarea,
+input[type="file"] {
+  width: 95%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+#button {
+  text-align: right;
+}
