@@ -11,4 +11,6 @@ public class AdminAncController {
     public String main(){
         return "announcement";
     }
+    @GetMapping("/detail")
+    public String detail(){return "announcementDetail";}
 }
