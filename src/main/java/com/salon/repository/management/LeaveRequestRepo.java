@@ -10,6 +10,6 @@ import java.util.List;
 public interface LeaveRequestRepo extends JpaRepository<LeaveRequest, Long> {
 
     // 디자이너 휴가 목록
-    List<LeaveRequest> findByDesignerIdOrderByRequestAtDesc(Long designerId);
+    List<LeaveRequest> findByShopDesignerIdOrderByRequestAtDesc(Long designerId);
 
 }

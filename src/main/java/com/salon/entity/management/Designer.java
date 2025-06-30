@@ -5,22 +5,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+import java.time.LocalDate;
+
 @Entity
-public class MemberMemo {
+@Getter @Setter
+public class Designer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_memo_id")
+    @Column(name = "designer_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "shop_designer_id")
-    private ShopDesigner shopDesigner;
+    private String originalImgName;
+    private String imgName;
+    private String imgUrl;
 
-    private String memo;
+    // 경력 시작일
+    private LocalDate startAt;
+    // 디자이너 연차
+    private int workingYears;
 
 }

@@ -18,8 +18,8 @@ public class LeaveRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "designer_id")
-    private ShopDesigner designer;
+    @JoinColumn(name = "shop_designer_id")
+    private ShopDesigner shopDesigner;
 
     private LocalDate startDate;
     private LocalDate endDate;

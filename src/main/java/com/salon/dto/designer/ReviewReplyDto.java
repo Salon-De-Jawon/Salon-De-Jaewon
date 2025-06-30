@@ -28,8 +28,8 @@ public class ReviewReplyDto {
 
         reviewReplyDto.setReviewId(review.getId());
         reviewReplyDto.setDesignerName(review.getReservation().getMember().getName());
-        reviewReplyDto.setDesignerPosition(review.getReservation().getDesigner().getPosition());
-        reviewReplyDto.setDesignerImg(review.getReservation().getDesigner().getImgUrl());
+        reviewReplyDto.setDesignerPosition(review.getReservation().getShopDesigner().getPosition());
+        reviewReplyDto.setDesignerImg(review.getReservation().getShopDesigner().getDesigner().getImgUrl());
         reviewReplyDto.setReplyComment(review.getReplyComment());
         reviewReplyDto.setReplyAt(review.getReplyAt());
 

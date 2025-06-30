@@ -1,14 +1,20 @@
 package com.salon.service.management.master;
 
 import com.salon.constant.LeaveStatus;
+import com.salon.constant.LikeType;
+import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.LeaveRequestDto;
+import com.salon.dto.management.master.DesignerSearchDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.repository.MemberRepo;
+import com.salon.repository.ReviewRepo;
 import com.salon.repository.management.LeaveRequestRepo;
 import com.salon.repository.management.PaymentRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.*;
+import com.salon.repository.shop.SalonLikeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,21 +36,24 @@ public class MasterService {
     private final LeaveRequestRepo leaveRequestRepo;
     private final PaymentRepo paymentRepo;
     private final ShopDesignerRepo shopDesignerRepo;
+    private final SalonLikeRepo salonLikeRepo;
+    private final ReviewRepo reviewRepo;
+    private final MemberRepo memberRepo;
 
     // 소속 미용실 휴가요청 목록 가져오기
-    public List<LeaveRequestDto> getLeaveRequestList(Member member){
-
-        ShopDesigner designer = shopDesignerRepo.findByMemberId(member.getId());
-
-        List<LeaveRequest> leaveRequestList = leaveRequestRepo.findByDesignerIdOrderByRequestAtDesc(designer.getId());
-        List<LeaveRequestDto> list = new ArrayList<>();
-
-        for(LeaveRequest request : leaveRequestList){
-            list.add(LeaveRequestDto.from(request));
-        }
-
-        return list;
-    }
+//    public List<LeaveRequestDto> getLeaveRequestList(Long shopId){
+//
+//        ShopDesigner designer = shopDesignerRepo.findByMemberId(member.getId());
+//
+//        List<LeaveRequest> leaveRequestList = leaveRequestRepo.findByShopDesignerIdOrderByRequestAtDesc(designer.getId());
+//        List<LeaveRequestDto> list = new ArrayList<>();
+//
+//        for(LeaveRequest request : leaveRequestList){
+//            list.add(LeaveRequestDto.from(request));
+//        }
+//
+//        return list;
+//    }
 
     // 디자이너 휴가 상태 변경시
     @Transactional
@@ -56,6 +65,45 @@ public class MasterService {
         leaveRequest.setApprovedAt(LocalDateTime.now());
 
     }
+
+    // 미용실 소속 디자이너 목록 가져오기
+    public List<DesignerListDto> getDesignerList(Long shopId){
+
+        List<ShopDesigner> designerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
+
+        List<DesignerListDto> dtoList = new ArrayList<>();
+        for(ShopDesigner designer : designerList){
+            int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designer.getId());
+            int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designer.getId());
+            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount));
+        }
+
+        return dtoList;
+    }
+
+    // 미용실 디자이너 검색 후 목록 보여주기
+    public List<DesignerListDto> getSearchResult(DesignerSearchDto searchDto){
+
+        List<ShopDesigner> designerList = shopDesignerRepo.findByDesigner_Member_NameAndDesigner_Member_Tel(searchDto.getName(), searchDto.getTel());
+
+        List<DesignerListDto> dtoList = new ArrayList<>();
+        for(ShopDesigner designer : designerList){
+            int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designer.getId());
+            int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designer.getId());
+            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount));
+        }
+
+        return dtoList;
+    }
+
+    // 미용실 디자이너 등록 시 저장 메서드
+//    @Transactional
+//    public void addDesigner(Long designerId){
+//
+//        ShopDesigner designer = shopDesignerRepo.findById;
+//
+//
+//    }
 
 
 

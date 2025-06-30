@@ -17,8 +17,8 @@ public class Attendance {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "designer_id")
-    private ShopDesigner designer;
+    @JoinColumn(name = "shop_designer_id")
+    private ShopDesigner shopDesigner;
 
     private LocalDateTime clockIn;
     private LocalDateTime clockOut;

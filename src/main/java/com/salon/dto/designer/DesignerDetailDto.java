@@ -40,8 +40,8 @@ public class DesignerDetailDto {
 
         designerDetailDto.setDesignerId(shopDesigner.getId());
         designerDetailDto.setShopName(shopDesigner.getShop().getName());
-        designerDetailDto.setDesignerName(shopDesigner.getMember().getName());
-        designerDetailDto.setStartAt(shopDesigner.getStartAt());
+        designerDetailDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        designerDetailDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerDetailDto.setPosition(shopDesigner.getPosition());
         designerDetailDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
         designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEntTime());
