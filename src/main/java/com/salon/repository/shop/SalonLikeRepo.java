@@ -1,15 +1,15 @@
 package com.salon.repository.shop;
 
 import com.salon.constant.LikeType;
-import com.salon.entity.shop.Like;
+import com.salon.entity.shop.SalonLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface LikeRepo extends JpaRepository<SalonLike,Long> {
+public interface SalonLikeRepo extends JpaRepository<SalonLike,Long> {
     
     // 사용자가 찜한 항목 리스트 조회(디자이너, 매장 구분)
-    List<Like> findByMemberIdAndLikeType(Long memberId, LikeType likeType);
+    List<SalonLike> findByMemberIdAndLikeType(Long memberId, LikeType likeType);
 
     // 디자이너별 좋아요 갯수
     Long countByTypeIdAndLikeType(Long typeId, LikeType likeType);
