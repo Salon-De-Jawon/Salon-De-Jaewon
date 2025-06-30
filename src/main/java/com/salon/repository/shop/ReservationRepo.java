@@ -15,5 +15,5 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     List<Reservation> findByMemberIdOrderByReservationDateDesc(Long memberId);
 
     // 방문횟수를 카운트하기 위한 메서드
-    long countByMemberIdAndDesignerId(Long memberId, Long designerId);
+    int countByMemberIdAndDesignerId(Long memberId, Long designerId);
 }
