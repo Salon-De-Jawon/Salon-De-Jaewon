@@ -126,6 +126,14 @@ a:visited {
   font-family: var(--font-pretendard);
 }
 
+.nav-login > a {
+    color: white;
+}
+
+.nav-login > a:visited {
+    color: white;
+}
+
 .nav-login::before {
   content: "";
   position: absolute;
