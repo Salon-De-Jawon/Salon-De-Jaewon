@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 30px;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.link div {
+  margin: 5px 0;
+}
+.buttons {
+  margin-top: 30px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+}
+.buttons button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+.fix {
+  background-color: #f0ad4e;
+}
+.edit {
+  background-color: #5bc0de;
+}
+.delete {
+  background-color: #d9534f;
+}
+

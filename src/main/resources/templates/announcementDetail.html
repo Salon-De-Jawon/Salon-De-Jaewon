@@ -3,8 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="announcementDetail.html">
 </head>
 <body>
-
+<div class="container">
+    <h1>공지 제목입니다</h1>
+    <div class="writeDate">
+        <span>작성일 : 2025-06-28</span>
+    </div>
+    <div class="manager">
+        <span>담당자 : 홍길동</span>
+    </div>
+    <div class="content">
+        <p>
+            안녕하세요. 앱 사용법에 대한 가이드를 안내드립니다.<br />
+            아래 내용을 참고하여 앱을 원활하게 사용해주세요.
+        </p>
+    </div>
+    <div class="attachment">
+        <span>첨부파일 : </span>
+        <a href="#">앱가이드.pdf</a>
+    </div>
+    <div class="link">
+        <div>이전글 : <a href="admin/anc/detail?id-1">앱 이용 가이드</a></div>
+        <div>
+            다음글 : <a href="admin/anc/detail?id+1">근무 스케줄 등록 안내</a>
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="fix">고정</button>
+        <form action="admin/anc/update">
+            <button class="edit">수정</button>
+        </form>
+        <button class="delete">삭제</button>
+    </div>
+</div>
 </body>
 </html>
