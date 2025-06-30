@@ -13,21 +13,21 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")
-    Reservation reservation;
+    private Reservation reservation;
 
-    int rating;
+    private int rating;
 
     @Lob // varchar -> text
-    String comment;
+    private String comment;
 
     // 작성일
-    LocalDateTime createAt;
-    String replyComment;
-    LocalDateTime replyAt;
+    private LocalDateTime createAt;
+    private String replyComment;
+    private LocalDateTime replyAt;
 
 
 }

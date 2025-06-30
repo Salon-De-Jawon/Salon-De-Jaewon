@@ -25,7 +25,7 @@ public class ReservationListDto {
         ReservationListDto dto = new ReservationListDto();
         dto.setReservationId(reservation.getId());
         dto.setMemberName(reservation.getMember().getName());
-        dto.setServiceName(reservation.getService().getName());
+        dto.setServiceName(reservation.getShopService().getName());
         dto.setDate(reservation.getReservationDate());
         dto.setStatus(reservation.getStatus());
 

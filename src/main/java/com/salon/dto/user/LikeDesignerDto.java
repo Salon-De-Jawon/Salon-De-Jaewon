@@ -1,7 +1,7 @@
 package com.salon.dto.user;
 
 import com.salon.entity.management.ShopDesigner;
-import com.salon.entity.shop.Like;
+import com.salon.entity.shop.SalonLike;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +21,7 @@ public class LikeDesignerDto {
     private LocalTime endTime;  //  기본 예약 끝나는 시간
     private String imgUrl; // 디자이너 프로필 이미지
 
-    public static LikeDesignerDto from(Like like, ShopDesigner shopDesigner) {
+    public static LikeDesignerDto from(SalonLike like, ShopDesigner shopDesigner) {
         LikeDesignerDto dto = new LikeDesignerDto();
 
         dto.setId(like.getId());

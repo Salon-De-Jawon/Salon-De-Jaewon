@@ -1,7 +1,7 @@
 package com.salon.dto.shop;
 
 import com.salon.constant.ServiceCategory;
-import com.salon.entity.management.master.Service;
+import com.salon.entity.management.master.ShopService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,14 +18,14 @@ public class ServiceListDto {
 
 
     // Service(Entity) -> ServiceListDto
-    public static ServiceListDto from (Service service){
+    public static ServiceListDto from (ShopService shopService){
         ServiceListDto serviceListDto = new ServiceListDto();
 
-        serviceListDto.setId(service.getId());
-        serviceListDto.setName(service.getName());
-        serviceListDto.setPrice(service.getPrice());
-        serviceListDto.setDescription(service.getDescription());
-        serviceListDto.setServiceCategory(service.getCategory());
+        serviceListDto.setId(shopService.getId());
+        serviceListDto.setName(shopService.getName());
+        serviceListDto.setPrice(shopService.getPrice());
+        serviceListDto.setDescription(shopService.getDescription());
+        serviceListDto.setServiceCategory(shopService.getCategory());
 
         return serviceListDto;
     }

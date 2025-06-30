@@ -32,7 +32,7 @@ public class CouponBanner {
     private String originalName;
     private String imgName;
     private String imgUrl;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     private LocalDateTime registerDate;
 
     @Enumerated(EnumType.STRING)

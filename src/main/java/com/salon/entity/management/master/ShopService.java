@@ -8,10 +8,10 @@ import lombok.Setter;
 
 @Getter @Setter
 @Entity
-public class Service {
+public class ShopService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "service_id")
+    @Column(name = "shop_service_id")
     private Long id;
 
     @ManyToOne

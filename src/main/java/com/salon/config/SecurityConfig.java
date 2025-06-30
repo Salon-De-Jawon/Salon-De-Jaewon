@@ -43,7 +43,6 @@ public class SecurityConfig {
                         cr ->
                                 cr.csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                        .ignoringRequestMatchers("")
                 );
 
         //http.formLogin(Customizer.withDefaults());

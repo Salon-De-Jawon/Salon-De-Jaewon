@@ -10,14 +10,14 @@ public class ReviewImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_image_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "review_id")
-    Review review;
+    private Review review;
 
-    String originalName;
-    String imgName;
-    String imgUrl;
+    private String originalName;
+    private String imgName;
+    private String imgUrl;
 
 }

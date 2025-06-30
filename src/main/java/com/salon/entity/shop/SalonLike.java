@@ -9,11 +9,11 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Like {
+public class SalonLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
+    @Column(name = "salon_like_id")
     private Long id; // 찜(즐겨찾기) 테이블 아이디
 
     @JoinColumn(name = "member_id")

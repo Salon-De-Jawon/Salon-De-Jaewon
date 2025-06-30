@@ -2,7 +2,6 @@ package com.salon.entity.management;
 
 import com.salon.constant.PaymentType;
 import com.salon.entity.shop.Reservation;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,21 +18,20 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")
-    @Nullable
     private Reservation reservation;
 
-    private LocalDateTime date;
-    private int total_price;
-    private int coupon_discount_price;
-    private int ticket_used_price;
-    private int final_price;
+    private LocalDateTime payDate;
+    private int totalPrice;
+    private int couponDiscountPrice;
+    private int ticketUsedPrice;
+    private int finalPrice;
 
     @Enumerated(EnumType.STRING)
-    private PaymentType type;
+    private PaymentType paymentType;
 
     @Lob
     private String memo;
 
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
 }
