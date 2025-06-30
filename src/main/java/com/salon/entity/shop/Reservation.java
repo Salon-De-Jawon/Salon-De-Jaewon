@@ -26,9 +26,9 @@ public class Reservation {
     @ManyToOne
     private Member member; // 유저 아이디
 
-    @JoinColumn(name = "designer_id")
+    @JoinColumn(name = "shop_designer_id")
     @ManyToOne
-    private ShopDesigner designer; // 디자이너 아이디
+    private ShopDesigner shopDesigner; // 디자이너 아이디
 
     @JoinColumn(name = "service_id")
     @ManyToOne

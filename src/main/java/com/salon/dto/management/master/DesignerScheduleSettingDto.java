@@ -18,7 +18,7 @@ public class DesignerScheduleSettingDto {
 
         DesignerScheduleSettingDto dto = new DesignerScheduleSettingDto();
         dto.setDesignerId(designer.getId());
-        dto.setName(designer.getMember().getName());
+        dto.setName(designer.getDesigner().getMember().getName());
         dto.setStartTime(designer.getScheduledStartTime());
         dto.setEndTime(designer.getScheduledEntTime());
 

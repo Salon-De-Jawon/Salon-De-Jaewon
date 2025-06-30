@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class LeaveRequestDto {
 
     private Long id; // LeaveRequest Id
-    private Long designerId; // ShopDesignerId
+    private Long shopDesignerId; // ShopDesignerId
     private String designerName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -29,8 +29,8 @@ public class LeaveRequestDto {
         LeaveRequestDto dto = new LeaveRequestDto();
 
         dto.setId(leaveRequest.getId());
-        dto.setDesignerId(leaveRequest.getDesigner().getId());
-        dto.setDesignerName(leaveRequest.getDesigner().getMember().getName());
+        dto.setShopDesignerId(leaveRequest.getShopDesigner().getId());
+        dto.setDesignerName(leaveRequest.getShopDesigner().getDesigner().getMember().getName());
         dto.setStartDate(leaveRequest.getStartDate());
         dto.setEndDate(leaveRequest.getEndDate());
         dto.setLeaveType(leaveRequest.getLeaveType());
@@ -47,7 +47,7 @@ public class LeaveRequestDto {
 
         LeaveRequest request = new LeaveRequest();
 
-        request.setDesigner(designer);
+        request.setShopDesigner(designer);
         request.setStartDate(this.startDate);
         request.setEndDate(this.endDate);
         request.setLeaveType(this.leaveType);

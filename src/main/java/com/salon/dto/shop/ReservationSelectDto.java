@@ -30,9 +30,9 @@ public class ReservationSelectDto {
         ReservationSelectDto reservationSelectDto = new ReservationSelectDto();
         
         reservationSelectDto.setShopDesignerId(shopDesigner.getId());
-        reservationSelectDto.setDesignerImg(shopDesigner.getImgUrl());
-        reservationSelectDto.setDesignerName(shopDesigner.getMember().getName());
-        reservationSelectDto.setDesignerWorkingYear(shopDesigner.getWorkingYears());
+        reservationSelectDto.setDesignerImg(shopDesigner.getDesigner().getImgUrl());
+        reservationSelectDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        reservationSelectDto.setDesignerWorkingYear(shopDesigner.getDesigner().getWorkingYears());
         reservationSelectDto.setServiceCategory(shopService.getCategory());
         
         return reservationSelectDto;

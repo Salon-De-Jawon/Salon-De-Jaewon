@@ -26,12 +26,12 @@ public class LikeDesignerDto {
 
         dto.setId(like.getId());
         // 서비스에서 typeid와 shopDesigner의 id를 매핑
-        dto.setDesignerName(shopDesigner.getMember().getName());
-        dto.setWorkingYear(shopDesigner.getWorkingYears());
+        dto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        dto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
         dto.setShopName(shopDesigner.getShop().getName());
         dto.setStartTime(shopDesigner.getScheduledStartTime());
         dto.setEndTime(shopDesigner.getScheduledEntTime());
-        dto.setImgUrl(shopDesigner.getImgUrl());
+        dto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
 
         return dto;
     }
