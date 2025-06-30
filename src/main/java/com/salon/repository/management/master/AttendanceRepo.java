@@ -11,6 +11,6 @@ import java.util.List;
 public interface AttendanceRepo extends JpaRepository<Attendance, Long> {
 
     // 해당 디자이너 근태목록
-    List<Attendance> findByShopDesigner_IdAndClockInBetweenOrderByIdDesc(Long designerId, LocalDate start, LocalDate end);
+    List<Attendance> findByShopDesignerIdAndDateBetweenOrderByIdDesc(Long designerId, LocalDate start, LocalDate end);
 
 }
