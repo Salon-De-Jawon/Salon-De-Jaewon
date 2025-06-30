@@ -2,17 +2,23 @@ package com.salon.service.management;
 
 import com.salon.constant.AttendanceStatus;
 import com.salon.constant.LeaveStatus;
+import com.salon.dto.management.AttendanceListDto;
 import com.salon.dto.management.LeaveRequestDto;
+import com.salon.dto.management.PaymentListDto;
+import com.salon.dto.management.ReservationListDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.LeaveRequest;
+import com.salon.entity.management.Payment;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
+import com.salon.entity.shop.Reservation;
 import com.salon.repository.management.LeaveRequestRepo;
 import com.salon.repository.management.PaymentRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.AttendanceRepo;
 import com.salon.repository.management.master.DesignerServiceRepo;
 import com.salon.repository.management.master.ServiceRepo;
+import com.salon.repository.shop.ReservationRepo;
 import com.salon.util.DayOffUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +40,7 @@ public class ManageService {
     private final LeaveRequestRepo leaveRequestRepo;
     private final PaymentRepo paymentRepo;
     private final ShopDesignerRepo shopDesignerRepo;
+    private final ReservationRepo reservationRepo;
 
 
     // 디자이너 출근시 메서드
@@ -113,6 +122,41 @@ public class ManageService {
     }
     
     // 디자이너 개인 출퇴근 목록
+//    public List<AttendanceListDto> getAttendanceList(Long designerId){
+//
+//
+//        return
+//    }
+
+    // 디자이너 개인 예약 현황
+    public List<ReservationListDto> getReservationList(Long designerId){
+
+        List<Reservation> reservationListlist = reservationRepo.findByDesignerIdOrderByReservationDateDesc(designerId);
+
+        List<ReservationListDto> dtoList = new ArrayList<>();
+        for(Reservation entity : reservationListlist) {
+            dtoList.add(ReservationListDto.from(entity));
+        }
+
+        return dtoList; // html 에서 당일예약 구분하기
+    }
+
+    // 디자이너 매출 목록
+    public List<PaymentListDto> getPaymentList(Long designerId){
+
+        List<Payment> paymentList = paymentRepo.findByDesignerOrderByPayDate(designerId);
+
+        List<PaymentListDto> dtoList = new ArrayList<>();
+        for(Payment payment : paymentList) {
+            dtoList.add(PaymentListDto.from(payment));
+        }
+
+        return dtoList;
+    }
+
+
+
+
 
 
 
