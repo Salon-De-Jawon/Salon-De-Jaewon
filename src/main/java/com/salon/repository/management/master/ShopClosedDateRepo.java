@@ -14,6 +14,6 @@ public interface ShopClosedDateRepo extends JpaRepository<ShopClosedDate, Long> 
     List<ShopClosedDate> findByShopId(Long shopId);
 
     // 미용실 당일 휴무 확인
-    boolean existsByShop_IdAndOffStartDate(Long shopId, LocalDate date);
+    boolean existsByShopIdAndDateBetween(Long shopId, LocalDate startDate, LocalDate endDate);
 
 }

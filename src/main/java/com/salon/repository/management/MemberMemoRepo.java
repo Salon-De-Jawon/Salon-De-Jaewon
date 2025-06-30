@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface MemberMemoRepo extends JpaRepository<MemberMemo, Long> {
 
     // 디자이너의 회원 개인메모 가져오기
-    MemberMemo findByMemberIdAndDesigner_Id(Long memberId, Long DesignerId);
+    MemberMemo findByMemberIdAndDesignerId(Long memberId, Long designerId);
 
 }
