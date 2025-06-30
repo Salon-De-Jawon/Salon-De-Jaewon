@@ -1,6 +1,7 @@
 package com.salon.dto.designer;
 
 import com.salon.entity.Review;
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class ReviewReplyDto {
 
 
     // Review(Entity) -> ReviewReplyDto
-    public static ReviewReplyDto from (Review review){
+    public static ReviewReplyDto from (Review review, Designer designer){
         ReviewReplyDto reviewReplyDto = new ReviewReplyDto();
 
 

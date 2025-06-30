@@ -1,5 +1,6 @@
 package com.salon.dto.shop;
 
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
 import lombok.Getter;

@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,16 +24,16 @@ public class DesignerListDto {
 
 
     // ShopDesigner(Entity) -> DesignerListDto
-    public static DesignerListDto from (ShopDesigner shopDesigner,int likeCount, int reviewCount){
+    public static DesignerListDto from (ShopDesigner shopDesigner, Designer designer, int likeCount, int reviewCount){
         DesignerListDto designerListDto = new DesignerListDto();
 
-        designerListDto.setId(shopDesigner.getId());
-        designerListDto.setName(shopDesigner.getDesigner().getMember().getName());
-        designerListDto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
+        designerListDto.setId(designer.getId());
+        designerListDto.setName(designer.getMember().getName());
+        designerListDto.setWorkingYear(designer.getWorkingYears());
         designerListDto.setPosition(shopDesigner.getPosition());
-        designerListDto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
-        designerListDto.setLikeCount(likeCount);
+        designerListDto.setImgUrl(designerListDto.getImgUrl());
         designerListDto.setReviewCount(reviewCount);
+        designerListDto.setLikeCount(likeCount);
         return designerListDto;
     }
 }

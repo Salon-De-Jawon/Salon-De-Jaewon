@@ -1,6 +1,7 @@
 package com.salon.dto.designer;
 
 import com.salon.dto.shop.ReviewListDto;
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,18 +36,22 @@ public class DesignerDetailDto {
 
 
     // ShopDesigner(Entity) -> DesignerDetailDto
-    public static DesignerDetailDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount, List<ReviewListDto> reviewListDtos){
+    public static DesignerDetailDto from (ShopDesigner shopDesigner, Designer designer, int likeCount, int reviewCount, List<ReviewListDto> reviewListDtos){
         DesignerDetailDto designerDetailDto = new DesignerDetailDto();
 
-        designerDetailDto.setDesignerId(shopDesigner.getId());
         designerDetailDto.setShopName(shopDesigner.getShop().getName());
-        designerDetailDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        designerDetailDto.setOriginalName(designer.getOriginalImgName());
+        designerDetailDto.setImgName(designer.getImgName());
+        designerDetailDto.setImgUrl(designer.getImgUrl());
+        designerDetailDto.setDesignerName(designer.getMember().getName());
         designerDetailDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerDetailDto.setPosition(shopDesigner.getPosition());
         designerDetailDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
         designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEntTime());
+        designerDetailDto.setActive(shopDesigner.isActive());
         designerDetailDto.setLikeCount(likeCount);
         designerDetailDto.setReviewCount(reviewCount);
+
 
         return designerDetailDto;
     }
