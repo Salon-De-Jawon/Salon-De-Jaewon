@@ -14,5 +14,15 @@ public class AncListDto {
     private String adminName;
     private String title;
     private LocalDateTime writeAt;
+    private String originalName;
+    private String fileName;
+    private String fileUrl;
 
+    public static AncListDto from(Announcement announcement){
+        AncListDto ancListDto = new AncListDto();
+        ancListDto.setId(announcement.getId());
+        ancListDto.setTitle(announcement.getTitle());
+        ancListDto.setWriteAt(announcement.getWriteAt());
+        return ancListDto;
+    }
 }

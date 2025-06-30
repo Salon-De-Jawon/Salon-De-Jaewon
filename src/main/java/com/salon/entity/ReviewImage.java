@@ -10,7 +10,7 @@ public class ReviewImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_image_id")
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "review_id")
