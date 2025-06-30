@@ -31,12 +31,12 @@ public class DesignerUpdateDto {
 
         designerUpdateDto.setDesignerId(shopDesigner.getId());
         designerUpdateDto.setShopName(shopDesigner.getShop().getName());
-        designerUpdateDto.setName(shopDesigner.getMember().getName());
-        designerUpdateDto.setStartAt(shopDesigner.getStartAt());
+        designerUpdateDto.setName(shopDesigner.getDesigner().getMember().getName());
+        designerUpdateDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerUpdateDto.setPosition(shopDesigner.getPosition());
         designerUpdateDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
         designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEntTime());
-        designerUpdateDto.setDesignerImg(shopDesigner.getImgUrl());
+        designerUpdateDto.setDesignerImg(shopDesigner.getDesigner().getImgUrl());
 
         return designerUpdateDto;
     }

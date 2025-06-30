@@ -17,8 +17,12 @@ public class Payment {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "reservation_id")
+    @JoinColumn(name = "reservation_id", nullable = true) // 예약시
     private Reservation reservation;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_designer_id", nullable = true) // 방문시
+    private ShopDesigner shopDesigner;
 
     private LocalDateTime payDate;
     private int totalPrice;

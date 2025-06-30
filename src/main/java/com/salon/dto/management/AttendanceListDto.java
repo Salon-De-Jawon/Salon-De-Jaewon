@@ -21,7 +21,7 @@ public class AttendanceListDto {
 
         AttendanceListDto dto = new AttendanceListDto();
         dto.setId(attendance.getId());
-        dto.setDesignerName(attendance.getDesigner().getMember().getName());
+        dto.setDesignerName(attendance.getShopDesigner().getDesigner().getMember().getName());
         dto.setClockIn(attendance.getClockIn());
         dto.setClockOut(attendance.getClockOut());
         dto.setNote(attendance.getNote());
