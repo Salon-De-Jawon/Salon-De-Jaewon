@@ -70,24 +70,43 @@
 </div>
 
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const clearButtons = document.querySelectorAll(".clear-btn");
 
-    clearButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
+
+<th:block layout:fragment="script">
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const clearButtons = document.querySelectorAll(".clear-btn");
+
+      clearButtons.forEach((btn) => {
         const input = btn.parentElement.querySelector("input");
-        if (input) {
+
+        // 초기 상태: 값이 있으면 보여주고 없으면 숨김
+        if (input.value === "") {
+          btn.style.display = "none";
+        } else {
+          btn.style.display = "inline";
+        }
+
+        // x 버튼 클릭 시 input 비우고 버튼 숨김
+        btn.addEventListener("click", () => {
           input.value = "";
           input.focus();
-        }
-        btn.style.display = "none";
+          btn.style.display = "none";
+        });
+
+        // input 입력 시 버튼 다시 표시
+        input.addEventListener("input", () => {
+          if (input.value === "") {
+            btn.style.display = "none";
+          } else {
+            btn.style.display = "inline";
+          }
+        });
       });
     });
-  });
+  </script>
 
-</script>
-
-<th:block layout:fragment="script"></th:block>
+</th:block>
 </body>
 </html>
