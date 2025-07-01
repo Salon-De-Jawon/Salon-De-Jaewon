@@ -36,6 +36,20 @@ public class ManageController {
         return "management/sales";
     }
 
+    // 결제 등록
+    @GetMapping("/sales/new")
+    public String newSales(){
+
+        return "management/paymentForm";
+    }
+
+    // 결제 상세페이지
+    @GetMapping("/sales/detail")
+    public String salesDetail(){
+
+        return "management/paymentDetail";
+    }
+
     // 예약 내역
     @GetMapping("/reservations")
     public String reservation(){

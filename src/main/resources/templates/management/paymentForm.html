@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/payment.css}">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <div id="payment-container">
+    <h2>💳 매출 등록</h2>
+    <form class="payment-form">
+      <div class="form-group">
+        <label>고객 이름</label>
+        <input type="text" name="customerName" required>
+      </div>
+      <div class="form-group">
+        <label>고객 연락처</label>
+        <input type="text" name="customerTel" required>
+      </div>
+      <div class="form-group">
+        <label>시술명</label>
+        <input type="text" name="serviceName" required>
+      </div>
+      <div class="form-group">
+        <label>결제일</label>
+        <input type="datetime-local" name="payDate">
+      </div>
+      <div class="form-group">
+        <label>총 금액</label>
+        <input type="number" name="totalPrice" required>
+      </div>
+      <div class="form-group">
+        <label>쿠폰 할인</label>
+        <input type="number" name="couponDiscountPrice" value="0">
+      </div>
+      <div class="form-group">
+        <label>정액권 사용</label>
+        <input type="number" name="ticketUsedPrice" value="0">
+      </div>
+      <div class="form-group">
+        <label>최종 결제 금액</label>
+        <input type="number" name="finalPrice" required>
+      </div>
+      <div class="form-group">
+        <label>결제 수단</label>
+        <select name="paymentType" required>
+          <option value="">선택</option>
+          <option value="CASH">현금</option>
+          <option value="CARD">카드</option>
+          <option value="KAKAO">카카오페이</option>
+          <option value="NAVER">네이버페이</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>메모</label>
+        <textarea name="memo" rows="3" placeholder="시술 후기 또는 특이사항 입력"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">등록</button>
+    </form>
+  </div>
+
+
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

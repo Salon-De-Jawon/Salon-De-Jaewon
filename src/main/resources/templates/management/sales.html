@@ -5,13 +5,13 @@
 <head>
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/features.css}">
-    <link rel="stylesheet" th:href="@{/css/designer/designerMenu.css}">
+    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
   </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
 
-  <th:block th:replace="fragment/designerMenu :: designerMenu"></th:block>
+  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
 
   <div id="sales" class="section-container">
     <h3>매출 내역</h3>

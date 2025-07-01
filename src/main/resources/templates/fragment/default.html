@@ -16,9 +16,9 @@
 <body>
 
     <div id="wrap">
-        <th:block th:replace="fragment/header::header">[헤더 못불러옴]</th:block>
+        <th:block th:replace="~{fragment/header::header}">[헤더 못불러옴]</th:block>
         <th:block layout:fragment="main"></th:block>
-<!--        <th:block th:replace="fragment/footer::footer"></th:block>-->
+<!--        <th:block th:replace="~{fragment/footer::footer}"></th:block>-->
     </div>
 
 <th:block layout:fragment="script"></th:block>

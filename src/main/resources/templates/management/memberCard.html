@@ -5,13 +5,13 @@
 <head>
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/features.css}">
-    <link rel="stylesheet" th:href="@{/css/designer/designerMenu.css}">
+    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
   </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
 
-  <th:block th:replace="fragment/designerMenu :: designerMenu"></th:block>
+  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
 
   <div id="customer-management" class="section-container">
     <h3>회원 관리 카드</h3>
