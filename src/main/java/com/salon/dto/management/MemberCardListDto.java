@@ -1,7 +1,7 @@
 package com.salon.dto.management;
 
 import com.salon.entity.management.MemberCard;
-import com.salon.entity.shop.Reservation;
+import com.salon.entity.management.Payment;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,11 +27,11 @@ public class MemberCardListDto {
         return dto;
     }
 
-    public MemberCard to(MemberCardListDto dto, Reservation reservation){
+    public MemberCard to(MemberCardListDto dto, Payment payment){
 
         MemberCard entity = new MemberCard();
 
-        entity.setReservation(reservation);
+        entity.setPayment(payment);
         entity.setMemo(dto.getMemo());
         entity.setCreateAt(LocalDateTime.now());
 

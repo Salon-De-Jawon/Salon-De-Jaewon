@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/features.css}">
+    <link rel="stylesheet" th:href="@{/css/designer/designerMenu.css}">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <th:block th:replace="fragment/designerMenu :: designerMenu"></th:block>
+
+  <div id="customer-management" class="section-container">
+    <h3>회원 관리 카드</h3>
+
+    <!-- 홍길동: 메모 있음 + 수정 버튼 -->
+    <div class="customer-card">
+      <div class="customer-header">
+        <strong>홍길동</strong>
+        <div class="memo-block">
+          <div class="memo-output">
+            <p><strong>개인 메모:</strong> 두피가 예민함. 염색 시 항상 테스트 필수.</p>
+          </div>
+          <button class="btn-edit-memo">수정</button>
+          <!-- 아래 textarea는 JS로 전환 시 보여지는 구조 -->
+          <textarea class="hidden" placeholder="개인 메모를 입력하세요..."></textarea>
+          <button class="btn-save-memo hidden">저장</button>
+        </div>
+      </div>
+
+      <div class="payment-history">
+        <h4>시술 내역</h4>
+        <ul>
+          <li>
+            <div class="payment-item">
+              <div>
+                <span class="date">2025-06-30</span>
+                <span class="desc">컷트 + 염색</span>
+                <span class="price">120,000원</span>
+              </div>
+              <div class="memo-block">
+                <div class="memo-output">
+                  <p><strong>메모:</strong> 밝은 색상 선호, 귀 옆 라인 중요하게 생각함.</p>
+                </div>
+                <button class="btn-edit-memo">수정</button>
+                <textarea class="hidden" placeholder="내역 메모를 입력하세요..."></textarea>
+                <button class="btn-save-memo hidden">저장</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 김영희: 메모 없음 (기존 그대로 textarea) -->
+    <div class="customer-card">
+      <div class="customer-header">
+        <strong>김영희</strong>
+        <div class="memo-block">
+          <textarea placeholder="개인 메모를 입력하세요..."></textarea>
+          <button class="btn-save-memo">저장</button>
+        </div>
+      </div>
+
+      <div class="payment-history">
+        <h4>시술 내역</h4>
+        <ul>
+          <li>
+            <div class="payment-item">
+              <div>
+                <span class="date">2025-06-25</span>
+                <span class="desc">컷트</span>
+                <span class="price">30,000원</span>
+              </div>
+              <div class="memo-block">
+                <textarea placeholder="내역 메모를 입력하세요..."></textarea>
+                <button class="btn-save-memo">저장</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+<th:block layout:fragment="script">
+  <script>
+    document.querySelectorAll('.btn-edit-memo').forEach(button => {
+    button.addEventListener('click', () => {
+      const block = button.closest('.memo-block');
+      block.querySelector('.memo-output').classList.add('hidden');
+      block.querySelector('textarea').classList.remove('hidden');
+      button.classList.add('hidden');
+      block.querySelector('.btn-save-memo').classList.remove('hidden');
+    });
+  });
+  </script>
+</th:block>
+</body>
+</html>

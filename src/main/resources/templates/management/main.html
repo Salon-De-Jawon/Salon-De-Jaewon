@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/main.css}">
+    <link rel="stylesheet" th:href="@{/css/designer/designerMenu.css}">
+  </th:block>
+</head>
+<body>
+
+<div layout:fragment="main" id="main">
+
+  <th:block th:replace="fragment/designerMenu :: designerMenu"></th:block>
+
+  <div id="designer-main" class="designer-container">
+    <h2>디자이너 메인 페이지</h2>
+
+    <section class="dashboard-summary">
+      <div class="card">
+        <h3>오늘 예약 수</h3>
+        <p>12건</p>
+      </div>
+      <div class="card">
+        <h3>오늘 시술 건수</h3>
+        <p>8건</p>
+      </div>
+      <div class="card">
+        <h3>알림</h3>
+        <p>신규 문의 3건</p>
+      </div>
+    </section>
+
+    <section class="schedule">
+      <h3>오늘 스케줄</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>시간</th>
+          <th>고객명</th>
+          <th>시술 내용</th>
+          <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>10:00</td>
+          <td>홍길동</td>
+          <td>컷트</td>
+          <td class="status-complete">예약완료</td>
+        </tr>
+        <tr>
+          <td>11:00</td>
+          <td>김영희</td>
+          <td>염색</td>
+          <td class="status-inprogress">진행중</td>
+        </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="quick-actions">
+      <button>새 예약 등록</button>
+      <button>고객 관리</button>
+      <button>시술 내역 보기</button>
+    </section>
+  </div>
+
+
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
