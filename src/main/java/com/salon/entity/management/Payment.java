@@ -24,6 +24,14 @@ public class Payment {
     @JoinColumn(name = "shop_designer_id", nullable = true) // 방문시
     private ShopDesigner shopDesigner;
 
+    @Column(nullable = true)
+    private String visitorName; // 방문 고객 이름
+    @Column(nullable = true)
+    private String visitorTel; // 방문 고객 연락처
+    @Column(nullable = true)
+    private String serviceName; // 고객 시술
+
+
     private LocalDateTime payDate;
     private int totalPrice;
     private int couponDiscountPrice;

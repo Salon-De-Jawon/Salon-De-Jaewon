@@ -2,10 +2,7 @@ package com.salon.service.management;
 
 import com.salon.constant.AttendanceStatus;
 import com.salon.constant.LeaveStatus;
-import com.salon.dto.management.AttendanceListDto;
-import com.salon.dto.management.LeaveRequestDto;
-import com.salon.dto.management.PaymentListDto;
-import com.salon.dto.management.ReservationListDto;
+import com.salon.dto.management.*;
 import com.salon.entity.Member;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.Payment;
@@ -45,7 +42,9 @@ public class ManageService {
 
     // 디자이너 출근시 메서드
     @Transactional
-    public void clockIn(ShopDesigner designer){
+    public void clockIn(Long memberId){
+
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
@@ -80,9 +79,10 @@ public class ManageService {
 
     // 디자이너 퇴근시 메서드
     @Transactional
-    public void clockOut(ShopDesigner designer) {
+    public void clockOut(Long memberId) {
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
         int earlyLeaveMin = designer.getShop().getEarlyLeaveMin();
 
         // 오늘 출근 기록 가져오기
@@ -112,7 +112,9 @@ public class ManageService {
 
     // 디자이너 휴가 신청 시
     @Transactional
-    public void saveLeaveRequest(LeaveRequestDto dto, ShopDesigner designer){
+    public void saveLeaveRequest(LeaveRequestDto dto, Long memberId){
+
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
         dto.setStatus(LeaveStatus.REQUESTED);
         LeaveRequest leaveRequest = dto.to(designer);
@@ -122,16 +124,18 @@ public class ManageService {
     }
     
     // 디자이너 개인 출퇴근 목록
-//    public List<AttendanceListDto> getAttendanceList(Long designerId){
+//    public List<AttendanceListDto> getAttendanceList(Long memberId){
 //
+//        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+//        List<Attendance> attendanceList = attendanceRepo.
 //
 //        return
 //    }
 
     // 디자이너 개인 예약 현황
-    public List<ReservationListDto> getReservationList(Long designerId){
+    public List<ReservationListDto> getReservationList(Long shopDesignerId){
 
-        List<Reservation> reservationListlist = reservationRepo.findByShopDesignerIdOrderByReservationDateDesc(designerId);
+        List<Reservation> reservationListlist = reservationRepo.findByShopDesignerIdOrderByReservationDateDesc(shopDesignerId);
 
         List<ReservationListDto> dtoList = new ArrayList<>();
         for(Reservation entity : reservationListlist) {
@@ -155,6 +159,16 @@ public class ManageService {
     }
     
     // 결제내역 등록
+    @Transactional
+    public void savePayment(PaymentForm form){
+
+        Reservation reservation = reservationRepo.findById(form.getReservationId()).orElse(null);
+        ShopDesigner designer = form.getDesignerId() != null ? shopDesignerRepo.findById(form.getDesignerId()).orElse(null) : null;
+
+        Payment payment = form.to(reservation, designer);
+
+        paymentRepo.save(payment);
+    }
 
 
 
