@@ -9,6 +9,10 @@
 <div layout:fragment="main" id="main">
 
     메인페이지
+
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit">로그아웃</button>
+    </form>
 </div>
 
 <th:block layout:fragment="script"></th:block>
