@@ -46,7 +46,8 @@ th {
 tr:hover {
   background-color: #f9f9f9;
 }
-form {
+#button{
+  display: block;
   margin-top: 20px;
   text-align: right;
 }

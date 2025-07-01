@@ -18,5 +18,9 @@ public class AncDetailDto {
     private String fileName;
     private String fileUrl;
 
+    public static AncDetailDto from(Announcement announcement, AncListDto ancListDto){
+        AncDetailDto ancDetailDto = new AncDetailDto();
+        return ancDetailDto;
+    }
 
 }
