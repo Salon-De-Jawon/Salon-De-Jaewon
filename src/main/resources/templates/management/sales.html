@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/features.css}">
+    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
+
+  <div id="sales" class="section-container">
+    <h3>매출 내역</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>날짜</th>
+        <th>고객명</th>
+        <th>시술 내용</th>
+        <th>금액</th>
+        <th>결제 상태</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>2025-07-01</td>
+        <td>홍길동</td>
+        <td>컷트 + 염색</td>
+        <td>120,000원</td>
+        <td class="paid">결제 완료</td>
+      </tr>
+      <tr>
+        <td>2025-07-01</td>
+        <td>김영희</td>
+        <td>펌</td>
+        <td>80,000원</td>
+        <td class="pending">미결제</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

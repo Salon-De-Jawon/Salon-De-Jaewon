@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/features.css}">
+    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
+
+  <div id="reservations" class="section-container">
+    <h3>예약 현황</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>시간</th>
+        <th>고객명</th>
+        <th>시술 내용</th>
+        <th>상태</th>
+        <th>관리</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>10:00</td>
+        <td>홍길동</td>
+        <td>컷트</td>
+        <td class="confirmed">확정</td>
+        <td><button class="btn-edit">수정</button></td>
+      </tr>
+      <tr>
+        <td>11:00</td>
+        <td>김영희</td>
+        <td>염색</td>
+        <td class="cancelled">취소</td>
+        <td><button class="btn-edit">수정</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <button class="btn-add-reservation">새 예약 등록</button>
+  </div>
+
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

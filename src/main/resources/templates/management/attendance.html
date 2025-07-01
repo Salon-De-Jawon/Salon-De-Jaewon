@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/management/features.css}">
+        <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
+        <link rel="stylesheet" th:href="@{/css/management/attendanceButtons.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+    <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
+
+    <div class="attendance-buttons">
+        <button id="btn-toggle-attendance">출근하기</button>
+        <button id="btn-request-leave">휴가 신청</button>
+    </div>
+
+    <div class="attendance-times">
+        <p id="attendance-time-display"></p>
+    </div>
+
+
+    <div id="attendance" class="section-container">
+        <h3>출퇴근 기록</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>날짜</th>
+                <th>출근 시간</th>
+                <th>퇴근 시간</th>
+                <th>근무 시간</th>
+                <th>비고</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>2025-07-01</td>
+                <td>09:00</td>
+                <td>18:00</td>
+                <td>9시간</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>2025-06-30</td>
+                <td>09:15</td>
+                <td>18:30</td>
+                <td>9시간 15분</td>
+                <td>지각</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<th:block layout:fragment="script">
+    <script th:src="@{/javascript/management/attendanceButtons.js}"></script>
+</th:block>
+</body>
+</html>

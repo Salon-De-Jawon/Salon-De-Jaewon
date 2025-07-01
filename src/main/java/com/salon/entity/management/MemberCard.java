@@ -16,8 +16,8 @@ public class MemberCard {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+    @JoinColumn(name = "payment_id")
+    private Payment payment ;
 
     @Lob
     private String memo;

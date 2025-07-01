@@ -1,0 +1,87 @@
+
+body {
+  font-family: var(--font-noto-sans);
+  background-color: #f8f9fb;
+  margin: 0;
+  padding: 20px;
+}
+
+#payment-container {
+  max-width: 650px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  border-top: 8px solid var(--main-color);
+}
+
+#payment-container h2 {
+  margin-bottom: 25px;
+  color: var(--point-color);
+  font-size: 22px;
+  font-family: var(--font-pretendard);
+  font-weight: bold;
+  border-bottom: 2px solid var(--pink-backgroud);
+  padding-bottom: 10px;
+}
+
+.payment-form .form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-form label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+.payment-form input[type="text"],
+.payment-form input[type="number"],
+.payment-form input[type="datetime-local"],
+.payment-form select,
+.payment-form textarea {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+  font-family: var(--font-pretendard);
+}
+
+.payment-form input:focus,
+.payment-form select:focus,
+.payment-form textarea:focus {
+  border-color: var(--main-color);
+  outline: none;
+}
+
+.payment-form textarea {
+  resize: vertical;
+}
+
+.payment-form .btn-submit {
+  background-color: var(--point-color);
+  color: var(--font-white);
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-pretendard);
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.payment-form .btn-submit:hover {
+  background-color: var(--main-color);
+}
+
+.payment-detail p {
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
