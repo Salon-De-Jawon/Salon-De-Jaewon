@@ -34,6 +34,3 @@ input[type="file"] {
 #button {
   text-align: right;
 }
-#button > button {
-    padding: 2px 10px;
-}
