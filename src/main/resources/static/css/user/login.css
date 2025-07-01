@@ -112,7 +112,7 @@ a:visited {
   color: var(--red-msg);
   font-size: 14px;
   margin: 10px 0;
-  text-align: center;
+  text-align: left;
 }
 
 /* 로그인 버튼 */

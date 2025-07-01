@@ -64,8 +64,10 @@
         <div class="sidebar-header">
           <div class="member-name">신짱구님</div>
           <div>
-            <a href="#">회원정보 수정</a>
-            <a href="#">로그아웃</a>
+            <a href="">회원정보 수정</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+              <button type="submit">로그아웃</button>
+            </form>
           </div>
         </div>
 
