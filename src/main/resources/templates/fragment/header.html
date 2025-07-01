@@ -40,10 +40,15 @@
         <div class="bottom-line"></div>
       </div>
 
-      <div class="profile-area">
-        <div class="nav-login"><a href="/login">로그인</a></div>
-        <div class="hamburger" id="hamburger">☰</div>
-      </div>
+      <!-- 비로그인 사용자 로그인 -->
+      <th:block th:if="${#authentication.principal == 'anonymousUser'}">
+
+        <div class="profile-area">
+          <div class="nav-login"><a href="/login">로그인</a></div>
+          <div class="hamburger" id="hamburger">☰</div>
+        </div>
+
+      </th:block>
 
       <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
