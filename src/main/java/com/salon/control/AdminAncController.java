@@ -25,7 +25,7 @@ import java.util.List;
 public class AdminAncController {
     private final AncService ancService;
     private final MemberRepo memberRepo;
-    @GetMapping("/")
+    @GetMapping("")
     public String list(Model model){
         List<AncListDto> ancListDtoList = new ArrayList<>();
         ancListDtoList = ancService.list();
@@ -36,8 +36,7 @@ public class AdminAncController {
     public String detail(){return "announcementDetail";}
     @GetMapping("/create")
     public String create(Model model){
-        AncCreateDto ancCreateDto = new AncCreateDto();
-        model.addAttribute("ancCreateDto", ancCreateDto);
+        model.addAttribute("ancCreateDto", new AncCreateDto());
         return "announcementCreate";}
     @PostMapping("/registration")
     public String registration(@AuthenticationPrincipal UserDetails userDetails, AncCreateDto ancCreateDto){
