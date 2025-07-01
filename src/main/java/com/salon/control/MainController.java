@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class MainController {
 
     @GetMapping("/")
-    public String mainpage(){
+    public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails){
 
 
         return "/mainpage";
     }
 
-    @GetMapping("/loginpage")
+    @GetMapping("/login")
     public  String loginPage() {
         return "/user/login";
     }

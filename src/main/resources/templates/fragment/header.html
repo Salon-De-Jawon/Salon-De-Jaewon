@@ -7,29 +7,65 @@
 
 <div th:fragment="header" id="header">
   <div class="container">
-
     <div class="header-warp">
       <div class="log">SalonLog</div>
 
       <div class="header-menu">
         <ul class="user-navbar">
-          <li><a href="">HOME<div class="select-line"></div></a></li>
-          <li><a href="">헤어샵<div class="select-line"></div></a></li>
-          <li><a href="">가격비교<div class="select-line"></div></a></li>
-          <li><a href="">예약하기<div class="select-line"></div></a></li>
+          <li>
+            <a href=""
+            >HOME
+              <div class="select-line"></div
+              ></a>
+          </li>
+          <li>
+            <a href=""
+            >헤어샵
+              <div class="select-line"></div
+              ></a>
+          </li>
+          <li>
+            <a href=""
+            >가격비교
+              <div class="select-line"></div
+              ></a>
+          </li>
+          <li>
+            <a href=""
+            >예약하기
+              <div class="select-line"></div
+              ></a>
+          </li>
         </ul>
         <div class="bottom-line"></div>
       </div>
 
       <div class="profile-area">
-        <div class="nav-login" >
-          <a href="/loginpage">로그인</a>
+        <div class="nav-login"><a href="/login">로그인</a></div>
+        <div class="hamburger" id="hamburger">☰</div>
+      </div>
+
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="member-name">신짱구님</div>
+          <div>
+            <a href="#">회원정보 수정</a>
+            <a href="#">로그아웃</a>
+          </div>
         </div>
-<!--        <div class="user-name">-->
-<!--          신짱구-->
-<!--        </div>-->
-        <div class="hamburger" id="hamburger">
-          ☰
+
+        <ul class="sidebar-menu">
+          <li>내 예약 내역</li>
+          <li>쿠폰/정액권</li>
+          <li>찜 목록</li>
+          <li>내 리뷰</li>
+          <li>나의 고객 문의</li>
+        </ul>
+
+        <div class="sidebar-alert">내 리뷰에 댓글이 달렸습니다</div>
+
+        <div class="sidebar-close">
+          <img src="image/right-arrow.png" />
         </div>
       </div>
     </div>
