@@ -62,7 +62,7 @@
 
       <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <div class="member-name">신짱구님</div>
+          <div class="member-name" th:text="${name}">신짱구님</div>
           <div>
             <a href="">회원정보 수정</a>
             <form th:action="@{/logout}" method="post" style="display:inline;">

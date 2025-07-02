@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openFindPwModal() {
       pwModal.style.display = "block";
-      resetPwModal();
+//      resetPwModal();
     }
 
     function resetPwModal() {
@@ -242,6 +242,11 @@ document.addEventListener("DOMContentLoaded", () => {
       pwEmailMsg.style.display = "none";
       pwCodeMsg.style.display = "none";
       pwNextBtn.disabled = true;
+
+      const changePwResult = document.getElementById("changePwResult");
+      if (changePwResult) {
+        changePwResult.style.display = "none";
+      }
     }
 
 

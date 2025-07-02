@@ -9,5 +9,4 @@ import org.springframework.web.bind.annotation.PostMapping;
 @AllArgsConstructor
 public class MemberController {
 
-
 }
