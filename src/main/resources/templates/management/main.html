@@ -5,7 +5,6 @@
 <head>
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/main.css}">
-    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
     <link rel="stylesheet" th:href="@{/css/management/attendanceButtons.css}">
   </th:block>
 </head>
@@ -13,7 +12,6 @@
 
 <div layout:fragment="main" id="main">
 
-  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
 
   <div class="attendance-buttons">
     <button id="btn-toggle-attendance">출근하기</button>

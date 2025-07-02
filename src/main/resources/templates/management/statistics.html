@@ -5,13 +5,11 @@
 <head>
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/features.css}">
-    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
   </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
 
-  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
 
   <div id="statistics" class="section-container">
     <h3>일별 / 월별 통계</h3>

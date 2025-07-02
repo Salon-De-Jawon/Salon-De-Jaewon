@@ -48,8 +48,8 @@ public class ManageService {
         DesignerMainPageDto dto = new DesignerMainPageDto();
 
         dto.setTodayReservationCount(reservationRepo.countTodayReservations(designer.getId()));
-        dto.setTodayCompletedPayments(paymentRepo.count);
-        dto.getTodayNewCustomers(reservationRepo.count);
+//        dto.setTodayCompletedPayments(paymentRepo.count);
+//        dto.getTodayNewCustomers(reservationRepo.count);
 
 
 
