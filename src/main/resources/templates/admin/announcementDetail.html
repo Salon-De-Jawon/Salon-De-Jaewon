@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/admin/announcementDetail.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+        <h1 th:text="${ancDetailDto.title}"></h1>
+        <div class="writeDate">
+            <span th:text="${ancDetailDto.writeAt}"></span>
+        </div>
+        <div class="manager">
+            <span th:text="${ancDetailDto.adminName}"></span>
+        </div>
+        <div class="content">
+            <span th:utext="${ancDetailDto.content}"></span>
+        </div>
+        <div th:if="${ancDetailDto.fileName}" class="attachment">
+            <span>첨부파일 : </span>
+            <a th:href="@{|/upload/${ancDetailDto.fileName}|}"
+               th:text="${ancDetailDto.originalName}" download></a>
+        </div>
+        <div class="link">
+            <div class="left">
+                <a th:if="${ancDetailDto.hasPrev}" th:href="@{/admin/anc/detail(id=${ancDetailDto.prevId})}">
+                    이전글 보기
+                </a>
+            </div>
+            <div class="right">
+                <a  th:if="${ancDetailDto.hasNext}" th:href="@{/admin/anc/detail(id=${ancDetailDto.nextId})}">
+                    다음글 보기
+                </a>
+            </div>
+        </div>
+        <div class="buttons">
+            <button class="fix">고정</button>
+            <form action="/admin/anc/update">
+                <button class="edit">수정</button>
+            </form>
+            <button class="delete">삭제</button>
+        </div>
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
