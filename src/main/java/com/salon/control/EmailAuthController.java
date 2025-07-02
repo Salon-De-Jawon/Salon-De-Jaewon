@@ -6,10 +6,8 @@ import com.salon.service.user.EmailAuthService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -21,11 +19,11 @@ public class EmailAuthController {
 
     private final EmailAuthService emailAuthService;
     private final MemberRepo memberRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/check")
     public ResponseEntity<?> checkEmailExists(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        String context = request.get("context");
 
         boolean exists = memberRepo.existsByEmail(email);
 
@@ -85,6 +83,27 @@ public class EmailAuthController {
 
         boolean result = emailAuthService.sendPasswordResetNoticeEmail(email);
         return ResponseEntity.ok(Map.of("sent", result));
+    }
+
+    @PostMapping("/editPw")
+    @ResponseBody
+    public String findPwUpdatePw(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String newPassword = request.get("newPassword");
+
+        Member member = memberRepo.findByEmail(email);
+        if(member==null) {
+            return "not_found";
+        }
+
+        String encodePw = passwordEncoder.encode(newPassword);
+        member.setPassword(encodePw);
+        memberRepo.save(member);
+
+        System.out.println("비밀번호 변경 성공: " + email);
+        emailAuthService.sendPasswordResetNoticeEmail(email);
+
+        return "success";
     }
 
 }

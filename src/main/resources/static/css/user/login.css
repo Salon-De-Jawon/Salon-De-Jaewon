@@ -322,3 +322,63 @@ a:visited {
     transform: translateY(0);
   }
 }
+
+/* 비밀번호 변경용 */
+
+.editPw-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-box-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.input-box-title p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.input-box-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-box-content input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.chk-pw-text {
+  font-size: 13px;
+  color: var(--red-msg);
+  margin-top: 5px;
+  display: none;
+}
+
+
+#changePwBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--main-color);
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-top: 30px;
+  cursor: pointer;
+}
+
+#changePwBtn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
