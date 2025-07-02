@@ -45,8 +45,15 @@ public class SecurityConfig {
 
 
                 .csrf(
-                        cr ->
-                                cr.csrfTokenRepository(
+                        cr -> cr
+                                .ignoringRequestMatchers(
+                                        "/auth/email/check",
+                                        "/auth/email/send",
+                                        "/auth/email/verify",
+                                        "/auth/email/reset-complete",
+                                        "/auth/email/find-id"
+                                )
+                                .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
 
