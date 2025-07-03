@@ -80,11 +80,16 @@
         </p>
 
         <div class="form-group">
-          <label for="name">본명 (필수)</label>
+          <div class="name-title-box">
+            <label for="name">본명 (필수)</label>
+            <p class="error-msg" id="nameErrorMsg">* 이름은 필수 입력 요소입니다.</p>
+          </div>
           <input type="text" th:field="*{name}" placeholder="본명을 입력하세요" />
         </div>
 
+        <p class="error-msg" id="formGroupMsg">* 생년월일은 필수 입력 요소입니다.</p>
         <div class="form-group">
+
           <div>생년월일 (필수)</div>
           <label for="birthDate">
             <input type="date" th:field="*{birthDate}" value="${today}"/>
@@ -105,7 +110,10 @@
         </p>
 
         <div class="form-group">
-          <label for="tel">전화번호 (필수)</label>
+          <div class="tel-title-box">
+            <label for="tel">전화번호 (필수)</label>
+            <p class="error-msg" id="telErrorMsg">* 생년월일은 필수 입력 요소입니다.</p>
+          </div>
           <input type="text" th:field="*{tel}" />
         </div>
       </div>

@@ -6,6 +6,26 @@
   font-family: "Pretendard", sans-serif;
 }
 
+
+:root {
+  /* 벽자색 */
+  --main-color: #8c9ed9;
+  /* 설백색 */
+  --font-white: #e2e7e4;
+  /* 청현색 */
+  --point-color: #566a8e;
+
+  /* 경고의 빨간색 */
+  --red-msg: rgb(247, 50, 50);
+
+  /* 버튼 */
+  --pink-backgroud: rgb(252, 222, 227);
+
+  /* 폰트 */
+  --font-pretendard: "pretendard", sans-serif;
+  --font-noto-snas: "Noto Sans KR", sans-serif;
+}
+
 .signUp-wrap {
   background-color: #f8f9fa;
   padding: 40px 20px;
@@ -89,7 +109,7 @@ input[type="email"] {
 /* ===== 에러 메시지 ===== */
 .error-msg {
   font-size: 13px;
-  color: red;
+  color: var(--red-msg);
   display: none;
 }
 
