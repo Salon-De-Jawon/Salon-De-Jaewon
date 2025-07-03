@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/announcementCreate.css" />
+        <link rel="stylesheet" th:href="@{/css/admin/announcementCreate.css}" />
     </th:block>
 </head>
 <body>
@@ -24,7 +24,7 @@
         </div>
         <div class="file">
             파일 <br/>
-            <input type="file" name="file" />
+            <input type="file" name="files" multiple/>
         </div>
         <div id="button">
             <button>등록</button>

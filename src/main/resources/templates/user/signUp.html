@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <link rel="stylesheet" href="/css/user/signUp.css">
+  <th:block layout:fragment="css"></th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+  <div class="top-bar">
+    <div class="search-box">
+      <input type="text" placeholder="검색어를 입력하세요" />
+      <span class="location">📍 대전시 대덕구</span>
+    </div>
+    <div class="filter-buttons">
+      <button>정렬 기준</button>
+      <button>가격비교</button>
+      <button>미용실 선택 1</button>
+      <button>미용실 선택 2</button>
+      <button>미용실 선택 3</button>
+    </div>
+  </div>
+
+  <!-- 미용실 카드 리스트 -->
+  <div id="shop-list" class="shop-list">
+    <!-- 반복될 카드 -->
+    <div class="shop-card">
+      <div class="shop-img"></div>
+      <div class="shop-info">
+        <div class="shop-header">
+          <h3 class="shop-name">
+            0000 미용실 <span class="shop-badge">🎟️</span>
+          </h3>
+          <div class="favorite-icon"></div>
+        </div>
+        <p class="shop-rating">
+          ★★★★★ <span class="rating-count">5.0 (1,555)</span>
+        </p>
+        <p class="shop-address">주소 대전광역시 대덕구 신짱구미용실</p>
+        <p class="shop-time">9:00 ~ 20:00</p>
+        <div class="profile-icons">
+          <div class="icon-circle"></div>
+          <div class="icon-circle"></div>
+          <div class="icon-circle"></div>
+        </div>
+      </div>
+    </div>
+    <!-- 위 구조 반복 -->
+  </div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
