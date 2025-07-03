@@ -5,8 +5,8 @@
 <body>
 <th:block th:fragment="masterMenu">
 
-    <nav class="owner-menu-bar">
-<!--         sec:authorize="hasAnyAuthority('ROLE_MAIN_DESIGNER')"-->
+    <nav class="owner-menu-bar" sec:authorize="hasAnyAuthority('ROLE_MAIN_DESIGNER')">
+
 
         <ul>
             <li><a href="/master/designer-list">디자이너 목록</a></li>
