@@ -8,46 +8,186 @@
 </head>
 <body>
 <div layout:fragment="main" id="main">
-  <div class="top-bar">
-    <div class="search-box">
-      <input type="text" placeholder="검색어를 입력하세요" />
-      <span class="location">📍 대전시 대덕구</span>
-    </div>
-    <div class="filter-buttons">
-      <button>정렬 기준</button>
-      <button>가격비교</button>
-      <button>미용실 선택 1</button>
-      <button>미용실 선택 2</button>
-      <button>미용실 선택 3</button>
-    </div>
-  </div>
+  <div class="signUp-wrap">
 
-  <!-- 미용실 카드 리스트 -->
-  <div id="shop-list" class="shop-list">
-    <!-- 반복될 카드 -->
-    <div class="shop-card">
-      <div class="shop-img"></div>
-      <div class="shop-info">
-        <div class="shop-header">
-          <h3 class="shop-name">
-            0000 미용실 <span class="shop-badge">🎟️</span>
-          </h3>
-          <div class="favorite-icon"></div>
+  <div class="signUp-container">
+    <h2>회원가입</h2>
+
+    <form method="post" action="/signUp" th:object="${signUpDto}" class="signUp-form">
+      <input
+              type="hidden"
+              th:name="${_csrf.parameterName}"
+              th:value="${_csrf.token}"
+      />
+      <div class="form-group">
+        <div class="login-id-title">
+          <label for="loginId">아이디 (필수)</label>
+          <p class="error-msg" id="loginIdMsg">* 아이디를 입력해주세요</p>
         </div>
-        <p class="shop-rating">
-          ★★★★★ <span class="rating-count">5.0 (1,555)</span>
-        </p>
-        <p class="shop-address">주소 대전광역시 대덕구 신짱구미용실</p>
-        <p class="shop-time">9:00 ~ 20:00</p>
-        <div class="profile-icons">
-          <div class="icon-circle"></div>
-          <div class="icon-circle"></div>
-          <div class="icon-circle"></div>
+        <div class="input-with-button">
+          <input type="text" th:field="*{loginId}" placeholder="아이디를 입력하세요" required />
+          <button type="button" id="chkLoginIdBtn">중복확인</button>
         </div>
       </div>
-    </div>
-    <!-- 위 구조 반복 -->
+
+      <div class="form-group">
+        <div class="pw-title">
+          <label for="password">비밀번호 (필수)</label>
+          <p class="error-msg" id="pwMsg">* 비밀번호는 8자 이상 입력하세요</p>
+        </div>
+        <input type="password" th:field="*{password}" placeholder="비밀번호를 입력하세요" required />
+      </div>
+
+      <div class="form-group">
+        <div class="pw-check-title">
+          <label for="confirmPassword">비밀번호 확인 (필수)</label>
+          <p class="error-msg" id="pwConfirmMsg">* 비밀번호가 일치하지 않습니다</p>
+        </div>
+        <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="비밀번호를 다시 입력하세요"
+                required
+        />
+      </div>
+
+      <div class="form-group email-group">
+        <div class="email-title">
+          <label for="email">이메일 (필수)</label>
+          <p class="error-msg" id="chkEmailMsg">* 이메일을 입력하세요</p>
+        </div>
+        <div class="input-with-button">
+          <input type="email" th:field="*{email}" id="emailInput" placeholder="ex2545@example.com" required />
+          <button type="button" id="sendChkBtn">전송</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="email-chk-title">
+          <label for="emailCodeInput">인증번호 (필수)</label>
+          <p class="error-msg" id="chkCodeMsg">* 인증번호를 확인해주세요</p>
+        </div>
+        <div class="input-with-button">
+          <input type="text" id="emailCodeInput" required />
+          <button type="button" id="chkNumCheck">인증</button>
+        </div>
+      </div>
+
+      <div class="social-info personal-info">
+        <p>
+          * 디자이너 계정으로 변경하실 예정이라면 반드시 본명을 입력해주십시오.
+        </p>
+
+        <div class="form-group">
+          <label for="name">본명 (필수)</label>
+          <input type="text" th:field="*{name}" placeholder="본명을 입력하세요" />
+        </div>
+
+        <div class="form-group">
+          <div>생년월일 (필수)</div>
+          <label for="birthDate">
+            <input type="date" th:field="*{birthDate}" value="${today}"/>
+          <label>성별 (필수)</label>
+          <div class="gender-options">
+            <label
+            ><input type="radio" th:field="*{gender}" value="MALE" required />
+              남성</label
+            >
+            <label
+            ><input type="radio" th:field="*{gender}" value="FEMALE" /> 여성</label
+            >
+          </div>
+        </div>
+
+        <p>
+          * 전화번호는 예약 문자 전송에 반드시 필요합니다. 예약 문자를 받아보실 수 있는 번호를 입력해주세요.
+        </p>
+
+        <div class="form-group">
+          <label for="tel">전화번호 (필수)</label>
+          <input type="text" th:field="*{tel}" />
+        </div>
+      </div>
+
+      <!-- 약관 동의 -->
+      <div class="terms-box">
+        <div class="term-item">
+          <p>이용약관 <span class="tag">(필수)</span></p>
+          <label
+          ><input type="radio" name="termsUse" value="agree" required />
+            동의</label
+          >
+          <label
+          ><input type="radio" name="termsUse" value="disagree" />
+            비동의</label
+          >
+        </div>
+
+        <div class="term-item">
+          <p>개인정보처리방침 <span class="tag">(필수)</span></p>
+          <label
+          ><input type="radio" name="termsPrivacy" value="agree" required />
+            동의</label
+          >
+          <label
+          ><input type="radio" name="termsPrivacy" value="disagree" />
+            비동의</label
+          >
+        </div>
+
+        <div class="term-item">
+          <p>위치정보 수집 <span class="tag">(선택)</span></p>
+          <label
+          ><input type="radio" th:field="*{agreeLocation}" value="true" />
+            동의</label
+          >
+          <label
+          ><input
+                  type="radio"
+                  th:field="*{agreeLocation}"
+                  value="false"
+                  checked
+          />
+            비동의</label
+          >
+        </div>
+
+        <div class="term-item">
+          <p>사이트 알림 서비스 <span class="tag">(선택)</span></p>
+          <label
+          ><input type="radio" th:field="*{agreeAlarm}" value="true" />
+            동의</label
+          >
+          <label
+          ><input
+                  type="radio"
+                  th:field="*{agreeAlarm}"
+                  value="false"
+                  checked
+          />
+            비동의</label
+          >
+        </div>
+      </div>
+
+      <div class="btn-box">
+        <button type="button" onclick="history.back()">이전 페이지</button>
+        <button type="submit" class="signUp-complete">회원가입</button>
+      </div>
+    </form>
   </div>
-<th:block layout:fragment="script"></th:block>
+  </div>
+
+  <input type="hidden" id="csrfToken" th:value="${_csrf.token}" />
+  <input type="hidden" id="csrfHeader" th:value="${_csrf.headerName}" />
+
+  <!-- fragment div end-->
+  </div>
+
+
+<th:block layout:fragment="script">
+  <script src="/javascript/user/signUp.js"></script>
+</th:block>
 </body>
 </html>
