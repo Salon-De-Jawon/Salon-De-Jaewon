@@ -36,7 +36,7 @@ a:visited {
   color: black;
 }
 
-.container {
+.h-container {
   max-width: 1280px;
   display: flex;
   margin: 0 auto;
@@ -87,6 +87,7 @@ a:visited {
 .user-navbar li a {
   position: relative;
   display: inline-block;
+  z-index: 1;
 }
 
 .select-line {
@@ -142,15 +143,36 @@ a:visited {
 }
 
 .hamburger {
-  display: none;
   font-size: 30px;
   cursor: pointer;
   margin-right: 20px;
+  cursor: pointer;
+  position: relative;
 }
+
+#anonymous-hamburger {
+  display: none;
+}
+
+.member-info {
+    font-size : 20px;
+    font-weight: bolder;
+    color : var(--point-color);
+}
+
+.name-plus {
+    font-size : 20px;
+}
+
+#loginHamburger {
+    margin-left : 10px;
+}
+
 
 .container {
   position: relative;
 }
+
 .header-warp {
   display: flex;
   justify-content: space-between;
@@ -184,10 +206,7 @@ a:visited {
   color:white;
 }
 
-.hamburger {
-  cursor: pointer;
-  position: relative;
-}
+
 .badge {
   background: red;
   color: white;
@@ -283,7 +302,8 @@ a:visited {
     display: none;
   }
 
-  .hamburger {
+ #anonymous-hamburger {
     display: block;
+
   }
 }

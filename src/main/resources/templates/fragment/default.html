@@ -8,7 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Title</title>
     <link rel="stylesheet" href="/css/header.css">
-    <th:block layout:fragment="css"></th:block>
+    <th:block layout:fragment="css">
+
+    </th:block>
 </head>
 
 
@@ -16,11 +18,13 @@
 <body>
 
     <div id="wrap">
-        <th:block th:replace="~{fragment/header::header}">[헤더 못불러옴]</th:block>
+        <th:block th:replace="~{fragment/header::header}"></th:block>
         <th:block layout:fragment="main"></th:block>
 <!--        <th:block th:replace="~{fragment/footer::footer}"></th:block>-->
     </div>
 
+
+    <script src="/javascript/header.js"></script>
 <th:block layout:fragment="script"></th:block>
 </body>
 </html>

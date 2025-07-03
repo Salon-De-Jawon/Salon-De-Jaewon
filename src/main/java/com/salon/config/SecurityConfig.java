@@ -26,6 +26,11 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true) // 성공시 리다이렉트
                         .permitAll() //로그인 페이지 모두에게 접속 허용
                 )
+                .rememberMe(rememberMe -> rememberMe
+                        .key("unique-remember-me-key")
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(60 * 60 * 24 * 15)
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/") // 로그아웃 성공시 메인페이지 이동
@@ -40,8 +45,15 @@ public class SecurityConfig {
 
 
                 .csrf(
-                        cr ->
-                                cr.csrfTokenRepository(
+                        cr -> cr
+                                .ignoringRequestMatchers(
+                                        "/auth/email/check",
+                                        "/auth/email/send",
+                                        "/auth/email/verify",
+                                        "/auth/email/reset-complete",
+                                        "/auth/email/find-id"
+                                )
+                                .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
 
