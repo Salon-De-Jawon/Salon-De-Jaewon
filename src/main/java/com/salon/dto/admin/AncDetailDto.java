@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +24,7 @@ public class AncDetailDto {
     private boolean hasNext;
     private Long prevId;
     private Long nextId;
+    private List<String> fileUrls;
 
     public static AncDetailDto from(Announcement announcement){
         AncDetailDto ancDetailDto = new AncDetailDto();

@@ -26,4 +26,12 @@ public class AncCreateDto {
         announcement.setAdmin(member);
         return announcement;
     }
+
+    public static AncCreateDto from(Announcement announcement) {
+        AncCreateDto ancCreateDto = new AncCreateDto();
+        ancCreateDto.setTitle(announcement.getTitle());
+        ancCreateDto.setContent(announcement.getContent());
+        ancCreateDto.setRole(announcement.getRole());
+        return ancCreateDto;
+    }
 }

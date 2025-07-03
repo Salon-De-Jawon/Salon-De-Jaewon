@@ -47,13 +47,16 @@ public class AdminAncController {
     @PostMapping("/registration")
     public String registration(@AuthenticationPrincipal CustomUserDetails userDetails,
                                AncCreateDto ancCreateDto,
-                               @RequestParam("file") MultipartFile file){
+                               @RequestParam("files") List<MultipartFile> files){
 
         Member member = userDetails.getMember();
 
-        ancService.registration(ancCreateDto, member, file);
+        ancService.registration(ancCreateDto, member, files);
         return "redirect:/";
     }
     @GetMapping("/update")
-    public String update(){return "admin/announcementUpdate";}
+    public String update(@RequestParam("id") Long id, Model model){
+        AncCreateDto ancCreateDto = ancService.update(id);
+        model.addAttribute("ancCreateDto", ancCreateDto);
+        return "admin/announcementUpdate";}
 }

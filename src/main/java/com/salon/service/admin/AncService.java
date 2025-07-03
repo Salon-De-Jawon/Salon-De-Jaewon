@@ -27,32 +27,35 @@ public class AncService {
     private final MemberRepo memberRepo;
     private final AnnouncementRepo announcementRepo;
     private final AnnouncementFileRepo announcementFileRepo;
-    public void registration(AncCreateDto ancCreateDto, Member member, MultipartFile file) {
+    public void registration(AncCreateDto ancCreateDto, Member member, List<MultipartFile> files) {
 
         Announcement announcement = AncCreateDto.to(ancCreateDto, member);
         announcement.setWriteAt(LocalDateTime.now());
 
         Announcement saved = announcementRepo.save(announcement);
+        if(files != null && !files.isEmpty()) {
+            for(MultipartFile file : files) {
+                if (!file.isEmpty()) {
+                    String originalName = file.getOriginalFilename();
+                    String uuid = UUID.randomUUID().toString();
+                    String fileName = uuid + "_" + originalName;
+                    String filePath = "C:/upload/" + fileName;
 
-        if(!file.isEmpty()){
-            String originalName = file.getOriginalFilename();
-            String uuid = UUID.randomUUID().toString();
-            String fileName = uuid + "_" + originalName;
-            String filePath = "C:/upload/" + fileName;
+                    try {
+                        file.transferTo(new File(filePath));
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 저장 실패", e);
+                    }
 
-            try{
-                file.transferTo(new File(filePath));
-            } catch (IOException e){
-                throw new RuntimeException("파일 저장 실패", e);
+                    AnnouncementFile announcementFile = new AnnouncementFile();
+                    announcementFile.setOriginalName(originalName);
+                    announcementFile.setFileName(fileName);
+                    announcementFile.setFileUrl("/upload/" + fileName);
+                    announcementFile.setAnnouncement(saved);
+
+                    announcementFileRepo.save(announcementFile);
+                }
             }
-
-            AnnouncementFile announcementFile = new AnnouncementFile();
-            announcementFile.setOriginalName(originalName);
-            announcementFile.setFileName(fileName);
-            announcementFile.setFileUrl("/upload/" + fileName);
-            announcementFile.setAnnouncement(saved);
-
-            announcementFileRepo.save(announcementFile);
         }
         announcementRepo.save(announcement);
     }
@@ -82,11 +85,16 @@ public class AncService {
         Announcement announcement = announcementRepo.findById(id).get();
         AncDetailDto ancDetailDto = AncDetailDto.from(announcement);
         List<AnnouncementFile> files = announcementFileRepo.findByAnnouncement(announcement);
-        if(files != null) {
+        if(files != null && !files.isEmpty()) {
             AnnouncementFile file = files.get(0);
             ancDetailDto.setOriginalName(file.getOriginalName());
             ancDetailDto.setFileName(file.getFileName());
             ancDetailDto.setFileUrl(file.getFileUrl());
+
+            List<String> fileUrls = files.stream()
+                    .map(AnnouncementFile::getFileUrl)
+                    .toList();
+            ancDetailDto.setFileUrls(fileUrls);
         }
         Role role = announcement.getRole();
 
@@ -101,5 +109,11 @@ public class AncService {
         announcementRepo.findTopByRoleAndIdGreaterThanOrderByIdAsc(role, id)
                 .ifPresent(next -> ancDetailDto.setNextId(next.getId()));
         return ancDetailDto;
+    }
+
+    public AncCreateDto update(Long id) {
+        Announcement announcement = announcementRepo.findById(id).get();
+        AncCreateDto ancCreateDto = AncCreateDto.from(announcement);
+        return ancCreateDto;
     }
 }

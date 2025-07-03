@@ -19,10 +19,13 @@
         <div class="content">
             <span th:utext="${ancDetailDto.content}"></span>
         </div>
-        <div th:if="${ancDetailDto.fileName}" class="attachment">
+        <div th:if="${ancDetailDto.fileUrls}" class="attachment">
             <span>첨부파일 : </span>
-            <a th:href="@{|/upload/${ancDetailDto.fileName}|}"
-               th:text="${ancDetailDto.originalName}" download></a>
+            <ul>
+                <li th:each="url : ${ancDetailDto.fileUrls}">
+                    <a th:href="${url}" th:text="${#strings.substringAfter(url, '/upload/')}" download></a>
+                </li>
+            </ul>
         </div>
         <div class="link">
             <div class="left">
@@ -38,7 +41,8 @@
         </div>
         <div class="buttons">
             <button class="fix">고정</button>
-            <form action="/admin/anc/update">
+            <form th:action="@{/admin/anc/update}" method="get">
+                <input type="hidden" name="id" th:value="${ancDetailDto.id}">
                 <button class="edit">수정</button>
             </form>
             <button class="delete">삭제</button>
