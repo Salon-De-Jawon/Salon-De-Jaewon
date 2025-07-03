@@ -77,8 +77,22 @@
   color: green;
 }
 
-.status-inprogress {
+.status-reserved {
   color: orange;
+}
+
+.status-canceled {
+  color: var(--red-msg);
+}
+
+.status-noshow {
+  color: #666666;
+}
+
+.schedule table td.table-empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
 }
 
 .quick-actions {

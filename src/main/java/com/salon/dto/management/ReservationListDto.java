@@ -20,6 +20,8 @@ public class ReservationListDto {
     // 시술 날짜 및 시간
     private LocalDateTime date;
     private ReservationStatus status;
+    
+    private boolean isToday; // 당일 여부
 
     public static ReservationListDto from (Reservation reservation){
         ReservationListDto dto = new ReservationListDto();

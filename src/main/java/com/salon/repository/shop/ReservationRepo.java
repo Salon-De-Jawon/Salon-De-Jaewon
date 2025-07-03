@@ -28,4 +28,23 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
             "AND r.shopDesigner.id = :designerId")
     int countTodayReservations(@Param("designerId") Long designerId);
 
+    // 당일 신규 예약 회원
+    @Query(value = """
+    SELECT COUNT(DISTINCT r.member_id)
+    FROM reservation r
+    WHERE r.designer_id = :designerId
+      AND DATE(r.reservation_date) = CURRENT_DATE
+      AND r.reservation_date = (
+        SELECT MIN(r2.reservation_date)
+        FROM reservation r2
+        WHERE r2.member_id = r.member_id
+      )
+    """, nativeQuery = true)
+    int countTodayNewCustomers(@Param("designerId") Long designerId);
+
+    @Query("SELECT r FROM Reservation r WHERE DATE(r.reservationDate) = CURRENT_DATE " +
+            "AND r.shopDesigner.id = :designerId ORDER BY r.reservationDate")
+    List<Reservation> findTodayReservations(@Param("designerId") Long designerId);
+
+
 }

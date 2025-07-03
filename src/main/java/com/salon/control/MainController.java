@@ -19,7 +19,7 @@ public class MainController {
     public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
         if (userDetails != null) {
-            String name = userDetails.getUser().getName();
+            String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
         }
 

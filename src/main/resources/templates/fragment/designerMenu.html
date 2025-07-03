@@ -5,7 +5,7 @@
 
 <body>
   <th:block th:fragment="designerMenu">
-    <nav class="designer-menu-bar" sec:authorize="hasAnyAuthority('ROLE_DESIGNER')">
+    <nav class="designer-menu-bar" sec:authorize="hasAnyAuthority('ROLE_DESIGNER', 'ROLE_MAIN_DESIGNER')">
 
 
       <ul>
