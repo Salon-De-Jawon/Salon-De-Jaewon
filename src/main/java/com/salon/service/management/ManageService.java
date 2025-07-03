@@ -40,6 +40,25 @@ public class ManageService {
     private final ReservationRepo reservationRepo;
 
 
+    // 메인페이지 출력용 메서드
+    public DesignerMainPageDto getMainPage(Long memberId){
+
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+
+        DesignerMainPageDto dto = new DesignerMainPageDto();
+
+        dto.setTodayReservationCount(reservationRepo.countTodayReservations(designer.getId()));
+//        dto.setTodayCompletedPayments(paymentRepo.count);
+//        dto.getTodayNewCustomers(reservationRepo.count);
+
+
+
+
+
+
+        return dto;
+    }
+
     // 디자이너 출근시 메서드
     @Transactional
     public void clockIn(Long memberId){

@@ -39,7 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
-//                        .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 권한
+                        .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
+                        .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
                         .anyRequest().permitAll()
                 )
 
