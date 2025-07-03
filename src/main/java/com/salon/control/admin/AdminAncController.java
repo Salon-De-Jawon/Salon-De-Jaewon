@@ -1,4 +1,4 @@
-package com.salon.control;
+package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.admin.AncCreateDto;
@@ -7,20 +7,13 @@ import com.salon.dto.admin.AncListDto;
 import com.salon.entity.Member;
 import com.salon.repository.MemberRepo;
 import com.salon.service.admin.AncService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,8 +48,21 @@ public class AdminAncController {
         return "redirect:/";
     }
     @GetMapping("/update")
-    public String update(@RequestParam("id") Long id, Model model){
-        AncCreateDto ancCreateDto = ancService.update(id);
+    public String updateForm(@RequestParam("id") Long id, Model model){
+        AncCreateDto ancCreateDto = ancService.updateForm(id);
         model.addAttribute("ancCreateDto", ancCreateDto);
-        return "admin/announcementUpdate";}
+        return "admin/announcementUpdate";
+    }
+    @PostMapping("/update")
+    public String update(@AuthenticationPrincipal CustomUserDetails userDetails,
+                         @ModelAttribute AncCreateDto ancCreateDto){
+        Member member = userDetails.getMember();
+        ancService.update(ancCreateDto, userDetails.getMember());
+        return "redirect:/";
+    }
+    @PostMapping("/delete")
+    public String delete(@RequestParam("id") Long id){
+        ancService.delete(id);
+        return "redirect:/";
+    }
 }

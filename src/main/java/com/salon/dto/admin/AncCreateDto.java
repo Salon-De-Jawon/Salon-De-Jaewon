@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AncCreateDto {
+    private Long id;
     private String title;
     private String content;
     private Role role;
@@ -29,6 +30,7 @@ public class AncCreateDto {
 
     public static AncCreateDto from(Announcement announcement) {
         AncCreateDto ancCreateDto = new AncCreateDto();
+        ancCreateDto.setId(announcement.getId());
         ancCreateDto.setTitle(announcement.getTitle());
         ancCreateDto.setContent(announcement.getContent());
         ancCreateDto.setRole(announcement.getRole());

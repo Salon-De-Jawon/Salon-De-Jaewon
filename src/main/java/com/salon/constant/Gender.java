@@ -1,5 +1,5 @@
 package com.salon.constant;
 
 public enum Gender {
-    MAIL, FEMAIL
+    MAIL, FEMALE
 }

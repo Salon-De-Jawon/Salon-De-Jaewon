@@ -84,7 +84,7 @@ h1 {
   color: white;
   transition: background-color 0.3s ease;
 }
-.fix {
+.back {
   background-color: #f0ad4e;
 }
 .edit {
