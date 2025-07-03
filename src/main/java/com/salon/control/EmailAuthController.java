@@ -58,6 +58,7 @@ public class EmailAuthController {
         return ResponseEntity.ok(Map.of("success", success));
     }
 
+
     @PostMapping("/find-id")
     public ResponseEntity<?> findLoginIdByEmail(HttpSession session) {
         String email = (String) session.getAttribute("authEmail");

@@ -33,7 +33,7 @@ public class EmailAuthService {
                 subject = "SalonLog 비밀번호 찾기 인증번호 안내";
                 text = "비밀번호 찾기 인증 번호입니다. 비밀번호를 변경하시려면 아래의 인증번호를 입력하세요.\n\n[ " + code + " ]";
             }
-            case "signUp" -> {
+            case "signUp_chk" -> {
                 subject = "SalonLog 회원가입 이메일 인증번호 안내";
                 text = "나의 완벽한 순간을 남기다. SalonLog에 가입하시려면 아래의 인증번호를 입력하여주세요.\n\n[ " + code + " ]";
             } default ->  {
