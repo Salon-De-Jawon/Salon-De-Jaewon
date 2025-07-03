@@ -5,7 +5,6 @@
 <head>
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/main.css}">
-    <link rel="stylesheet" th:href="@{/css/management/designerMenu.css}">
     <link rel="stylesheet" th:href="@{/css/management/attendanceButtons.css}">
   </th:block>
 </head>
@@ -13,7 +12,6 @@
 
 <div layout:fragment="main" id="main">
 
-  <th:block th:replace="~{fragment/designerMenu :: designerMenu}"></th:block>
 
   <div class="attendance-buttons">
     <button id="btn-toggle-attendance">출근하기</button>
@@ -32,15 +30,15 @@
     <section class="dashboard-summary">
       <div class="card">
         <h3>오늘 예약 수</h3>
-        <p>12건</p>
+        <p th:text="${dto.todayReservationCount} + 건">12건</p>
       </div>
       <div class="card">
         <h3>오늘 시술 건수</h3>
-        <p>8건</p>
+        <p th:text="${dto.todayCompletedPayments} + 건">8건</p>
       </div>
       <div class="card">
         <h3>알림</h3>
-        <p>신규 문의 3건</p>
+        <p th:text="'신규 문의 '+ ${dto.todayNewCustomers}+ 건 ">신규 문의 3건</p>
       </div>
     </section>
 
@@ -56,17 +54,21 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>10:00</td>
-          <td>홍길동</td>
-          <td>컷트</td>
-          <td class="status-complete">예약완료</td>
+        <tr th:each="list : ${dto.todayScheduleList}">
+          <td th:text="${list.time}">10:00</td>
+          <td th:text="${list.customerName}">홍길동</td>
+          <td th:text="${list.serviceName}">컷트</td>
+          <td th:if="${list.status.toString()} == '예약완료'"
+              th:text="${list.status}" class="status-complete">예약완료</td>
+          <td th:if="${list.status.toString()} == '예약중'"
+              th:text="${list.status}" class="status-reserved">예약중</td>
+          <td th:if="${list.status.toString()} == '예약취소'"
+              th:text="${list.status}" class="status-canceled">예약취소</td>
+          <td th:if="${list.status.toString()} == '노쇼'"
+              th:text="${list.status}" class="status-noshow">노쇼</td>
         </tr>
-        <tr>
-          <td>11:00</td>
-          <td>김영희</td>
-          <td>염색</td>
-          <td class="status-inprogress">진행중</td>
+        <tr th:if="${#lists.isEmpty(dto.todayScheduleList)}">
+          <td colspan="4" class="table-empty"> 스케줄이 없습니다. </td>
         </tr>
         </tbody>
       </table>

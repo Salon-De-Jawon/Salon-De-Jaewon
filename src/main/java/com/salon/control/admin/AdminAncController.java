@@ -36,7 +36,9 @@ public class AdminAncController {
     @GetMapping("/create")
     public String create(Model model){
         model.addAttribute("ancCreateDto", new AncCreateDto());
+
         return "admin/announcementCreate";}
+
     @PostMapping("/registration")
     public String registration(@AuthenticationPrincipal CustomUserDetails userDetails,
                                AncCreateDto ancCreateDto,

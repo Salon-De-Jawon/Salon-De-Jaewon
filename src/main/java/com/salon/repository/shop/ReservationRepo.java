@@ -2,6 +2,8 @@ package com.salon.repository.shop;
 
 import com.salon.entity.shop.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,4 +21,30 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
 
     // 특정 디자이너 예약현황
     List<Reservation> findByShopDesignerIdOrderByReservationDateDesc(Long shopDesignerId);
+
+    // 오늘 예약 수 (디자이너)
+    @Query("SELECT COUNT(r) FROM Reservation r " +
+            "WHERE DATE(r.reservationDate) = CURRENT_DATE " +
+            "AND r.shopDesigner.id = :designerId")
+    int countTodayReservations(@Param("designerId") Long designerId);
+
+    // 당일 신규 예약 회원
+    @Query(value = """
+    SELECT COUNT(DISTINCT r.member_id)
+    FROM reservation r
+    WHERE r.designer_id = :designerId
+      AND DATE(r.reservation_date) = CURRENT_DATE
+      AND r.reservation_date = (
+        SELECT MIN(r2.reservation_date)
+        FROM reservation r2
+        WHERE r2.member_id = r.member_id
+      )
+    """, nativeQuery = true)
+    int countTodayNewCustomers(@Param("designerId") Long designerId);
+
+    @Query("SELECT r FROM Reservation r WHERE DATE(r.reservationDate) = CURRENT_DATE " +
+            "AND r.shopDesigner.id = :designerId ORDER BY r.reservationDate")
+    List<Reservation> findTodayReservations(@Param("designerId") Long designerId);
+
+
 }

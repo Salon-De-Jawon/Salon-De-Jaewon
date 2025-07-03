@@ -6,20 +6,21 @@
 <body>
 
 <div th:fragment="header" id="header">
-  <div class="container">
+  <div class="h-container">
     <div class="header-warp">
       <div class="log">SalonLog</div>
 
       <div class="header-menu">
         <ul class="user-navbar">
           <li>
-            <a href=""
+            <a href="/"
             >HOME
               <div class="select-line"></div
               ></a>
           </li>
+
           <li>
-            <a href=""
+            <a href="/shopList"
             >헤어샵
               <div class="select-line"></div
               ></a>
@@ -40,17 +41,34 @@
         <div class="bottom-line"></div>
       </div>
 
-      <div class="profile-area">
-        <div class="nav-login"><a href="/login">로그인</a></div>
-        <div class="hamburger" id="hamburger">☰</div>
-      </div>
+      <!-- 비로그인 사용자 로그인 -->
+      <th:block sec:authorize="isAnonymous()">
+
+        <div class="profile-area">
+          <div class="nav-login"><a href="/login">로그인</a></div>
+          <div class="hamburger" id="anonymous-hamburger">☰</div>
+        </div>
+
+      </th:block>
+
+      <th:block sec:authorize="isAuthenticated()">
+        <div class="profile-area">
+          <div class="member-info" th:text="${name}"></div><span class="name-plus">님</span>
+          <div class="hamburger" id="loginHamburger">☰</div>
+        </div>
+
+      </th:block>
+
+
 
       <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <div class="member-name">신짱구님</div>
+          <div class="member-name" th:text="${name}">신짱구님</div>
           <div>
-            <a href="#">회원정보 수정</a>
-            <a href="#">로그아웃</a>
+            <a href="">회원정보 수정</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+              <button type="submit">로그아웃</button>
+            </form>
           </div>
         </div>
 
@@ -65,7 +83,7 @@
         <div class="sidebar-alert">내 리뷰에 댓글이 달렸습니다</div>
 
         <div class="sidebar-close">
-          <img src="image/right-arrow.png" />
+          <img src="/images/right-arrow.png" />
         </div>
       </div>
     </div>
@@ -74,5 +92,4 @@
 </div>
 
 </body>
-
 </html>

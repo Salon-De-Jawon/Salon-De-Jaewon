@@ -26,6 +26,11 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true) // 성공시 리다이렉트
                         .permitAll() //로그인 페이지 모두에게 접속 허용
                 )
+                .rememberMe(rememberMe -> rememberMe
+                        .key("unique-remember-me-key")
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(60 * 60 * 24 * 15)
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/") // 로그아웃 성공시 메인페이지 이동
@@ -34,14 +39,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
-//                        .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자 권한
+                        .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
+                        .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
                         .anyRequest().permitAll()
                 )
 
 
                 .csrf(
-                        cr ->
-                                cr.csrfTokenRepository(
+                        cr -> cr
+                                .ignoringRequestMatchers(
+                                        "/auth/email/check",
+                                        "/auth/email/send",
+                                        "/auth/email/verify",
+                                        "/auth/email/reset-complete",
+                                        "/auth/email/find-id"
+                                )
+                                .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
 

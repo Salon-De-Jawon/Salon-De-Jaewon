@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+
+<head>
+  <link rel="stylesheet" th:href="@{/css/master/masterCss.css}" />
+</head>
+
+<div layout:fragment="main" class="owner-container">
+  <h2>쿠폰 목록 및 등록</h2>
+
+  <section class="coupon-list">
+    <h3>발행된 쿠폰 목록</h3>
+    <table class="default-table">
+      <thead>
+      <tr>
+        <th>쿠폰명</th>
+        <th>할인율</th>
+        <th>유효기간</th>
+        <th>사용 가능</th>
+        <th>관리</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>첫방문 20%</td>
+        <td>20%</td>
+        <td>~ 2025-12-31</td>
+        <td>가능</td>
+        <td><button class="btn-manage">수정</button></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="coupon-register">
+    <h3>신규 쿠폰 등록</h3>
+    <form action="/manage/coupon/register" method="post" class="coupon-form">
+      <div class="form-group">
+        <label>쿠폰명</label>
+        <input type="text" name="name" />
+      </div>
+      <div class="form-group">
+        <label>할인율(%)</label>
+        <input type="number" name="discountRate" min="1" max="100" />
+      </div>
+      <div class="form-group">
+        <label>유효기간</label>
+        <input type="date" name="validUntil" />
+      </div>
+      <div class="form-group">
+        <label>사용 가능 여부</label>
+        <select name="isActive">
+          <option value="true">가능</option>
+          <option value="false">중지</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-submit">등록하기</button>
+    </form>
+  </section>
+</div>

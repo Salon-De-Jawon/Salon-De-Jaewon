@@ -1,11 +1,13 @@
 
 <html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
   <th:block th:fragment="designerMenu">
+    <nav class="designer-menu-bar" sec:authorize="hasAnyAuthority('ROLE_DESIGNER', 'ROLE_MAIN_DESIGNER')">
 
-    <nav class="designer-menu-bar">
+
       <ul>
         <li><a href="/manage/attendance">출퇴근 내역</a></li>
         <li><a href="/manage/statistics">통계</a></li>
@@ -15,6 +17,7 @@
       </ul>
     </nav>
   </th:block>
+
 </body>
 
 </html>
