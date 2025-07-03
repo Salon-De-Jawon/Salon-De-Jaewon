@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/announcement.css" />
+        <link rel="stylesheet" th:href="@{/css/admin/announcement.css}" />
     </th:block>
 </head>
 <body>
@@ -30,10 +30,14 @@
         </thead>
         <tbody id="noticeTable">
         <tr th:each="ancList : ${ancListDto}" th:data-role="${ancList.roleName}">
-            <td th:text="${ancList.id}"></td>
-            <td><a th:href="@{/admin/anc/detail(id=${ancList.id})}" th:text="${ancList.content}"></a></td>
+            <td class="number"></td>
+            <td class="title"><a th:href="@{/admin/anc/detail(id=${ancList.id})}" th:text="${ancList.title}"></a></td>
             <td th:text="${ancList.writeAt}"></td>
-            <td></td>
+            <td>
+                <span th:if="${ancList.fileUrl != null}">
+                    <a th:href="${ancList.fileUrl}" th:download="${ancList.fileName}" th:text="${ancList.fileName}"></a>
+                </span>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -50,16 +54,33 @@
             const selectRole = document.querySelector('input[name="role"]:checked').value;
             const rows = document.querySelectorAll("#noticeTable tr");
 
+        let number = 1;
+
         rows.forEach((row) => {
-            const role = (row.dataset.role || "").trim();
-            const title = row.children[1].textContent || "";
+            /*const role = (row.dataset.role || "").trim();
+            const title = row.children[1].textContent || "";*/
+            const rowRole = row.getAttribute("data-role")?.trim();
+            const title = row.querySelector(".title a").textContent.trim();
 
-            const roleMatches = role === selectRole;
-            const keywordMatches = title.includes(keyword);
+            /*const roleMatches = role === selectRole;
+            const keywordMatches = title.includes(keyword);*/
+            const matchesRole = rowRole === selectRole;
+            const matchesKeyword = title.includes(keyword);
 
-            console.log("role:", role, "| selected:", selectRole, "| match:", roleMatches);
+            /*if(roleMatches && keywordMatches){
+                row.style.display = "";
+                row.children[0].textContent = number++;
+            } else {
+                row.style.display = "none";
+            }*/
 
-            row.style.display = roleMatches && keywordMatches ? "" : "none";
+            if(matchesRole && matchesKeyword){
+                row.style.display = "";
+                row.querySelector(".number").textContent = number++;
+            } else {
+                row.style.display = "none";
+            }
+            /*row.style.display = roleMatches && keywordMatches ? "" : "none";*/
         });
     }
 

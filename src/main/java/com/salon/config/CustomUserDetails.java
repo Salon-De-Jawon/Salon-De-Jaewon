@@ -21,7 +21,7 @@ public class CustomUserDetails implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + member.getRole())); // 예: ROLE_USER, ROLE_ADMIN
     }
 
-    public Member getUser(){
+    public Member getMember(){
         return this.member;
     }
 
