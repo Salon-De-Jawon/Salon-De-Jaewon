@@ -2,24 +2,37 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
+
 <head>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" th:href="@{/css/management/features.css}">
+    <link rel="stylesheet" href="/css/management/reservations.css">
   </th:block>
 </head>
+
 <body>
-<div layout:fragment="main" id="main">
+<div layout:fragment="main">
+  <div class="section-container">
+    <h3>디자이너 예약 현황</h3>
 
+    <!-- 날짜 선택 영역 -->
+    <div class="date-selector">
+      <a th:each="date : ${dateList}"
+         th:href="@{/manage/reservations(date=${date})}"
+         th:text="${#temporals.format(date, 'MM/dd (E)')}"
+         th:classappend="${date} == ${selectedDate} ? 'active' : ''">
+        07/03 (수)
+      </a>
+    </div>
 
-  <div id="reservations" class="section-container">
-    <h3>예약 현황</h3>
+    <!-- 예약 리스트 출력 -->
     <table>
       <thead>
       <tr>
         <th>시간</th>
         <th>고객명</th>
-        <th>시술 내용</th>
+        <th>시술</th>
         <th>상태</th>
+        <th>메모</th>
         <th>관리</th>
       </tr>
       </thead>
@@ -29,21 +42,26 @@
         <td>홍길동</td>
         <td>컷트</td>
         <td class="confirmed">확정</td>
+        <td>짧게 해주세요</td>
         <td><button class="btn-edit">수정</button></td>
       </tr>
       <tr>
-        <td>11:00</td>
-        <td>김영희</td>
+        <td>13:30</td>
+        <td>김민지</td>
         <td>염색</td>
-        <td class="cancelled">취소</td>
+        <td class="pending">대기</td>
+        <td>어두운 갈색</td>
         <td><button class="btn-edit">수정</button></td>
       </tr>
       </tbody>
     </table>
+
+    <!-- 예약이 없는 경우 -->
+    <!-- <p class="reservation-empty">예약이 없습니다.</p> -->
+
+    <button class="btn-view-all">전체 예약 보기</button>
     <button class="btn-add-reservation">새 예약 등록</button>
   </div>
-
 </div>
-<th:block layout:fragment="script"></th:block>
 </body>
 </html>

@@ -2,8 +2,8 @@ package com.salon.service.management;
 
 import com.salon.constant.AttendanceStatus;
 import com.salon.constant.LeaveStatus;
+import com.salon.dto.management.WeekDto;
 import com.salon.dto.management.*;
-import com.salon.entity.Member;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.Payment;
 import com.salon.entity.management.ShopDesigner;
@@ -21,9 +21,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +51,17 @@ public class ManageService {
         DesignerMainPageDto dto = new DesignerMainPageDto();
 
         dto.setTodayReservationCount(reservationRepo.countTodayReservations(designer.getId()));
-//        dto.setTodayCompletedPayments(paymentRepo.count);
-//        dto.getTodayNewCustomers(reservationRepo.count);
+        dto.setTodayCompletedPayments(paymentRepo.countTodayCompletePayments(designer.getId()) );
+        dto.setTodayNewCustomers(reservationRepo.countTodayNewCustomers(designer.getId()));
 
+        List<Reservation> todayRes = reservationRepo.findTodayReservations(designer.getId());
 
+        List<TodayScheduleDto> dtoList = new ArrayList<>();
+        for(Reservation res : todayRes) {
+            dtoList.add(TodayScheduleDto.from(res));
+        }
 
-
-
+        dto.setTodayScheduleList(dtoList);
 
         return dto;
     }
@@ -142,14 +149,52 @@ public class ManageService {
 
     }
     
-    // 디자이너 개인 출퇴근 목록
-//    public List<AttendanceListDto> getAttendanceList(Long memberId){
+//    // 디자이너 개인 출퇴근 목록
+//    public List<AttendanceListDto> getAttendanceList(Long memberId, LocalDate selectedDate){
 //
 //        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
-//        List<Attendance> attendanceList = attendanceRepo.
 //
-//        return
+//        // selectedDate 00 : 00
+//        LocalDateTime start = selectedDate.atStartOfDay();
+//        // selectedDate 23 : 59 : 59.999
+//        LocalDateTime end = selectedDate.atTime(LocalTime.MAX);
+//        List<Attendance> attendanceList = attendanceRepo.findByShopDesignerIdAndClockInBetweenOrderByIdDesc(designer.getId(), start, end);
+//
+//        List<AttendanceListDto> dtoList = new ArrayList<>();
+//
+//        for(Attendance att : attendanceList){
+//            dtoList.add(AttendanceListDto.from(att));
+//        }
+//
+//        return dtoList;
 //    }
+
+    // 근태 목록 페이지 주간 목록 생성
+    public List<WeekDto> getWeeksOfMonth(LocalDate monthStart){
+
+        List<WeekDto> weeks = new ArrayList<>();
+        LocalDate firstDayOfMonth = monthStart.withDayOfMonth(1);
+        LocalDate lastDayOfMonth = monthStart.withDayOfMonth(monthStart.lengthOfMonth());
+
+        LocalDate date = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endDate = lastDayOfMonth.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+
+        while ( !date.isAfter(endDate) ) {
+            LocalDate start = date;
+            LocalDate end = date.plusDays(6);
+            weeks.add(new WeekDto(start, end, getLabel(weeks.size() + 1, start, end)));
+            date = date.plusWeeks(1);
+        }
+
+        return weeks;
+    }
+
+    // 위의 주간 라벨 표시용
+    private String getLabel(int weekNum, LocalDate start, LocalDate end) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MM.dd");
+        return weekNum + "주차 (" + start.format(fmt) + "~" + end.format(fmt) + ")";
+    }
 
     // 디자이너 개인 예약 현황
     public List<ReservationListDto> getReservationList(Long shopDesignerId){
@@ -158,10 +203,15 @@ public class ManageService {
 
         List<ReservationListDto> dtoList = new ArrayList<>();
         for(Reservation entity : reservationListlist) {
-            dtoList.add(ReservationListDto.from(entity));
+
+            ReservationListDto dto = ReservationListDto.from(entity);
+            // 당일 예약 구분
+            dto.setToday(entity.getReservationDate().toLocalDate().isEqual(LocalDate.now()));
+
+            dtoList.add(dto);
         }
 
-        return dtoList; // html 에서 당일예약 구분하기
+        return dtoList;
     }
 
     // 디자이너 매출 목록

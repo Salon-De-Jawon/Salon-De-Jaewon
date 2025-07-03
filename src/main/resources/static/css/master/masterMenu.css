@@ -1,5 +1,7 @@
 /* 대표 디자이너 메뉴바 */
 .owner-menu-bar {
+  margin: 0 auto;
+  max-width: 1280px;
   background-color: var(--main-color);
   padding: 12px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);

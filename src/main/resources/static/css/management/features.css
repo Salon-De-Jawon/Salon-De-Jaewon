@@ -68,24 +68,7 @@
   opacity: 0.8;
 }
 
-.btn-add-reservation,
-.btn-view-all {
-  margin-top: 20px;
-  background-color: var(--main-color);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  font-family: var(--font-pretendard);
-  transition: opacity 0.3s ease;
-}
 
-.btn-add-reservation:hover,
-.btn-view-all:hover {
-  opacity: 0.85;
-}
 
 /* 통계 필터 */
 

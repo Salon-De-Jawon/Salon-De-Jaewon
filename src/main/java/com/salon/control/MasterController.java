@@ -30,6 +30,7 @@ public class MasterController {
         return "master/designerList";
     }
 
+
     // 예약 관리
     @GetMapping("/reservations")
     public String reservations(){
