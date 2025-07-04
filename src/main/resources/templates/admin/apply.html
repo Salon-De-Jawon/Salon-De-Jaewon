@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/admin/apply.css">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+  <form th:action="@{/admin/designer/request}" th:object="${applyDto}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <div>
+      <label>성명</label>
+      <input type="text" name="name" th:field="*{name}" required />
+    </div>
+    <div>
+      <label>자격증 번호</label>
+      <input type="text" name="applyNumber" id="applyNumber" th:field="*{applyNumber}">
+    </div>
+    <div>
+      <label>자격증 파일 첨부(이미지/PDF)</label>
+      <input type="file" name="file" id="file" accept="image/*, application/pdf">
+    </div>
+    <div>
+      <label>발급일</label>
+      <input type="date" name="issuedDate" id="issuedDate" th:field="*{issuedDate}">
+    </div>
+    <div class="form-buttons">
+      <button type="submit">승인 요청</button>
+      <a href="/" style="margin-left: 10px;"></a>
+    </div>
+  </form>
+</div>
+<th:block layout:fragment="script">
+  <script>
+    function validateForm(){
+      const number = document.getElementById("applyNumber").value.trim();
+      const file = document.getElementById("file").files.length;
+
+      if(!number && file === 0){
+        alert("자격증 번호를 입력하거나 파일을 첨부해야합니다.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+</th:block>
+</body>
+</html>

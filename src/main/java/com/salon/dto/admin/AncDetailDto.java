@@ -34,6 +34,7 @@ public class AncDetailDto {
         ancDetailDto.adminName=announcement.getAdmin().getName();
         ancDetailDto.setTitle(announcement.getTitle());
         ancDetailDto.setRole(announcement.getRole());
+
         return ancDetailDto;
     }
 
