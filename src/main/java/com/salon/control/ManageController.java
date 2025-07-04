@@ -1,21 +1,20 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
-import com.salon.dto.management.AttendanceListDto;
-import com.salon.dto.management.ReservationListDto;
-import com.salon.dto.management.WeekDto;
-import com.salon.dto.management.DesignerMainPageDto;
+import com.salon.dto.management.*;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.AttendanceRepo;
 import com.salon.service.management.ManageService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -103,16 +102,49 @@ public class ManageController {
 
     // 매출 내역
     @GetMapping("/sales")
-    public String sales(){
+    public String sales(@AuthenticationPrincipal CustomUserDetails userDetails,
+                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                        Model model){
+
+        // 선택한 날 가져오기
+        LocalDate selectedDate = (date != null) ? date : LocalDate.now();
+
+        // 날짜 3일 범위 생성
+        List<LocalDate> dateList = new ArrayList<>();
+        for(int i = -3; i <=3; i++){
+            dateList.add(selectedDate.plusDays(i));
+        }
+
+        List<PaymentListDto> paymentListDtoList = manageService
+                .getPaymentList(userDetails.getMember().getId(), selectedDate);
+
+        System.out.println("selectedDate: " + selectedDate);
+
+
+        model.addAttribute("dateList", dateList);
+        model.addAttribute("selectedDate", selectedDate);
+        model.addAttribute("paymentList", paymentListDtoList);
 
         return "management/sales";
     }
 
-    // 결제 등록
+    // 방문 결제 등록 페이지
     @GetMapping("/sales/new")
-    public String newSales(){
+    public String newSales(Model model){
+
+        model.addAttribute("newPay", new PaymentForm());
 
         return "management/paymentForm";
+    }
+    
+    // 방문 결제 등록
+    @PostMapping("/sales/new")
+    public String saleSave(@Valid PaymentForm form,
+                           @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        manageService.savePayment(form, userDetails.getMember().getId());
+
+        return "redirect:/manage/sales";
     }
 
     // 결제 상세페이지
@@ -145,6 +177,17 @@ public class ManageController {
 
         return "management/reservations";
     }
+
+    // 예약 등록 페이지
+    @GetMapping("/reservations/new")
+    public String newRes(Model model){
+
+        model.addAttribute("newRes", new ReservationDetailDto());
+
+        return "management/reservationForm";
+    }
+    
+    // 예약 등록
 
     // 회원관리카드
     @GetMapping("/member-card")

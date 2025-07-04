@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/management/reservationForm.css">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <div class="section-container">
+    <h3>예약 등록</h3>
+
+    <form id="reservationForm" class="reservation-form">
+      <div class="row">
+        <label>고객명</label>
+        <input type="text" id="memberName" placeholder="고객명을 입력하세요">
+      </div>
+
+      <div class="row">
+        <label>시술명</label>
+        <select id="serviceSelect">
+          <option value="컷트" data-price="30000">컷트 (30,000원)</option>
+          <option value="염색" data-price="80000">염색 (80,000원)</option>
+          <option value="펌" data-price="90000">펌 (90,000원)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>시술 금액</label>
+        <input type="number" id="servicePrice" readonly>
+      </div>
+
+      <div class="row">
+        <label>쿠폰</label>
+        <select id="couponSelect">
+          <option value="none" data-discount="0">선택 안 함</option>
+          <option value="생일쿠폰" data-discount="10000">생일쿠폰 (10,000원 할인)</option>
+          <option value="첫방문쿠폰" data-discount="15000">첫방문쿠폰 (15,000원 할인)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>쿠폰 할인 금액</label>
+        <input type="number" id="couponDiscount" readonly>
+      </div>
+
+      <div class="row">
+        <label>
+          <input type="checkbox" id="useTicket"> 정액권 사용
+        </label>
+      </div>
+
+      <div class="row" id="ticketAmountRow" style="display:none;">
+        <label>정액권 사용 금액</label>
+        <input type="number" id="ticketAmount" value="0">
+      </div>
+
+      <div class="row final-price">
+        <label>최종 결제 금액</label>
+        <input type="number" id="finalPrice" readonly>
+      </div>
+
+      <div class="row">
+        <label>예약 상태</label>
+        <select id="status">
+          <option value="RESERVED">예약완료</option>
+          <option value="VISITED">방문완료</option>
+          <option value="CANCELLED">취소</option>
+          <option value="NOSHOW">노쇼</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button type="submit">등록</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script>
+    // 서비스 가격 자동 설정
+    document.getElementById("serviceSelect").addEventListener("change", function() {
+      const selected = this.options[this.selectedIndex];
+      const price = selected.dataset.price || 0;
+      document.getElementById("servicePrice").value = price;
+      calculateFinalPrice();
+    });
+
+    // 쿠폰 할인 자동 설정
+    document.getElementById("couponSelect").addEventListener("change", function() {
+      const selected = this.options[this.selectedIndex];
+      const discount = selected.dataset.discount || 0;
+      document.getElementById("couponDiscount").value = discount;
+      calculateFinalPrice();
+    });
+
+    // 정액권 체크 시 필드 표시
+    document.getElementById("useTicket").addEventListener("change", function() {
+      document.getElementById("ticketAmountRow").style.display = this.checked ? "block" : "none";
+      calculateFinalPrice();
+    });
+
+    // 금액 변경 시 최종금액 계산
+    document.getElementById("ticketAmount").addEventListener("input", calculateFinalPrice);
+
+    function calculateFinalPrice() {
+      const servicePrice = parseInt(document.getElementById("servicePrice").value || 0);
+      const couponDiscount = parseInt(document.getElementById("couponDiscount").value || 0);
+      const ticketUsed = document.getElementById("useTicket").checked;
+      const ticketAmount = ticketUsed ? parseInt(document.getElementById("ticketAmount").value || 0) : 0;
+
+      const finalPrice = servicePrice - couponDiscount - ticketAmount;
+      document.getElementById("finalPrice").value = finalPrice < 0 ? 0 : finalPrice;
+    }
+  </script>
+</th:block>
+
+</body>
+</html>

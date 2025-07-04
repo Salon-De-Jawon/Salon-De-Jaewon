@@ -12,7 +12,49 @@
   font-size: 24px;
   font-weight: 700;
   color: var(--main-color);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+}
+
+.section-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.section-container th,
+.section-container td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.section-container thead tr {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.res {
+  color: green;
+  font-weight: bold;
+}
+
+.visit {
+  color: orange;
+  font-weight: bold;
+}
+
+.btn-edit {
+  background-color: var(--point-color);
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.btn-edit:hover {
+  opacity: 0.8;
 }
 
 .date-selector {
@@ -46,65 +88,9 @@
   opacity: 0.85;
 }
 
-
-.section-container table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-
-.section-container th,
-.section-container td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.section-container thead tr {
-  background-color: var(--main-color);
-  color: white;
-}
-
-.status-complete {
-  color: green;
-}
-
-.status-reserved {
-  color: orange;
-}
-
-.status-canceled {
-  color: var(--red-msg);
-}
-
-.status-noshow {
-  color: #666666;
-}
-
-.btn-edit {
-  background-color: var(--point-color);
-  border: none;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-}
-
-.btn-edit:hover {
-  opacity: 0.8;
-}
-
-.reservation-empty {
-  text-align: center;
-  color: #888;
-  font-size: 18px;
-  margin-top: 30px;
-}
-
-.btn-add-reservation,
-.btn-add-reservation:link,
-.btn-add-reservation:visited{
+.btn-add-payment,
+.btn-add-payment:link,
+.btn-add-payment:visited{
   margin-top: 20px;
   background-color: var(--main-color);
   color: white;
@@ -119,6 +105,3 @@
   display: inline-block;
 }
 
-.btn-add-reservation:hover{
-  opacity: 0.85;
-}
