@@ -14,8 +14,7 @@ public class AttendanceListDto {
     private Long id; // Attendance Id
     private LocalDateTime clockIn;
     private LocalDateTime clockOut;
-    private AttendanceStatus status;
-    private String note;
+    private String status;
     private String workTimeStr; // 근무시간 9시간 50분
 
     public static AttendanceListDto from (Attendance attendance) {
@@ -24,7 +23,7 @@ public class AttendanceListDto {
         dto.setId(attendance.getId());
         dto.setClockIn(attendance.getClockIn());
         dto.setClockOut(attendance.getClockOut());
-        dto.setNote(attendance.getNote());
+        dto.setStatus(attendance.getStatus().getLabel());
 
         // 근무 시간 계산
         if (attendance.getClockIn() != null && attendance.getClockOut() != null) {
