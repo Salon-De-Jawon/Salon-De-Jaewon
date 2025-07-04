@@ -10,6 +10,10 @@ import lombok.Setter;
 public class ReservationDetailDto {
 
     private Long id; // Reservation ID
+    private Long memberId;
+    private Long serviceId;
+    private Long couponId;
+
     private String memberName;
     private String serviceName;
     private int servicePrice;

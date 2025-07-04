@@ -19,8 +19,6 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     // 방문횟수를 카운트하기 위한 메서드
     Reservation countByMemberIdAndShopDesignerId(Long memberId, Long designerId);
 
-    // 특정 디자이너 예약현황
-    List<Reservation> findByShopDesignerIdOrderByReservationDateDesc(Long shopDesignerId);
 
     // 오늘 예약 수 (디자이너)
     @Query("SELECT COUNT(r) FROM Reservation r " +
@@ -47,4 +45,5 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     List<Reservation> findTodayReservations(@Param("designerId") Long designerId);
 
 
+    List<Reservation> findByShopDesignerIdAndReservationDateBetweenOrderByReservationDateDesc(Long id, LocalDateTime start, LocalDateTime end);
 }

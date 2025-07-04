@@ -197,9 +197,14 @@ public class ManageService {
     }
 
     // 디자이너 개인 예약 현황
-    public List<ReservationListDto> getReservationList(Long shopDesignerId){
+    public List<ReservationListDto> getReservationList(Long memberId, LocalDate selectedDate){
 
-        List<Reservation> reservationListlist = reservationRepo.findByShopDesignerIdOrderByReservationDateDesc(shopDesignerId);
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+        LocalDateTime start = selectedDate.atStartOfDay();
+        LocalDateTime end = selectedDate.atTime(LocalTime.MAX);
+
+        List<Reservation> reservationListlist =
+                reservationRepo.findByShopDesignerIdAndReservationDateBetweenOrderByReservationDateDesc(designer.getId(), start, end);
 
         List<ReservationListDto> dtoList = new ArrayList<>();
         for(Reservation entity : reservationListlist) {
@@ -214,10 +219,16 @@ public class ManageService {
         return dtoList;
     }
 
-    // 디자이너 매출 목록
-    public List<PaymentListDto> getPaymentList(Long designerId){
+    // 디자이너 매출 목록 (일별)
+    public List<PaymentListDto> getPaymentList(Long memberId, LocalDate selectedDate){
 
-        List<Payment> paymentList = paymentRepo.findByDesignerOrderByPayDate(designerId);
+        LocalDateTime start = selectedDate.atStartOfDay();
+        LocalDateTime end = selectedDate.atTime(LocalTime.MAX);
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+
+        List<Payment> paymentList = paymentRepo.findByDesignerAndPeriod(designer.getId(), start, end);
+
+        System.out.println(paymentList);
 
         List<PaymentListDto> dtoList = new ArrayList<>();
         for(Payment payment : paymentList) {
@@ -229,10 +240,14 @@ public class ManageService {
     
     // 결제내역 등록
     @Transactional
-    public void savePayment(PaymentForm form){
+    public void savePayment(PaymentForm form, Long memberId){
 
-        Reservation reservation = reservationRepo.findById(form.getReservationId()).orElse(null);
-        ShopDesigner designer = form.getDesignerId() != null ? shopDesignerRepo.findById(form.getDesignerId()).orElse(null) : null;
+        Reservation reservation = null;
+        if(form.getReservationId() != null){
+            reservation = reservationRepo.findById(form.getReservationId())
+                    .orElseThrow(() -> new IllegalArgumentException("예약 ID가 유효하지 않습니다."));
+        }
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
         Payment payment = form.to(reservation, designer);
 
