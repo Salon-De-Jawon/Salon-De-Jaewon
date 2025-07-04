@@ -1,6 +1,7 @@
 package com.salon.service.user;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.Role;
 import com.salon.dto.user.SignUpDto;
 import com.salon.entity.Member;
 import com.salon.repository.MemberRepo;
@@ -36,6 +37,7 @@ public class MemberService implements UserDetailsService {
     public void register(SignUpDto dto) {
         Member member = dto.to(passwordEncoder);
         member.setCreateAt(LocalDateTime.now());
+        member.setRole(Role.USER);
 
         memberRepo.save(member);
     }

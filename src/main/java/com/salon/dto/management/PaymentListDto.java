@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 public class PaymentListDto {
 
     private Long id;
-    private String designerName;
+    private String memberName;
+    private String serviceName;
     private LocalDateTime payDate;
-    private int finalPrice;
+    private String finalPrice;
     private String memo;
     private String category;
 
@@ -21,15 +22,17 @@ public class PaymentListDto {
         PaymentListDto dto = new PaymentListDto();
         dto.setId(payment.getId());
         if(payment.getReservation() != null) { // 예약시
-            dto.setDesignerName(payment.getReservation().getShopDesigner().getDesigner().getMember().getName());
-            dto.setCategory("예약결제");
+            dto.setMemberName(payment.getReservation().getMember().getName());
+            dto.setCategory("예약 결제");
         } else if(payment.getShopDesigner() != null) { // 방문시
-            dto.setDesignerName(payment.getShopDesigner().getDesigner().getMember().getName());
-            dto.setCategory("방문결제");
+            dto.setMemberName(payment.getVisitorName());
+            dto.setCategory("방문 결제");
         }
 
+
+        dto.setServiceName(payment.getServiceName());
         dto.setPayDate(payment.getPayDate());
-        dto.setFinalPrice(payment.getFinalPrice());
+        dto.setFinalPrice(String.format("%,d원", payment.getFinalPrice()));
         dto.setMemo(payment.getMemo());
 
         return dto;

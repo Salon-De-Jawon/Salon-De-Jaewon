@@ -3,18 +3,265 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
 <head>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
     <th:block layout:fragment="css"></th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
+    <div class="container">
+        <div class="main-wrap">
+            <div class="location-area">
+                <div class="search-area">
+                    <div class="shop-search-box">
+                        <div class="search-icon">
+                            <img src="/images/search.png" alt="돋보기" />
+                        </div>
+                    </div>
 
-    메인페이지
+                    <div class="location-search-area">
+                        <div class="location-icon">
+                            <img src="/images/location.png" alt="위치아이콘" />
+                        </div>
+                        <div class="location-now">대전시 어쩌구</div>
+                    </div>
+                </div>
+            </div>
 
-    <form th:action="@{/logout}" method="post" style="display:inline;">
-        <button type="submit">로그아웃</button>
-    </form>
+            <div class="main-content-area">
+                <div class="main-map"><div id="map"></div></div>
+<!--                <div class="split-box" onclick="openSplit()"></div>-->
+            </div>
+
+
+            <div class="swiper ad-banner-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">배너 광고1</div>
+                    <div class="swiper-slide">배너 광고2</div>
+                    <div class="swiper-slide">배너 광고3</div>
+                    <div class="swiper-slide">배너 광고4</div>
+                    <div class="swiper-slide">배너 광고5</div>
+                </div>
+            </div>
+
+            <div class="best-shops-area">
+                <div class="best-shops-title-box">
+                    <div class="best-shops-title">샵 추천</div>
+                    <div class="best-shops-icon">
+                        <img src="/images/shop.png" alt="샵아이콘" />
+                    </div>
+                </div>
+
+                <div class="swiper shopSwiper">
+                    <div class="swiper-wrapper shop-slider">
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0001미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0002미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0003미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0004미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0005미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0006미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0007미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 슬라이드 항목 -->
+                        <div class="swiper-slide">
+                            <div class="shop-content">
+                                <div class="skew-box"></div>
+                                <div class="shop-info">
+                                    <div class="shop-info-detail">
+                                        <div class="shop-name">0008미용실</div>
+                                        <div class="shop-distance">120m</div>
+                                    </div>
+                                    <div class="shop-review-detail">
+                                        <img src="/images/pointed-star.png" alt="별점" />
+                                        <div class="shop-rating">5.0</div>
+                                        <img src="/images/comment.png" alt="리뷰" />
+                                        <div class="shop-review-count">1,548</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 총 8개 슬라이드 생성 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="best-designer-area">
+                <div class="best-designer-title-box">
+                    <div class="best-designer-title">디자이너 추천</div>
+                    <img src="/images/scissors.png" alt="디자이너아이콘" />
+                </div>
+
+                <div class="best-designer-container">
+                    <div class="best-designer-list-box">
+                        <div class="best-designer-box">
+                            <div class="designer-profile-box">
+                                <img src="" alt="디자이너프로필" />
+                            </div>
+                            <div class="designer-info-box">
+                                <div class="designer-name">000 원장</div>
+                                <div class="designer-shop">000 미용실</div>
+                                <div class="designer-specialty-area">
+                                    <div class="designer-specialty-tag">커트</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="designer-bubble">
+                        <div class="bubble-tall"></div>
+                        <div class="bubble-content">
+                            <div class="review-img">
+                                <img src="" alt="리뷰이미지" />
+                            </div>
+
+                            <div class="review-info-area">
+                                <div class="review-rating-box">
+                                    <img src="/images/pointed-star.png" alt="별" />
+                                    <div class="review-rating">5.0</div>
+                                </div>
+
+                                <div class="review-create-at">2025.06.21</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--  fragment end  -->
 </div>
 
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey} + '&libraries=services'}"></script>
+    <script src="/javascript/main.js" defer></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+</th:block>
 </body>
 </html>
