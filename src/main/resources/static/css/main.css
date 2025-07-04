@@ -1,0 +1,420 @@
+:root {
+  /* 벽자색 */
+  --main-color: #8c9ed9;
+  /* 설백색 */
+  --font-white: #e2e7e4;
+  /* 청현색 */
+  --point-color: #566a8e;
+
+  /* 경고의 빨간색 */
+  --red-msg: rgb(247, 50, 50);
+
+  --light-gray: rgb(231, 231, 231);
+
+  /* 버튼 */
+  --pink-backgroud: rgb(252, 222, 227);
+
+  /* 폰트 */
+  --font-pretendard: "pretendard", sans-serif;
+  --font-noto-snas: "Noto Sans KR", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 최상단 */
+.location-area {
+  margin: 30px auto 0 auto;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 900px;
+}
+
+.search-area {
+  width: 900px;
+  display: flex;
+  justify-content: left;
+}
+
+.shop-search-box {
+  height: 50px;
+  width: 550px;
+  display: flex;
+  align-items: center;
+  border-radius: 50px;
+  background-color: var(--light-gray);
+}
+
+.search-icon > img {
+  width: 30px;
+  margin: 20px;
+}
+
+.location-search-area {
+  margin-left: 20px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.location-icon > img {
+  width: 40px;
+}
+
+.location-now {
+  font-size: 25px;
+  margin-left: 15px;
+  margin-bottom: 5px;
+}
+
+/* 지도 부분 */
+
+.main-content-area {
+  margin-top: 20px;
+  position: relative;
+  width: 1280px;
+  height: 500px;
+  overflow: hidden;
+}
+
+.main-map {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 650px;
+  height: 450px;
+  z-index: 0;
+}
+
+#map {
+  width: 100%;
+  height: 500px;
+}
+
+/* 하나의 split-box가 화면 덮음 */
+.split-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+  overflow: hidden;
+}
+
+/* 좌우 가상 요소 */
+.split-box::before,
+.split-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: white;
+  transition: transform 0.7s ease;
+  z-index: 1;
+}
+
+.split-box::before {
+  left: 0;
+}
+
+.split-box::after {
+  right: 0;
+}
+
+.split-box.open::before {
+  transform: translateX(-100%);
+}
+
+.split-box.open::after {
+  transform: translateX(100%);
+}
+
+/* 광고 배너 */
+
+.ad-banner-swiper {
+  width: 1280px;
+  height: 200px;
+  margin: 50px 0;
+  padding: 0 40px; /* 좌우 미리보기 여백 */
+  box-sizing: border-box;
+}
+
+.ad-banner-swiper .swiper-slide {
+  background: #d3d3d3;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  height: 200px;
+  line-height: 80px;
+}
+
+/* 샵 추천 타이틀 */
+
+.best-shops-area {
+  display: flex;
+  flex-direction: column;
+  margin: 100px 0;
+}
+
+.best-shops-title-box {
+  display: flex;
+  justify-content: left;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.best-shops-icon > img {
+  width: 35px;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+/* 샵 리스트 */
+.shop-slider-section {
+  padding: 20px;
+}
+
+.shopSwiper {
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  width: 1280px;
+  margin: 0 auto; /* 좌우 잘린 카드 보이게 */
+  padding: 0 60px;
+  cursor: grab;
+  box-sizing: border-box;
+}
+
+.shop-slider .swiper-slide {
+  width: 360px !important; /* 또는 원하는 고정 크기 */
+  flex-shrink: 0;
+}
+
+.shop-slider {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding: 10px;
+}
+
+.shopSwiper.active {
+  cursor: grabbing;
+}
+
+.shop-content {
+  transform: skew(-10deg);
+  background: #f3f3f3;
+  padding: 16px;
+  max-width: 360px;
+  height: 450px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skew-box {
+  width: 100%;
+  height: 140px;
+  background: #ccc;
+  height: 300px;
+  margin-bottom: 10px;
+}
+
+.shop-info {
+  text-align: center;
+  font-size: 13px;
+}
+
+.shop-info-detail {
+  display: flex;
+  width: 330px;
+  justify-content: space-between;
+  align-items: end;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.unskew {
+  transform: skew(10deg); /* 역방향으로 되돌림 */
+  width: 100%;
+}
+
+.shop-info-detail {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.shop-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.shop-distance {
+  font-size: 14px;
+  color: #666;
+}
+
+.shop-review-detail {
+  display: flex;
+  justify-content: left;
+}
+
+.shop-review-detail img {
+  width: 20px;
+  margin-right: 5px;
+}
+
+.shop-rating {
+  margin-right: 10px;
+}
+
+/* 디자이너 추천 영역 */
+
+.best-designer-area {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  margin: 100px 0;
+}
+
+.best-designer-title-box {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.best-designer-title {
+  font-size: 30px;
+  font-weight: bolder;
+}
+
+.best-designer-title-box > img {
+  width: 35px;
+  height: 35px;
+  transform: rotate(90deg);
+  margin-right: 20px;
+  margin-left: 15px;
+}
+
+/* 디자이너 컨테이너 부분 */
+
+.best-designer-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 1280px;
+  border-radius: 15px;
+  background-color: var(--light-gray);
+  margin: 20px 0;
+  padding: 50px;
+}
+
+.best-designer-list-box {
+  width: 550px;
+  height: 600px;
+}
+
+.best-designer-box {
+  background-color: white;
+  height: 130px;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.designer-profile-box {
+  background-color: var(--light-gray);
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: 0 20px;
+}
+
+.designer-info-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+}
+
+.designer-name {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.designer-shop {
+  color: gray;
+}
+
+.designer-specialty-tag {
+  color: gray;
+}
+
+/* 디자이너 버블 */
+
+.designer-bubble {
+  height: 600px;
+  display: grid;
+  grid-template-columns: 1fr 9fr;
+}
+
+.bubble-content {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 15px;
+  justify-content: space-between;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-info-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.review-img {
+  background-color: var(--light-gray);
+  height: 430px;
+}
+
+.review-rating-box {
+  margin-top: 10px;
+  display: flex;
+  justify-content: left;
+  font-size: 25px;
+  align-items: center;
+}
+
+.review-rating-box > img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}

@@ -6,6 +6,7 @@ import com.salon.service.user.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @Controller
-@AllArgsConstructor
 public class MainController {
+    @Value("${kakao.maps.api.key}")
+    private String kakaoMapsKey;
 
     private final MemberService memberService;
+
+    public MainController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
 
     @GetMapping("/")
     public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
@@ -28,6 +35,8 @@ public class MainController {
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
         }
+
+        model.addAttribute("kakaoMapsKey", kakaoMapsKey);
 
         return "/mainpage";
     }

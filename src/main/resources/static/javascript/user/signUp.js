@@ -323,6 +323,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const telErrorMsg = document.getElementById("telErrorMsg");
 
 
+    const form = document.getElementById("signUpDto");
+    console.log("폼:", form);
+
+
+    form.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        if (validateForm()) {
+            setTimeout(() => form.submit(), 100);
+        }
+
+    });
+
+
 
     function validateForm() {
         const loginId = loginIdInput.value.trim();
@@ -333,6 +348,7 @@ document.addEventListener("DOMContentLoaded", function () {
             idMsg.style.color = "red";
             idMsg.style.display = "block";
             loginIdInput.focus();
+            console.log("나야 내가 인풋으로 보낸거야");
             return false;
         }
 
@@ -341,14 +357,16 @@ document.addEventListener("DOMContentLoaded", function () {
             idMsg.style.color = "var(--red-msg)";
             idMsg.style.display = "block";
             chkLoginIdBtn.focus();
+            console.log("중복");
             return false;
         }
 
         if(!isPwValid) {
             pwMsg.textContent="비밀번호를 확인해주세요.";
-            pwMsg.style.display="block";
+            pwMsg.style.display = "block";
             pwMsg.style.color = "var(--red-msg)";
             pwInput.focus();
+            console.log("비밀번호");
             return false;
         }
 
@@ -386,6 +404,9 @@ document.addEventListener("DOMContentLoaded", function () {
           return false;
         }
 
+        nameErrorMsg.textContent="";
+        nameErrorMsg.style.display = "none";
+
         if (!birthDateInput.value) {
           formGroupMsg.textContent = "생년월일을 입력해주세요.";
           formGroupMsg.style.color = "var(--red-msg)";
@@ -393,6 +414,9 @@ document.addEventListener("DOMContentLoaded", function () {
           birthDateInput.focus();
           return false;
         }
+
+        formGroupMsg.textContent="";
+        formGroupMsg.style.display = "none";
 
         const selectedGender = Array.from(genderInputs).some(input => input.checked);
         if (!selectedGender) {
@@ -403,32 +427,42 @@ document.addEventListener("DOMContentLoaded", function () {
           return false;
         }
 
+        formGroupMsg.textContent="";
+        formGroupMsg.style.display = "none";
+
         const telValue = telInput.value.trim();
 
         if (!telValue) {
+
           telErrorMsg.textContent = "전화번호를 입력하세요.";
           telErrorMsg.style.color = "var(--red-msg)";
           telErrorMsg.style.display = "block";
-          nameInput.focus();
+          telInput.focus();
           return false;
         }
+        telErrorMsg.textContent="";
+        telErrorMsg.style.display = "none";
 
+        const termsUseAgree = document.querySelector("input[name='termsUse'][value='agree']:checked");
+        const termsPrivacyAgree = document.querySelector("input[name='termsPrivacy'][value='agree']:checked");
+
+        if (!termsUseAgree) {
+            alert("이용약관에 동의해주세요.");
+            document.querySelector("input[name='termsUse'][value='agree']").focus();
+            return false;
+        }
+
+        if (!termsPrivacyAgree) {
+            alert("개인정보처리방침에 동의해주세요.");
+            document.querySelector("input[name='termsPrivacy'][value='agree']").focus();
+            return false;
+        }
 
         return true;
 
     }
 
 
-    const form = document.querySelector("form");
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        if (validateForm()) {
-            setTimeout(() => form.submit(), 100);
-        }
-
-    });
 
 
 

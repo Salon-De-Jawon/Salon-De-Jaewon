@@ -113,23 +113,74 @@ input[type="email"] {
   display: none;
 }
 
-/* ===== 소셜 정보 안내 ===== */
-.social-info p {
+/* ===== 개인 정보 ===== */
+.personal-info p {
   font-size: 13px;
   color: #666;
   margin-bottom: 15px;
 }
 
+
+
+.name-title-box {
+    display: flex;
+}
+
+.birthdate-gender {
+    display: flex;
+    justify-content: space-between;
+}
+
+.birthdate-gender > div > label {
+    margin-right: 10px;
+}
+
+.birth-date-box {
+    display: flex;
+    align-items: center;
+}
+
+.gender-box {
+    display: flex;
+    align-items: center;
+}
+
+
 /* ===== 성별 라디오 정렬 ===== */
 .gender-options {
   display: flex;
-  gap: 30px;
-  margin-top: 5px;
+  position: relative;
+}
+
+.gender-options input[type="radio"] {
+  display: none;
 }
 
 .gender-options label {
-  font-size: 14px;
-  font-weight: normal;
+  padding: 10px 20px;
+  border: 2px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+  margin-right: -1px;
+  position: relative;
+  z-index: 0;
+}
+
+/* 마지막 버튼은 margin-right 제거 */
+.gender-options label:last-child {
+  margin-right: 0;
+}
+
+/* 선택된 라벨은 위로 올라오면서 선을 덮음 */
+.gender-options input[type="radio"]:checked + label {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  color: white;
+  z-index: 1; /* ★ 선택된 게 위에 오도록 */
 }
 
 /* ===== 약관 동의 ===== */
