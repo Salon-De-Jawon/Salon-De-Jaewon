@@ -1,15 +1,15 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
   padding: 30px;
 }
 #main{
-    max-width: 800px;
+    max-width: 1280px;
     margin: 40px auto;
     padding: 30px 40px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Pretendard','Noto Sans KR', sans-serif;
     color:#333;
 }
 .writeDate{
@@ -28,17 +28,17 @@ h1 {
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  color: #222;
+  color: #8C9ED9;
 }
 .attachment {
     font-size: 15px;
     margin-bottom: 20px;
     padding : 10px;
     background-color: #f9f9f9;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid #8C9ED9;
 }
 .attachment a{
-    color : #007bff;
+    color : #566A8E;
     text-decoration: underline;
 }
 .link div {
@@ -88,7 +88,7 @@ h1 {
   background-color: #f0ad4e;
 }
 .edit {
-  background-color: #5bc0de;
+  background-color: #FF3B77;
 }
 .delete {
   background-color: #d9534f;

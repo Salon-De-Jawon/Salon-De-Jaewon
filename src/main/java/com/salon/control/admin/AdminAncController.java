@@ -59,7 +59,7 @@ public class AdminAncController {
     public String update(@AuthenticationPrincipal CustomUserDetails userDetails,
                          @ModelAttribute AncCreateDto ancCreateDto){
         Member member = userDetails.getMember();
-        ancService.update(ancCreateDto, userDetails.getMember());
+        ancService.update(ancCreateDto, member);
         return "redirect:/";
     }
     @PostMapping("/delete")

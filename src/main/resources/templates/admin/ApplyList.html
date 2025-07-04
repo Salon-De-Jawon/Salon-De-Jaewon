@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/admin/applyList.css">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+  <h2>디자이너 승인 요청 목록</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>성명</th>
+      <th>자격증 번호</th>
+      <th>발급일</th>
+      <th>요청일</th>
+      <th>상태</th>
+      <th>승인/거절</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="apply : ${applyList}">
+      <td th:text="${apply.id}"></td>
+      <td th:text="${apply.member.name}"></td>
+      <td th:text="${apply.applyNumber}"></td>
+      <td th:text="${apply.issuedDate}"></td>
+      <td th:text="${#temporals.format(apply.createAt, 'yyyy-MM-dd')}"></td>
+      <td th:text="${apply.status}"></td>
+      <td>
+        <div th:if="${apply.status.name() == 'WAITING'}">
+          <form th:action="@{/admin/designer/approve/{id}(id=${apply.id})}" method="post" style="display:inline;">
+            <button type="submit">승인</button>
+          </form>
+          <form th:action="@{/admin/designer/reject/{id}(id=${apply.id})}" method="post" style="display:inline;">
+            <button type="submit">거절</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

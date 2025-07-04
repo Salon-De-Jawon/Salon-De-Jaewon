@@ -11,18 +11,22 @@
 <div layout:fragment="main" id="main">
   <form th:action="@{/admin/designer/request}" th:object="${applyDto}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
     <div>
-      <label>성명:</label>
+      <label>성명</label>
       <input type="text" name="name" th:field="*{name}" required />
     </div>
     <div>
-      <label>자격증 번호:</label>
+      <label>자격증 번호</label>
       <input type="text" name="applyNumber" id="applyNumber" th:field="*{applyNumber}">
     </div>
     <div>
-      <label>자격증 파일 첨부(이미지/PDF):</label><br>
+      <label>자격증 파일 첨부(이미지/PDF)</label>
       <input type="file" name="file" id="file" accept="image/*, application/pdf">
     </div>
-    <div style="margin-top: 20px">
+    <div>
+      <label>발급일</label>
+      <input type="date" name="issuedDate" id="issuedDate" th:field="*{issuedDate}">
+    </div>
+    <div class="form-buttons">
       <button type="submit">승인 요청</button>
       <a href="/" style="margin-left: 10px;"></a>
     </div>
