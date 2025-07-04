@@ -14,13 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +92,37 @@ public class ManageController {
 
         return "management/attendance";
     }
+
+    // 출퇴근용 json
+    @PostMapping("/attendance/{type}")
+    public ResponseEntity<?> saveAttendance(
+            @RequestBody String isoTime,
+            @PathVariable("type") String type,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long memberId = userDetails.getMember().getId();
+        String trimmed = isoTime.replace("\"", "");
+        LocalDateTime time = OffsetDateTime.parse(trimmed).toLocalDateTime();
+
+        if ("start".equalsIgnoreCase(type)) {
+            manageService.clockIn(memberId, time);
+        } else if ("end".equalsIgnoreCase(type)) {
+            manageService.clockOut(memberId, time);
+        } else {
+            return ResponseEntity.badRequest().body("Invalid attendance type");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 페이지 초기화 시 출퇴근 상태 확인용 API
+    @GetMapping("/attendance/status")
+    public ResponseEntity<?> getTodayAttendanceStatus(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long memberId = userDetails.getMember().getId();
+        AttendanceStatusDto status = manageService.getTodayStatus(memberId);
+        return ResponseEntity.ok(status);
+    }
+
 
 
     // 일일 통계
