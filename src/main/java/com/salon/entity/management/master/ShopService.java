@@ -31,4 +31,6 @@ public class ShopService {
     private String imgName;
     private String imgUrl;
 
+    private boolean isRecommended;
+
 }

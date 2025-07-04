@@ -105,3 +105,9 @@
   display: inline-block;
 }
 
+.section-container table td.table-empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+

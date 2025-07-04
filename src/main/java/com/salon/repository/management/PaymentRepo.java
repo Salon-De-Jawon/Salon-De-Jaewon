@@ -19,11 +19,12 @@ public interface PaymentRepo extends JpaRepository<Payment, Long> {
 //    List<Payment> findByDesignerOrderByPayDate(@Param("designerId") Long designerId);
 
     // 당일 결제 회원 수 (디자이너)
-    @Query("SELECT COUNT(p) FROM Payment p WHERE (p.reservation.shopDesigner.id = :designerId)" +
-            "OR (p.shopDesigner.id = :designerId) AND DATE(p.payDate) = CURRENT_DATE"
-    )
+    @Query("SELECT COUNT(p) FROM Payment p LEFT JOIN p.reservation r " +
+    "WHERE ((r.shopDesigner.id = :designerId OR p.shopDesigner.id = :designerId) " +
+        "AND DATE(p.payDate) = CURRENT_DATE)")
     int countTodayCompletePayments(@Param("designerId") Long designerId);
 
+    // 결제 내역 가져오기 (기간)
     @Query("SELECT p FROM Payment p LEFT JOIN p.reservation r " +
         "WHERE (p.shopDesigner.id = :designerId OR r.shopDesigner.id = :designerId) " +
         "AND p.payDate BETWEEN :start AND :end ORDER BY p.payDate ASC"

@@ -16,4 +16,7 @@ public interface ServiceRepo extends JpaRepository<ShopService, Long> {
     // 미용사 담당 시술목록 (카테고리별로)
     List<ShopService> findByShopIdAndCategoryIn(Long shopId, List<ServiceCategory> categories);
 
+    // 미용실 추천 시술 목록
+    List<ShopService> findByShopIdAndIsRecommendedTrue(Long shopId);
+
 }

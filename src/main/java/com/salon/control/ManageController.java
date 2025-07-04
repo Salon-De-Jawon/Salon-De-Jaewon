@@ -139,7 +139,7 @@ public class ManageController {
     
     // 방문 결제 등록
     @PostMapping("/sales/new")
-    public String saleSave(@Valid PaymentForm form,
+    public String saveSale(@Valid PaymentForm form,
                            @AuthenticationPrincipal CustomUserDetails userDetails){
 
         manageService.savePayment(form, userDetails.getMember().getId());
@@ -188,6 +188,12 @@ public class ManageController {
     }
     
     // 예약 등록
+    @PostMapping("/reservations/new")
+    public String saveRes(@Valid ReservationDetailDto newRes){
+
+
+        return "redirect:/manage/reservations";
+    }
 
     // 회원관리카드
     @GetMapping("/member-card")
