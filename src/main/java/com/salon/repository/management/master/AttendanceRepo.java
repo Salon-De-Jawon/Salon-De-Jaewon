@@ -12,12 +12,13 @@ import java.util.Optional;
 @Repository
 public interface AttendanceRepo extends JpaRepository<Attendance, Long> {
 
-    // 해당 디자이너 근태목록 (월별 기준)
-    List<Attendance> findByShopDesignerIdAndClockInBetweenOrderByIdDesc(Long designerId, LocalDate start, LocalDate end);
+    // 해당 디자이너 근태목록
+    List<Attendance> findByShopDesignerIdAndClockInBetweenOrderByIdDesc(Long designerId, LocalDateTime start, LocalDateTime end);
 
     // 출근 여부 (출근용)
     boolean existsByShopDesignerIdAndClockInBetween(Long id, LocalDateTime clockIn, LocalDateTime clockOut);
 
     // 출근 여부 (퇴근용)
     Optional<Attendance> findByShopDesignerIdAndClockInBetween(Long id, LocalDateTime dayStart, LocalDateTime dayEnd);
+
 }

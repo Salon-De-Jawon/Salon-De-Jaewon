@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/management/reservations.css">
+  </th:block>
+</head>
+
+<body>
+<div layout:fragment="main">
+  <div class="section-container">
+    <h3>디자이너 예약 현황</h3>
+
+    <!-- 날짜 선택 영역 -->
+    <div class="date-selector">
+      <a th:each="date : ${dateList}"
+         th:href="@{/manage/reservations(date=${date})}"
+         th:text="${#temporals.format(date, 'MM/dd (E)')}"
+         th:classappend="${date} == ${selectedDate} ? 'active' : ''">
+        07/03 (수)
+      </a>
+    </div>
+
+    <!-- 예약 리스트 출력 -->
+    <table>
+      <thead>
+      <tr>
+        <th>시간</th>
+        <th>고객명</th>
+        <th>시술</th>
+        <th>상태</th>
+        <th>메모</th>
+        <th>관리</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="res : ${reservationList}">
+        <td th:text="${res.date.toLocalDate()}">10:00</td>
+        <td th:text="${res.memberName}">홍길동</td>
+        <td th:text="${res.serviceName}">컷트</td>
+        <td th:if="${res.status.toString()} == '예약완료'"
+            th:text="${res.status}" class="status-complete">예약완료</td>
+        <td th:if="${res.status.toString()} == '예약중'"
+            th:text="${res.status}" class="status-reserved">예약중</td>
+        <td th:if="${res.status.toString()} == '예약취소'"
+            th:text="${res.status}" class="status-canceled">예약취소</td>
+        <td th:if="${res.status.toString()} == '노쇼'"
+            th:text="${res.status}" class="status-noshow">노쇼</td>
+        <td th:text="${res.comment}">짧게 해주세요</td>
+        <td><button class="btn-edit">수정</button></td>
+      </tr>
+      <tr>
+        <td>13:30</td>
+        <td>김민지</td>
+        <td>염색</td>
+        <td class="pending">대기</td>
+        <td>어두운 갈색</td>
+        <td><button class="btn-edit">수정</button></td>
+      </tr>
+
+      <tr th:if="${#lists.isEmpty(reservationList)}">
+        <td colspan="6" class="table-empty"> 예약 현황이 없습니다. </td>
+      </tr>
+      </tbody>
+    </table>
+
+
+
+    <a href="/manage/reservations/new" class="btn-add-reservation">새 예약 등록</a>
+  </div>
+</div>
+</body>
+</html>

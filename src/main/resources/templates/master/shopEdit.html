@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+
+<head>
+    <link rel="stylesheet" th:href="@{/css/master/masterCss.css}" />
+</head>
+
+<div layout:fragment="main" class="owner-container">
+    <h2>매장 정보 수정</h2>
+    <form action="/manage/shop/update" method="post" class="shop-form">
+        <div class="form-group">
+            <label>매장명</label>
+            <input type="text" name="name" value="헤어짱 홍대점" />
+        </div>
+        <div class="form-group">
+            <label>주소</label>
+            <input type="text" name="address" value="서울시 마포구..." />
+        </div>
+        <div class="form-group">
+            <label>영업시간</label>
+            <input type="time" name="openTime" value="10:00" /> ~
+            <input type="time" name="closeTime" value="20:00" />
+        </div>
+        <div class="form-group">
+            <label>소개글</label>
+            <textarea name="description">트렌디한 감성 미용실</textarea>
+        </div>
+        <button type="submit" class="btn-submit">수정 완료</button>
+    </form>
+</div>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" th:href="@{/css/management/memberCard.css}">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+
+  <div class="section-container">
+    <h3 class="customer-title">회원 리스트</h3>
+    <ul id="customer-list" style="list-style:none; padding-left:0;">
+      <!-- 회원 아이템은 JS에서 동적으로 넣을 예정 -->
+    </ul>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script>
+    const customerData = {
+      "홍길동": {
+        memo: "두피가 예민함. 염색 시 항상 테스트 필수.",
+        payments: [
+          { date: "2025-06-30", desc: "컷트 + 염색", price: "120,000원", memo: "밝은 색상 선호, 귀 옆 라인 중요하게 생각함." }
+        ]
+      },
+      "김영희": {
+        memo: "",
+        payments: [
+          { date: "2025-06-25", desc: "컷트", price: "30,000원", memo: "" }
+        ]
+      },
+      "박철수": {
+        memo: "",
+        payments: []
+      }
+    };
+
+    const customerListEl = document.getElementById('customer-list');
+
+    Object.entries(customerData).forEach(([name, info]) => {
+      const li = document.createElement('li');
+      li.classList.add('customer-item');
+
+      const headerDiv = document.createElement('div');
+      headerDiv.classList.add('customer-header');
+
+      const nameMemoDiv = document.createElement('div');
+      nameMemoDiv.classList.add('name-memo');
+      nameMemoDiv.innerHTML = `<strong>${name}</strong><em>${info.memo || '메모 없음'}</em>`;
+
+      const memoBtn = document.createElement('button');
+      memoBtn.classList.add('memo-btn');
+      memoBtn.textContent = info.memo ? '수정' : '작성';
+
+      headerDiv.appendChild(nameMemoDiv);
+      headerDiv.appendChild(memoBtn);
+      li.appendChild(headerDiv);
+
+      const detailDiv = document.createElement('div');
+      detailDiv.classList.add('customer-detail');
+
+      const paymentTitle = document.createElement('h5');
+      paymentTitle.textContent = '시술 내역';
+      detailDiv.appendChild(paymentTitle);
+
+      const paymentUl = document.createElement('ul');
+
+      if (info.payments.length === 0) {
+        const noItem = document.createElement('li');
+        noItem.textContent = '시술 내역이 없습니다.';
+        paymentUl.appendChild(noItem);
+      } else {
+        info.payments.forEach(p => {
+          const pLi = document.createElement('li');
+          pLi.innerHTML = `<strong>${p.date}</strong>: ${p.desc} - ${p.price}` +
+            (p.memo ? `<br><small>메모: ${p.memo}</small>` : '');
+          paymentUl.appendChild(pLi);
+        });
+      }
+
+      detailDiv.appendChild(paymentUl);
+      li.appendChild(detailDiv);
+
+      // 펼침: 리스트 클릭 시 detail 토글
+      headerDiv.addEventListener('click', () => {
+        li.classList.toggle('open');
+      });
+
+      // 버튼만 따로 동작
+      memoBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // toggle 안 되도록 막음
+        alert(`[${name}] 메모 ${info.memo ? '수정' : '작성'} 기능`);
+      });
+
+      customerListEl.appendChild(li);
+    });
+  </script>
+
+
+</th:block>
+
+</body>
+</html>
