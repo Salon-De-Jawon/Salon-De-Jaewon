@@ -5,84 +5,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (!toggleButton || !leaveButton) return;
 
-  function getTodayString() {
-    const now = new Date();
-    return now.toISOString().slice(0, 10); // YYYY-MM-DD
-  }
-
-  // 저장된 출근/퇴근 시간 (문자열)
-  const savedStart = localStorage.getItem('attendanceStartTime');
-  const savedLeave = localStorage.getItem('attendanceLeaveTime');
-  const today = getTodayString();
-
-  // 시간 문자열에서 날짜(YYYY-MM-DD) 추출 함수
-  function extractDate(dateTimeStr) {
-    if (!dateTimeStr) return null;
-    // 예: '2025. 07. 01. 09:10' 형태일 경우 공백 기준 앞부분만 추출하거나,
-    // 혹은 정확한 포맷에 맞게 파싱해야 함
-    // 여기서는 'YYYY. MM. DD.' 형태라면 정규식으로 숫자만 추출
-    const match = dateTimeStr.match(/(\d{4})[.\-년 ]+(\d{1,2})[.\-월 ]+(\d{1,2})/);
-    if (!match) return null;
-    const y = match[1].padStart(4, '0');
-    const m = match[2].padStart(2, '0');
-    const d = match[3].padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-
-  const savedStartDate = extractDate(savedStart);
-  const savedLeaveDate = extractDate(savedLeave);
-
+  // 근태 상태 (출근했으면 true)
   let isWorking = false;
 
-  if (savedLeaveDate === today) {
-    toggleButton.disabled = true;
-    toggleButton.textContent = '오늘 퇴근 완료';
-    toggleButton.style.backgroundColor = '#aaa';
-    timeDisplay.innerHTML = `출근시간: ${savedStart || '-'}<br>퇴근시간: ${savedLeave || '-'}`;
-    isWorking = false;
-  } else if (savedStartDate === today) {
-    toggleButton.disabled = false;
-    toggleButton.textContent = '퇴근하기';
-    toggleButton.style.backgroundColor = '#566a8e';
-    timeDisplay.innerHTML = `출근시간: ${savedStart || '-'}`;
-    isWorking = true;
-  } else {
-    toggleButton.disabled = false;
-    toggleButton.textContent = '출근하기';
-    toggleButton.style.backgroundColor = '#8c9ed9';
-    timeDisplay.innerHTML = '';
-    isWorking = false;
+  // 페이지 로딩 시 출퇴근 상태를 서버에서 받아서 초기화하는 함수 (선택사항)
+  async function initAttendanceStatus() {
+    try {
+      const res = await fetch('/api/attendance/status');
+      if (res.ok) {
+        const data = await res.json();
+        isWorking = data.isWorking;
+
+        if (data.clockIn) {
+          timeDisplay.innerHTML = `출근시간: ${data.clockIn}`;
+          toggleButton.textContent = isWorking ? '퇴근하기' : '오늘 퇴근 완료';
+          toggleButton.disabled = !isWorking ? true : false;
+          toggleButton.style.backgroundColor = isWorking ? '#566a8e' : '#aaa';
+        } else {
+          toggleButton.textContent = '출근하기';
+          toggleButton.disabled = false;
+          toggleButton.style.backgroundColor = '#8c9ed9';
+          timeDisplay.innerHTML = '';
+        }
+      }
+    } catch (e) {
+      console.error('출퇴근 상태 불러오기 실패', e);
+    }
   }
 
-  toggleButton.addEventListener('click', function () {
-    const now = new Date();
-    const formattedTime = now.toLocaleString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
+  initAttendanceStatus();
 
-    });
+  toggleButton.addEventListener('click', async function () {
+    const now = new Date();
+    const isoTime = now.toISOString();
 
     if (!isWorking) {
       if (!confirm('출근하시겠습니까?')) return;
 
-      isWorking = true;
-      toggleButton.textContent = '퇴근하기';
-      toggleButton.style.backgroundColor = '#566a8e';
-      timeDisplay.innerHTML = `출근시간: ${formattedTime}`;
-      localStorage.setItem('attendanceStartTime', formattedTime);
-      localStorage.removeItem('attendanceLeaveTime');
+      try {
+        const res = await fetch('/api/attendance?type=START', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(isoTime),
+        });
+
+        if (res.ok) {
+          isWorking = true;
+          toggleButton.textContent = '퇴근하기';
+          toggleButton.style.backgroundColor = '#566a8e';
+          timeDisplay.innerHTML = `출근시간: ${now.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`;
+        } else {
+          alert('출근 등록에 실패했습니다.');
+        }
+      } catch (e) {
+        alert('서버 통신 중 오류가 발생했습니다.');
+      }
+
     } else {
       if (!confirm('퇴근하시겠습니까?')) return;
 
-      isWorking = false;
-      toggleButton.textContent = '오늘 퇴근 완료';
-      toggleButton.style.backgroundColor = '#aaa';
-      toggleButton.disabled = true;
-      timeDisplay.innerHTML += `<br>퇴근시간: ${formattedTime}`;
-      localStorage.setItem('attendanceLeaveTime', formattedTime);
+      try {
+        const res = await fetch('/api/attendance?type=END', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(isoTime),
+        });
+
+        if (res.ok) {
+          isWorking = false;
+          toggleButton.textContent = '오늘 퇴근 완료';
+          toggleButton.style.backgroundColor = '#aaa';
+          toggleButton.disabled = true;
+          timeDisplay.innerHTML += `<br>퇴근시간: ${now.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`;
+        } else {
+          alert('퇴근 등록에 실패했습니다.');
+        }
+      } catch (e) {
+        alert('서버 통신 중 오류가 발생했습니다.');
+      }
     }
   });
 

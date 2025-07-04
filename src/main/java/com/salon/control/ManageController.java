@@ -10,6 +10,7 @@ import com.salon.service.management.ManageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -92,6 +93,7 @@ public class ManageController {
 
         return "management/attendance";
     }
+
 
     // 일일 통계
     @GetMapping("/statistics")
