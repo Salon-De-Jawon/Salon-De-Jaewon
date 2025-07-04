@@ -2,6 +2,7 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.management.AttendanceListDto;
+import com.salon.dto.management.ReservationListDto;
 import com.salon.dto.management.WeekDto;
 import com.salon.dto.management.DesignerMainPageDto;
 import com.salon.entity.management.ShopDesigner;
@@ -136,8 +137,11 @@ public class ManageController {
             dateList.add(selectedDate.plusDays(i));
         }
 
+        List<ReservationListDto> reservationList = manageService.getReservationList(userDetails.getMember().getId(), selectedDate);
+
         model.addAttribute("dateList", dateList);
         model.addAttribute("selectedDate", selectedDate);
+        model.addAttribute("reservationList", reservationList);
 
         return "management/reservations";
     }

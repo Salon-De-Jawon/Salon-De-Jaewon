@@ -197,9 +197,14 @@ public class ManageService {
     }
 
     // 디자이너 개인 예약 현황
-    public List<ReservationListDto> getReservationList(Long shopDesignerId){
+    public List<ReservationListDto> getReservationList(Long memberId, LocalDate selectedDate){
 
-        List<Reservation> reservationListlist = reservationRepo.findByShopDesignerIdOrderByReservationDateDesc(shopDesignerId);
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+        LocalDateTime start = selectedDate.atStartOfDay();
+        LocalDateTime end = selectedDate.atTime(LocalTime.MAX);
+
+        List<Reservation> reservationListlist =
+                reservationRepo.findByShopDesignerIdAndReservationDateBetweenOrderByReservationDateDesc(designer.getId(), start, end);
 
         List<ReservationListDto> dtoList = new ArrayList<>();
         for(Reservation entity : reservationListlist) {

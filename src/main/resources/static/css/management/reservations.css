@@ -65,19 +65,20 @@
   color: white;
 }
 
-.confirmed {
+.status-complete {
   color: green;
-  font-weight: bold;
 }
 
-.pending {
+.status-reserved {
   color: orange;
-  font-weight: bold;
 }
 
-.cancelled {
-  color: red;
-  font-weight: bold;
+.status-canceled {
+  color: var(--red-msg);
+}
+
+.status-noshow {
+  color: #666666;
 }
 
 .btn-edit {
