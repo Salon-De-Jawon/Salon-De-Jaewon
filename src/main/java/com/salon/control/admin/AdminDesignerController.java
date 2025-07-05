@@ -7,6 +7,7 @@ import com.salon.entity.admin.Apply;
 import com.salon.service.admin.DesApplyService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +20,15 @@ import java.util.List;
 @RequestMapping("/admin/designer")
 @RequiredArgsConstructor
 public class AdminDesignerController {
+    @Value("${ocr.api}")
+    private String ocrApiKey;
 
     private final DesApplyService desApplyService;
 
     @GetMapping("/request")
     public String requestForm(Model model){
         model.addAttribute("applyDto", new ApplyDto());
+        model.addAttribute("ocrApiKey", ocrApiKey);
         return "admin/apply";
     }
     @PostMapping("/request")
@@ -33,6 +37,9 @@ public class AdminDesignerController {
                           @RequestParam(value="file", required = false) MultipartFile file,
                           HttpSession session,
                           Model model){
+        System.out.println("✅ POST 요청 진입");
+        System.out.println("applyNumber: " + applyDto.getApplyNumber());
+        System.out.println("file: " + (file != null ? file.getOriginalFilename() : "없음"));
         Member member = userDetails.getMember();
         if(member == null){
             return "redirect:/";
@@ -43,6 +50,7 @@ public class AdminDesignerController {
             return "redirect:/";
         } catch (Exception e){
             model.addAttribute("error", "요청 처리 중 오류가 발생했습니다." + e.getMessage());
+            model.addAttribute("ocrApiKey", ocrApiKey);
             return "admin/apply";
         }
     }

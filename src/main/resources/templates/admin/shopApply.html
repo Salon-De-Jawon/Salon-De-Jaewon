@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/admin/shopApply.css">
+  </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+  <div class="modal-overlay" id="ownerApplyModel">
+    <div class="modal">
+      <h2>원장 디자이너 권한 신청</h2>
+      <form id="ownerApplyForm">
+        <label for="applyNumber">사업자등록번호</label>
+        <input type="text" id="applyNumber" name="applyNumber" placeholder="숫자만 입력" required>
+        <label for="issuedDate">발급일</label>
+        <input type="date" id="issuedDate" name="issueDate" required>
+        <div class="button">
+          <button type="submit" class="submit-btn">신청하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css">
+        <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/admin/question.css">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+    <div class="modal-overlay" id="inquiryModal">
+        <div class="modal">
+            <h2>고객 문의</h2>
+            <form id="inquiryForm" enctype="multipart/form-data">
+                <label for="category">카테고리</label>
+                <select name="category" id="category">
+                    <option value="리뷰">리뷰</option>
+                    <option value="예약">예약</option>
+                    <option value="기타">기타</option>
+                </select>
+                <label for="content">문의 내용</label>
+                <textarea name="content" id="content" rows="5" placeholder="문의 내용을 입력하세요"></textarea>
+
+                <label for="file">파일 첨부(선택)</label>
+                <input type="file" name="file" id="file">
+                <div class="button">
+                    <button type="submit" class="submit-btn">제출</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
