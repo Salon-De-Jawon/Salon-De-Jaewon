@@ -23,7 +23,7 @@
                         <div class="location-icon">
                             <img src="/images/location.png" alt="위치아이콘" />
                         </div>
-                        <div class="location-now">대전시 어쩌구</div>
+                        <div class="location-now"><span id="user-region">대전시</span></div>
                     </div>
                 </div>
             </div>
@@ -259,8 +259,9 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script th:inline="javascript" th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey} + '&libraries=services'}"></script>
-    <script src="/javascript/main.js" defer></script>
+
+    <script th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey}}"></script>
+    <script src="/javascript/main.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 </th:block>
 </body>

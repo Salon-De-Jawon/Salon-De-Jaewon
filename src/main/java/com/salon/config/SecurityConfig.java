@@ -1,5 +1,7 @@
 package com.salon.config;
 
+import com.salon.service.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,7 +13,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,8 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
                         .anyRequest().permitAll()
                 )
-
-
+                .userDetailsService(customUserDetailsService)
                 .csrf(
                         cr -> cr
                                 .ignoringRequestMatchers(

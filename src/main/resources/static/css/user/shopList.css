@@ -1,126 +1,338 @@
-/* 전체 컨테이너 */
+/* shopList.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.shop-list-wrap {
+  margin: 0;
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif; /* 한글 폰트 우선 적용 */
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.container {
+  width: 1280px; /* 고정 너비 1280px */
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* 상단 검색 영역 (Top Bar) */
+.top-bar {
+  padding: 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: center;
+}
+
+.location-area {
+  width: 100%; /* 부모 너비에 맞춤 */
+  max-width: 1200px; /* 이미지 기준 내부 컨텐츠 너비 (조정 가능) */
+}
+
+.search-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px; /* 검색창과 위치 정보 사이 간격 */
+}
+
+.shop-search-box {
+  flex-grow: 1; /* 남은 공간을 모두 차지 */
+  height: 48px; /* 이미지에 맞춰 높이 조정 */
+  border: 1px solid #007bff; /* 이미지에 보이는 파란색 테두리 */
+  border-radius: 24px; /* 높이의 절반으로 원형 */
+  display: flex;
+  align-items: center;
+  padding: 0 20px; /* 내부 패딩 */
+}
+
+.search-icon img {
+  width: 24px; /* 아이콘 크기 조정 */
+  height: 24px;
+  opacity: 0.8;
+  margin-right: 10px; /* 돋보기와 텍스트 간격 */
+}
+
+/* 실제 검색 input이 없어서 placeholder처럼만 보입니다. input을 추가하면 좋습니다. */
+.shop-search-box::after {
+  content: "미용실 검색"; /* Placeholder 텍스트 */
+  color: #999;
+  font-size: 1.1em;
+}
+
+.location-search-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
+}
+
+.location-icon img {
+  width: 24px; /* 아이콘 크기 조정 */
+  height: 24px;
+  opacity: 0.8;
+}
+
+.location-now {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 필터 + 가격비교 선택 (Filter + Compare Section) */
+.shop-list-filter {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px 20px;
+  width: 100%;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+  flex-wrap: wrap; /* 요소들이 많아지면 줄바꿈 되도록 */
+  gap: 10px 20px; /* 아이템 간 간격 */
+  box-sizing: border-box;
+}
+
+.order-ops {
+  padding: 8px 35px 8px 15px; /* 내부 패딩 및 오른쪽 패딩 추가 (화살표 공간) */
+  border-radius: 20px; /* 둥근 모서리 */
+  border: 1px solid #ccc;
+  width: 100px;
+  background-color: #fff;
+  font-size: 0.95em;
+  color: #555;
+  appearance: none; /* 기본 select 화살표 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* 커스텀 화살표 아이콘 (base64 인코딩된 SVG) */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23555555%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.3%203.2-16%208.7-3.6%205.4-3.5%2012.8.2%2018.2l123.4%20168.1c3.2%204.4%208.5%207.1%2014.3%207.1h.4c5.8%200%2011.1-2.7%2014.3-7.1L286.8%2087.6c3.8-5.5%203.9-12.9.2-18.2z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center; /* 화살표 위치 */
+  background-size: 10px; /* 화살표 크기 */
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.select-compare-area {
+  display: flex;
+  background-color: #e5e5e5;
+  padding: 12px 16px;
+  border-radius: 16px;
+  flex-grow: 1;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 15px;
+  gap: 10px;
+  border: 1px solid blueviolet;
+}
+
+.select-compare-title {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 0.95em;
+  color: #333;
+  transition: background-color 0.2s;
+  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
+  flex-shrink: 0;
+}
+
+.select-compare-title:hover {
+  background-color: #e0e0e0;
+}
+
+.selected-shop-boxs {
+  display: flex;
+  gap: 8px;
+  flex-grow: 1;
+  flex-wrap: nowrap;
+}
+
+.selected-shop-one,
+.selected-shop-two,
+.selected-shop-three {
+  display: flex;
+  align-items: center;
+  background-color: #e0f2f7; /* 이미지에 보이는 하늘색 배경 */
+  border: 1px solid #b3e5fc;
+  border-radius: 20px;
+  padding: 5px 12px; /* 내부 패딩 */
+  font-size: 0.9em;
+  color: #01579b;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.selected-shop-one div,
+.selected-shop-two div,
+.selected-shop-three div {
+  cursor: pointer;
+  font-weight: bold;
+  color: #01579b;
+  margin-left: 5px; /* x 버튼과 텍스트 간격 */
+}
+
+/* 미용실 카드 리스트 (Shop List) */
+.shop-list {
+  padding: 20px;
+  gap: 20px; /* 카드 간 간격 */
+  display: flex;
+  flex-direction: column;
+}
+
 .shop-card {
   display: flex;
-  background-color: #e0e0e0;
-  border-radius: 12px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* 이미지 영역 */
 .shop-img {
-  width: 400px;
-  height: 300px;
-  background-color: white;
-  border-radius: 6px;
-  flex-shrink: 0;
-  overflow: hidden; /* 이미지 넘칠 경우 잘라냄 */
+  width: 400px; /* 이미지 영역 너비 */
+  min-width: 200px; /* 축소 방지 */
+  height: 300px; /* 이미지 영역 높이 */
+  background-color: #e0e0e0; /* 이미지 플레이스홀더 색상 */
+  border-right: 1px solid #eee;
+  flex-shrink: 0; /* 내용이 많아도 이미지 영역이 줄어들지 않도록 */
 }
 
-.shop-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 비율 유지하며 꽉 채우기 */
-  display: block;
+.shop-info-area {
+  position: relative;
+  flex-grow: 1; /* 남은 공간을 모두 차지 */
+  padding: 15px;
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  min-width: 0;
 }
 
-/* 오른쪽 정보 영역 */
 .shop-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin-left: 32px;
-  flex: 1;
+  gap: 20px;
 }
 
-/* 상단 이름 + 찜 버튼 */
 .shop-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 5px;
 }
 
-/* 미용실 이름 */
 .shop-name {
-  font-size: 24px;
+  margin: 0;
+  font-size: 1.8em; /* 가게 이름 폰트 크기 조정 */
   font-weight: bold;
+  color: #333;
+  margin-right: 10px;
+}
+
+.shop-coupon {
+  width: 30px; /* 쿠폰 아이콘 크기 조정 */
+  height: 30px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  margin-right: auto; /* 체크박스를 오른쪽 끝으로 밀어냄 */
 }
 
-/* 쿠폰 아이콘 */
-.shop-badge {
-  font-size: 18px;
+.shop-coupon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-/* 찜 아이콘 자리 */
-.favorite-icon {
-  width: 20px;
-  height: 20px;
-  background-color: white;
+.select-box {
+  width: 24px; /* 체크박스 크기 조정 */
+  height: 24px;
+  border: 1px solid red;
   border-radius: 4px;
+  cursor: pointer;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 선택되었을 때의 스타일 (JavaScript로 토글) */
+  /* background-color: #007bff; border-color: #007bff; */
 }
 
-/* 별점 */
 .shop-rating {
-  font-size: 18px;
-  margin: 10px 0 5px;
+  font-size: 0.95em;
+  color: #fbc02d; /* 별점 색상 */
+  margin-bottom: 5px;
+  display: flex; /* 별점과 숫자 정렬을 위해 */
+  align-items: center;
 }
 
-.rating-count {
-  color: gray;
-  font-size: 16px;
-  margin-left: 6px;
+.shop-rating .rating-count {
+  color: #777;
+  font-size: 0.9em;
+  margin-left: 5px;
 }
 
-/* 주소, 운영 시간 */
 .shop-address,
 .shop-time {
-  font-size: 16px;
-  margin: 2px 0;
+  font-size: 0.95em; /* 폰트 크기 조정 */
+  color: #666;
+  margin-bottom: 3px;
+  line-height: 1.4; /* 줄 간격 조정 */
 }
 
-/* 프로필 아이콘 영역 */
+.profile-icons-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 10px;
+  scrollbar-width: none;
+}
+
+.profile-icons-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .profile-icons {
   display: flex;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: max-content; /* 핵심 */
 }
 
 .icon-circle {
   width: 80px;
   height: 80px;
-  background-color: white;
+  flex: 0 0 auto; /* 강제 고정 크기 */
   border-radius: 50%;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
 }
 
-/* 반응형 대응 */
+/* 추가적으로 미디어 쿼리를 사용하면 뷰포트 크기에 따라 레이아웃을 반응형으로 만들 수 있습니다. */
+@media (max-width: 1280px) {
+  .container {
+    width: 95%; /* 작은 화면에서는 너비를 유동적으로 */
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 768px) {
   .shop-card {
     flex-direction: column;
-    align-items: center;
-    padding: 16px;
   }
 
   .shop-img {
-    width: 100%;
-    height: 200px;
-  }
-
-  .shop-info {
-    margin-left: 0;
-    margin-top: 20px;
-    align-items: center;
-    text-align: center;
-  }
-
-  .profile-icons {
-    justify-content: center;
+    width: 100%; /* 이미지 영역 너비를 100%로 */
+    height: 250px; /* 모바일에서 이미지 높이 조정 */
+    border-right: none;
+    border-bottom: 1px solid #eee;
   }
 }

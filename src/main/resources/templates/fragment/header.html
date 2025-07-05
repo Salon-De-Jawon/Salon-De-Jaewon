@@ -53,7 +53,13 @@
 
       <th:block sec:authorize="isAuthenticated()">
         <div class="profile-area">
-          <div class="member-info" th:text="${name}"></div><span class="name-plus">님</span>
+          <div class="member-info"
+               th:if="${#authentication.principal != null}"
+               th:text="${#authentication.principal.name}"></div><span class="name-plus">님</span>
+          <div class="member-info"
+               th:unless="${#authentication.principal != null}"
+               th:text="${#authentication.name}"
+          ><span class="name-plus">님</span></div>
           <div class="hamburger" id="loginHamburger">☰</div>
         </div>
 
@@ -63,7 +69,13 @@
 
       <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <div class="member-name" th:text="${name}">신짱구님</div>
+          <div class="member-name"
+               th:if="${#authentication.principal != null}"
+               th:text="${#authentication.principal.name}">신짱구님</div>
+          <div class="member-name"
+               th:unless="${#authentication.principal != null}"
+               th:text="${#authentication.name}"
+          ></div>
           <div>
             <a href="">회원정보 수정</a>
             <form th:action="@{/logout}" method="post" style="display:inline;">

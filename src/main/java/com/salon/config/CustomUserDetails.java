@@ -25,6 +25,12 @@ public class CustomUserDetails implements UserDetails {
         return this.member;
     }
 
+    public String getName() {
+        String name = member.getName();
+        return name != null ? name : "이름없음";
+
+    }
+
     @Override
     public String getPassword() {
         return member.getPassword(); // 암호화된 비밀번호
@@ -34,6 +40,8 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return member.getLoginId(); // 로그인 ID
     }
+
+
 
     @Override
     public boolean isAccountNonExpired() {

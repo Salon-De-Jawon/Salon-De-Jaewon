@@ -22,6 +22,8 @@ public class ShopListDto {
     private int reviewCount;
     private boolean hasCoupon;
     private BigDecimal distance;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
 
     public static ShopListDto from (Shop shop, ShopImageDto shopImageDto, List<ReviewListDto> reviewListDtos, boolean hasCoupon) {
         ShopListDto dto = new ShopListDto();

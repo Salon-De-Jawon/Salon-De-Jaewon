@@ -1,31 +1,48 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.dto.shop.ShopListDto;
+import com.salon.dto.user.ShopMapDto;
+import com.salon.dto.user.ShopMarkerDto;
 import com.salon.dto.user.SignUpDto;
+import com.salon.dto.user.UserLocateDto;
+import com.salon.service.shop.ShopService;
+import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Controller
 public class MainController {
     @Value("${kakao.maps.api.key}")
     private String kakaoMapsKey;
 
-    private final MemberService memberService;
+    @Value("${kakao.rest.api.key}")
+    private String kakaoRestKey;
 
-    public MainController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
+    private final KakaoMapService kakaoMapService;
+    private final ShopService shopService;
 
 
     @GetMapping("/")
@@ -39,6 +56,31 @@ public class MainController {
         model.addAttribute("kakaoMapsKey", kakaoMapsKey);
 
         return "/mainpage";
+    }
+
+
+    // 위도경도를 주소로 변환
+    @GetMapping("/api/coord-to-address")
+    public ResponseEntity<?> getAddressFormCoords (@RequestParam double x, @RequestParam double y) {
+        try {
+            UserLocateDto location = kakaoMapService.getUserAddress(x, y);
+            return ResponseEntity.ok(location);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 샵 목록 불러오기
+
+    @GetMapping("/api/shops")
+    @ResponseBody
+    public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
+        return shopService.getAllShopsForMap(lat, lon);
+    }
+
+    @GetMapping("/shopList")
+    public String shopListPage() {
+        return "/user/shopList";
     }
 
 
@@ -74,10 +116,6 @@ public class MainController {
         return "redirect:/login";
     }
 
-    @GetMapping("/shopList")
-    public String shopListPage() {
-        return "/user/shopList";
-    }
 
     // js에서 보낸 아이디 찾기 요청 처리
 

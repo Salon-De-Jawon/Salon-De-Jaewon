@@ -13,4 +13,6 @@ public class UserLocateDto {
     private String userAddress;
     private BigDecimal userLatitude;
     private BigDecimal userLongitude;
+    private String region1depth;
+    private String region2depth;
 }
