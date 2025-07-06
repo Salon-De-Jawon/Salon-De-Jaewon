@@ -122,3 +122,9 @@
 .btn-add-reservation:hover{
   opacity: 0.85;
 }
+
+.section-container table td.table-empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}

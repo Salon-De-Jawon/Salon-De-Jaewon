@@ -6,7 +6,6 @@ import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.LeaveRequestDto;
 import com.salon.dto.management.master.DesignerResultDto;
 import com.salon.dto.management.master.DesignerSearchDto;
-import com.salon.entity.Member;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
@@ -35,7 +34,7 @@ public class MasterService {
     private final AttendanceRepo attendanceRepo;
     private final CouponRepo couponRepo;
     private final DesignerServiceRepo designerServiceRepo;
-    private final ServiceRepo serviceRepo;
+    private final ShopServiceRepo shopServiceRepo;
     private final ShopClosedDateRepo shopClosedDateRepo;
     private final TicketRepo ticketRepo;
     private final LeaveRequestRepo leaveRequestRepo;

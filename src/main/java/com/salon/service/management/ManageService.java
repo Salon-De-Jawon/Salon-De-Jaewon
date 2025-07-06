@@ -4,21 +4,26 @@ import com.salon.constant.AttendanceStatus;
 import com.salon.constant.LeaveStatus;
 import com.salon.dto.management.WeekDto;
 import com.salon.dto.management.*;
+import com.salon.dto.management.master.CouponDto;
+import com.salon.entity.Member;
 import com.salon.entity.management.LeaveRequest;
+import com.salon.entity.management.MemberCoupon;
 import com.salon.entity.management.Payment;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
+import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.ShopService;
+import com.salon.entity.management.master.Ticket;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
+import com.salon.repository.MemberRepo;
 import com.salon.repository.management.LeaveRequestRepo;
+import com.salon.repository.management.MemberCouponRepo;
 import com.salon.repository.management.PaymentRepo;
 import com.salon.repository.management.ShopDesignerRepo;
-import com.salon.repository.management.master.AttendanceRepo;
-import com.salon.repository.management.master.DesignerServiceRepo;
-import com.salon.repository.management.master.ServiceRepo;
+import com.salon.repository.management.master.*;
 import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.ShopRepo;
-import com.salon.util.DayOffUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +37,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +45,16 @@ public class ManageService {
 
     private final AttendanceRepo attendanceRepo;
     private final DesignerServiceRepo designerServiceRepo;
-    private final ServiceRepo serviceRepo;
+    private final ShopServiceRepo shopServiceRepo;
     private final LeaveRequestRepo leaveRequestRepo;
     private final PaymentRepo paymentRepo;
     private final ShopDesignerRepo shopDesignerRepo;
     private final ReservationRepo reservationRepo;
     private final ShopRepo shopRepo;
+    private final MemberRepo memberRepo;
+    private final MemberCouponRepo memberCouponRepo;
+    private final TicketRepo ticketRepo;
+    private final CouponRepo couponRepo;
 
 
     // 메인페이지 출력용 메서드
@@ -249,6 +259,114 @@ public class ManageService {
         return dtoList;
     }
 
+    // 예약 등록 시 멤버 검색 api
+    public List<MemberSearchDto> searchByNameOrPhone(String keyword) {
+        List<Member> members = memberRepo.findByNameContainingIgnoreCaseOrTelContaining(keyword, keyword);
+        return members.stream()
+                .map(m -> new MemberSearchDto(m.getId(), m.getName(), m.getTel()))
+                .collect(Collectors.toList());
+    }
+
+    public MemberCouponDto getCoupons(Long memberId, Long designerId) {
+        // 1. 쿠폰 조회
+        List<MemberCoupon> coupons = memberCouponRepo.findAvailableCouponsByMemberId(memberId);
+
+        Long shopId = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId).getShop().getId();
+
+        List<CouponDto> couponDtos = coupons.stream()
+                .map(c -> {
+                    Coupon coupon = c.getCoupon();
+                    return new CouponDto(
+                            c.getId(), // memberCouponId
+                            coupon.getShop().getId(),
+                            coupon.getName(),
+                            coupon.getMinimumAmount(),
+                            coupon.getDiscountType(),
+                            coupon.getDiscountValue(),
+                            coupon.getExpireDate(),
+                            true
+                    );
+                })
+                .collect(Collectors.toList());
+
+        // 2. 정액권 잔액 계산
+        Optional<Ticket> optionalTicket = ticketRepo.findByMemberIdAndShopId(memberId, shopId);
+        int ticketBalance = optionalTicket
+                .map(ticket -> ticket.getTotalAmount() - ticket.getUsedAmount())
+                .orElse(0);
+
+        // 3. 통합 반환
+        return new MemberCouponDto(couponDtos, ticketBalance);
+    }
+
+    // 디자이너 페이지 예약 저장시
+    @Transactional
+    public void saveReservation(ReservationForm newRes, Long memberId){
+
+        // Member 조회
+        Member member = memberRepo.findById(newRes.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다. id=" + newRes.getMemberId()));
+
+        // ShopDesigner 조회 (memberId가 디자이너 멤버 아이디라고 가정)
+        ShopDesigner shopDesigner = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+        if (shopDesigner == null) {
+            throw new IllegalArgumentException("활성화된 디자이너를 찾을 수 없습니다. memberId=" + memberId);
+        }
+
+        // ShopService 조회
+        ShopService shopService = null;
+        if (newRes.getServiceId() != null && newRes.getServiceId() != 0) {
+            shopService = shopServiceRepo.findById(newRes.getServiceId())
+                    .orElseThrow(() -> new IllegalArgumentException("서비스 정보를 찾을 수 없습니다. id=" + newRes.getServiceId()));
+        }
+
+        // Coupon 조회 (선택된 경우)
+        Coupon coupon = null;
+        if (newRes.getCouponId() != null && newRes.getCouponId() != 0) {
+            coupon = couponRepo.findById(newRes.getCouponId())
+                    .orElseThrow(() -> new IllegalArgumentException("쿠폰 정보를 찾을 수 없습니다. id=" + newRes.getCouponId()));
+        }
+
+        // Ticket 조회 (정액권 사용 시)
+        Ticket ticket = null;
+        if (newRes.isTicketIsUsed() && newRes.getTicketUsedAmount() > 0) {
+            System.out.println("shopId = " + shopDesigner.getShop());
+            System.out.println("shopId = " + (shopDesigner.getShop() != null ? shopDesigner.getShop().getId() : "null"));
+            ticket = ticketRepo.findByMemberIdAndShopId(member.getId(), shopDesigner.getShop().getId())
+                    .orElse(null);
+        }
+
+        Reservation reservation;
+
+        // 수정인지 신규 저장인지 판단
+        if (newRes.getId() != null) {
+            reservation = reservationRepo.findById(newRes.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다. id=" + newRes.getId()));
+
+            // 수정 시에는 기존 entity에 값을 세팅하거나 새로 만들어서 교체 가능
+            // 여기서는 새로 만든 객체로 교체하지 않고 기존 엔티티에 값을 세팅하는 방식을 추천
+            reservation.setMember(member);
+            reservation.setShopDesigner(shopDesigner);
+            reservation.setShopService(shopService);
+            reservation.setCoupon(coupon);
+            reservation.setTicket(ticket);
+            reservation.setDiscountAmount(newRes.getCouponDiscount());
+            reservation.setTicketUsedAmount(newRes.isTicketIsUsed() ? newRes.getTicketUsedAmount() : 0);
+            reservation.setReservationDate(newRes.getReservationDate() != null ? newRes.getReservationDate() : reservation.getReservationDate());
+            reservation.setStatus(newRes.getStatus() != null ? newRes.getStatus() : reservation.getStatus());
+            reservation.setComment(newRes.getComment());
+            reservation.setServiceName(shopService != null ? shopService.getName() : newRes.getServiceName());
+        } else {
+            // 신규 저장 시 DTO의 to() 메서드 활용
+            reservation = newRes.to(member, shopDesigner, shopService, coupon, ticket);
+        }
+
+        reservationRepo.save(reservation);
+
+    }
+
+
+
     // 디자이너 매출 목록 (일별)
     public List<PaymentListDto> getPaymentList(Long memberId, LocalDate selectedDate){
 
@@ -283,11 +401,6 @@ public class ManageService {
 
         paymentRepo.save(payment);
     }
-
-
-
-
-
 
 
 
