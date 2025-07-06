@@ -66,11 +66,12 @@ public class MainController {
             UserLocateDto location = kakaoMapService.getUserAddress(x, y);
             return ResponseEntity.ok(location);
         } catch (RuntimeException e) {
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    // 샵 목록 불러오기
+    // 메인 지도에 표시할 샵 목록 불러오기
 
     @GetMapping("/api/shops")
     @ResponseBody
@@ -83,6 +84,23 @@ public class MainController {
         return "/user/shopList";
     }
 
+    @GetMapping("/api/shop-list")
+    @ResponseBody
+    public List<ShopListDto> getShopListByRegion(
+            @RequestParam String region,
+            @RequestParam BigDecimal lat,
+            @RequestParam BigDecimal lon,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return shopService.getShopByRegion(region, lat, lon, page, size);
+    }
+
+
+    @GetMapping("/compare")
+    public String comparePage() {
+        return "/user/compare";
+    }
 
     @GetMapping("/login")
     public  String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {

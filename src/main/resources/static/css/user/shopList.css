@@ -310,10 +310,29 @@
 .icon-circle {
   width: 80px;
   height: 80px;
-  flex: 0 0 auto; /* 강제 고정 크기 */
   border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #e0e0e0;
   border: 1px solid #ccc;
+}
+
+.icon-circle img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.icon-circle img.landscape {
+  width: 100%;
+  height: auto;
 }
 
 /* 추가적으로 미디어 쿼리를 사용하면 뷰포트 크기에 따라 레이아웃을 반응형으로 만들 수 있습니다. */

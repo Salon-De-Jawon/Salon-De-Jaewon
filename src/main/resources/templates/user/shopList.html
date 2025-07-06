@@ -61,7 +61,7 @@
       <!-- 미용실 카드 리스트 -->
       <div id="shop-list" class="shop-list">
         <!-- 반복될 카드 -->
-        <div class="shop-card">
+        <div class="shop-card" style="display:none;">
           <div class="shop-img"></div>
 
           <div class="shop-info-area">
@@ -137,7 +137,6 @@
     });
   </script>
 
-  <script th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey}}"></script>
   <script src="/javascript/user/shopList.js"></script>
 </th:block>
 </body>
