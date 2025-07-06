@@ -5,6 +5,9 @@
 <head>
   <link rel="stylesheet" href="/css/user/shopList.css">
   <th:block layout:fragment="css"></th:block>
+
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
 <div layout:fragment="main" id="main">
@@ -40,19 +43,19 @@
         </select>
 
         <div class="select-compare-area">
-          <button class="select-compare-title">가격비교</button>
+          <button class="select-compare-title" id="compare-btn">가격비교</button>
           <div class="selected-shop-boxs">
-            <div class="selected-shop-one">
+            <div class="selected-shop-one" style="display:none;">
               <span>가게 1</span>
-              <div>x</div>
+              <button class="remove-btn">x</button>
             </div>
-            <div class="selected-shop-two">
+            <div class="selected-shop-two" style="display:none;">
               <span>가게 2</span>
-              <div>x</div>
+              <button class="remove-btn">x</button>
             </div>
-            <div class="selected-shop-three">
+            <div class="selected-shop-three" style="display:none;">
               <span>가게 3</span>
-              <div>x</div>
+              <button class="remove-btn">x</button>
             </div>
           </div>
         </div>
@@ -71,7 +74,7 @@
                 <div class="shop-coupon">
                   <img src="/images/coupon.png" alt="쿠폰" />
                 </div>
-                <div class="select-box"></div>
+                <button class="select-box"></button>
               </div>
               <div class="shop-info-content">
                 <p class="shop-rating">

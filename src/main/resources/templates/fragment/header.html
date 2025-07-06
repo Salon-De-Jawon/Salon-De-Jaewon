@@ -26,7 +26,7 @@
               ></a>
           </li>
           <li>
-            <a href="/compare"
+            <a href="/compare"  id="compare-header-link"
             >가격비교
               <div class="select-line"></div
               ></a>
@@ -63,41 +63,41 @@
           <div class="hamburger" id="loginHamburger">☰</div>
         </div>
 
+
+        <div class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="member-name"
+                 th:if="${#authentication.principal != null}"
+                 th:text="${#authentication.principal.name}">신짱구님</div>
+            <div class="member-name"
+                 th:unless="${#authentication.principal != null}"
+                 th:text="${#authentication.name}"
+            ></div>
+            <div>
+              <a href="">회원정보 수정</a>
+              <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit">로그아웃</button>
+              </form>
+            </div>
+          </div>
+
+          <ul class="sidebar-menu">
+            <li>내 예약 내역</li>
+            <li>쿠폰/정액권</li>
+            <li>찜 목록</li>
+            <li>내 리뷰</li>
+            <li>나의 고객 문의</li>
+          </ul>
+
+          <div class="sidebar-alert">내 리뷰에 댓글이 달렸습니다</div>
+
+          <div class="sidebar-close">
+            <img src="/images/right-arrow.png" />
+          </div>
+        </div>
       </th:block>
 
 
-
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <div class="member-name"
-               th:if="${#authentication.principal != null}"
-               th:text="${#authentication.principal.name}">신짱구님</div>
-          <div class="member-name"
-               th:unless="${#authentication.principal != null}"
-               th:text="${#authentication.name}"
-          ></div>
-          <div>
-            <a href="">회원정보 수정</a>
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-              <button type="submit">로그아웃</button>
-            </form>
-          </div>
-        </div>
-
-        <ul class="sidebar-menu">
-          <li>내 예약 내역</li>
-          <li>쿠폰/정액권</li>
-          <li>찜 목록</li>
-          <li>내 리뷰</li>
-          <li>나의 고객 문의</li>
-        </ul>
-
-        <div class="sidebar-alert">내 리뷰에 댓글이 달렸습니다</div>
-
-        <div class="sidebar-close">
-          <img src="/images/right-arrow.png" />
-        </div>
-      </div>
     </div>
   </div>
 

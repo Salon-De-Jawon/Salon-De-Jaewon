@@ -2,11 +2,9 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
-import com.salon.dto.user.ShopMapDto;
-import com.salon.dto.user.ShopMarkerDto;
-import com.salon.dto.user.SignUpDto;
-import com.salon.dto.user.UserLocateDto;
+import com.salon.dto.user.*;
 import com.salon.service.shop.ShopService;
+import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +42,7 @@ public class MainController {
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
     private final ShopService shopService;
+    private final CompareService compareService;
 
 
     @GetMapping("/")
@@ -96,9 +96,47 @@ public class MainController {
         return shopService.getShopByRegion(region, lat, lon, page, size);
     }
 
+    @PostMapping("/api/saveSelectedShops")
+    @ResponseBody
+    public ResponseEntity<?> saveSelectedShopsToSession(@RequestBody List<Long> shopIds, HttpSession session) {
+        if (shopIds == null || shopIds.isEmpty()) {
+            return ResponseEntity.badRequest().body("샵 ID 목록이 비어있습니다.");
+        }
+
+        // 최대 3개까지만 저장
+        List<Long> limitedShopIds = shopIds.size() > 3 ? shopIds.subList(0, 3) : shopIds;
+
+        session.setAttribute("selectedShopIds", limitedShopIds);
+        return ResponseEntity.ok().build();
+    }
+
 
     @GetMapping("/compare")
-    public String comparePage() {
+    public String comparePage(HttpSession session, Model model) {
+
+        //List<Long> selectedShopIds = (List<Long>) session.getAttribute("selectedShopIds"); 이걸로 하려다
+        //타입 안정성이 보장 되지 않아서 경고 멘트가 떠서
+        // 타입 체크 및 안전한 형변환을 적용함.
+        Object obj = session.getAttribute("selectedShopIds");
+
+        List<Long> selectedShopIds = new ArrayList<>();
+        if (obj instanceof List<?>) {
+            for (Object o : (List<?>) obj) {
+                if (o instanceof Long) {
+                    selectedShopIds.add((Long) o);
+                } else if (o instanceof Integer) { // 만약 Integer로 들어온 경우 대응
+                    selectedShopIds.add(((Integer) o).longValue());
+                }
+            }
+        }
+
+        if (selectedShopIds.isEmpty()) {
+            return "redirect:/shopList";
+        }
+
+        List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
+        model.addAttribute("compareResults", compareResults);
+
         return "/user/compare";
     }
 

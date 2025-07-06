@@ -265,6 +265,14 @@
   /* background-color: #007bff; border-color: #007bff; */
 }
 
+.select-box.selected {
+  background-color: #566a8e;
+  border-color: #566a8e;
+  background-position: center;
+  background-size: 60%;
+}
+
+
 .shop-rating {
   font-size: 0.95em;
   color: #fbc02d; /* 별점 색상 */
@@ -334,6 +342,8 @@
   width: 100%;
   height: auto;
 }
+
+
 
 /* 추가적으로 미디어 쿼리를 사용하면 뷰포트 크기에 따라 레이아웃을 반응형으로 만들 수 있습니다. */
 @media (max-width: 1280px) {

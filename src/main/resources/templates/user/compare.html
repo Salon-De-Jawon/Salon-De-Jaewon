@@ -12,17 +12,18 @@
         <div class="shop-list-head">
             <div class="compare-title">가격비교하기</div>
             <div class="gender-options">
-                <                <img class="search-icon" src="/images/search.png" />
-                <input class="search-input" style="display: none" />
+                <button type="button">전체</button>
+                <button type="button">여성</button>
+                <button type="button">남성</button>
             </div>
-             <div class="service-cate-list">
-                 button type="button">전체</button>
-                 <button type="button">여성</button>
-                 <button type="button">남성</button>
-             </div>
 
             <div>
-            <!-- 헤어 카테고리 -->
+                <img class="search-icon" src="/images/search.png" />
+                <input class="search-input" style="display: none" />
+            </div>
+
+            <div class="service-cate-list">
+                <!-- 헤어 카테고리 -->
                 <button class="service-cate">커트</button>
                 <button class="service-cate">펌</button>
                 <button class="service-cate">염색</button>
@@ -123,6 +124,9 @@
         </div>
     </div>
 </div>
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+
+    <script src="/javascript/user/compare.js"></script>
+</th:block>
 </body>
 </html>
