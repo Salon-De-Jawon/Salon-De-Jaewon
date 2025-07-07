@@ -22,18 +22,26 @@ public class DesignerListDto {
     private int rating; // 디자이너 평점
 
 
+    private String profileSummary; // 디자이너 전문 시술 분야 + 연차
 
     // ShopDesigner(Entity) -> DesignerListDto
-    public static DesignerListDto from (ShopDesigner shopDesigner, Designer designer, int likeCount, int reviewCount){
+    public static DesignerListDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount){
         DesignerListDto designerListDto = new DesignerListDto();
 
-        designerListDto.setId(designer.getId());
-        designerListDto.setName(designer.getMember().getName());
-        designerListDto.setWorkingYear(designer.getWorkingYears());
+        designerListDto.setId(shopDesigner.getId());
+
+        String name = shopDesigner.getDesigner().getMember().getName();
+        String position = shopDesigner.getPosition();
+        designerListDto.setName(name + " " + position + "디자이너");
+
+        designerListDto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
         designerListDto.setPosition(shopDesigner.getPosition());
-        designerListDto.setImgUrl(designerListDto.getImgUrl());
+        designerListDto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
         designerListDto.setReviewCount(reviewCount);
         designerListDto.setLikeCount(likeCount);
+
+
+
         return designerListDto;
     }
 }

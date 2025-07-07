@@ -3,6 +3,7 @@ package com.salon.dto.shop;
 import com.salon.entity.Member;
 import com.salon.entity.Review;
 import com.salon.entity.management.Designer;
+import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +27,7 @@ public class ReviewListDto {
 
 
     // Review(Entity) -> ReviewListDto
-    public static ReviewListDto from (Review review, List<ReviewImageDto> reviewImg, Designer designer, int visitCount){
+    public static ReviewListDto from (Review review, ShopDesigner shopDesigner, List<ReviewImageDto> reviewImg, int visitCount){
         ReviewListDto reviewListDto = new ReviewListDto();
 
         reviewListDto.setId(review.getId());
@@ -36,8 +37,11 @@ public class ReviewListDto {
         reviewListDto.setComment(review.getComment());
         reviewListDto.setReviewImg(reviewImg);
         reviewListDto.setVisitCount(visitCount);
-        reviewListDto.setDesignerName(designer.getMember().getName());
-        reviewListDto.setDesignerWorkingYears(designer.getWorkingYears());
+        reviewListDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        reviewListDto.setDesignerWorkingYears(shopDesigner.getDesigner().getWorkingYears());
+
+        String designerInfo = "By"+ shopDesigner.getDesigner().getMember().getName() + shopDesigner.getPosition();
+        reviewListDto.setDesignerName(designerInfo);
 
         return reviewListDto;
     }

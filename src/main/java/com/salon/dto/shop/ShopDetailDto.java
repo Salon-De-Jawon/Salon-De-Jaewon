@@ -1,5 +1,8 @@
 package com.salon.dto.shop;
 
+import com.salon.dto.designer.DesignerListDto;
+import com.salon.dto.management.ServiceForm;
+import com.salon.dto.management.master.ShopImageDto;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
@@ -23,11 +26,14 @@ public class ShopDetailDto {
     private String tel; // 미용실 전화번호
     private LocalTime openTime; // 미용실 오픈시간
     private LocalTime closeTime; // 미용실 마감시간
+    private ShopImageDto shopImage; // 미용실 이미지
 
+    private int likeCount; // 미용실 찜
 
+    private List<ShopImageDto> shopImageDtos; // 미용실 이미지
 
     // Shop(Entity) -> ShopDetailDto
-    public static ShopDetailDto from (Shop shop, List<ShopImage> shopImages, int likeCount){
+    public static ShopDetailDto from (Shop shop, int likeCount){
         ShopDetailDto shopDetailDto = new ShopDetailDto();
 
         shopDetailDto.setId(shop.getId());
@@ -39,9 +45,12 @@ public class ShopDetailDto {
         shopDetailDto.setOpenTime(shop.getOpenTime());
         shopDetailDto.setCloseTime(shop.getCloseTime());
         shopDetailDto.setTel(shop.getTel());
+        shopDetailDto.setLikeCount(likeCount);
+
 
         return shopDetailDto;
 
     }
+
 
 }

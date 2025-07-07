@@ -6,6 +6,7 @@ import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.ShopCompareResultDto;
 import com.salon.entity.shop.Shop;
 import com.salon.repository.ReviewRepo;
+import com.salon.entity.management.master.ShopService;
 import com.salon.repository.management.master.ShopServiceRepo;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
