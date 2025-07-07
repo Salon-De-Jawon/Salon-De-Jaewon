@@ -35,7 +35,7 @@ public class DesignerUpdateDto {
         designerUpdateDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerUpdateDto.setPosition(shopDesigner.getPosition());
         designerUpdateDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
-        designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEntTime());
+        designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEndTime());
         designerUpdateDto.setDesignerImg(shopDesigner.getDesigner().getImgUrl());
 
         return designerUpdateDto;

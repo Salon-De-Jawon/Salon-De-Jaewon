@@ -44,7 +44,7 @@ public class DesignerDetailDto {
         designerDetailDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerDetailDto.setPosition(shopDesigner.getPosition());
         designerDetailDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
-        designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEntTime());
+        designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEndTime());
         designerDetailDto.setLikeCount(likeCount);
         designerDetailDto.setReviewCount(reviewCount);
 

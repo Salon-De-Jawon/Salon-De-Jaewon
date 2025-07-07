@@ -12,6 +12,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let isWorking = false;
 
+  // 🧩 서버에서 받은 시간 포맷 변경 함수
+  function formatToKoreanStyle(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString.replace(' ', 'T'));
+    return date.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
   // 출근 상태 확인 API 호출
   fetch('/manage/attendance/status', {
     headers: {
@@ -22,23 +36,24 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(res => res.json())
     .then(data => {
       const { isWorking: working, clockIn, clockOut } = data;
-
       isWorking = working;
+
+      const formattedIn = formatToKoreanStyle(clockIn);
+      const formattedOut = formatToKoreanStyle(clockOut);
 
       if (isWorking) {
         toggleButton.textContent = '퇴근하기';
         toggleButton.style.backgroundColor = '#566a8e';
-        timeDisplay.innerHTML = `출근시간: ${clockIn || '-'}`;
+        timeDisplay.innerHTML = `출근시간: ${formattedIn}`;
       } else if (clockOut) {
         toggleButton.textContent = '오늘 퇴근 완료';
         toggleButton.disabled = true;
         toggleButton.style.backgroundColor = '#aaa';
-        timeDisplay.innerHTML = `출근시간: ${clockIn || '-'}<br>퇴근시간: ${clockOut}`;
+        timeDisplay.innerHTML = `출근시간: ${formattedIn}<br>퇴근시간: ${formattedOut}`;
       } else if (clockIn) {
-        // 출근 기록은 있는데 퇴근 기록이 없는 경우 (혹시 있으면 대비)
         toggleButton.textContent = '퇴근하기';
         toggleButton.style.backgroundColor = '#566a8e';
-        timeDisplay.innerHTML = `출근시간: ${clockIn}`;
+        timeDisplay.innerHTML = `출근시간: ${formattedIn}`;
         isWorking = true;
       } else {
         toggleButton.textContent = '출근하기';
@@ -49,10 +64,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
       toggleButton.addEventListener('click', function () {
         const now = new Date();
-        const isoTime = now.toISOString();
+
+        // KST 기준 ISO 문자열 생성
+        const kstOffset = 9 * 60 * 60 * 1000;
+        const kstISOString = new Date(now.getTime() + kstOffset).toISOString();
+
         const formatted = now.toLocaleString('ko-KR', {
-          year: 'numeric', month: '2-digit', day: '2-digit',
-          hour: '2-digit', minute: '2-digit'
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
         });
 
         if (!isWorking) {
@@ -64,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
               'Content-Type': 'application/json',
               [header]: token
             },
-            body: JSON.stringify(isoTime)
+            body: JSON.stringify(kstISOString)
           })
             .then(res => {
               if (!res.ok) throw new Error();
@@ -83,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
               'Content-Type': 'application/json',
               [header]: token
             },
-            body: JSON.stringify(isoTime)
+            body: JSON.stringify(kstISOString)
           })
             .then(res => {
               if (!res.ok) throw new Error();

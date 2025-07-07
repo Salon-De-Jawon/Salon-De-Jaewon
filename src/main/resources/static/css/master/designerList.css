@@ -1,0 +1,81 @@
+.section-container {
+  max-width: 1280px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+  font-family: var(--font-noto-snas);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-header h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--main-color);
+}
+
+.btn-add {
+  background-color: var(--main-color);
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-add:hover {
+  background-color: var(--point-color);
+}
+
+.default-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.default-table th,
+.default-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.default-table th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+}
+
+.designer-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.btn-manage {
+  padding: 6px 12px;
+  background-color: var(--point-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-manage:hover {
+  background-color: #3e4f71;
+}
+
+a.btn-add,
+a.btn-manage {
+  display: inline-block;
+  text-decoration: none;
+}
+

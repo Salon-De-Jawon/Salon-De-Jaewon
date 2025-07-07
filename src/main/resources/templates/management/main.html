@@ -13,7 +13,7 @@
 
 <div layout:fragment="main" id="main">
 
-  <!-- 토큰용 -->
+  <!-- 출퇴근 토큰용 -->
   <meta name="_csrf" th:content="${_csrf.token}"/>
   <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
@@ -79,9 +79,9 @@
     </section>
 
     <section class="quick-actions">
-      <button>새 예약 등록</button>
-      <button>고객 관리</button>
-      <button>시술 내역 보기</button>
+      <a href="/manage/reservations/new">새 예약 등록</a>
+      <a href="/manage/member-card">고객 관리</a>
+      <a href="/manage/reservations">예약 내역 보기</a>
     </section>
   </div>
 

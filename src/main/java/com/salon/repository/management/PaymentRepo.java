@@ -32,4 +32,19 @@ public interface PaymentRepo extends JpaRepository<Payment, Long> {
     List<Payment> findByDesignerAndPeriod(@Param("designerId") Long designerId,
                                           @Param("start") LocalDateTime start,
                                           @Param("end") LocalDateTime end);
+
+
+    // 디자이너의 하루 매출
+    @Query("SELECT COALESCE(SUM(p.totalPrice), 0) " +
+            "FROM Payment p WHERE DATE(p.payDate) = CURRENT_DATE " +
+            "AND p.shopDesigner.id = :designerId")
+    int sumTodayTotalPrice(@Param("designerId") Long designerId);
+
+    // 매장 월간 매출
+    @Query("SELECT COALESCE(SUM(p.totalPrice), 0) " +
+            "FROM Payment p JOIN p.shopDesigner sd JOIN sd.shop s " +
+            "WHERE FUNCTION('MONTH', p.payDate) = FUNCTION('MONTH', CURRENT_DATE) " +
+            "AND FUNCTION('YEAR', p.payDate) = FUNCTION('YEAR', CURRENT_DATE) " +
+            "AND s.id = :shopId")
+    int sumMonthlyTotalPrice(@Param("shopId") Long shopId);
 }
