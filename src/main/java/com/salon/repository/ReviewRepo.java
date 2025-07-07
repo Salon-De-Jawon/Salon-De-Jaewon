@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReviewRepo extends JpaRepository<Review, Long> {
@@ -30,4 +31,5 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
             """)
     float averageRatingByShopId(@Param("shopId") Long shopId);
 
+    Optional<Review> findByReservationId(Long id);
 }
