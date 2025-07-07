@@ -5,57 +5,142 @@
 <head>
   <link rel="stylesheet" href="/css/user/shopList.css">
   <th:block layout:fragment="css"></th:block>
+
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
 <div layout:fragment="main" id="main">
-  <div class="container">
-    <!-- 상단 필터 영역 -->
-    <div class="top-bar">
-      <div class="search-box">
-        <input type="text" placeholder="검색어를 입력하세요" />
-        <span class="location">📍 대전시 대덕구</span>
-      </div>
-      <div class="filter-buttons">
-        <button>정렬 기준</button>
-        <button>가격비교</button>
-        <button>미용실 선택 1</button>
-        <button>미용실 선택 2</button>
-        <button>미용실 선택 3</button>
-      </div>
-    </div>
+  <div class="shop-list-wrap">
+    <div class="container">
+      <!-- 상단 검색 영역 -->
+      <div class="top-bar">
+        <div class="location-area">
+          <div class="search-area">
+            <div class="shop-search-box">
+              <div class="search-icon">
+                <img src="/images/search.png" alt="돋보기" />
+              </div>
+            </div>
 
-    <!-- 미용실 카드 리스트 -->
-    <div id="shop-list" class="shop-list">
-      <!-- 반복될 카드 -->
-      <div class="shop-card">
-        <div class="shop-img"></div>
-        <div class="shop-info">
-          <div class="shop-header">
-            <h3 class="shop-name">
-              0000 미용실 <span class="shop-badge">🎟️</span>
-            </h3>
-            <div class="favorite-icon"></div>
-          </div>
-          <p class="shop-rating">
-            ★★★★★ <span class="rating-count">5.0 (1,555)</span>
-          </p>
-          <p class="shop-address">주소 대전광역시 대덕구 신짱구미용실</p>
-          <p class="shop-time">9:00 ~ 20:00</p>
-          <div class="profile-icons">
-            <div class="icon-circle"></div>
-            <div class="icon-circle"></div>
-            <div class="icon-circle"></div>
+            <div class="location-search-area">
+              <div class="location-icon">
+                <img src="/images/location.png" alt="위치아이콘" />
+              </div>
+              <div class="location-now"><span id="user-region">대전시 어쩌구</span></div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- 위 구조 반복 -->
+
+      <!-- 필터 + 가격비교 선택 -->
+      <div class="shop-list-filter">
+        <select class="order-ops">
+          <option vlaue="" selected>정렬</option>
+          <option value="distance-orders">거리순</option>
+          <option value="distance-orders">평점순</option>
+          <option value="distance-orders">리뷰순</option>
+        </select>
+
+        <div class="select-compare-area">
+          <button class="select-compare-title" id="compare-btn">가격비교</button>
+          <div class="selected-shop-boxs">
+            <div class="selected-shop-one" style="display:none;">
+              <span>가게 1</span>
+              <button class="remove-btn">x</button>
+            </div>
+            <div class="selected-shop-two" style="display:none;">
+              <span>가게 2</span>
+              <button class="remove-btn">x</button>
+            </div>
+            <div class="selected-shop-three" style="display:none;">
+              <span>가게 3</span>
+              <button class="remove-btn">x</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 미용실 카드 리스트 -->
+      <div id="shop-list" class="shop-list">
+        <!-- 반복될 카드 -->
+        <div class="shop-card" style="display:none;">
+          <div class="shop-img"></div>
+
+          <div class="shop-info-area">
+            <div class="shop-info">
+              <div class="shop-header">
+                <h3 class="shop-name">0000 미용실</h3>
+                <div class="shop-coupon">
+                  <img src="/images/coupon.png" alt="쿠폰" />
+                </div>
+                <button class="select-box"></button>
+              </div>
+              <div class="shop-info-content">
+                <p class="shop-rating">
+                  ★★★★★ <span class="rating-count">5.0 (1,555)</span>
+                </p>
+                <p class="shop-address">
+                  주소 대전광역시 대덕구 신짱구미용실
+                </p>
+                <p class="shop-time">9:00 ~ 20:00</p>
+              </div>
+            </div>
+            <div class="profile-icons-wrapper">
+              <div class="profile-icons">
+                <div class="icon-circle"></div>
+                <div class="icon-circle"></div>
+                <div class="icon-circle"></div>
+                <div class="icon-circle"></div>
+                <div class="icon-circle"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 위 구조 반복 -->
+      </div>
     </div>
   </div>
 
-
 <!-- fragment end -->
 </div>
-<script src="infiniteScroll.js"></script>
-<th:block layout:fragment="script"></th:block>
+
+<th:block layout:fragment="script">
+
+  <script>
+    const wrapper = document.querySelector(".profile-icons-wrapper");
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    wrapper.addEventListener("mousedown", (e) => {
+      isDown = true;
+      wrapper.classList.add("dragging");
+      startX = e.pageX - wrapper.offsetLeft;
+      scrollLeft = wrapper.scrollLeft;
+    });
+
+    wrapper.addEventListener("mouseleave", () => {
+      isDown = false;
+      wrapper.classList.remove("dragging");
+    });
+
+    wrapper.addEventListener("mouseup", () => {
+      isDown = false;
+      wrapper.classList.remove("dragging");
+    });
+
+    wrapper.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - wrapper.offsetLeft;
+      const walk = (x - startX) * 1.5; // 스크롤 속도 조절
+      wrapper.scrollLeft = scrollLeft - walk;
+    });
+  </script>
+
+  <script src="/javascript/user/shopList.js"></script>
+</th:block>
 </body>
 </html>

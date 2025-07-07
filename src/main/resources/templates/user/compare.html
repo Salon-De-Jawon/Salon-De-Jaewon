@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/user/compare.css" />
+    <th:block layout:fragment="css"></th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+    <div class="shop-list-wrap">
+        <div class="shop-list-head">
+            <div class="compare-title">가격비교하기</div>
+            <div class="gender-options">
+                <button type="button">전체</button>
+                <button type="button">여성</button>
+                <button type="button">남성</button>
+            </div>
+
+            <div>
+                <img class="search-icon" src="/images/search.png" />
+                <input class="search-input" style="display: none" />
+            </div>
+
+            <div class="service-cate-list">
+                <!-- 헤어 카테고리 -->
+                <button class="service-cate">커트</button>
+                <button class="service-cate">펌</button>
+                <button class="service-cate">염색</button>
+                <button class="service-cate">업스타일</button>
+                <button class="service-cate">드라이</button>
+                <button class="service-cate">붙임머리</button>
+                <button class="service-cate">클리닉</button>
+            </div>
+        </div>
+
+        <div class="shop-card-container">
+            <div class="compare-area" id="shop1">
+                <div class="compare-box">
+                    <div class="shop-img"></div>
+                    <div class="shop-title">
+                        <div class="shop-name">000 미용실</div>
+                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
+                    </div>
+
+                    <div class="rating-area">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating">5.0</div>
+                        <div class="review-count">(1,500)</div>
+                    </div>
+
+                    <div class="service-list">
+                        <div class="service-box">
+                            <div class="service-img"></div>
+                            <div class="service-info">
+                                <div class="service-name">00000 커트</div>
+                                <div class="service-price-area">
+                                    <div class="price">20,000</div>
+                                    <div class="original-price">35,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compare-area" id="shop2">
+                <div class="compare-box">
+                    <div class="shop-img"></div>
+                    <div class="shop-title">
+                        <div class="shop-name">000 미용실</div>
+                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
+                    </div>
+
+                    <div class="rating-area">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating">5.0</div>
+                        <div class="review-count">(1,500)</div>
+                    </div>
+
+                    <div class="service-list">
+                        <div class="service-box">
+                            <div class="service-img"></div>
+                            <div class="service-info">
+                                <div class="service-name">00000 커트</div>
+                                <div class="service-price-area">
+                                    <div class="price">20,000</div>
+                                    <div class="original-price">35,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="compare-area" id="shop3">
+                <div class="compare-box">
+                    <div class="shop-img"></div>
+                    <div class="shop-title">
+                        <div class="shop-name">000 미용실</div>
+                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
+                    </div>
+
+                    <div class="rating-area">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating">5.0</div>
+                        <div class="review-count">(1,500)</div>
+                    </div>
+
+                    <div class="service-list">
+                        <div class="service-box">
+                            <div class="service-img"></div>
+                            <div class="service-info">
+                                <div class="service-name">00000 커트</div>
+                                <div class="service-price-area">
+                                    <div class="price">20,000</div>
+                                    <div class="original-price">35,000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+
+    <script src="/javascript/user/compare.js"></script>
+</th:block>
+</body>
+</html>
