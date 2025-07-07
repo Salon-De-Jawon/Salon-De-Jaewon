@@ -6,12 +6,16 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" th:href="@{/css/management/main.css}">
     <link rel="stylesheet" th:href="@{/css/management/attendanceButtons.css}">
+
   </th:block>
 </head>
 <body>
 
 <div layout:fragment="main" id="main">
 
+  <!-- 토큰용 -->
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
   <div class="attendance-buttons">
     <button id="btn-toggle-attendance">출근하기</button>

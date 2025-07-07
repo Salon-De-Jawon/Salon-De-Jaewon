@@ -12,6 +12,7 @@ import com.salon.repository.admin.AnnouncementFileRepo;
 import com.salon.repository.admin.AnnouncementRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AncService {
     private final MemberRepo memberRepo;
     private final AnnouncementRepo announcementRepo;
@@ -84,6 +86,7 @@ public class AncService {
     public AncDetailDto detail(Long id) {
         Announcement announcement = announcementRepo.findById(id).get();
         AncDetailDto ancDetailDto = AncDetailDto.from(announcement);
+
         List<AnnouncementFile> files = announcementFileRepo.findByAnnouncement(announcement);
         if(files != null && !files.isEmpty()) {
             AnnouncementFile file = files.get(0);
@@ -111,9 +114,30 @@ public class AncService {
         return ancDetailDto;
     }
 
-    public AncCreateDto update(Long id) {
-        Announcement announcement = announcementRepo.findById(id).get();
-        AncCreateDto ancCreateDto = AncCreateDto.from(announcement);
-        return ancCreateDto;
+    public AncCreateDto updateForm(Long id) {
+        Announcement announcement = announcementRepo.findById(id).orElseThrow();
+
+        return AncCreateDto.from(announcement);
+    }
+
+    public void update(AncCreateDto ancCreateDto, Member member) {
+        Announcement announcement = announcementRepo.findById(ancCreateDto.getId())
+                .orElseThrow();
+        announcement.setTitle(ancCreateDto.getTitle());
+        announcement.setContent(ancCreateDto.getContent());
+        announcement.setRole(ancCreateDto.getRole());
+        announcement.setAdmin(member);
+
+        announcementRepo.save(announcement);
+    }
+
+    public void delete(Long id) {
+        Announcement announcement = announcementRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 공지가 존재하지 않습니다."));
+        List<AnnouncementFile> files = announcementFileRepo.findByAnnouncement(announcement);
+        for(AnnouncementFile file : files) {
+            announcementFileRepo.delete(file);
+        }
+        announcementRepo.delete(announcement);
     }
 }

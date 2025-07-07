@@ -1,5 +1,5 @@
 package com.salon.constant;
 
 public enum CsStatus {
-    WAITING, INPROGRESS
+    WAITING, INPROGRESS, COMPLETED
 }

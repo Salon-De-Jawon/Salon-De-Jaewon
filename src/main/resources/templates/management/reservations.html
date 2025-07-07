@@ -38,26 +38,16 @@
       </thead>
       <tbody>
       <tr th:each="res : ${reservationList}">
-        <td th:text="${res.date.toLocalDate()}">10:00</td>
+        <td th:text="${res.date.toLocalTime()}">10:00</td>
         <td th:text="${res.memberName}">홍길동</td>
         <td th:text="${res.serviceName}">컷트</td>
-        <td th:if="${res.status.toString()} == '예약완료'"
-            th:text="${res.status}" class="status-complete">예약완료</td>
-        <td th:if="${res.status.toString()} == '예약중'"
-            th:text="${res.status}" class="status-reserved">예약중</td>
-        <td th:if="${res.status.toString()} == '예약취소'"
-            th:text="${res.status}" class="status-canceled">예약취소</td>
-        <td th:if="${res.status.toString()} == '노쇼'"
-            th:text="${res.status}" class="status-noshow">노쇼</td>
+        <td th:text="${res.status.label}"
+            th:classappend="${res.status.name() == 'RESERVED' ? 'status-reserved' :
+                    res.status.name() == 'VISITED' ? 'status-visited' :
+                    res.status.name() == 'CANCELLED' ? 'status-canceled' :
+                    res.status.name() == 'NOSHOW' ? 'status-noshow' : ''}">
+        </td>
         <td th:text="${res.comment}">짧게 해주세요</td>
-        <td><button class="btn-edit">수정</button></td>
-      </tr>
-      <tr>
-        <td>13:30</td>
-        <td>김민지</td>
-        <td>염색</td>
-        <td class="pending">대기</td>
-        <td>어두운 갈색</td>
         <td><button class="btn-edit">수정</button></td>
       </tr>
 

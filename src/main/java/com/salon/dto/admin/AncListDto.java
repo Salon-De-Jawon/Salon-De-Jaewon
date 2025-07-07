@@ -32,6 +32,13 @@ public class AncListDto {
         ancListDto.setWriteAt(announcement.getWriteAt());
         ancListDto.setContent(announcement.getContent());
         ancListDto.setRole(announcement.getRole());
+
+        if (announcement.getAdmin() != null) {
+            ancListDto.setAdminName(announcement.getAdmin().getName());
+        } else {
+            ancListDto.setAdminName("관리자 없음");
+        }
+
         return ancListDto;
     }
 }

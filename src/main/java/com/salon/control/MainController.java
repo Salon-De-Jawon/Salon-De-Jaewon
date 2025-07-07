@@ -1,25 +1,49 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
-import com.salon.dto.user.SignUpDto;
+import com.salon.dto.shop.ShopListDto;
+import com.salon.dto.user.*;
+import com.salon.service.shop.ShopService;
+import com.salon.service.user.CompareService;
+import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Controller
-@AllArgsConstructor
 public class MainController {
+    @Value("${kakao.maps.api.key}")
+    private String kakaoMapsKey;
+
+    @Value("${kakao.rest.api.key}")
+    private String kakaoRestKey;
 
     private final MemberService memberService;
+    private final KakaoMapService kakaoMapService;
+    private final ShopService shopService;
+    private final CompareService compareService;
+
 
     @GetMapping("/")
     public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
@@ -29,9 +53,92 @@ public class MainController {
             model.addAttribute("name", name);
         }
 
+        model.addAttribute("kakaoMapsKey", kakaoMapsKey);
+
         return "/mainpage";
     }
 
+
+    // 위도경도를 주소로 변환
+    @GetMapping("/api/coord-to-address")
+    public ResponseEntity<?> getAddressFormCoords (@RequestParam double x, @RequestParam double y) {
+        try {
+            UserLocateDto location = kakaoMapService.getUserAddress(x, y);
+            return ResponseEntity.ok(location);
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 메인 지도에 표시할 샵 목록 불러오기
+
+    @GetMapping("/api/shops")
+    @ResponseBody
+    public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
+        return shopService.getAllShopsForMap(lat, lon);
+    }
+
+    @GetMapping("/shopList")
+    public String shopListPage() {
+        return "/user/shopList";
+    }
+
+    @GetMapping("/api/shop-list")
+    @ResponseBody
+    public List<ShopListDto> getShopListByRegion(
+            @RequestParam String region,
+            @RequestParam BigDecimal lat,
+            @RequestParam BigDecimal lon,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return shopService.getShopByRegion(region, lat, lon, page, size);
+    }
+
+    @PostMapping("/api/saveSelectedShops")
+    @ResponseBody
+    public ResponseEntity<?> saveSelectedShopsToSession(@RequestBody List<Long> shopIds, HttpSession session) {
+        if (shopIds == null || shopIds.isEmpty()) {
+            return ResponseEntity.badRequest().body("샵 ID 목록이 비어있습니다.");
+        }
+
+        // 최대 3개까지만 저장
+        List<Long> limitedShopIds = shopIds.size() > 3 ? shopIds.subList(0, 3) : shopIds;
+
+        session.setAttribute("selectedShopIds", limitedShopIds);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/compare")
+    public String comparePage(HttpSession session, Model model) {
+
+        //List<Long> selectedShopIds = (List<Long>) session.getAttribute("selectedShopIds"); 이걸로 하려다
+        //타입 안정성이 보장 되지 않아서 경고 멘트가 떠서
+        // 타입 체크 및 안전한 형변환을 적용함.
+        Object obj = session.getAttribute("selectedShopIds");
+
+        List<Long> selectedShopIds = new ArrayList<>();
+        if (obj instanceof List<?>) {
+            for (Object o : (List<?>) obj) {
+                if (o instanceof Long) {
+                    selectedShopIds.add((Long) o);
+                } else if (o instanceof Integer) { // 만약 Integer로 들어온 경우 대응
+                    selectedShopIds.add(((Integer) o).longValue());
+                }
+            }
+        }
+
+        if (selectedShopIds.isEmpty()) {
+            return "redirect:/shopList";
+        }
+
+        List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
+        model.addAttribute("compareResults", compareResults);
+
+        return "/user/compare";
+    }
 
     @GetMapping("/login")
     public  String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
@@ -65,10 +172,6 @@ public class MainController {
         return "redirect:/login";
     }
 
-    @GetMapping("/shopList")
-    public String shopListPage() {
-        return "/user/shopList";
-    }
 
     // js에서 보낸 아이디 찾기 요청 처리
 

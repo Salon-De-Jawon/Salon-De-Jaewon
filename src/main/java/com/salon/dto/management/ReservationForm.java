@@ -2,12 +2,19 @@ package com.salon.dto.management;
 
 
 import com.salon.constant.ReservationStatus;
+import com.salon.entity.Member;
+import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.ShopService;
+import com.salon.entity.management.master.Ticket;
 import com.salon.entity.shop.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
-public class ReservationDetailDto {
+public class ReservationForm {
 
     private Long id; // Reservation ID
     private Long memberId;
@@ -18,15 +25,17 @@ public class ReservationDetailDto {
     private String serviceName;
     private int servicePrice;
     private String couponName;
+    private LocalDateTime reservationDate;
     private int couponDiscount; // 쿠폰 할인금액
     private boolean ticketIsUsed; // 정액권 사용유무
     private int ticketUsedAmount; // 정액권 사용금액
     private int finalPrice;
+    private String comment;
     private ReservationStatus status;
 
-    public static ReservationDetailDto from(Reservation reservation) {
+    public static ReservationForm from(Reservation reservation) {
 
-        ReservationDetailDto dto = new ReservationDetailDto();
+        ReservationForm dto = new ReservationForm();
         
         int discountAmount;
         int ticketUsedAmount;
@@ -62,6 +71,27 @@ public class ReservationDetailDto {
         dto.setStatus(reservation.getStatus());
 
         return dto;
+    }
+
+    public Reservation to(Member member, ShopDesigner designer, ShopService service, Coupon coupon, Ticket ticket) {
+        Reservation reservation = new Reservation();
+
+        reservation.setId(this.id); // 수정 시 사용
+        reservation.setMember(member);
+        reservation.setShopDesigner(designer);
+        reservation.setShopService(service);
+        reservation.setCoupon(coupon);
+        reservation.setTicket(ticket);
+
+        reservation.setDiscountAmount(this.couponDiscount);
+        reservation.setTicketUsedAmount(this.ticketIsUsed ? this.ticketUsedAmount : 0);
+        reservation.setServiceName(service != null ? service.getName() : this.serviceName);
+
+        reservation.setReservationDate(this.reservationDate != null ?  this.reservationDate : LocalDateTime.now());
+        reservation.setStatus(ReservationStatus.RESERVED);
+        reservation.setComment(this.comment); // 요청사항 없으면 null 처리 (필요 시 set 가능)
+
+        return reservation;
     }
 
 
