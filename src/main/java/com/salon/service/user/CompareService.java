@@ -5,8 +5,7 @@ import com.salon.dto.management.master.ShopImageDto;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.ShopCompareResultDto;
 import com.salon.entity.shop.Shop;
-import com.salon.repository.ReviewRepo;
-import com.salon.repository.management.master.ServiceRepo;
+import com.salon.repository.management.master.ShopServiceRepo;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
 import com.salon.service.shop.ShopImageService;
@@ -25,7 +24,7 @@ public class CompareService {
     private final ReviewService reviewService;
     private final CouponService couponService;
     private final ShopImageService shopImageService;
-    private final ServiceRepo serviceRepo;
+    private final ShopServiceRepo shopServiceRepo;
 
     public List<ShopCompareResultDto> getCompareResults(List<Long> shopIds) {
         List<ShopCompareResultDto> result = new ArrayList<>();
@@ -41,7 +40,7 @@ public class CompareService {
 
             ShopListDto shopListDto = ShopListDto.from(shop, imageDto, avgRating, reviewCount, hasCoupon);
 
-            List<ServiceForm> serviceForms = serviceRepo.findByShopId(shopId).stream()
+            List<ServiceForm> serviceForms = shopServiceRepo.findByShopId(shopId).stream()
                     .map(ServiceForm::from)
                     .collect(Collectors.toList());
 

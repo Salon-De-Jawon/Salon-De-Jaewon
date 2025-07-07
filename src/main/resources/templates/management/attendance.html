@@ -63,13 +63,6 @@
                 <td th:text="${att.workTimeStr}">9시간</td>
                 <td th:text="${att.status}">비고</td>
             </tr>
-            <tr>
-                <td>2025-07-01</td>
-                <td>09:15</td>
-                <td>18:30</td>
-                <td>9시간 15분</td>
-                <td>지각</td>
-            </tr>
             <tr th:if="${#lists.isEmpty(attendanceList)}">
                 <td colspan="5" class="table-empty"> 근무기록이 없습니다. </td>
             </tr>

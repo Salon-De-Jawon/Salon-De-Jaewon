@@ -13,10 +13,12 @@
 
 .designer-container {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: 40px auto;
   padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
   font-family: var(--font-noto-snas);
-  /* 헤더 container와 달리 flex, height 제거 */
 }
 
 .dashboard-summary {
@@ -101,27 +103,36 @@
   gap: 20px;
 }
 
-.quick-actions button {
+.quick-actions {
+  margin-top: 40px;
+  display: flex;
+  gap: 20px;
+}
+
+.quick-actions a {
   flex: 1;
   padding: 15px;
-  border: none;
+  text-align: center;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
   color: white;
   font-family: var(--font-pretendard);
+  text-decoration: none;
   transition: background-color 0.3s ease;
+  display: inline-block;
 }
 
-.quick-actions button:nth-child(1),
-.quick-actions button:nth-child(3) {
+.quick-actions a:nth-child(1),
+.quick-actions a:nth-child(3) {
   background-color: var(--main-color);
 }
 
-.quick-actions button:nth-child(2) {
+.quick-actions a:nth-child(2) {
   background-color: var(--point-color);
 }
 
-.quick-actions button:hover {
+.quick-actions a:hover {
   opacity: 0.85;
 }
+

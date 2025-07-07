@@ -27,7 +27,8 @@ public class ShopDesigner {
 
     private String position;
     private LocalTime scheduledStartTime;
-    private LocalTime scheduledEntTime;
+    private LocalTime scheduledEndTime;
     private boolean isActive;
+    private String description;
 
 }

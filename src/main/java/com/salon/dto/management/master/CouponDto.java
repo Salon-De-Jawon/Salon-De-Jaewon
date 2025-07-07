@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter @Setter
-@AllArgsConstructor
 public class CouponDto {
 
     private Long id; // Coupon ID
@@ -21,7 +20,24 @@ public class CouponDto {
     private CouponType discountType;
     private int discountValue;
     private LocalDate expireDate;
-    private boolean isActive;
+    private boolean active;
+
+    public static CouponDto from(Coupon coupon){
+
+        CouponDto dto = new CouponDto();
+        dto.setId(coupon.getId());
+        dto.setShopId(coupon.getShop().getId());
+        dto.setName(coupon.getName());
+        dto.setDiscountType(coupon.getDiscountType());
+        dto.setDiscountValue(coupon.getDiscountValue());
+        dto.setMinimumAmount(coupon.getMinimumAmount());
+        dto.setExpireDate(coupon.getExpireDate());
+        dto.setActive(coupon.isActive());
+
+        return dto;
+
+    }
+
 
     public Coupon to (Shop shop) {
 
@@ -31,7 +47,7 @@ public class CouponDto {
         coupon.setMinimumAmount(this.minimumAmount);
         coupon.setDiscountType(this.discountType);
         coupon.setDiscountValue(this.discountValue);
-        coupon.setActive(this.isActive);
+        coupon.setActive(true);
         coupon.setExpireDate(this.expireDate);
 
         return coupon;
