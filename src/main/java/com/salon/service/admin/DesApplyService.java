@@ -6,7 +6,9 @@ import com.salon.constant.Role;
 import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.entity.management.Designer;
 import com.salon.repository.admin.ApplyRepo;
+import com.salon.repository.management.DesignerRepo;
 import com.salon.util.OcrRestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ import java.util.UUID;
 public class DesApplyService {
 
     private final ApplyRepo applyRepo;
+    private final DesignerRepo designerRepo;
 
     @Value("${ocr.api}")
     private String ocrApiKey;
@@ -101,7 +104,17 @@ public class DesApplyService {
         apply.setAdmin(member);
 
         Member applicant = apply.getMember();
-        applicant.setRole(Role.DESIGNER);
+
+        if(designerRepo.findByMember_Id(applicant.getId()) != null) {
+            throw new RuntimeException("이미 디자이너심");
+        }else{
+            applicant.setRole(Role.DESIGNER);
+            Designer designer = new Designer();
+            designer.setMember(applicant);
+            designerRepo.save(designer);
+        }
+
+
     }
 
     @Transactional

@@ -34,6 +34,7 @@ public class CsCreateDto {
         CsCreateDto csCreateDto = new CsCreateDto();
         csCreateDto.setCsCategory(csCustomer.getCategory());
         csCreateDto.setQuestionText(csCustomer.getQuestionText());
+        csCreateDto.setCsStatus(csCustomer.getStatus());
         return csCreateDto;
     }
 }

@@ -4,8 +4,10 @@ import com.salon.config.CustomUserDetails;
 import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.repository.admin.ApplyRepo;
 import com.salon.service.admin.DesApplyService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,9 +26,12 @@ public class AdminDesignerController {
     private String ocrApiKey;
 
     private final DesApplyService desApplyService;
+    private final ApplyRepo applyRepo;
 
     @GetMapping("/request")
     public String requestForm(Model model){
+
+
         model.addAttribute("applyDto", new ApplyDto());
         model.addAttribute("ocrApiKey", ocrApiKey);
         return "admin/apply";
@@ -64,6 +69,7 @@ public class AdminDesignerController {
 
     @PostMapping("/approve/{id}")
     public String approve(@PathVariable Long id,
+                          @Valid
                           HttpSession session,
                           @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = userDetails.getMember();
