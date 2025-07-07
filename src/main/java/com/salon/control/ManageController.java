@@ -2,24 +2,26 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.management.*;
+import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.AttendanceRepo;
+import com.salon.repository.management.master.TicketRepo;
 import com.salon.service.management.ManageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ManageController {
     private final ManageService manageService;
     private final AttendanceRepo attendanceRepo;
     private final ShopDesignerRepo shopDesignerRepo;
+    private final TicketRepo ticketRepo;
 
     // 메인페이지
     @GetMapping("")
@@ -92,6 +95,38 @@ public class ManageController {
 
         return "management/attendance";
     }
+
+    // 출퇴근용 json
+    @PostMapping("/attendance/{type}")
+    public ResponseEntity<?> saveAttendance(
+            @RequestBody String isoTime,
+            @PathVariable("type") String type,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long memberId = userDetails.getMember().getId();
+        String trimmed = isoTime.replace("\"", "");
+        LocalDateTime time = OffsetDateTime.parse(trimmed).toLocalDateTime();
+
+        if ("start".equalsIgnoreCase(type)) {
+            manageService.clockIn(memberId, time);
+        } else if ("end".equalsIgnoreCase(type)) {
+            manageService.clockOut(memberId, time);
+        } else {
+            return ResponseEntity.badRequest().body("Invalid attendance type");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 페이지 초기화 시 출퇴근 상태 확인용 API
+    @GetMapping("/attendance/status")
+    public ResponseEntity<?> getTodayAttendanceStatus(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long memberId = userDetails.getMember().getId();
+        AttendanceStatusDto status = manageService.getTodayStatus(memberId);
+        return ResponseEntity.ok(status);
+    }
+
+
 
     // 일일 통계
     @GetMapping("/statistics")
@@ -182,14 +217,38 @@ public class ManageController {
     @GetMapping("/reservations/new")
     public String newRes(Model model){
 
-        model.addAttribute("newRes", new ReservationDetailDto());
+        model.addAttribute("newRes", new ReservationForm());
 
         return "management/reservationForm";
     }
-    
-    // 예약 등록
-    @PostMapping("/reservations/new")
-    public String saveRes(@Valid ReservationDetailDto newRes){
+
+    // 멤버 검색 시 api
+    @ResponseBody
+    @GetMapping("/members/search")
+    public List<MemberSearchDto> searchMembers(@RequestParam String keyword) {
+        return manageService.searchByNameOrPhone(keyword);
+    }
+
+    // 쿠폰 조회용 api
+    @ResponseBody
+    @GetMapping("/members/{memberId}/coupons")
+    public MemberCouponDto getMemberCoupons(@PathVariable Long memberId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Member designer  = userDetails.getMember();
+
+        return manageService.getCoupons(memberId, designer.getId());
+    }
+
+
+    // 예약 저장
+    @PostMapping("/reservations/save")
+    public String saveRes(@Valid ReservationForm newRes, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+
+        System.out.println("memberId = " + newRes.getMemberId());
+        System.out.println("serviceId = " + newRes.getServiceId());
+        System.out.println("couponId = " + newRes.getCouponId());
+        manageService.saveReservation(newRes, userDetails.getMember().getId());
 
 
         return "redirect:/manage/reservations";

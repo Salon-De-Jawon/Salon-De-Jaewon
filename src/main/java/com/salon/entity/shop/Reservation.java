@@ -34,6 +34,8 @@ public class Reservation {
     @ManyToOne
     private ShopService shopService; // 서비스 아이디
 
+    private String serviceName; // 디자이너 직접 등록시
+
     @JoinColumn(name = "coupon_id")
     @ManyToOne
     private Coupon coupon; // 쿠폰 아이디

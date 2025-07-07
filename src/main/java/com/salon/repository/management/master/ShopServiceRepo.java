@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ServiceRepo extends JpaRepository<ShopService, Long> {
+public interface ShopServiceRepo extends JpaRepository<ShopService, Long> {
 
     // 미용실 시술 목록
     List<ShopService> findByShopId(Long shopId);

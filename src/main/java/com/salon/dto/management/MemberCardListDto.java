@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 public class MemberCardListDto {
 
     private Long id; // MemberCard ID
-    private ReservationDetailDto detailDto;
+    private ReservationForm detailDto;
     private String memo;
     private LocalDateTime createAt;
 
-    public static MemberCardListDto from(MemberCard memberCard, ReservationDetailDto detailDto) {
+    public static MemberCardListDto from(MemberCard memberCard, ReservationForm detailDto) {
 
         MemberCardListDto dto = new MemberCardListDto();
 
