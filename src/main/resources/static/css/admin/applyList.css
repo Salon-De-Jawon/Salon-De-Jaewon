@@ -41,3 +41,6 @@ td[colspan]{
     color: #888;
     padding: 40px 0;
 }
+#button {
+    gap:10px;
+}

@@ -1,9 +1,9 @@
 package com.salon.repository.admin;
 
-import com.salon.entity.admin.CsCustomer;
+import com.salon.entity.admin.CsFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CsCustomerRepo extends JpaRepository<CsCustomer, Long> {
+public interface CsCustomerFileRepo extends JpaRepository<CsFile, Long> {
 }

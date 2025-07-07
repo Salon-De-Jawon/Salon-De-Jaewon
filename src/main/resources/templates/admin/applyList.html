@@ -31,9 +31,10 @@
       <td th:text="${#temporals.format(apply.createAt, 'yyyy-MM-dd')}"></td>
       <td th:text="${apply.status}"></td>
       <td>
-        <div th:if="${apply.status.name() == 'WAITING'}">
-          <form th:action="@{/admin/designer/approve/{id}(id=${apply.id})}" method="post" style="display:inline;">
-            <button type="submit">승인</button>
+        <div id="button" th:if="${apply.status.name() == 'WAITING'}">
+          <form th:action="@{/admin/designer/approve/{id}(id=${apply.id})}" method="post"
+                style="display:inline;" onsubmit="return validateApproveReject(this)">
+            <button type="submit" style="margin-right: 16px;">승인</button>
           </form>
           <form th:action="@{/admin/designer/reject/{id}(id=${apply.id})}" method="post" style="display:inline;">
             <button type="submit">거절</button>
@@ -44,6 +45,22 @@
     </tbody>
   </table>
 </div>
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+  <script>
+    function validateApproveReject(form){
+      const tr = form.closest('tr');
+      if(!tr) return true;
+
+      const applyNumberCell = tr.querySelector('td:nth-child(3)');
+      if(!applyNumberCell) return true;
+
+      const applyNumber = applyNumberCell.textContent.trim();
+      if(!applyNumber){
+        return false;
+      }
+      return true;
+    }
+  </script>
+</th:block>
 </body>
 </html>

@@ -7,8 +7,9 @@ import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
 import com.salon.repository.admin.ApplyRepo;
-import com.salon.util.OcrUtil;
+import com.salon.util.OcrRestUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,19 +27,15 @@ import java.util.UUID;
 public class DesApplyService {
 
     private final ApplyRepo applyRepo;
-    private final OcrUtil ocrUtil;
+
+    @Value("${ocr.api}")
+    private String ocrApiKey;
 
     public void Apply(ApplyDto applyDto, Member member, MultipartFile file) {
 
         Apply apply = new Apply();
         apply.setMember(member);
         apply.setApplyType(ApplyType.DESIGNER);
-
-        String applyNumber = applyDto.getApplyNumber();
-        if((applyNumber == null || applyNumber.trim().isEmpty()) && file != null && !file.isEmpty()){
-            String extracted = ocrUtil.extractText(file);
-            applyNumber = extractNumberFromText(extracted);
-        }
         apply.setApplyNumber(applyDto.getApplyNumber());
         apply.setIssuedDate(LocalDate.now().toString());
         apply.setCreateAt(LocalDateTime.now());
@@ -46,21 +43,31 @@ public class DesApplyService {
 
         if(file != null && !file.isEmpty()) {
             try{
-            String uploadDir = "uploads/certificates/";
-            String originalFilename = file.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String savedFilename = UUID.randomUUID().toString() + extension;
-            File uploadPath = new File(uploadDir);
+                String ocrText = OcrRestUtil.extractText(file, ocrApiKey);
+                System.out.println("OCR 결과:\n" + ocrText);
 
-            if (!uploadPath.exists()) {
+                String extractedNumber = extractNumberFromText(ocrText);
+                if(extractedNumber != null){
+                    apply.setApplyNumber(extractedNumber);
+                } else {
+                    System.out.println("OCR 결과에서 자격번호를 찾지 못했습니다.");
+                }
+
+                String uploadDir = "uploads/certificates/";
+                String originalFilename = file.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String savedFilename = UUID.randomUUID().toString() + extension;
+                File uploadPath = new File(uploadDir);
+
+                if (!uploadPath.exists()) {
                 uploadPath.mkdirs();
-            }
+                }
 
-            File savedFile = new File(uploadPath, savedFilename);
-            try (FileOutputStream fos = new FileOutputStream(savedFile)) {
+                File savedFile = new File(uploadPath, savedFilename);
+                try (FileOutputStream fos = new FileOutputStream(savedFile)) {
                 fos.write(file.getBytes());
-            }
-        }catch (IOException e){
+                }
+            }catch (Exception e){
                 throw new RuntimeException("파일 저장 중 오류 발생", e);
             }
         }
