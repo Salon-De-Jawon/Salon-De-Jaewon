@@ -23,9 +23,11 @@ import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.SalonLikeRepo;
 import com.salon.repository.shop.ShopRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -224,6 +226,17 @@ public class MasterService {
 
         couponRepo.save(dto.to(designer.getShop()));
 
+    }
+
+    // 쿠폰 만료일 될 시 isActive == false
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정 실행
+    public void expiredCoupons() {
+        List<Coupon> expiredCoupons = couponRepo.findByExpireDateBeforeAndIsActiveTrue(LocalDate.now());
+        for (Coupon coupon : expiredCoupons) {
+            coupon.setActive(false);
+            couponRepo.save(coupon);
+        }
     }
 
 
