@@ -15,6 +15,7 @@ public class ReservationListDto {
 
     private String memberName; // 디자이너 전용
     private String designerName; // 회원 전용
+    private String shopName;
 
     private String serviceName;
     private String comment;
