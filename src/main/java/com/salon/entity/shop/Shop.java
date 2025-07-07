@@ -1,6 +1,7 @@
 package com.salon.entity.shop;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +21,9 @@ public class Shop {
     private String name; // 미용실 이름
     private String address; // 미용실 주소
     private String addressDetail; // 미용실 상세주소
+    @Digits(integer = 3, fraction = 7)
     private BigDecimal Latitude; // 미용실 위도
+    @Digits(integer = 3, fraction = 7)
     private BigDecimal Longitude; // 미용실 경도
     private String tel; // 미용실 전화번호
     private LocalTime openTime; // 미용실 오픈시간
