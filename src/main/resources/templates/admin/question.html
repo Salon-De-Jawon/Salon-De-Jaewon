@@ -13,19 +13,21 @@
     <div class="modal-overlay" id="inquiryModal">
         <div class="modal">
             <h2>고객 문의</h2>
-            <form id="inquiryForm" enctype="multipart/form-data">
+            <form id="inquiryForm" action="/admin/cs/question" th:object="${csCreateDto}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <label for="category">카테고리</label>
-                <select name="category" id="category">
-                    <option value="리뷰">리뷰</option>
-                    <option value="예약">예약</option>
-                    <option value="기타">기타</option>
+                <select th:field="*{csCategory}" id="category">
+                    <option value="REVIEW">리뷰</option>
+                    <option value="RESERVATION">예약</option>
+                    <option value="">기타</option>
                 </select>
                 <label for="content">문의 내용</label>
-                <textarea name="content" id="content" rows="5" placeholder="문의 내용을 입력하세요"></textarea>
+                <textarea th:field="*{questionText}" id="content" rows="5" placeholder="문의 내용을 입력하세요"></textarea>
 
                 <label for="file">파일 첨부(선택)</label>
-                <input type="file" name="file" id="file">
+                <input type="file" name="files" id="file" multiple>
                 <div class="button">
+                    <a href="/admin/cs/questionList" class="back-btn">뒤로가기</a>
                     <button type="submit" class="submit-btn">제출</button>
                 </div>
             </form>
