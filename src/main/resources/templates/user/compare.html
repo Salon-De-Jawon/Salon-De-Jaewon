@@ -35,28 +35,38 @@
         </div>
 
         <div class="shop-card-container">
-            <div class="compare-area" id="shop1">
+            <div th:each="compareResult, iterStat : ${compareResults}"
+                 th:id="'shop' + ${iterStat.index + 1}"
+                 class="compare-area">
+
                 <div class="compare-box">
-                    <div class="shop-img"></div>
+                    <div class="shop-img">
+                        <img th:src="@{${compareResult.shopListDto.shopImageDto.imgUrl}}" alt="미용실 이미지" />
+                    </div>
                     <div class="shop-title">
-                        <div class="shop-name">000 미용실</div>
-                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
+                        <div class="shop-name" th:text="${compareResult.shopListDto.shopName}">미용실 이름</div>
+                        <div class="shop-running-time"
+                             th:text="'영업시간: ' + ${#temporals.format(compareResult.shopListDto.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(compareResult.shopListDto.closeTime, 'HH:mm')}">
+                            영업시간
+                        </div>
                     </div>
 
                     <div class="rating-area">
-                        <div class="rating-stars">★★★★★</div>
-                        <div class="rating">5.0</div>
-                        <div class="review-count">(1,500)</div>
+                        <div class="rating-stars">★★★★★</div> <!-- 별점 UI 커스터마이징 가능 -->
+                        <div class="rating" th:text="${compareResult.shopListDto.rating}">5.0</div>
+                        <div class="review-count" th:text="'(' + ${compareResult.shopListDto.reviewCount} + ')'">(1,500)</div>
                     </div>
 
                     <div class="service-list">
-                        <div class="service-box">
-                            <div class="service-img"></div>
+                        <div class="service-box" th:each="service : ${compareResult.serviceForms}">
+                            <div class="service-img">
+                                <img th:src="@{${service.imgUrl}}" alt="서비스 이미지" />
+                            </div>
                             <div class="service-info">
-                                <div class="service-name">00000 커트</div>
+                                <div class="service-name" th:text="${service.name}">커트</div>
                                 <div class="service-price-area">
-                                    <div class="price">20,000</div>
-                                    <div class="original-price">35,000</div>
+                                    <div class="price" th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">20,000</div>
+                                    <!-- 원가 없을 수도 있으니 조건부 표시 -->
                                 </div>
                             </div>
                         </div>
@@ -64,64 +74,14 @@
                 </div>
             </div>
 
-            <div class="compare-area" id="shop2">
-                <div class="compare-box">
-                    <div class="shop-img"></div>
-                    <div class="shop-title">
-                        <div class="shop-name">000 미용실</div>
-                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
-                    </div>
-
-                    <div class="rating-area">
-                        <div class="rating-stars">★★★★★</div>
-                        <div class="rating">5.0</div>
-                        <div class="review-count">(1,500)</div>
-                    </div>
-
-                    <div class="service-list">
-                        <div class="service-box">
-                            <div class="service-img"></div>
-                            <div class="service-info">
-                                <div class="service-name">00000 커트</div>
-                                <div class="service-price-area">
-                                    <div class="price">20,000</div>
-                                    <div class="original-price">35,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="compare-area" id="shop3">
-                <div class="compare-box">
-                    <div class="shop-img"></div>
-                    <div class="shop-title">
-                        <div class="shop-name">000 미용실</div>
-                        <div class="shop-running-time">영업시간 : 9:00~20:00</div>
-                    </div>
-
-                    <div class="rating-area">
-                        <div class="rating-stars">★★★★★</div>
-                        <div class="rating">5.0</div>
-                        <div class="review-count">(1,500)</div>
-                    </div>
-
-                    <div class="service-list">
-                        <div class="service-box">
-                            <div class="service-img"></div>
-                            <div class="service-info">
-                                <div class="service-name">00000 커트</div>
-                                <div class="service-price-area">
-                                    <div class="price">20,000</div>
-                                    <div class="original-price">35,000</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div th:if="${#lists.size(compareResults) < 3}"
+                 th:each="i : ${#numbers.sequence(1, 3 - #lists.size(compareResults))}"
+                 class="compare-area dummy-area"
+                 style="visibility: hidden;">
+                <!-- 아무 내용 없이, 레이아웃만 채움 -->
             </div>
         </div>
+
     </div>
 </div>
 <th:block layout:fragment="script">
