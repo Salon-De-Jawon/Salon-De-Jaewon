@@ -8,10 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Title</title>
 
+      <meta name="_csrf" th:content="${_csrf.token}" />
+      <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <link rel="stylesheet" href="/css/header.css">
 
     <link rel="stylesheet" href="/css/management/designerMenu.css">
     <link rel="stylesheet" href="/css/master/masterMenu.css">
+
+
 
     <th:block layout:fragment="css"></th:block>
 
@@ -41,7 +46,7 @@
 
 
 
-    <script src="/javascript/header.js"></script>
+<script src="/javascript/header.js"></script>
 <th:block layout:fragment="script"></th:block>
 
 </body>
