@@ -14,10 +14,11 @@
     <div class="section-container">
         <h3>매장 정보 수정</h3>
 
-        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post">
+        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" th:value="${shop.id}"/>
 
             <div class="customer-card">
+
                 <div class="customer-header">
                     <strong>매장명</strong>
                     <input type="text" name="name" placeholder="매장 이름을 입력하세요" th:value="${shop.name}" required />
@@ -101,6 +102,21 @@
                     <textarea name="description" placeholder="매장 설명 입력"
                               th:text="${shop.description}"></textarea>
                 </div>
+
+                <div class="shop-image-upload">
+                    <label for="shopImageInput" class="custom-upload-label">
+                        📷 사진 업로드
+                    </label>
+                    <!-- name="shopImages"로 지정, multiple 추가 -->
+                    <input type="file" id="shopImageInput" name="shopImages" multiple accept="image/*" />
+
+                    <!-- 업로드된 이미지 미리보기 영역 -->
+                    <div id="shopImagePreview" class="image-preview-container">
+                        <!-- 자바스크립트로 미리보기 렌더링됨 -->
+                    </div>
+                </div>
+
+
             </div>
 
             <div style="text-align: right;">
@@ -111,9 +127,10 @@
 </div>
 
 <th:block layout:fragment="script">
+
+    <!--  카카오 우편코드 스크립트  -->
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0bcfa737cae58afd2f78fe737895ea3b&autoload=false&libraries=services"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
     <script>
         // 전역에 미리 함수 선언
         window.execDaumPostcode = function () {
@@ -196,6 +213,43 @@
           }
         });
     </script>
+
+    // 이미지 미리보기 및 삭제
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const input = document.getElementById("shopImageInput");
+          const preview = document.getElementById("shopImagePreview");
+
+          input.addEventListener("change", function () {
+            preview.innerHTML = ""; // 초기화
+
+            Array.from(input.files).forEach((file) => {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                const wrapper = document.createElement("div");
+                wrapper.className = "preview-image-wrapper";
+
+                const img = document.createElement("img");
+                img.src = e.target.result;
+
+                const delBtn = document.createElement("button");
+                delBtn.innerText = "삭제";
+                delBtn.className = "btn-delete-img";
+                delBtn.addEventListener("click", () => {
+                  wrapper.remove();
+                  input.value = "";
+                });
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(delBtn);
+                preview.appendChild(wrapper);
+              };
+              reader.readAsDataURL(file);
+            });
+          });
+        });
+    </script>
+
 
 </th:block>
 

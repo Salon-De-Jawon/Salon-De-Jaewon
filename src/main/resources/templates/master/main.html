@@ -95,6 +95,10 @@
                     <td th:text="${schedule.serviceName}">펌</td>
                     <td th:text="${schedule.status}" th:class="'status-' + ${schedule.status.toLowerCase()}">예약중</td>
                 </tr>
+                <tr th:if="${#lists.isEmpty(dto.todaySchedules)}">
+                    <td colspan="5" class="table-empty"> 예약이 없습니다. </td>
+                </tr>
+
                 </tbody>
             </table>
         </section>

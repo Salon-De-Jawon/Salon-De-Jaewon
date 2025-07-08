@@ -149,3 +149,60 @@
   border-radius: 8px;
 }
 
+.shop-image-upload {
+  margin-top: 15px;
+}
+
+.custom-upload-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--main-color, #4A90E2);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.custom-upload-label:hover {
+  background-color: #357ABD;
+}
+
+input[type="file"]#shopImageInput {
+  display: none; /* 기본 파일 input 숨김 */
+}
+
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.preview-image-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.preview-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-delete-img {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 2px 6px;
+  font-size: 11px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}

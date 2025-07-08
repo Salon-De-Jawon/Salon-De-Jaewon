@@ -198,6 +198,8 @@ public class MasterService {
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
+
+
         Shop shop = dto.to(designer.getShop());
 
         shopRepo.save(shop);
