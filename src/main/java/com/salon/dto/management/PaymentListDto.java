@@ -13,7 +13,7 @@ public class PaymentListDto {
     private String memberName;
     private String serviceName;
     private LocalDateTime payDate;
-    private String finalPrice;
+    private String totalPrice;
     private String memo;
     private String category;
 
@@ -32,7 +32,7 @@ public class PaymentListDto {
 
         dto.setServiceName(payment.getServiceName());
         dto.setPayDate(payment.getPayDate());
-        dto.setFinalPrice(String.format("%,d원", payment.getFinalPrice()));
+        dto.setTotalPrice(String.format("%,d원", payment.getTotalPrice()));
         dto.setMemo(payment.getMemo());
 
         return dto;

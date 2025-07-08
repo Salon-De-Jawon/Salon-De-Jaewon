@@ -20,7 +20,7 @@ public class DesignerScheduleSettingDto {
         dto.setDesignerId(designer.getId());
         dto.setName(designer.getDesigner().getMember().getName());
         dto.setStartTime(designer.getScheduledStartTime());
-        dto.setEndTime(designer.getScheduledEntTime());
+        dto.setEndTime(designer.getScheduledEndTime());
 
         return dto;
     }
@@ -28,7 +28,7 @@ public class DesignerScheduleSettingDto {
     public ShopDesigner to (ShopDesigner designer) {
 
         designer.setScheduledStartTime(this.startTime);
-        designer.setScheduledEntTime(this.endTime);
+        designer.setScheduledEndTime(this.endTime);
 
         return designer;
     }

@@ -4,29 +4,254 @@
       layout:decorate="~{fragment/default}">
 
 <head>
-    <link rel="stylesheet" th:href="@{/css/master/masterCss.css}" />
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/master/shopEdit.css}">
+    </th:block>
 </head>
 
-<div layout:fragment="main" class="owner-container">
-    <h2>매장 정보 수정</h2>
-    <form action="/manage/shop/update" method="post" class="shop-form">
-        <div class="form-group">
-            <label>매장명</label>
-            <input type="text" name="name" value="헤어짱 홍대점" />
-        </div>
-        <div class="form-group">
-            <label>주소</label>
-            <input type="text" name="address" value="서울시 마포구..." />
-        </div>
-        <div class="form-group">
-            <label>영업시간</label>
-            <input type="time" name="openTime" value="10:00" /> ~
-            <input type="time" name="closeTime" value="20:00" />
-        </div>
-        <div class="form-group">
-            <label>소개글</label>
-            <textarea name="description">트렌디한 감성 미용실</textarea>
-        </div>
-        <button type="submit" class="btn-submit">수정 완료</button>
-    </form>
+<body>
+<div layout:fragment="main" id="main">
+    <div class="section-container">
+        <h3>매장 정보 수정</h3>
+
+        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" th:value="${shop.id}"/>
+
+            <div class="customer-card">
+
+                <div class="customer-header">
+                    <strong>매장명</strong>
+                    <input type="text" name="name" placeholder="매장 이름을 입력하세요" th:value="${shop.name}" required />
+                </div>
+
+                <div class="customer-header">
+                    <strong>연락처</strong>
+                    <input type="text" name="tel" placeholder="전화번호 입력" th:value="${shop.tel}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>주소</strong>
+                    <div class="address-wrapper">
+                        <div class="address-row">
+                            <input type="text" id="postcode" placeholder="우편번호" readonly>
+                            <button type="button" class="btn-search-address" onclick="execDaumPostcode()">우편번호 찾기</button>
+                        </div>
+
+                        <input type="text" id="roadAddress" placeholder="도로명주소" th:value="${shop.address}" readonly>
+
+                        <div class="address-row">
+                            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소 입력"
+                                   th:value="${shop.addressDetail}">
+                            <input type="text" id="extraAddress" placeholder="참고항목" readonly>
+                        </div>
+                        <input type="hidden" name="latitude" th:value="${shop.latitude}" />
+                        <input type="hidden" name="longitude" th:value="${shop.longitude}" />
+                        <input type="hidden" name="address" id="fullAddress" th:value="${shop.address}" />
+                    </div>
+                </div>
+
+                <div id="addressModal" class="modal">
+                    <div class="modal-content">
+                        <div id="daumWrap" style="width:100%;height:100%;"></div>
+                    </div>
+                </div>
+
+                <div class="customer-header">
+                    <strong>운영시간</strong>
+                    <input type="time" name="openTime" th:value="${shop.openTime}" /> ~
+                    <input type="time" name="closeTime" th:value="${shop.closeTime}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>지각 기준 (분)</strong>
+                    <input type="number" name="lateMin" min="0" th:value="${shop.lateMin}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>조퇴 기준 (분)</strong>
+                    <input type="number" name="earlyLeaveMin" min="0" th:value="${shop.earlyLeaveMin}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>예약 간격 (분)</strong>
+                    <input type="number" name="reservationInterval" min="10" step="5" th:value="${shop.reservationInterval}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>마감 전 예약 제한시간 (분)</strong>
+                    <input type="number" name="timeBeforeClosing" min="0" th:value="${shop.timeBeforeClosing}" />
+                </div>
+
+                <div class="customer-header">
+                    <strong>휴무 요일</strong>
+                    <select name="dayOff" th:value="${shop.dayOff}">
+                        <option value="0" th:selected="${shop.dayOff == 0}">없음</option>
+                        <option value="1" th:selected="${shop.dayOff == 1}">월요일</option>
+                        <option value="2" th:selected="${shop.dayOff == 2}">화요일</option>
+                        <option value="4" th:selected="${shop.dayOff == 4}">수요일</option>
+                        <option value="8" th:selected="${shop.dayOff == 8}">목요일</option>
+                        <option value="16" th:selected="${shop.dayOff == 16}">금요일</option>
+                        <option value="32" th:selected="${shop.dayOff == 32}">토요일</option>
+                        <option value="64" th:selected="${shop.dayOff == 64}">일요일</option>
+                    </select>
+                    <span style="font-size: 13px; color: #999;">※ 이진법으로 계산됩니다.</span>
+                </div>
+
+                <div class="customer-header">
+                    <strong>매장 소개</strong>
+                    <textarea name="description" placeholder="매장 설명 입력"
+                              th:text="${shop.description}"></textarea>
+                </div>
+
+                <div class="shop-image-upload">
+                    <label for="shopImageInput" class="custom-upload-label">
+                        📷 사진 업로드
+                    </label>
+                    <!-- name="shopImages"로 지정, multiple 추가 -->
+                    <input type="file" id="shopImageInput" name="shopImages" multiple accept="image/*" />
+
+                    <!-- 업로드된 이미지 미리보기 영역 -->
+                    <div id="shopImagePreview" class="image-preview-container">
+                        <!-- 자바스크립트로 미리보기 렌더링됨 -->
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div style="text-align: right;">
+                <button type="submit" class="btn-edit">저장하기</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<th:block layout:fragment="script">
+
+    <!--  카카오 우편코드 스크립트  -->
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0bcfa737cae58afd2f78fe737895ea3b&autoload=false&libraries=services"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        // 전역에 미리 함수 선언
+        window.execDaumPostcode = function () {
+          alert('주소찾기 함수가 아직 준비되지 않았습니다. 잠시만 기다려주세요.');
+        };
+
+        let geocoder;
+
+        // kakao.maps SDK 로드 후 실행
+        kakao.maps.load(function () {
+          geocoder = new kakao.maps.services.Geocoder();
+
+          // 이제 execDaumPostcode를 진짜 함수로 덮어쓰기
+          window.execDaumPostcode = function () {
+            const modal = document.getElementById('addressModal');
+            const daumWrap = document.getElementById('daumWrap');
+
+            modal.style.display = 'block';
+
+            new daum.Postcode({
+              oncomplete: function(data) {
+                let roadAddr = data.roadAddress;
+                let extraAddr = '';
+
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                  extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                  extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+
+                document.getElementById("postcode").value = data.zonecode;
+                document.getElementById("roadAddress").value = roadAddr;
+                document.getElementById("extraAddress").value = extraAddr;
+                document.getElementById("fullAddress").value =
+                  roadAddr + " " + document.getElementById("detailAddress").value;
+
+                // 좌표 변환
+                geocoder.addressSearch(roadAddr, function(result, status) {
+                  if (status === kakao.maps.services.Status.OK) {
+                    const lat = result[0].y;
+                    const lng = result[0].x;
+
+                    document.querySelector('input[name="latitude"]').value = lat;
+                    document.querySelector('input[name="longitude"]').value = lng;
+                  } else {
+                    console.error('주소 변환 실패:', status);
+                  }
+                });
+
+                // 잠시 후 모달 닫기
+                setTimeout(closeDaumPostcode, 100);
+              },
+              width: '100%',
+              height: '100%'
+            }).embed(daumWrap);
+          };
+
+          function closeDaumPostcode() {
+            document.getElementById('addressModal').style.display = 'none';
+            document.getElementById('daumWrap').innerHTML = "";
+          }
+
+          // 모달 외부 클릭 시 닫기
+          window.addEventListener("click", function(event) {
+            const modal = document.getElementById('addressModal');
+            if (event.target === modal) {
+              closeDaumPostcode();
+            }
+          });
+
+          // 상세주소 입력 시 전체 주소 실시간 업데이트
+          const detailInput = document.getElementById("detailAddress");
+          if (detailInput) {
+            detailInput.addEventListener("input", function () {
+              const road = document.getElementById("roadAddress").value;
+              const detail = this.value;
+              document.getElementById("fullAddress").value = road + " " + detail;
+            });
+          }
+        });
+    </script>
+
+    // 이미지 미리보기 및 삭제
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const input = document.getElementById("shopImageInput");
+          const preview = document.getElementById("shopImagePreview");
+
+          input.addEventListener("change", function () {
+            preview.innerHTML = ""; // 초기화
+
+            Array.from(input.files).forEach((file) => {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                const wrapper = document.createElement("div");
+                wrapper.className = "preview-image-wrapper";
+
+                const img = document.createElement("img");
+                img.src = e.target.result;
+
+                const delBtn = document.createElement("button");
+                delBtn.innerText = "삭제";
+                delBtn.className = "btn-delete-img";
+                delBtn.addEventListener("click", () => {
+                  wrapper.remove();
+                  input.value = "";
+                });
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(delBtn);
+                preview.appendChild(wrapper);
+              };
+              reader.readAsDataURL(file);
+            });
+          });
+        });
+    </script>
+
+
+</th:block>
+
+</body>
+</html>

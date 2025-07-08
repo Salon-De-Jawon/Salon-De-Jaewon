@@ -8,22 +8,58 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${upload.recipe-path}")
-    private String recipePath;
+    @Value("${upload.des-img-path}")
+    private String desImgPath;
 
-    @Value("${upload.post-path}")
-    private String postPath;
+    @Value("${upload.shop-img-path}")
+    private String shopImgPath;
+
+    @Value("${upload.shop-service-img-path}")
+    private String shopServiceImgPath;
+
+    @Value("${upload.review-img-path}")
+    private String reviewImgPath;
+
+    @Value("${upload.banner-img-path}")
+    private String bannerImgPath;
+
+    @Value("${upload.anc-file-path}")
+    private String ancFilePath;
+
+    @Value("${upload.cs-file-path}")
+    private String csFilePath;
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/recipeImg/**")
-                .addResourceLocations(recipePath);
 
-        registry.addResourceHandler("/postImg/**")
-                .addResourceLocations(postPath);
         registry
-                .addResourceHandler("/upload/**")
-                .addResourceLocations("file:///C:/upload/");
+                .addResourceHandler("/desImg/**")
+                .addResourceLocations(desImgPath);
+
+        registry
+                .addResourceHandler("/shopImg/**")
+                .addResourceLocations(shopImgPath);
+
+        registry
+                .addResourceHandler("/shopServiceImg/**")
+                .addResourceLocations(shopServiceImgPath);
+
+        registry
+                .addResourceHandler("/reviewImg/**")
+                .addResourceLocations(reviewImgPath);
+
+        registry
+                .addResourceHandler("/bannerImg/**")
+                .addResourceLocations(bannerImgPath);
+
+        registry
+                .addResourceHandler("/ancFile/**")
+                .addResourceLocations(ancFilePath);
+
+        registry
+                .addResourceHandler("/csFile/**")
+                .addResourceLocations(csFilePath);
     }
 
 

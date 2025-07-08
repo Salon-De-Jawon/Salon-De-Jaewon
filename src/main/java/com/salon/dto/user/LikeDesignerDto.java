@@ -30,7 +30,7 @@ public class LikeDesignerDto {
         dto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
         dto.setShopName(shopDesigner.getShop().getName());
         dto.setStartTime(shopDesigner.getScheduledStartTime());
-        dto.setEndTime(shopDesigner.getScheduledEntTime());
+        dto.setEndTime(shopDesigner.getScheduledEndTime());
         dto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
 
         return dto;

@@ -273,21 +273,12 @@ public class ManageService {
 
         Long shopId = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId).getShop().getId();
 
-        List<CouponDto> couponDtos = coupons.stream()
-                .map(c -> {
-                    Coupon coupon = c.getCoupon();
-                    return new CouponDto(
-                            c.getId(), // memberCouponId
-                            coupon.getShop().getId(),
-                            coupon.getName(),
-                            coupon.getMinimumAmount(),
-                            coupon.getDiscountType(),
-                            coupon.getDiscountValue(),
-                            coupon.getExpireDate(),
-                            true
-                    );
-                })
-                .collect(Collectors.toList());
+        List<CouponDto> couponDtos = new ArrayList<>();
+
+        for (MemberCoupon coupon : coupons) {
+            CouponDto dto = CouponDto.from(coupon.getCoupon());
+            couponDtos.add(dto);
+        }
 
         // 2. 정액권 잔액 계산
         Optional<Ticket> optionalTicket = ticketRepo.findByMemberIdAndShopId(memberId, shopId);

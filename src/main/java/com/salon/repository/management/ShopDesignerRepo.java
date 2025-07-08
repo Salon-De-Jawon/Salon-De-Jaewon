@@ -20,4 +20,6 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
     // shopDesignerId 로 찾기
     ShopDesigner findByIdAndIsActiveTrue(Long shopDesignerId);
 
+    // 미용실 소속 디자이너 수
+    int countByShopIdAndIsActiveTrue(Long id);
 }
