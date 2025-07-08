@@ -51,6 +51,13 @@ public class MasterController {
         return "master/designerList";
     }
 
+    // 디자이너 수정 페이지
+    @GetMapping("/designer/edit")
+    public String designerEdit(){
+
+        return "master/designerEdit";
+    }
+
 
     // 예약 관리
     @GetMapping("/reservations")
