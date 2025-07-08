@@ -21,8 +21,8 @@ import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
 import com.salon.repository.ReviewImageRepo;
 import com.salon.repository.ReviewRepo;
-import com.salon.repository.designer.DesignerServiceRepo;
 import com.salon.repository.management.ShopDesignerRepo;
+import com.salon.repository.management.master.DesignerServiceRepo;
 import com.salon.repository.management.master.ShopServiceRepo;
 import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.SalonLikeRepo;
@@ -48,7 +48,7 @@ public class ShopDetailService {
     private final ReviewImageRepo reviewImageRepo;
     private final SalonLikeRepo salonLikeRepo;
     private final ReservationRepo reservaitonRepo;
-    private final DesignerServiceRepo designerServiceRepo;
+    private  final DesignerServiceRepo designerServiceRepo;
 
 
     // 특정 미용실의 상세정보 조회
@@ -201,7 +201,7 @@ public class ShopDetailService {
             int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, sd.getId());
 
             // 디자이너 서비스 조회
-            DesignerService designerService = designerServiceRepo.findByShopDeisngerId(sd.getId())
+            DesignerService designerService = designerServiceRepo.findByShopDesignerId(sd.getId())
                     .orElse(null);
 
             // 전문 시술 문자열 만들기
@@ -211,7 +211,7 @@ public class ShopDetailService {
 
             }
 
-            // 전문시술 분야 + 연차 혁식의 문자열 조합
+            // 전문시술 분야 + 연차 형식의 문자열 조합
             String profileSummary = specialties + "(" + workingYear + "년차)";
 
             // Dto 가공

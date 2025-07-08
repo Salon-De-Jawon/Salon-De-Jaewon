@@ -12,7 +12,7 @@
   <section class="shop-top">
     <div class="shop-main">
       <!-- 미용실 이미지 -->
-      <div class="shop-img" style="background-image: url()">이미지</div>
+      <div class="shop-img" th:style=" 'background-image: url (' + ${shop.shopImageDtos[0]?.imageUrl} + ')' ">이미지</div>
       <!-- 이미지 오른쪽 아이콘 버튼 영역 -->
       <div class="shop-side">
         <!-- 찜하기 -->

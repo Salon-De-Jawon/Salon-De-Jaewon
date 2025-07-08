@@ -11,7 +11,7 @@ import java.util.List;
 public interface ShopServiceRepo extends JpaRepository<ShopService, Long> {
 
     // 미용실 시술 목록
-    List<com.salon.service.shop.ShopService> findByShopId(Long shopId);
+    List<ShopService> findByShopId(Long shopId);
 
     // 미용사 담당 시술목록 (카테고리별로)
     List<ShopService> findByShopIdAndCategoryIn(Long shopId, List<ServiceCategory> categories);
