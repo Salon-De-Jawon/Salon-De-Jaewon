@@ -1,11 +1,7 @@
 .section-container {
-  max-width: 1280px;
-  margin: 40px auto;
+  max-width: 960px;
+  margin: 0 auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
-  font-family: var(--font-noto-snas);
 }
 
 .page-header {
@@ -25,57 +21,71 @@
   background-color: var(--main-color);
   color: white;
   padding: 8px 16px;
-  border: none;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .btn-add:hover {
-  background-color: var(--point-color);
+  background-color: #7489c5;
 }
 
-.default-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 16px;
+.designer-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.default-table th,
-.default-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+.designer-card {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 16px;
 }
 
-.default-table th {
-  background-color: #f1f1f1;
-  font-weight: 600;
-}
-
-.designer-img {
-  width: 50px;
-  height: 50px;
+.designer-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
   object-fit: cover;
-  border-radius: 4px;
+  margin-right: 20px;
 }
 
-.btn-manage {
+.designer-info {
+  flex: 1;
+}
+
+.designer-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.designer-desc {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.designer-stats span {
+  margin-right: 12px;
+  font-size: 14px;
+  color: #888;
+}
+
+.btn-book {
+  background-color: white;
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
   padding: 6px 12px;
-  background-color: var(--point-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-manage:hover {
-  background-color: #3e4f71;
-}
-
-a.btn-add,
-a.btn-manage {
-  display: inline-block;
+  border-radius: 6px;
   text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
+.btn-book:hover {
+  background-color: var(--main-color);
+  color: white;
+}

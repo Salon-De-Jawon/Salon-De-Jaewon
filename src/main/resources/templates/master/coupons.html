@@ -21,7 +21,6 @@
         <thead>
         <tr>
           <th>쿠폰명</th>
-          <th>할인 유형</th>
           <th>할인 값</th>
           <th>최소 사용 금액</th>
           <th>유효기간</th>
@@ -32,8 +31,7 @@
         <tbody>
         <tr th:each="coupon : ${couponList}">
           <td th:text="${coupon.name}">첫방문 20%</td>
-          <td th:text="${coupon.discountType}">PERCENT</td>
-          <td th:text="${coupon.discountValue} + (coupon.discountType == 'PERCENT' ? '%' : '원')">20%</td>
+          <td th:text="${coupon.discountValue + (coupon.discountType.name() eq 'PERCENT' ? '%' : '원')}"></td>
           <td th:text="${coupon.minimumAmount} + '원'">30,000원</td>
           <td th:text="${coupon.expireDate}">2025-12-31</td>
           <td th:text="${coupon.active ? '가능' : '중지'}">가능</td>

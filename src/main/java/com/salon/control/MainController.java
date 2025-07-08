@@ -38,7 +38,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
-    private final SalonService shopService;
+    private final SalonService salonService;
     private final CompareService compareService;
 
 
@@ -73,7 +73,7 @@ public class MainController {
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
-        return shopService.getAllShopsForMap(lat, lon);
+        return salonService.getAllShopsForMap(lat, lon);
     }
 
     @GetMapping("/shopList")
@@ -90,7 +90,7 @@ public class MainController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return shopService.getShopByRegion(region, lat, lon, page, size);
+        return salonService.getShopByRegion(region, lat, lon, page, size);
     }
 
     @PostMapping("/api/saveSelectedShops")
