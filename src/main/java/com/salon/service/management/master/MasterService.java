@@ -2,6 +2,8 @@ package com.salon.service.management.master;
 
 import com.salon.constant.LeaveStatus;
 import com.salon.constant.LikeType;
+import com.salon.constant.UploadType;
+import com.salon.dto.UploadedFileDto;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.LeaveRequestDto;
 import com.salon.dto.management.TodayScheduleDto;
@@ -12,6 +14,7 @@ import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
+import com.salon.entity.shop.ShopImage;
 import com.salon.repository.MemberRepo;
 import com.salon.repository.ReviewRepo;
 import com.salon.repository.management.DesignerRepo;
@@ -21,11 +24,14 @@ import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.*;
 import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.SalonLikeRepo;
+import com.salon.repository.shop.ShopImageRepo;
 import com.salon.repository.shop.ShopRepo;
+import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,6 +58,8 @@ public class MasterService {
     private final MemberRepo memberRepo;
     private final DesignerRepo designerRepo;
     private final ShopRepo shopRepo;
+    private final ShopImageRepo shopImageRepo;
+    private final FileService fileService;
 
     // 메인페이지용
     public MainDesignerPageDto getMainPage(Long memberId) {
@@ -198,6 +206,15 @@ public class MasterService {
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
+        for(MultipartFile file : dto.getImages()){
+            UploadedFileDto image = fileService.upload(file, UploadType.SHOP);
+            ShopImage shopImage = new ShopImage();
+            shopImage.setShop(designer.getShop());
+            shopImage.setOriginalName(image.getOriginalFileName());
+            shopImage.setImgName(image.getFileName());
+            shopImage.setImgUrl(image.getFileUrl());
+            shopImageRepo.save(shopImage);
+        }
         Shop shop = dto.to(designer.getShop());
 
         shopRepo.save(shop);
