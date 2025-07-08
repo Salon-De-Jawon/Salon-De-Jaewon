@@ -63,7 +63,7 @@ public class FileService {
         // 경로 + 파일이름 /shopImg/*****.jpg
         String fileUrl = type.getUrlPath() + uuidFileName;
 
-        return new UploadedFileDto(originalFileName, uuidFileName, fileUrl);
+        return new UploadedFileDto(originalFileName, uuidFileName, fileUrl, folderPath);
     }
 
     private String getFolderPath(UploadType type) {

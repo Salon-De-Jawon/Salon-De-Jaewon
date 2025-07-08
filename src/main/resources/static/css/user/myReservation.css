@@ -194,7 +194,22 @@
   background-color: #fcfcfc; /* 연한 배경 */
 }
 
-.price-details > div,
+.price-details > div {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.price-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.coupon-icon-area {
+  display: flex;
+  margin-left: 10px;
+}
+
 .shop-info-details > div {
   display: flex;
   justify-content: space-between;
@@ -472,7 +487,6 @@
   border: 1px solid #ccc;
 }
 
-
 /* 쿠폰정보 박스 */
 .coupon-container {
   position: relative;
@@ -489,7 +503,7 @@
   display: none;
   position: absolute;
   top: 50%;
-  right: 110%;
+  left: 110%;
   transform: translateY(-50%);
   background-color: white;
   padding: 14px 16px;
@@ -523,8 +537,6 @@
 .coupon-container:hover .tooltip {
   display: block;
 }
-
-
 
 @media (max-width: 992px) {
   .my-page-container {
@@ -617,8 +629,6 @@
     padding: 12px; /* 버튼 패딩 증가 */
   }
 }
-
-
 
 /* 아주 작은 화면 (모바일, 화면 너비 576px 이하) */
 @media (max-width: 576px) {

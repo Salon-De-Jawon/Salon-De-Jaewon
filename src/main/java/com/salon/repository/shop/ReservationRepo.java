@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepo extends JpaRepository<Reservation, Long> {
 
@@ -18,7 +19,6 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
 
     // 방문횟수를 카운트하기 위한 메서드
     Reservation countByMemberIdAndShopDesignerId(Long memberId, Long designerId);
-
 
     // 오늘 예약 수 (디자이너)
     @Query("SELECT COUNT(r) FROM Reservation r " +

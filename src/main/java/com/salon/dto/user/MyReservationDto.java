@@ -33,7 +33,8 @@ public class MyReservationDto {
     private CouponType couponType; // 쿠폰 타입
     private String couponName; // 사용쿠폰 이름
     private Integer daysExpire; // 남은 날짜
-    private int couponDiscount; //쿠폰 할인 금액
+    private int couponDiscount; // 적용, 쿠폰 할인 금액
+    private int discountValue; // 쿠폰 할인 양
     private int couponMin;  // 최소 사용 금액
 
     private boolean ticketUsed; //정액권 사용 여부
@@ -72,6 +73,7 @@ public class MyReservationDto {
             dto.setCouponType(reservation.getCoupon().getDiscountType());
             dto.setCouponName(reservation.getCoupon().getName());
             dto.setCouponDiscount(reservation.getDiscountAmount());
+            dto.setDiscountValue(reservation.getCoupon().getDiscountValue());
             dto.setCouponMin(reservation.getCoupon().getMinimumAmount());
 
             LocalDate today = LocalDate.now();
@@ -89,6 +91,7 @@ public class MyReservationDto {
             dto.setCouponDiscount(0);
             dto.setCouponType(null);
             dto.setDaysExpire(null);
+            dto.setDiscountValue(0);
         }
 
         if(reservation.getTicket() != null) {

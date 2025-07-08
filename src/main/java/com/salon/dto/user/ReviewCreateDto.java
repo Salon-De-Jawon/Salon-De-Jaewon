@@ -18,7 +18,7 @@ public class ReviewCreateDto {
 
 
     private int rating;
-    private String reviewText;
+    private String comment;
     private Long reservationId;
     private List<MultipartFile> reviewImages;
 
@@ -27,7 +27,7 @@ public class ReviewCreateDto {
 
         review.setReservation(reservation);
         review.setRating(this.rating);
-        review.setComment(this.reviewText);
+        review.setComment(this.comment);
         review.setCreateAt(java.time.LocalDateTime.now());
 
         return review;

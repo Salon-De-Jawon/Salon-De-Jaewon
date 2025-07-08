@@ -98,7 +98,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // 모달열고 닫기
 
-      function openCreateReviewModal() {
+      function openCreateReviewModal(reservationId) {
+        document.getElementById("reservationIdInput").value = reservationId;
         document.getElementById("createReviewModal").style.display = "block";
       }
 
