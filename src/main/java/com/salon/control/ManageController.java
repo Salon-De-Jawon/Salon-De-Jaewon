@@ -244,12 +244,7 @@ public class ManageController {
     @PostMapping("/reservations/save")
     public String saveRes(@Valid ReservationForm newRes, @AuthenticationPrincipal CustomUserDetails userDetails){
 
-
-        System.out.println("memberId = " + newRes.getMemberId());
-        System.out.println("serviceId = " + newRes.getServiceId());
-        System.out.println("couponId = " + newRes.getCouponId());
         manageService.saveReservation(newRes, userDetails.getMember().getId());
-
 
         return "redirect:/manage/reservations";
     }

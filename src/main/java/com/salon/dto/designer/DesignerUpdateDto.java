@@ -1,6 +1,5 @@
 package com.salon.dto.designer;
 
-import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,17 +26,17 @@ public class DesignerUpdateDto {
 
 
     // ShopDesigner(Entity) -> DesignerUpdateDto
-    public static DesignerUpdateDto from (ShopDesigner shopDesigner, Designer designer){
+    public static DesignerUpdateDto from (ShopDesigner shopDesigner){
         DesignerUpdateDto designerUpdateDto = new DesignerUpdateDto();
+
+        designerUpdateDto.setDesignerId(shopDesigner.getId());
         designerUpdateDto.setShopName(shopDesigner.getShop().getName());
-        designerUpdateDto.setDesignerId(designer.getId());
-        designerUpdateDto.setDesignerImg(designer.getImgUrl());
-        designerUpdateDto.setName(designer.getMember().getName());
-        designerUpdateDto.setStartAt(designer.getStartAt());
+        designerUpdateDto.setName(shopDesigner.getDesigner().getMember().getName());
+        designerUpdateDto.setStartAt(shopDesigner.getDesigner().getStartAt());
         designerUpdateDto.setPosition(shopDesigner.getPosition());
         designerUpdateDto.setScheduledStartTime(shopDesigner.getScheduledStartTime());
         designerUpdateDto.setScheduledEndTime(shopDesigner.getScheduledEntTime());
-        designerUpdateDto.setActive(designerUpdateDto.isActive());
+        designerUpdateDto.setDesignerImg(shopDesigner.getDesigner().getImgUrl());
 
         return designerUpdateDto;
     }

@@ -3,13 +3,19 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
-import com.salon.service.shop.SalonService;
+import com.salon.service.shop.ShopService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,7 +41,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
-    private final SalonService salonService;
+    private final ShopService shopService;
     private final CompareService compareService;
 
 
@@ -69,7 +76,7 @@ public class MainController {
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
-        return salonService.getAllShopsForMap(lat, lon);
+        return shopService.getAllShopsForMap(lat, lon);
     }
 
     @GetMapping("/shopList")
@@ -86,7 +93,7 @@ public class MainController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return salonService.getShopByRegion(region, lat, lon, page, size);
+        return shopService.getShopByRegion(region, lat, lon, page, size);
     }
 
     @PostMapping("/api/saveSelectedShops")

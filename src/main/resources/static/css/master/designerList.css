@@ -1,0 +1,91 @@
+.section-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-header h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--main-color);
+}
+
+.btn-add {
+  background-color: var(--main-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-add:hover {
+  background-color: #7489c5;
+}
+
+.designer-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.designer-card {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 16px;
+}
+
+.designer-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.designer-info {
+  flex: 1;
+}
+
+.designer-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.designer-desc {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.designer-stats span {
+  margin-right: 12px;
+  font-size: 14px;
+  color: #888;
+}
+
+.btn-book {
+  background-color: white;
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-book:hover {
+  background-color: var(--main-color);
+  color: white;
+}
