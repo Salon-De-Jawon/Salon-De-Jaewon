@@ -49,7 +49,7 @@ public class FileService {
         String ext = originalFileName.substring(originalFileName.lastIndexOf(".")+1);
         
         // 랜덤이름 + 확장자
-        String uuidFileName = UUID.randomUUID() + ext;
+        String uuidFileName = UUID.randomUUID() + "." + ext;
 
         // 업로드 타입별 폴더 경로
         String folderPath = getFolderPath(type);
