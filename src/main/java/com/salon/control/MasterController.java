@@ -5,15 +5,19 @@ import com.salon.dto.management.master.CouponDto;
 import com.salon.dto.management.master.MainDesignerPageDto;
 import com.salon.dto.management.master.ShopEditDto;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.Coupon;
 import com.salon.service.management.master.MasterService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -45,6 +49,13 @@ public class MasterController {
     public String designerList(){
 
         return "master/designerList";
+    }
+
+    // 디자이너 수정 페이지
+    @GetMapping("/designer/edit")
+    public String designerEdit(){
+
+        return "master/designerEdit";
     }
 
 
@@ -93,6 +104,8 @@ public class MasterController {
 
         return "redirect:/master/coupons";
     }
+
+
 
 
 }

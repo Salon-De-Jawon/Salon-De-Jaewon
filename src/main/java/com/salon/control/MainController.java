@@ -3,7 +3,7 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
-import com.salon.service.shop.ShopService;
+import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
@@ -38,7 +38,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
-    private final ShopService shopService;
+    private final SalonService salonService;
     private final CompareService compareService;
 
 
@@ -73,7 +73,7 @@ public class MainController {
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
-        return shopService.getAllShopsForMap(lat, lon);
+        return salonService.getAllShopsForMap(lat, lon);
     }
 
     @GetMapping("/shopList")
@@ -90,7 +90,7 @@ public class MainController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return shopService.getShopByRegion(region, lat, lon, page, size);
+        return salonService.getShopByRegion(region, lat, lon, page, size);
     }
 
     @PostMapping("/api/saveSelectedShops")
