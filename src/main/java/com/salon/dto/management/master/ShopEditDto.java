@@ -4,10 +4,12 @@ import com.salon.entity.shop.Shop;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter @Setter
 public class ShopEditDto {
@@ -35,6 +37,8 @@ public class ShopEditDto {
 
     private BigDecimal latitude;       // 위도 (카카오맵용)
     private BigDecimal longitude;      // 경도 (카카오맵용)
+
+    private List<MultipartFile> images;
 
     public static ShopEditDto from(Shop shop) {
         ShopEditDto dto = new ShopEditDto();
