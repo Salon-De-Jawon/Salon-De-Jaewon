@@ -14,6 +14,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${upload.shop-img-path}")
     private String shopImgPath;
 
+    @Value("${upload.shop-service-img-path}")
+    private String shopServiceImgPath;
+
     @Value("${upload.review-img-path}")
     private String reviewImgPath;
 
@@ -37,6 +40,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/shopImg/**")
                 .addResourceLocations(shopImgPath);
+
+        registry
+                .addResourceHandler("/shopServiceImg/**")
+                .addResourceLocations(shopServiceImgPath);
 
         registry
                 .addResourceHandler("/reviewImg/**")
