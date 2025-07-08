@@ -3,7 +3,7 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
-import com.salon.service.shop.ShopService;
+import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
@@ -38,7 +38,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
-    private final ShopService shopService;
+    private final SalonService shopService;
     private final CompareService compareService;
 
 

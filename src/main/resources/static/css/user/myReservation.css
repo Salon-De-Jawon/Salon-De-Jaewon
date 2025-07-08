@@ -472,6 +472,60 @@
   border: 1px solid #ccc;
 }
 
+
+/* 쿠폰정보 박스 */
+.coupon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.coupon-img {
+  width: 24px;
+  height: auto;
+  cursor: pointer;
+}
+
+.tooltip {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 110%;
+  transform: translateY(-50%);
+  background-color: white;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  font-size: 14px;
+  color: #000;
+  z-index: 100;
+}
+
+.tooltip > div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.tooltip > div:last-child {
+  margin-top: 6px;
+  font-weight: bold;
+  color: #f7931e; /* 예정잔액 주황색 */
+  border-top: 1px solid #ccc;
+  padding-top: 6px;
+}
+
+.tooltip > div:nth-child(3) div {
+  color: #007bff; /* 결제 예정액 파란색 */
+}
+
+.coupon-container:hover .tooltip {
+  display: block;
+}
+
+
+
 @media (max-width: 992px) {
   .my-page-container {
     width: 100%;
@@ -563,6 +617,8 @@
     padding: 12px; /* 버튼 패딩 증가 */
   }
 }
+
+
 
 /* 아주 작은 화면 (모바일, 화면 너비 576px 이하) */
 @media (max-width: 576px) {

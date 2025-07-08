@@ -1,5 +1,6 @@
 package com.salon.dto.user;
 
+import com.salon.constant.CouponType;
 import com.salon.constant.ReservationStatus;
 
 import com.salon.entity.Review;
@@ -7,6 +8,7 @@ import com.salon.entity.shop.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -18,15 +20,21 @@ public class MyReservationDto {
 
     private String designerName;  // 해당 예약이 잡힌 디자이너 이름
     private String position;
+
     private String shopName; // 샵 이름
     private String serviceName; // 시술 이름
     private LocalDateTime reservationDate; // 예약 날짜
     private ReservationStatus status; // 예약상태
 
     private int servicePrice;  //시술 가격
+
     private boolean couponUsed;  //쿠폰 사용여부
+    private CouponType couponType; // 쿠폰 타입
     private String couponName; // 사용쿠폰 이름
+    private LocalDate expire_date; // 쿠폰 만료 날짜
+    private Integer daysExpire; // 남은 날짜
     private int couponDiscount; //쿠폰 할인 금액
+
     private boolean ticketUsed; //정액권 사용 여부
     private int ticketUsedAmount; // 정액권 사용금
     private int finalPrice; // 결제 예정액/최종 결제액
@@ -45,22 +53,27 @@ public class MyReservationDto {
         MyReservationDto dto = new MyReservationDto();
 
         dto.setReservationId(reservation.getId());
+
         dto.setDesignerName(reservation.getShopDesigner().getDesigner().getMember().getName());
         dto.setPosition(reservation.getShopDesigner().getPosition());
+
         dto.setShopName(reservation.getShopDesigner().getShop().getName());
         dto.setServiceName(reservation.getServiceName());
         dto.setReservationDate(reservation.getReservationDate());
         dto.setStatus(reservation.getStatus());
+
         dto.setServicePrice(reservation.getShopService().getPrice());
 
         if(reservation.getCoupon() != null) {
             dto.setCouponUsed(true);
+            dto.setCouponType(reservation.getCoupon().getDiscountType());
             dto.setCouponName(reservation.getCoupon().getName());
             dto.setCouponDiscount(reservation.getDiscountAmount());
         } else {
             dto.setCouponUsed(false);
             dto.setCouponName(null);
             dto.setCouponDiscount(0);
+            dto.setCouponType(null);
         }
 
         if(reservation.getTicket() != null) {

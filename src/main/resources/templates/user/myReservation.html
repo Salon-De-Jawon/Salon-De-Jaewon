@@ -68,21 +68,66 @@
                                         <span>할인가격</span>
                                         <span th:text="'-' + ${res.couponDiscount}">-5000</span>
                                         <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
+                                            <div class="coupon-container">
+                                                <img
+                                                        src="/images/coupon.png"
+                                                        alt="쿠폰"
+                                                        class="coupon-img"
+                                                />
+                                                <div class="tooltip">
+                                                    <div>
+                                                        <strong th:text="${res.couponName}">쿠폰이름</strong>
+                                                        <span class="tooltip-time"
+                                                            th:text="">만료 3일전</span>
+                                                    </div>
+                                                    <div>
+                                                        <div>
+                                                            <strong class="coupon-discount">15%</strong>
+                                                        </div>
+                                                        <div class="tooltip-min">최소 금액 : 20,000</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="ticket-used-amount" th:if="${res.ticketUsed}">
                                         <span>사용금액</span>
                                         <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
                                         <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
+                                            <div class="coupon-container">
+                                                <img
+                                                        src="/images/coupon.png"
+                                                        alt="쿠폰"
+                                                        class="coupon-img"
+                                                />
+                                                <div class="tooltip">
+                                                    <div>
+                                                        <strong>000샵 정액권</strong>
+                                                        <div>100,000</div>
+                                                    </div>
+                                                    <div>
+                                                        <strong>현재 잔액</strong>
+                                                        <div>70,000</div>
+                                                    </div>
+                                                    <div>
+                                                        <strong>결제 예정액</strong>
+                                                        <div>-25,000</div>
+                                                    </div>
+
+                                                    <div></div>
+
+                                                    <div>
+                                                        <strong>예정 잔액</strong>
+                                                        <div>45,000</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="final-price">
                                         <span>지불 예정액</span>
                                         <span th:text="${res.finalPrice}">0</span>
                                         <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
                                         </div>
                                     </div>
                                 </div>
