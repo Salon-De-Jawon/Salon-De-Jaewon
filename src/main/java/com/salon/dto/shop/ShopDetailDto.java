@@ -26,8 +26,7 @@ public class ShopDetailDto {
     private String tel; // 미용실 전화번호
     private LocalTime openTime; // 미용실 오픈시간
     private LocalTime closeTime; // 미용실 마감시간
-    private ShopImageDto shopImage; // 미용실 이미지
-    private String Description; // 상세 설명
+    private String description; // 상세 설명
     private int likeCount; // 미용실 찜
 
     private List<ShopImageDto> shopImageDtos; // 미용실 이미지
@@ -41,12 +40,13 @@ public class ShopDetailDto {
         shopDetailDto.setAddress(shop.getAddress());
         shopDetailDto.setAddressDetail(shop.getAddressDetail());
         shopDetailDto.setLatitude(shop.getLatitude());
-        shopDetailDto.setLatitude(shop.getLongitude());
+        shopDetailDto.setLongitude(shop.getLongitude());
         shopDetailDto.setOpenTime(shop.getOpenTime());
         shopDetailDto.setCloseTime(shop.getCloseTime());
         shopDetailDto.setTel(shop.getTel());
         shopDetailDto.setLikeCount(likeCount);
         shopDetailDto.setDescription(shop.getDescription());
+
 
 
         return shopDetailDto;

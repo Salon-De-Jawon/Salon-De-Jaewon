@@ -32,17 +32,17 @@ public class ShopController {
 
     // 미용실 상세 페이지
     @GetMapping("/{shopId}")
-    public String getShopDetail(@PathVariable Long id, @RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
+    public String getShopDetail(@PathVariable("shopId") Long shopId, @RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
 
         // 미용실 기본 정보
-        ShopDetailDto shopDetail = shopDetailService.getShopDetail(id);
+        ShopDetailDto shopDetail = shopDetailService.getShopDetail(shopId);
 
         // 추천시술
-        List<ServiceForm> recommended = shopDetailService.getRecommededService(id);
+        List<ServiceForm> recommended = shopDetailService.getRecommededService(shopId);
         // 디자이너 목록
-        List<DesignerListDto> designerLists = shopDetailService.getDesignersByShopId(id);
+        List<DesignerListDto> designerLists = shopDetailService.getDesignersByShopId(shopId);
         // 리뷰 리스트
-        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(id, category, sort);
+        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId, category, sort);
 
         // 모델 바인딩
         model.addAttribute("shop", shopDetail);

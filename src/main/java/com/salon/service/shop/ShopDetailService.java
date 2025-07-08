@@ -61,6 +61,7 @@ public class ShopDetailService {
         List<ShopImage> images = shopImageRepo.findByShopId(shopId);
         List<ShopImageDto> imageDtos = images.isEmpty() ? null : images.stream().map(ShopImageDto::from).toList();
 
+
         // 해당 미용실의 좋아요 수 조회
         int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP,shopId);
 

@@ -6,13 +6,17 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/shop/shopDetail.css">
   </th:block>
+
+  <th:block layout:fragment="script" >
+<!--    <script th:src="@{/javascript/shop/shopDetail.js}" defer></script>-->
+  </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
   <section class="shop-top">
     <div class="shop-main">
       <!-- 미용실 이미지 -->
-      <div class="shop-img" th:style=" 'background-image: url (' + ${shop.shopImageDtos[0]?.imageUrl} + ')' ">이미지</div>
+      <div class="shop-img" th:style="'background-image: url(' + (shop.shopImageDtos != null ? shop.shopImageDtos.imgUrl : '/images/default.png') + ')'">이미지</div>
       <!-- 이미지 오른쪽 아이콘 버튼 영역 -->
       <div class="shop-side">
         <!-- 찜하기 -->
@@ -38,7 +42,7 @@
                 />
               </svg>
             </span>
-          <div class="text"><strong>찜하기</strong><small>| 480</small></div>
+          <div class="text"><strong>찜하기</strong><small> | <span th:text="${shop != null and shop.likeCount != null ? shop.likeCount : 0}">0</span></small></div>
         </button>
 
         <!-- 미용실 주소 -->
@@ -63,7 +67,7 @@
             </span>
           <div class="text">
             주소<br />
-            <small>대전 중구 대덕대로 192</small>
+            <small th:if="${shop != null and shop.address != null}" th:text="${shop.address}">대전 중구 대덕대로 192</small>
           </div>
         </div>
 
@@ -95,9 +99,10 @@
             </span>
           <div class="text">
             전화번호 <br />
-            <small>042-518-1884</small>
+            <small th:text="${shop != null and shop.tel != null ? shop.tel : '전화번호 정보 없음'}">042-518-1884</small>
           </div>
         </div>
+
         <!-- 공유하기 버튼 -->
         <button class="shop-btn">
             <span class="icon">
@@ -125,10 +130,11 @@
         <div id="share-modal" style="display: none">
           <div class="modal-content">
             <p>공유할 수 있는 링크 복사하기</p>
-            <input type="text" value="https://example.com/shop/1" readonly />
+            <input type="text" th:value="${shop != null ? 'https://example.com/shop/' + shop.id : '잘못된 링크'}" />
             <button>복사</button>
           </div>
         </div>
+
         <!-- 예약하기 버튼 -->
         <button class="shop-btn" type="button">
             <span class="icon">
@@ -159,8 +165,16 @@
     </div>
     <!-- 미용실 이름 및  평점 -->
     <div class="shop-title">
-      <h2>Salon De DW</h2>
-      <div class="rating">★★★★☆ 4.0</div>
+      <h2 th:text="${shop != null ? shop.name : '미용실 정보 없음'}">Salon De DW</h2>
+      <div class="rating">
+        <!-- 평점이 없는 경우 예외 처리 -->
+        <span
+                th:if="${shop?.rating != null}"
+                th:text="${'★'.repeat(shop.rating.intValue()) + '☆'.repeat(5 - shop.rating.intValue()) + ' ' + shop.rating}"
+        >★★★★☆ 4.0</span>
+        <span th:if="${shop.rating == null}">평점 없음</span>
+
+      </div>
     </div>
 
     <!-- 운영시간 및 주의사항 -->
@@ -170,6 +184,15 @@
         <span class="red">휴무일 : 매주 화요일</span> <br />
         ⏰ 평일운영 10:00~20:00 <br />⏰ 주말운영 10:00~20:00
       </p>
+      <!-- 매장 소개 -->
+      <div class="shop-description">
+        <p><strong>✔ 매장 소개 ✔</strong></p>
+        <p th:utext="${shop?.description ? #strings.replace(shop.description, '\n', '<br/>') : '매장 소개 정보 없음'}">
+          고객의 아름다움을 책입지는 살롱 드 DW입니다
+          예약 필수 ! 트렌디한 스타일을 만나보세요.
+        </p>
+      </div>
+
       <div class="notice">
         <p><strong>✔ 이용 전 안내 ✔</strong></p>
         <ul>
@@ -1278,6 +1301,6 @@
     </div>
   </section>
 </div>
-<th:block layout:fragment="script"></th:block>
+
 </body>
 </html>
