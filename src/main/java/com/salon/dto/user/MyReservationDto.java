@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 @Getter
@@ -31,15 +32,17 @@ public class MyReservationDto {
     private boolean couponUsed;  //쿠폰 사용여부
     private CouponType couponType; // 쿠폰 타입
     private String couponName; // 사용쿠폰 이름
-    private LocalDate expire_date; // 쿠폰 만료 날짜
     private Integer daysExpire; // 남은 날짜
     private int couponDiscount; //쿠폰 할인 금액
+    private int couponMin;  // 최소 사용 금액
 
     private boolean ticketUsed; //정액권 사용 여부
     private int ticketUsedAmount; // 정액권 사용금
     private int finalPrice; // 결제 예정액/최종 결제액
 
     private int ticketTotalAmount; // 티켓 원래 금액
+    private int ticketNowAmount; // 티켓 현재 잔액
+    private int ticketFinalAmount; // 티켓 예정 잔액
 
     private String shopAddress;  // 샵 주소
     private String shopTel; // 샵 전화번호
@@ -64,22 +67,36 @@ public class MyReservationDto {
 
         dto.setServicePrice(reservation.getShopService().getPrice());
 
-        if(reservation.getCoupon() != null) {
+        if(reservation.getCoupon() != null && reservation.getCoupon().getExpireDate() != null) {
             dto.setCouponUsed(true);
             dto.setCouponType(reservation.getCoupon().getDiscountType());
             dto.setCouponName(reservation.getCoupon().getName());
             dto.setCouponDiscount(reservation.getDiscountAmount());
+            dto.setCouponMin(reservation.getCoupon().getMinimumAmount());
+
+            LocalDate today = LocalDate.now();
+            LocalDate expireDate = reservation.getCoupon().getExpireDate();
+
+            if(expireDate.isBefore(today)) {
+                dto.setDaysExpire(0);
+            } else {
+                dto.setDaysExpire((int) ChronoUnit.DAYS.between(today, expireDate));
+            }
+
         } else {
             dto.setCouponUsed(false);
             dto.setCouponName(null);
             dto.setCouponDiscount(0);
             dto.setCouponType(null);
+            dto.setDaysExpire(null);
         }
 
         if(reservation.getTicket() != null) {
             dto.setTicketUsed(true);
             dto.setTicketUsedAmount(reservation.getTicketUsedAmount());
             dto.setTicketTotalAmount(reservation.getTicket().getTotalAmount());
+            dto.setTicketNowAmount(dto.getTicketTotalAmount() - reservation.getTicket().getUsedAmount());
+            dto.setTicketFinalAmount(dto.getTicketNowAmount() - dto.getTicketUsedAmount());
         }
 
         int discountAmount = reservation.getDiscountAmount();

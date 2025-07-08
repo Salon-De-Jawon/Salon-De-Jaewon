@@ -78,13 +78,19 @@
                                                     <div>
                                                         <strong th:text="${res.couponName}">쿠폰이름</strong>
                                                         <span class="tooltip-time"
-                                                            th:text="">만료 3일전</span>
+                                                            th:if = "${res.daysExpire == 0}"
+                                                        >만료됨</span>
+                                                        <span class="tooltip-time"
+                                                              th:if="${res.daysExpire != null and res.daysExpire > 0}"
+                                                        >만료 D-<span th:text="${res.daysExpire}"></span></span>
                                                     </div>
                                                     <div>
                                                         <div>
-                                                            <strong class="coupon-discount">15%</strong>
+                                                            <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).PERCENT}"><span th:text="${res.couponDiscount}">15</span>%</strong>
+                                                            <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).AMOUNT}"><span th:text="${res.couponDiscount}">2000</span>원</strong>
                                                         </div>
-                                                        <div class="tooltip-min">최소 금액 : 20,000</div>
+                                                        <div class="tooltip-min">
+                                                            최소 금액 : <span th:text="${res.couponMin}">20,000</span></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -102,23 +108,23 @@
                                                 />
                                                 <div class="tooltip">
                                                     <div>
-                                                        <strong>000샵 정액권</strong>
-                                                        <div>100,000</div>
+                                                        <strong><strong th:text="${res.shopName}">000샵</strong> 정액권</strong>
+                                                        <div th:text="${res.ticketTotalAmount}">100,000</div>
                                                     </div>
                                                     <div>
                                                         <strong>현재 잔액</strong>
-                                                        <div>70,000</div>
+                                                        <div th:text="${res.ticketNowAmount}">70,000</div>
                                                     </div>
                                                     <div>
                                                         <strong>결제 예정액</strong>
-                                                        <div>-25,000</div>
+                                                        <div th:text="${'-' + res.ticketUsedAmount}">-25,000</div>
                                                     </div>
 
                                                     <div></div>
 
                                                     <div>
                                                         <strong>예정 잔액</strong>
-                                                        <div>45,000</div>
+                                                        <div th:text="${res.ticketFinalAmount}">45,000</div>
                                                     </div>
                                                 </div>
                                             </div>
