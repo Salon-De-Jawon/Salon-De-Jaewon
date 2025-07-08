@@ -5,6 +5,7 @@ import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.ServiceForm;
 import com.salon.dto.shop.ReviewListDto;
 import com.salon.dto.shop.ShopDetailDto;
+import com.salon.dto.shop.ShopServiceSectionDto;
 import com.salon.service.shop.ShopDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -32,24 +33,44 @@ public class ShopController {
 
     // 미용실 상세 페이지
     @GetMapping("/{shopId}")
-    public String getShopDetail(@PathVariable("shopId") Long shopId, @RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
+    public String getShopDetail(@PathVariable("shopId") Long shopId,@RequestParam(required = false) Long memberId,@RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
+
+        // 홈섹션 (상세페이지에서 기본적으로 보이는 정보들)
 
         // 미용실 기본 정보
         ShopDetailDto shopDetail = shopDetailService.getShopDetail(shopId);
+        model.addAttribute("shop", shopDetail);
 
         // 추천시술
         List<ServiceForm> recommended = shopDetailService.getRecommededService(shopId);
+        model.addAttribute("recommendedService", recommended);
+
         // 디자이너 목록
         List<DesignerListDto> designerLists = shopDetailService.getDesignersByShopId(shopId);
+        model.addAttribute("designerLists", designerLists);
+
         // 리뷰 리스트
         List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId, category, sort);
+        model.addAttribute("reviewList",reviewLists);
 
-        // 모델 바인딩
-        model.addAttribute("shop", shopDetail);
-        model.addAttribute("recommendedService", recommended);
-        model.addAttribute("designerLists", designerLists);
+        // 시술 섹션 (시술 카테고리별 시술 목록 출력)
+        ShopServiceSectionDto serviceSection = shopDetailService.getShopServiceSections(shopId);
+        model.addAttribute("serviceSection", serviceSection);
+
+        // 디자이너 섹션 (디자이너 메뉴 클릭시 출력)
+        List<DesignerListDto> designerListsSection = shopDetailService.getDesignersByShop(shopId,memberId);
+        model.addAttribute("designerListsSection", designerListsSection);
+
+
+        // 리뷰 섹션 ( 리뷰 메뉴 클릭시 출력)
+        List<ReviewListDto> reviewListsSection = shopDetailService.getFilteredReviews(shopId,category,sort);
+        model.addAttribute("reviewListsSection", reviewListsSection);
+
+
+        // 부가적으로 필요한 모델 바인딩
         model.addAttribute("selectCategory", category);
         model.addAttribute("selectedSort", sort);
+
 
         return "shop/shopDetail";
 

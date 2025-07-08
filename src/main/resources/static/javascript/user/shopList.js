@@ -101,6 +101,13 @@ document.addEventListener("DOMContentLoaded", function(){
                 `).join("");
             }
 
+            // 미용실 상세페이지로 이동하는 로직
+            card.addEventListener("click", function (e) {
+            if(e.target.closest(".select-box")) return;
+
+            location.href = `/shop/${shop.id}`;
+            });
+
             card.innerHTML = `
                 <div class="shop-img" style="background-image: url('${shop.shopImageDto?.imgUrl || '/images/default.png'}'); background-size: cover;"></div>
                 <div class="shop-info-area">

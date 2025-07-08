@@ -28,11 +28,12 @@ public class ShopDetailDto {
     private LocalTime closeTime; // 미용실 마감시간
     private String description; // 상세 설명
     private int likeCount; // 미용실 찜
+    private float rating; // 미용실 평점
 
     private List<ShopImageDto> shopImageDtos; // 미용실 이미지
 
     // Shop(Entity) -> ShopDetailDto
-    public static ShopDetailDto from (Shop shop, int likeCount){
+    public static ShopDetailDto from (Shop shop, int likeCount, float rating){
         ShopDetailDto shopDetailDto = new ShopDetailDto();
 
         shopDetailDto.setId(shop.getId());
@@ -46,6 +47,7 @@ public class ShopDetailDto {
         shopDetailDto.setTel(shop.getTel());
         shopDetailDto.setLikeCount(likeCount);
         shopDetailDto.setDescription(shop.getDescription());
+        shopDetailDto.setRating(rating);
 
 
 

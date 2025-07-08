@@ -65,12 +65,17 @@ public class ShopDetailService {
         // 해당 미용실의 좋아요 수 조회
         int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP,shopId);
 
+        // 미용실 평균 평점 조회
+        float avgRating = reviewRepo.averageRatingByShopId(shopId);
+
+
         // Shop Entity -> ShopDetailDto로 변환
-        ShopDetailDto dto = ShopDetailDto.from(shop,likeCount);
+        ShopDetailDto dto = ShopDetailDto.from(shop,likeCount,avgRating);
 
 
         // 이미지 리스트를 Dtod에 추가 세팅
         dto.setShopImageDtos(imageDtos);
+        dto.setRating(avgRating); // 반올림 후 정수값으로 세팅
 
         return dto;
     }
@@ -112,6 +117,7 @@ public class ShopDetailService {
 
         // 샵에 등록된 전체 리뷰 조회
         List<Review> reviews = reviewRepo.findAll().stream()
+                .filter(r -> r.getReservation() != null) // 아직 가져올 수 있는 데이터가 없으므로 임시방편!
                 .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
                 .collect(Collectors.toList());
 
@@ -146,6 +152,7 @@ public class ShopDetailService {
     // 디자이너 답글 dto 반환 메서드
     public List<ReviewReplyDto> getReviewReplies(Long shopId) {
         List<Review> reviews = reviewRepo.findAll().stream()
+                .filter(r -> r.getReservation() != null) // 아직 가져올 수 있는 데이터가 없으므로 임시방편!
                 .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
                 .collect(Collectors.toList());
 
@@ -161,6 +168,8 @@ public class ShopDetailService {
     // 카테고리별 시술 리스트  -> 시술목록 섹션
     public ShopServiceSectionDto getShopServiceSections(Long shopId) {
         ShopServiceSectionDto serviceSectionDto = new ShopServiceSectionDto();
+        serviceSectionDto.setRecommended(new ArrayList<>());
+        serviceSectionDto.setCategoryMap(new LinkedHashMap<>());
 
         // 추천시술
         List<ShopService> recommended = shopServiceRepo.findByShopIdAndIsRecommendedTrue(shopId);
@@ -242,6 +251,7 @@ public class ShopDetailService {
 
         // 모든 리뷰 불러오기
         List<Review> allReviews = reviewRepo.findAll().stream()
+                .filter(r -> r.getReservation() != null) // 아직 가져올 데이터가 없으므로 임시방편!
                 .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
                 .collect(Collectors.toList());
 

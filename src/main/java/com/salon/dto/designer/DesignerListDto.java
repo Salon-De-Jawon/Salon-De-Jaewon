@@ -21,7 +21,6 @@ public class DesignerListDto {
     private int likeCount; // 디자이너 찜 갯수
     private int rating; // 디자이너 평점
 
-
     private String profileSummary; // 디자이너 전문 시술 분야 + 연차
 
     // ShopDesigner(Entity) -> DesignerListDto
