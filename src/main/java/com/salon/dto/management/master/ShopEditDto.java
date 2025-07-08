@@ -38,9 +38,10 @@ public class ShopEditDto {
     private BigDecimal latitude;       // 위도 (카카오맵용)
     private BigDecimal longitude;      // 경도 (카카오맵용)
 
-    private List<MultipartFile> images;
+    private List<ShopImageDto> shopImages;
 
-    public static ShopEditDto from(Shop shop) {
+
+    public static ShopEditDto from(Shop shop, List<ShopImageDto> images) {
         ShopEditDto dto = new ShopEditDto();
 
         // detail 뺀 주소 출력하기
@@ -72,6 +73,8 @@ public class ShopEditDto {
         dto.setEarlyLeaveMin(shop.getEarlyLeaveMin());
         dto.setLatitude(shop.getLatitude());
         dto.setLongitude(shop.getLongitude());
+        dto.setShopImages(images);
+
         return dto;
     }
 

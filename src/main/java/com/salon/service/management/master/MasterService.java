@@ -195,29 +195,55 @@ public class MasterService {
     public ShopEditDto getShopEdit(Long memberId){
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+        List<ShopImage> images = shopImageRepo.findByShopId(designer.getShop().getId());
 
-        return ShopEditDto.from(designer.getShop());
+        List<ShopImageDto> imageDtos = new ArrayList<>();
+        for(ShopImage image : images){
+            imageDtos.add(ShopImageDto.from(image));
+        }
+
+        return ShopEditDto.from(designer.getShop(), imageDtos);
 
     }
 
     // 매장 수정 저장
     @Transactional
-    public void saveShopEdit(ShopEditDto dto, Long memberId){
+    public void saveShopEdit(ShopEditDto dto, List<Long> deletedImageIds ,Long memberId){
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
 
-        for(MultipartFile file : dto.getImages()){
-            UploadedFileDto image = fileService.upload(file, UploadType.SHOP);
-            ShopImage shopImage = new ShopImage();
-            shopImage.setShop(designer.getShop());
-            shopImage.setOriginalName(image.getOriginalFileName());
-            shopImage.setImgName(image.getFileName());
-            shopImage.setImgUrl(image.getFileUrl());
-            shopImageRepo.save(shopImage);
-        }
         Shop shop = dto.to(designer.getShop());
-
         shopRepo.save(shop);
+
+        if (dto.getShopImages() != null) {
+            for (ShopImageDto imageDto : dto.getShopImages()) {
+                if (imageDto.getImgFile() != null && !imageDto.getImgFile().isEmpty()) {
+                    // DTO에 isNew가 없으므로 imgFile 존재 여부로 새 파일인지 판단
+                    UploadedFileDto uploadedFile = fileService.upload(imageDto.getImgFile(), UploadType.SHOP);
+                    ShopImage newShopImage = new ShopImage();
+                    newShopImage.setShop(shop);
+                    newShopImage.setOriginalName(uploadedFile.getOriginalFileName());
+                    newShopImage.setImgName(uploadedFile.getFileName());
+                    newShopImage.setImgUrl(uploadedFile.getFileUrl());
+                    newShopImage.setThumbnail(imageDto.isThumbnail());
+                    shopImageRepo.save(newShopImage);
+                } else if (imageDto.getId() != null) {
+                    // ID가 있다면 기존 이미지의 썸네일 상태 업데이트
+                    shopImageRepo.findById(imageDto.getId()).ifPresent(img -> {
+                        img.setThumbnail(imageDto.isThumbnail());
+                        shopImageRepo.save(img);
+                    });
+                }
+            }
+        }
+
+        if (deletedImageIds != null && !deletedImageIds.isEmpty()) {
+            shopImageRepo.deleteAllById(deletedImageIds);
+            // 필요시, 실제 파일 시스템에서도 파일 삭제 로직 추가
+        }
+
+
+
     }
 
     // 쿠폰 페이지 목록

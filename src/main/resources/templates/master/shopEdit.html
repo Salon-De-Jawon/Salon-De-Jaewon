@@ -14,11 +14,10 @@
     <div class="section-container">
         <h3>매장 정보 수정</h3>
 
-        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post" enctype="multipart/form-data">
+        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post">
             <input type="hidden" name="id" th:value="${shop.id}"/>
 
             <div class="customer-card">
-
                 <div class="customer-header">
                     <strong>매장명</strong>
                     <input type="text" name="name" placeholder="매장 이름을 입력하세요" th:value="${shop.name}" required />
@@ -36,9 +35,7 @@
                             <input type="text" id="postcode" placeholder="우편번호" readonly>
                             <button type="button" class="btn-search-address" onclick="execDaumPostcode()">우편번호 찾기</button>
                         </div>
-
                         <input type="text" id="roadAddress" placeholder="도로명주소" th:value="${shop.address}" readonly>
-
                         <div class="address-row">
                             <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소 입력"
                                    th:value="${shop.addressDetail}">
@@ -104,19 +101,13 @@
                 </div>
 
                 <div class="shop-image-upload">
-                    <label for="shopImageInput" class="custom-upload-label">
-                        📷 사진 업로드
-                    </label>
-                    <!-- name="shopImages"로 지정, multiple 추가 -->
-                    <input type="file" id="shopImageInput" name="shopImages" multiple accept="image/*" />
-
-                    <!-- 업로드된 이미지 미리보기 영역 -->
-                    <div id="shopImagePreview" class="image-preview-container">
-                        <!-- 자바스크립트로 미리보기 렌더링됨 -->
+                    <div class="shop-image-upload mb-3">
+                        <input type="file" id="shopImageInput" multiple accept="image/*" style="display: none;" />
+                        <button type="button" onclick="document.getElementById('shopImageInput').click()" class="custom-upload-label">📷 사진 업로드</button>
+                    </div>
+                    <div id="shopImagePreview" class="image-preview-container d-flex flex-wrap gap-2">
                     </div>
                 </div>
-
-
             </div>
 
             <div style="text-align: right;">
@@ -127,23 +118,19 @@
 </div>
 
 <th:block layout:fragment="script">
-
-    <!--  카카오 우편코드 스크립트  -->
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0bcfa737cae58afd2f78fe737895ea3b&autoload=false&libraries=services"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
-        // 전역에 미리 함수 선언
+        // ... (카카오 우편번호 스크립트 - 이 부분은 변경 없음) ...
         window.execDaumPostcode = function () {
           alert('주소찾기 함수가 아직 준비되지 않았습니다. 잠시만 기다려주세요.');
         };
 
         let geocoder;
 
-        // kakao.maps SDK 로드 후 실행
         kakao.maps.load(function () {
           geocoder = new kakao.maps.services.Geocoder();
 
-          // 이제 execDaumPostcode를 진짜 함수로 덮어쓰기
           window.execDaumPostcode = function () {
             const modal = document.getElementById('addressModal');
             const daumWrap = document.getElementById('daumWrap');
@@ -168,7 +155,6 @@
                 document.getElementById("fullAddress").value =
                   roadAddr + " " + document.getElementById("detailAddress").value;
 
-                // 좌표 변환
                 geocoder.addressSearch(roadAddr, function(result, status) {
                   if (status === kakao.maps.services.Status.OK) {
                     const lat = result[0].y;
@@ -181,7 +167,6 @@
                   }
                 });
 
-                // 잠시 후 모달 닫기
                 setTimeout(closeDaumPostcode, 100);
               },
               width: '100%',
@@ -194,7 +179,6 @@
             document.getElementById('daumWrap').innerHTML = "";
           }
 
-          // 모달 외부 클릭 시 닫기
           window.addEventListener("click", function(event) {
             const modal = document.getElementById('addressModal');
             if (event.target === modal) {
@@ -202,7 +186,6 @@
             }
           });
 
-          // 상세주소 입력 시 전체 주소 실시간 업데이트
           const detailInput = document.getElementById("detailAddress");
           if (detailInput) {
             detailInput.addEventListener("input", function () {
@@ -214,43 +197,175 @@
         });
     </script>
 
-    // 이미지 미리보기 및 삭제
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const input = document.getElementById("shopImageInput");
-          const preview = document.getElementById("shopImagePreview");
+    <script th:inline="javascript">
+        let images = /*[[${shop.shopImages}]]*/ [];
+        let deletedImageIds = [];
 
-          input.addEventListener("change", function () {
-            preview.innerHTML = ""; // 초기화
+        const previewContainer = document.getElementById("shopImagePreview");
+        const fileInput = document.getElementById("shopImageInput");
+        const shopEditForm = document.getElementById("shop-edit-form");
 
-            Array.from(input.files).forEach((file) => {
-              const reader = new FileReader();
-              reader.onload = function (e) {
+        // --- 디버깅 시작 ---
+        // shopEditForm이 제대로 로드되었는지 확인
+        if (!shopEditForm) {
+            console.error("오류: 'shop-edit-form' ID를 가진 form 요소를 찾을 수 없습니다! HTML을 확인해주세요.");
+            // 여기서 더 이상 진행하지 않도록 리턴하거나 다른 오류 처리를 할 수 있습니다.
+        } else {
+            console.log("shopEditForm 요소 로드 성공:", shopEditForm);
+        }
+        // --- 디버깅 끝 ---
+
+
+        /**
+         * 이미지 미리보기를 렌더링하고 관련 이벤트 리스너를 설정합니다.
+         */
+        function renderPreviews() {
+            previewContainer.innerHTML = "";
+
+            images.forEach((imgObj, idx) => {
+                if (deletedImageIds.includes(imgObj.id)) return;
+
                 const wrapper = document.createElement("div");
                 wrapper.className = "preview-image-wrapper";
 
                 const img = document.createElement("img");
-                img.src = e.target.result;
+                img.className = "preview-image";
+                img.src = imgObj.imgUrl || (imgObj.imgFile ? URL.createObjectURL(imgObj.imgFile) : "");
+                wrapper.appendChild(img);
+
+                const radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "shopImagesThumbnail";
+                radio.className = "thumbnail-radio";
+                radio.checked = imgObj.isThumbnail || false;
+                radio.addEventListener("change", () => {
+                    images.forEach((i) => i.isThumbnail = false);
+                    imgObj.isThumbnail = true;
+                    renderPreviews();
+                });
+                wrapper.appendChild(radio);
 
                 const delBtn = document.createElement("button");
-                delBtn.innerText = "삭제";
+                delBtn.type = "button";
                 delBtn.className = "btn-delete-img";
+                delBtn.innerText = "X";
                 delBtn.addEventListener("click", () => {
-                  wrapper.remove();
-                  input.value = "";
+                    if (confirm("이 이미지를 삭제하시겠습니까?")) {
+                        if (imgObj.id) {
+                            deletedImageIds.push(imgObj.id);
+                        } else {
+                            if (imgObj.imgFile) URL.revokeObjectURL(img.src);
+                        }
+                        images.splice(idx, 1);
+                        renderPreviews();
+                    }
+                });
+                wrapper.appendChild(delBtn);
+
+                previewContainer.appendChild(wrapper);
+            });
+        }
+
+
+        fileInput.addEventListener("change", (e) => {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                images.push({
+                    id: null,
+                    originalName: file.name,
+                    imgName: "",
+                    imgUrl: "",
+                    isThumbnail: false,
+                    imgFile: file
+                });
+            });
+            if (images.length === files.length && images.length === 1) {
+                images[0].isThumbnail = true;
+            } else if (!images.some(img => img.isThumbnail)) {
+                 if (images.length > 0) images[0].isThumbnail = true;
+            }
+            renderPreviews();
+            fileInput.value = "";
+        });
+
+        if (images.length > 0 && !images.some(img => img.isThumbnail)) {
+            images[0].isThumbnail = true;
+        }
+        renderPreviews();
+
+
+        shopEditForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+
+            // 1. CSRF 토큰을 폼에서 가져와 FormData에 추가 - 이 부분 제거됨 (임시 조치)
+            // --- 디버깅 시작 ---
+            // const csrfTokenInput = this.querySelector('input[name="_csrf"]');
+            // if (csrfTokenInput) {
+            //     const csrfToken = csrfTokenInput.value;
+            //     formData.append("_csrf", csrfToken);
+            //     console.log("CSRF Token successfully read and added:", csrfToken);
+            // } else {
+            //     console.error("오류: CSRF 토큰 input (name='_csrf')을 찾을 수 없습니다! HTML을 확인해주세요.");
+            //     alert("보안 토큰을 찾을 수 없어 매장 정보 수정에 실패했습니다. 페이지를 새로고침 해주세요.");
+            //     return;
+            // }
+            // --- 디버깅 끝 ---
+
+
+            // 2. 매장 ID 추가
+            const shopId = this.querySelector('input[name="id"]').value;
+            formData.append("id", shopId);
+
+            // 3. 기타 일반 폼 필드 추가
+            const formElements = shopEditForm.querySelectorAll('input, select, textarea');
+            formElements.forEach(element => {
+                // _csrf 필드 제외 조건은 유지 (만약 실수로 HTML에 남아있어도 추가되지 않도록)
+                if (element.name && element.name !== '_csrf' && element.name !== 'id' && element.type !== 'file' && element.type !== 'radio' && element.name !== 'shopImagesThumbnail') {
+                    formData.append(element.name, element.value);
+                }
+            });
+
+            // 4. 이미지 데이터 추가
+            images.forEach((imgObj, idx) => {
+                if (imgObj.imgFile) {
+                    formData.append(`shopImages[${idx}].imgFile`, imgObj.imgFile);
+                } else if (imgObj.id) {
+                    formData.append(`shopImages[${idx}].id`, imgObj.id);
+                    formData.append(`shopImages[${idx}].originalName`, imgObj.originalName);
+                    formData.append(`shopImages[${idx}].imgName`, imgObj.imgName);
+                    formData.append(`shopImages[${idx}].imgUrl`, imgObj.imgUrl);
+                }
+                formData.append(`shopImages[${idx}].isThumbnail`, imgObj.isThumbnail ? "true" : "false");
+            });
+
+            // 5. 삭제된 이미지 ID 리스트 추가
+            deletedImageIds.forEach((id, idx) => {
+                formData.append(`deletedImageIds[${idx}]`, id);
+            });
+
+            try {
+                const response = await fetch(shopEditForm.action, {
+                    method: 'POST',
+                    body: formData,
                 });
 
-                wrapper.appendChild(img);
-                wrapper.appendChild(delBtn);
-                preview.appendChild(wrapper);
-              };
-              reader.readAsDataURL(file);
-            });
-          });
+                if (response.ok) {
+                    alert("매장 정보가 성공적으로 수정되었습니다.");
+                    window.location.href = "/master";
+                } else {
+                    const errorText = await response.text();
+                    console.error("폼 제출 실패:", response.status, errorText);
+                    alert(`매장 정보 수정에 실패했습니다. 오류: ${response.status} - ${errorText.substring(0, 150)}`);
+                }
+            } catch (error) {
+                console.error("네트워크 오류:", error);
+                alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
         });
+
     </script>
-
-
 </th:block>
 
 </body>

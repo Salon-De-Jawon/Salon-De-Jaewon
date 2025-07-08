@@ -13,9 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,16 +68,21 @@ public class MasterController {
     @GetMapping("/shop-edit")
     public String shopEdit(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        model.addAttribute("shop", masterService.getShopEdit(userDetails.getMember().getId()));
+        ShopEditDto shopEdit = masterService.getShopEdit(userDetails.getMember().getId());
+
+        model.addAttribute("shop", shopEdit);
 
         return "master/shopEdit";
     }
 
     // 매장 수정 저장
     @PostMapping("/shop-edit/update")
-    public String saveShop(@Valid ShopEditDto dto, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public String saveShop(@ModelAttribute ShopEditDto dto,
+                           @AuthenticationPrincipal CustomUserDetails userDetails,
+                           @RequestParam(value = "deletedImageIds", required = false) List<Long> deletedImageIds){
 
-        masterService.saveShopEdit(dto, userDetails.getMember().getId());
+
+        masterService.saveShopEdit(dto, deletedImageIds ,userDetails.getMember().getId());
 
         return "redirect:/master";
     }

@@ -55,7 +55,8 @@ public class SecurityConfig {
                                         "/auth/email/send",
                                         "/auth/email/verify",
                                         "/auth/email/reset-complete",
-                                        "/auth/email/find-id"
+                                        "/auth/email/find-id",
+                                        "/master/shop-edit/update"
                                 )
                                 .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())

@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
-	implementation("org.springframework.boot:spring-boot-starter-mail:3.4.2")
+	implementation("org.springframework.boot:spring-boot-starter-mail:3.5.3")
 	// https://mvnrepository.com/artifact/nz.net.ultraq.thymeleaf/thymeleaf-layout-dialect
 	implementation 'com.google.cloud:google-cloud-vision:3.26.0'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0'
