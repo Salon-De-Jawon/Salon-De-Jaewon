@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/master/designerEdit.css">
+  </th:block>
+</head>
+
+<body>
+<div layout:fragment="main" id="main">
+  <div class="section-container">
+    <h2>디자이너 설정</h2>
+
+    <!-- 디자이너 기본 정보 -->
+    <div class="designer-basic-info">
+      <img src="/images/sample.jpg" alt="디자이너 사진" class="designer-img" />
+      <div>
+        <p><strong>수석디자이너</strong> 진섭</p>
+        <p>복구펌/복구염색/스타일전문 (12년)</p>
+      </div>
+    </div>
+
+    <form action="/shop/designer/update" method="post" class="designer-form">
+      <input type="hidden" name="id" value="1" />
+      <input type="hidden" name="_csrf" value="[[CSRF_TOKEN]]" />
+
+      <!-- 근무 시간 설정 -->
+      <div class="form-group">
+        <label>예약 가능 시간</label>
+        <div class="time-range">
+          <input type="time" name="startTime" required />
+          <span>~</span>
+          <input type="time" name="endTime" required />
+        </div>
+      </div>
+
+      <!-- 직급 설정 -->
+      <div class="form-group">
+        <label>직급</label>
+        <select name="position">
+          <option value="STAFF">스태프</option>
+          <option value="JUNIOR">주니어</option>
+          <option value="SENIOR">시니어</option>
+          <option value="MASTER">수석디자이너</option>
+        </select>
+      </div>
+
+      <!-- 시술 가능 항목 -->
+      <div class="form-group">
+        <label>시술 가능 항목</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="canCut" /> 커트</label>
+          <label><input type="checkbox" name="canPerm" /> 펌</label>
+          <label><input type="checkbox" name="canColor" /> 염색</label>
+          <label><input type="checkbox" name="canClinic" /> 클리닉</label>
+        </div>
+      </div>
+
+      <!-- 비활성화 -->
+      <div class="form-group">
+        <label><input type="checkbox" name="inactive" /> 비활성화 </label>
+      </div>
+
+      <button type="submit" class="btn-submit">저장하기</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

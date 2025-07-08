@@ -1,9 +1,15 @@
  document.addEventListener("DOMContentLoaded", function () {
+     const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+     const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+     const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
+     const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : null;
+
+
     const loginHamburger = document.getElementById("loginHamburger");
     const sidebar = document.getElementById("sidebar");
     const sidebarClose = document.querySelector(".sidebar-close");
 
-    console.log("✅ loginHamburger:", loginHamburger); // ✅ 이 위치가 정확함
+    console.log("loginHamburger:", loginHamburger);
 
     if (loginHamburger) {
       loginHamburger.addEventListener("click", () => {
@@ -22,7 +28,7 @@
       if (
         sidebar.classList.contains("active") &&
         !sidebar.contains(e.target) &&
-        !loginHamburger.contains(e.target)
+        !(loginHamburger && loginHamburger.contains(e.target))
       ) {
         sidebar.classList.remove("active");
       }
@@ -49,10 +55,15 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              [csrfHeader]: csrfToken,
             },
             body: JSON.stringify(selectedShops),
           })
-            .then(() => {
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("서버 응답 실패");
+              }
+              // 세션 저장 성공 후 이동
               location.href = "/compare";
             })
             .catch(err => {

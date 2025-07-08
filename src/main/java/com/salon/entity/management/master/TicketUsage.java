@@ -21,7 +21,7 @@ public class TicketUsage {
     private Ticket ticket;
 
     @ManyToOne
-    @JoinColumn(name = "payment")
+    @JoinColumn(name = "payment_id")
     private Payment payment;
 
     private int usedAmount;

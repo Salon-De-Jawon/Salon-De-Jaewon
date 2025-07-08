@@ -3,19 +3,16 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
-import com.salon.service.shop.ShopService;
+import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class MainController {
 
     private final MemberService memberService;
     private final KakaoMapService kakaoMapService;
-    private final ShopService shopService;
+    private final SalonService salonService;
     private final CompareService compareService;
 
 
@@ -76,7 +73,7 @@ public class MainController {
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
-        return shopService.getAllShopsForMap(lat, lon);
+        return salonService.getAllShopsForMap(lat, lon);
     }
 
     @GetMapping("/shopList")
@@ -93,7 +90,7 @@ public class MainController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return shopService.getShopByRegion(region, lat, lon, page, size);
+        return salonService.getShopByRegion(region, lat, lon, page, size);
     }
 
     @PostMapping("/api/saveSelectedShops")
@@ -107,6 +104,7 @@ public class MainController {
         List<Long> limitedShopIds = shopIds.size() > 3 ? shopIds.subList(0, 3) : shopIds;
 
         session.setAttribute("selectedShopIds", limitedShopIds);
+        System.out.println("세션 저장 selectedShopIds = " + limitedShopIds);
         return ResponseEntity.ok().build();
     }
 
@@ -118,6 +116,7 @@ public class MainController {
         //타입 안정성이 보장 되지 않아서 경고 멘트가 떠서
         // 타입 체크 및 안전한 형변환을 적용함.
         Object obj = session.getAttribute("selectedShopIds");
+        System.out.println("세션 조회 시도 raw obj = " + obj);
 
         List<Long> selectedShopIds = new ArrayList<>();
         if (obj instanceof List<?>) {
@@ -130,12 +129,17 @@ public class MainController {
             }
         }
 
+        System.out.println("세션에서 꺼낸 selectedShopIds = " + selectedShopIds);
+
         if (selectedShopIds.isEmpty()) {
             return "redirect:/shopList";
         }
 
+
+
         List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
         model.addAttribute("compareResults", compareResults);
+
 
         return "/user/compare";
     }

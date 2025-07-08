@@ -30,7 +30,7 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     @Query(value = """
     SELECT COUNT(DISTINCT r.member_id)
     FROM reservation r
-    WHERE r.designer_id = :designerId
+    WHERE r.shop_designer_id = :designerId
       AND DATE(r.reservation_date) = CURRENT_DATE
       AND r.reservation_date = (
         SELECT MIN(r2.reservation_date)
@@ -40,10 +40,17 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     """, nativeQuery = true)
     int countTodayNewCustomers(@Param("designerId") Long designerId);
 
-    @Query("SELECT r FROM Reservation r WHERE DATE(r.reservationDate) = CURRENT_DATE " +
-            "AND r.shopDesigner.id = :designerId ORDER BY r.reservationDate")
+    // 디자이너 당일 예약 목록
+    @Query("SELECT r FROM Reservation r JOIN r.shopDesigner sd " +
+            "WHERE DATE(r.reservationDate) = CURRENT_DATE " +
+            "AND sd.id = :designerId ORDER BY r.reservationDate")
     List<Reservation> findTodayReservations(@Param("designerId") Long designerId);
 
-
     List<Reservation> findByShopDesignerIdAndReservationDateBetweenOrderByReservationDateDesc(Long id, LocalDateTime start, LocalDateTime end);
+
+    // 미용실 당일 예약 목록
+    @Query("SELECT r FROM Reservation r JOIN r.shopDesigner sd " +
+            "WHERE sd.shop.id = :shopId AND DATE(r.reservationDate) = CURRENT_DATE " +
+            "ORDER BY r.reservationDate")
+    List<Reservation> findTodayResByShopId(@Param("shopId") Long shopId);
 }
