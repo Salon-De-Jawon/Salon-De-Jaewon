@@ -45,19 +45,13 @@
 </div>
 
 <!--스크립트에 로그인한 유저 id 넣어주는 코드-->
-<th:block th:if="${#authentication != null and #authentication.principal != null}">
+<th:block th:if="${#authentication.principal instanceof T(com.salon.config.CustomUserDetails)}">
     <script th:inline="javascript">
-        /*<![CDATA[*/
-        window.currentMemberId = [[${#authentication.principal.id}]];
-        /*]]>*/
+        window.currentMemberId = [[${#authentication.principal.member.id}]];
     </script>
 </th:block>
-
-<!-- 비로그인 상태일 때 -->
-<th:block th:if="${#authentication == null or #authentication.principal == null}">
-    <script>
-        window.currentMemberId = 0;
-    </script>
+<th:block th:unless="${#authentication.principal instanceof T(com.salon.config.CustomUserDetails)}">
+    <script>window.currentMemberId = 0;</script>
 </th:block>
 
 <!--웹소켓 관련 js-->

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,6 +52,10 @@ public class MainController {
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
         }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal 클래스: " + principal.getClass());
+        System.out.println("principal 값: " + principal);
 
         model.addAttribute("kakaoMapsKey", kakaoMapsKey);
 

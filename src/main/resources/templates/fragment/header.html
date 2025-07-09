@@ -60,21 +60,31 @@
                th:unless="${#authentication.principal != null}"
                th:text="${#authentication.name}"
           ><span class="name-plus">님</span></div>
-          <div class="hamburger" id="loginHamburger">☰</div>
-
-          <div id="notification-icon" style="position: relative; margin-left: 10px; cursor: pointer;">
+          <div class="hamburger" id="loginHamburger">☰
+            <div id="notification-icon" style="position: relative; margin-left: 10px; cursor: pointer;">
             <span id="notification-badge" style="
                   position: absolute;
-                  top: -5px;
-                  right: -5px;
+                  top: -45px;
+                  right: -20px;
                   background: red;
                   color: white;
                   border-radius: 50%;
                   font-size: 11px;
-                  padding: 2px 6px;
-                  display: none;
+                  padding: 6px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 20px;
+                  height: 20px;
+                  font-weight: bolder;
+                  display:none;
+                  padding-bottom: 8px;
+
             ">0</span>
+            </div>
           </div>
+
+
         </div>
 
 

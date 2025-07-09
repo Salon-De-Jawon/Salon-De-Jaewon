@@ -17,6 +17,7 @@ public class WebNotificationDto {
     private String createAt; // 생성 날짜 + 시간
     private WebTarget webTarget; // 대상
     private Long targetId; // 대상 아이디
+    private Long memberId;
 
     public static WebNotificationDto from (WebNotification entity) {
         WebNotificationDto dto = new WebNotificationDto();
@@ -25,6 +26,7 @@ public class WebNotificationDto {
         dto.setWebTarget(entity.getWebTarget());
         dto.setTargetId(entity.getTargetId());
         dto.setCreateAt(getTimeAgo(entity.getCreateAt()));
+        dto.setMemberId(entity.getMemberId());
 
         return dto;
     }
@@ -59,6 +61,7 @@ public class WebNotificationDto {
         entity.setTargetId(this.targetId);
         entity.setRead(false);
         entity.setCreateAt(LocalDateTime.now());
+        entity.setMemberId(this.memberId);
 
         return entity;
     }
