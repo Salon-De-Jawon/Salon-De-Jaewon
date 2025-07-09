@@ -4,7 +4,9 @@ import com.salon.constant.CouponType;
 import com.salon.constant.ReservationStatus;
 
 import com.salon.entity.Review;
+import com.salon.entity.management.Payment;
 import com.salon.entity.shop.Reservation;
+import com.salon.repository.management.PaymentRepo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +31,8 @@ public class MyReservationDto {
 
     private int servicePrice;  //시술 가격
 
+//    쿠폰 관련
+
     private boolean couponUsed;  //쿠폰 사용여부
     private CouponType couponType; // 쿠폰 타입
     private String couponName; // 사용쿠폰 이름
@@ -37,23 +41,34 @@ public class MyReservationDto {
     private int discountValue; // 쿠폰 할인 양
     private int couponMin;  // 최소 사용 금액
 
+//    정액권 관련
+
     private boolean ticketUsed; //정액권 사용 여부
     private int ticketUsedAmount; // 정액권 사용금
-    private int finalPrice; // 결제 예정액/최종 결제액
-
     private int ticketTotalAmount; // 티켓 원래 금액
     private int ticketNowAmount; // 티켓 현재 잔액
     private int ticketFinalAmount; // 티켓 예정 잔액
 
+    //최종 결제액
+
+    private int finalPrice; // 결제 예정액/최종 결제액
+
+    //샵 정보 자세히
+
     private String shopAddress;  // 샵 주소
     private String shopTel; // 샵 전화번호
+
+    //리뷰 관련
 
     private boolean reviewExists;  // 리뷰 존재여부
     private boolean canWriteReview;  // 리뷰 작성 가능여부
     private Long reviewId; // 리뷰 아이디
 
+    //결제 정보
+    private MyPaymentDto myPaymentDto;
 
-    public static MyReservationDto from(Reservation reservation, Review review) {
+
+    public static MyReservationDto from(Reservation reservation, Review review, PaymentRepo paymentRepo) {
         MyReservationDto dto = new MyReservationDto();
 
         dto.setReservationId(reservation.getId());
@@ -79,6 +94,8 @@ public class MyReservationDto {
             LocalDate today = LocalDate.now();
             LocalDate expireDate = reservation.getCoupon().getExpireDate();
 
+
+            // 쿠폰
             if(expireDate.isBefore(today)) {
                 dto.setDaysExpire(0);
             } else {
@@ -94,6 +111,7 @@ public class MyReservationDto {
             dto.setDiscountValue(0);
         }
 
+        //정액권
         if(reservation.getTicket() != null) {
             dto.setTicketUsed(true);
             dto.setTicketUsedAmount(reservation.getTicketUsedAmount());
@@ -109,6 +127,8 @@ public class MyReservationDto {
         dto.setShopAddress(reservation.getShopDesigner().getShop().getAddress());
         dto.setShopTel(reservation.getShopDesigner().getShop().getTel());
 
+
+        //리뷰
         if(review != null) {
             dto.setReviewExists(true);
             dto.setReviewId(review.getId());
@@ -120,6 +140,23 @@ public class MyReservationDto {
         boolean isCompleted = reservation.getStatus() == ReservationStatus.COMPLETED;
         boolean within5Days = reservation.getReservationDate().plusDays(5).isAfter(LocalDateTime.now());
         dto.setCanWriteReview(isCompleted && within5Days && !dto.isReviewExists());
+
+
+        // 결제 정보
+
+        paymentRepo.findByReservationId(reservation.getId()).ifPresent(payment -> {
+            MyPaymentDto paymentDto = new MyPaymentDto();
+            paymentDto.setReservationId(reservation.getId());
+            paymentDto.setPayServiceName(payment.getServiceName()); // 실제 결제된 시술명
+            paymentDto.setCouponDiscountPrice(payment.getCouponDiscountPrice());
+            paymentDto.setTicketUsedPrice(payment.getTicketUsedPrice());
+            paymentDto.setFinalPrice(payment.getFinalPrice());
+            paymentDto.setTotalPrice(payment.getTotalPrice());
+
+            paymentDto.setPaymentType(payment.getPaymentType());
+
+            dto.setMyPaymentDto(paymentDto);
+        });
 
         return dto;
 

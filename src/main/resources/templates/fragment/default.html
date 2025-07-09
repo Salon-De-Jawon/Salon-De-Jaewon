@@ -44,8 +44,27 @@
 
 </div>
 
+<!--스크립트에 로그인한 유저 id 넣어주는 코드-->
+<th:block th:if="${#authentication != null and #authentication.principal != null}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.currentMemberId = [[${#authentication.principal.id}]];
+        /*]]>*/
+    </script>
+</th:block>
 
+<!-- 비로그인 상태일 때 -->
+<th:block th:if="${#authentication == null or #authentication.principal == null}">
+    <script>
+        window.currentMemberId = 0;
+    </script>
+</th:block>
 
+<!--웹소켓 관련 js-->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="/javascript/websocketNotify.js"></script>
+<!--헤더 스크립트-->
 <script src="/javascript/header.js"></script>
 <th:block layout:fragment="script"></th:block>
 
