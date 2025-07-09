@@ -3,6 +3,7 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
+import com.salon.service.WebNotificationService;
 import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
@@ -40,6 +41,7 @@ public class MainController {
     private final KakaoMapService kakaoMapService;
     private final SalonService salonService;
     private final CompareService compareService;
+    private final WebNotificationService webNotificationService;
 
 
     @GetMapping("/")
@@ -184,6 +186,14 @@ public class MainController {
     public Map<String, Boolean> checkLoginId(@RequestParam String loginId) {
        boolean exists = memberService.existsByLoginId(loginId);
        return Map.of("exists", exists);
+    }
+
+    // 웹 알림 읽음 표시
+    @PostMapping("/api/notification/read")
+    @ResponseBody
+    public ResponseEntity<?> markAsRead(@RequestBody NotificationReadDto dto) {
+        webNotificationService.markAsReadByTarget(dto.getWebTarget(), dto.getTargetId());
+        return ResponseEntity.ok().build();
     }
 
 

@@ -104,8 +104,9 @@ public class DesApplyService {
         applicant.setRole(Role.DESIGNER);
     }
 
+    // 원래 void 였던거 반환 타입 Apply로 변경 -
     @Transactional
-    public void reject(Long id, Member member) {
+    public Long reject(Long id, Member member) {
         System.out.println("reject()호출됨, id: " + id);
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
@@ -115,5 +116,7 @@ public class DesApplyService {
         apply.setAdmin(member);
 
         System.out.println("상태 변경 후 : " + apply.getStatus());
+
+        return apply.getMember().getId();
     }
 }
