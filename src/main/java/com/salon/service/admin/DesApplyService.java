@@ -7,6 +7,7 @@ import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
 import com.salon.entity.management.Designer;
+import com.salon.repository.MemberRepo;
 import com.salon.repository.admin.ApplyRepo;
 import com.salon.repository.management.DesignerRepo;
 import com.salon.util.OcrRestUtil;
@@ -30,12 +31,16 @@ public class DesApplyService {
 
     private final ApplyRepo applyRepo;
     private final DesignerRepo designerRepo;
+    private final MemberRepo memberRepo;
 
     @Value("${ocr.api}")
     private String ocrApiKey;
 
     public void Apply(ApplyDto applyDto, Member member, MultipartFile file) {
-
+        boolean alreadyApplied = applyRepo.existsByMemberAndApplyType(member, ApplyType.DESIGNER);
+        if(alreadyApplied){
+            throw new IllegalStateException("이미 디자이너 신청을 하셨습니다.");
+        }
         Apply apply = new Apply();
         apply.setMember(member);
         apply.setApplyType(ApplyType.DESIGNER);
@@ -91,24 +96,24 @@ public class DesApplyService {
         return null;
     }
 
-    public List<Apply> list() {
-        return applyRepo.findByStatus(ApplyStatus.WAITING);
+    public List<Apply> listDesigner() {
+        return applyRepo.findByApplyTypeAndStatus(ApplyType.DESIGNER, ApplyStatus.WAITING);
     }
 
     @Transactional
-    public void approve(Long id, Member member) {
+    public void approveDesigner(Long id, Member member) {
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
         apply.setStatus(ApplyStatus.APPROVED);
         apply.setApproveAt(LocalDateTime.now());
         apply.setAdmin(member);
-
+        apply.setApplyType(ApplyType.DESIGNER);
         Member applicant = apply.getMember();
-
+        applicant.setRole(Role.DESIGNER);
+        memberRepo.save(applicant);
         if(designerRepo.findByMember_Id(applicant.getId()) != null) {
-            throw new RuntimeException("이미 디자이너심");
+            throw new RuntimeException("이미 디자이너입니다.");
         }else{
-            applicant.setRole(Role.DESIGNER);
             Designer designer = new Designer();
             designer.setMember(applicant);
             designerRepo.save(designer);
@@ -118,7 +123,7 @@ public class DesApplyService {
     }
 
     @Transactional
-    public void reject(Long id, Member member) {
+    public void rejectDesigner(Long id, Member member) {
         System.out.println("reject()호출됨, id: " + id);
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));

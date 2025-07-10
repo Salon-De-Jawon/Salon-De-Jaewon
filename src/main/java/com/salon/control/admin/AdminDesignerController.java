@@ -29,7 +29,11 @@ public class AdminDesignerController {
     private final ApplyRepo applyRepo;
 
     @GetMapping("/request")
-    public String requestForm(Model model){
+    public String requestForm(Model model,
+                              @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        Member member = userDetails.getMember();
+
 
 
         model.addAttribute("applyDto", new ApplyDto());
@@ -42,9 +46,6 @@ public class AdminDesignerController {
                           @RequestParam(value="file", required = false) MultipartFile file,
                           HttpSession session,
                           Model model){
-        System.out.println("✅ POST 요청 진입");
-        System.out.println("applyNumber: " + applyDto.getApplyNumber());
-        System.out.println("file: " + (file != null ? file.getOriginalFilename() : "없음"));
         Member member = userDetails.getMember();
         if(member == null){
             return "redirect:/";
@@ -53,6 +54,9 @@ public class AdminDesignerController {
             desApplyService.Apply(applyDto, member, file);
             model.addAttribute("message", "디자이너 승인 요청이 완료되었습니다.");
             return "redirect:/";
+        } catch (IllegalStateException e){
+            model.addAttribute("error", "이미 디자이너 신청을 하셨습니다.");
+            return "admin/apply";
         } catch (Exception e){
             model.addAttribute("error", "요청 처리 중 오류가 발생했습니다." + e.getMessage());
             model.addAttribute("ocrApiKey", ocrApiKey);
@@ -62,8 +66,7 @@ public class AdminDesignerController {
 
     @GetMapping("/list")
     public String list(Model model){
-        List<Apply> list = desApplyService.list();
-        model.addAttribute("applyList", list);
+        model.addAttribute("designerApplyList", desApplyService.listDesigner());
         return "admin/applyList";
     }
 
@@ -73,7 +76,7 @@ public class AdminDesignerController {
                           HttpSession session,
                           @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = userDetails.getMember();
-        desApplyService.approve(id, member);
+        desApplyService.approveDesigner(id, member);
         return "redirect:/admin/designer/list";
     }
 
@@ -81,9 +84,8 @@ public class AdminDesignerController {
     public String reject(@PathVariable Long id,
                          HttpSession session,
                          @AuthenticationPrincipal CustomUserDetails userDetails){
-        System.out.println("reject 컨트롤러 진입 : id = " + id);
         Member member = userDetails.getMember();
-        desApplyService.reject(id, member);
+        desApplyService.rejectDesigner(id, member);
         return "redirect:/admin/designer/list";
     }
 

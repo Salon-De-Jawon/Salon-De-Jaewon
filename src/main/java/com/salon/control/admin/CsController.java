@@ -2,11 +2,13 @@ package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.BizStatusDto;
-import com.salon.dto.admin.CsCreateDto;
-import com.salon.dto.admin.CsDetailDto;
-import com.salon.dto.admin.CsListDto;
+import com.salon.dto.admin.*;
 import com.salon.entity.Member;
+import com.salon.entity.admin.Apply;
+import com.salon.entity.management.master.Coupon;
+import com.salon.repository.management.master.CouponRepo;
 import com.salon.service.admin.CsService;
+import com.salon.service.admin.DesApplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -27,6 +29,8 @@ import java.util.Map;
 public class CsController {
     @Value("${api.encodedKey}")
     private String encodedKey;
+
+    private final CouponRepo couponRepo;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -61,6 +65,8 @@ public class CsController {
     }
 
     private final CsService csService;
+
+    private final DesApplyService desApplyService;
     @GetMapping("/question")
     public String question(Model model){
         model.addAttribute("csCreateDto", new CsCreateDto());
@@ -106,11 +112,53 @@ public class CsController {
         return "redirect:/admin/cs/questionList";
     }
     @GetMapping("/shopApply")
-    public String shopApply(){
+    public String shopApply(Model model){
+        model.addAttribute("applyDto", new ApplyDto());
         return "admin/shopApply";
     }
-    @GetMapping("bannerApply")
-    public String bannerApply(){
-        return "admin/bannerApply";
+    @PostMapping("/shopApply")
+    public String shopRegistration(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                   @ModelAttribute ApplyDto applyDto,
+                                   Model model){
+
+        System.out.println("폼 제출됨: " + applyDto.getApplyNumber());
+
+        Member member = userDetails.getMember();
+        try {
+            csService.registration(applyDto, member);
+        } catch(IllegalStateException e){
+            model.addAttribute("applyDto", applyDto);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/shopApply";
+        }
+        return "redirect:/admin/cs/shopList";
+    }
+    @GetMapping("/shopList")
+    public String shopList(Model model){
+        List<Apply> list = csService.listShop();
+        System.out.println("샵 신청 목록 수: " + list.size());
+        for (Apply a : list) {
+            System.out.println("신청: " + a.getApplyNumber() + " / 타입: " + a.getApplyType() + " / 상태: " + a.getStatus());
+        }
+        model.addAttribute("shopApplyList", list);
+        return "admin/shopList";
+    }
+    @PostMapping("/approve/{id}")
+    public String approveShop(@PathVariable Long id,
+                              @AuthenticationPrincipal CustomUserDetails userDetails){
+        csService.approveShop(id, userDetails.getMember());
+        return "redirect:/admin/cs/shopList";
+    }
+    @PostMapping("/reject/{id}")
+    public String rejectShop(@PathVariable Long id,
+                             @AuthenticationPrincipal CustomUserDetails userDetails){
+        csService.rejectShop(id, userDetails.getMember());
+        return "redirect:/admin/cs/shopList";
+    }
+    @GetMapping("/couponList")
+    public String couponList(Model model){
+        List<CouponBannerListDto> couponList = csService.couponList();
+        model.addAttribute("couponList", couponList);
+        return "admin/couponList";
     }
 }
