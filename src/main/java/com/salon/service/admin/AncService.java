@@ -50,31 +50,11 @@ public class AncService {
                 if (!file.isEmpty()) {
                     UploadedFileDto image = fileService.upload(file, UploadType.ANNOUNCEMENT);
 
-                    File dest = new File(image.getFolderPath(), image.getFileName());
-
-                    String originalName = image.getOriginalFileName();
-                    String extension = originalName.substring(originalName.lastIndexOf(".")+1);
-
-                    if(extension == null){
-                        throw new RuntimeException("지원하지 않는 파일 형식입니다.");
-                    }
-
-                    String uuid = UUID.randomUUID().toString();
-                    String fileName = uuid + "." + extension;
-                    String filePath = "/ancFile/" + fileName;
-
-                    System.out.println("파일경로 : "+filePath + ",확장자: " + fileName);
-
-                    try {
-                        file.transferTo(dest);
-                    } catch (IOException e) {
-                        throw new RuntimeException("파일 저장 실패", e);
-                    }
 
                     AnnouncementFile announcementFile = new AnnouncementFile();
-                    announcementFile.setOriginalName(originalName);
-                    announcementFile.setFileName(fileName);
-                    announcementFile.setFileUrl(filePath);
+                    announcementFile.setOriginalName(image.getOriginalFileName());
+                    announcementFile.setFileName(image.getFileName());
+                    announcementFile.setFileUrl(image.getFileUrl());
                     announcementFile.setAnnouncement(announcement);
 
                     announcementRepo.save(announcement);
