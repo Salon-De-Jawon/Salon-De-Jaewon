@@ -289,10 +289,8 @@
     <section class="review-section" th:if="${reviewList != null and !reviewList.isEmpty()}">
       <h3>리뷰 <span th:text="${reviewList.size()}">0</span></h3>
       <div class="review-photo">
-        <div class="review-thumb"
-             th:each="r : ${reviewList}"
-             th:if="${r.imageDtos != null and !r.imageDtos.isEmpty()}"
-             th:src="${r.imageDtos[0].imgUrl}">
+        <div class="r-thumb" th:if="${r.imageDtos != null and #lists.size(r.imageDtos) > 0}">
+          <img th:src="${r.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
         </div>
       </div>
 
