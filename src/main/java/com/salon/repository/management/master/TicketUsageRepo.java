@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface TicketUsageRepo extends JpaRepository<TicketUsage, Long> {
 
 
+    int findTotalUsedAmountByTicketId(Long id);
 }

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class DesignerListDto {
 
     private Long id; // 디자이너 id
+    private Long shopId; // 소속미용실 id
     private String name; // 디자이너 이름
     private int workingYear; // 디자이너 연차
     private String position; // 디자이너 직급
@@ -28,6 +29,7 @@ public class DesignerListDto {
         DesignerListDto designerListDto = new DesignerListDto();
 
         designerListDto.setId(shopDesigner.getId());
+        designerListDto.setShopId(shopDesigner.getShop().getId());
 
         String name = shopDesigner.getDesigner().getMember().getName();
         String position = shopDesigner.getPosition();

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" href="/css/shop/reCheckCoupon.css">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+    <!-- 예약 확인 섹션 -->
+    <section class="info-box">
+        <h2>예약 확인</h2>
+        <p>
+            <strong>미용실 :</strong>Salon De DW - 대전광역시 중구 중앙로121번길 20
+        </p>
+        <p><strong>디자이너 :</strong>나미리 원장디자이너</p>
+        <p><strong>시술 : </strong>컷 + 컬러 - 58,000</p>
+        <p><strong>예약자 :</strong>신짱구</p>
+        <p><strong>예약자 연락처 : </strong>010-8686-3140</p>
+        <p><strong>예약 일시 : </strong>2025년 07월 09일 14:00</p>
+        <button onclick="location.href='#'">예약변경</button>
+    </section>
+
+    <section class="member-comment">
+        <h2>고객 요청사항</h2>
+
+        <div
+                class="comment-form"
+                style="display: flex; align-items: center; gap: 12px"
+        >
+            <label for="customerComment">요청하실 내용을 작성해주세요:</label>
+            <button id="commentSaveBtn" type="submit" class="submit-comment-btn">
+                저장
+            </button>
+        </div>
+        <textarea
+                name="customerComment"
+                id="customerComment"
+                rows="4"
+                placeholder="예 : 펌 시술시 앞머리까지 같이 다듬어 주세요 등"
+                class="comment-textarea"
+                style="width: 100%; margin-top: 12px"
+        ></textarea>
+    </section>
+
+    <!-- 쿠폰 선택 섹션 -->
+    <section class="couponSelect" id="couponSelect">
+        <div class="filter-options">
+            <button data-sort="percent">할인율 높은순</button>
+            <button data-sort="amount">할인금액 높은순</button>
+            <button data-sort="issuedAt">받은 날짜 순</button>
+            <button data-sort="expire">날짜 임박 순</button>
+        </div>
+
+        <h2>쿠폰 선택</h2>
+
+        <p>사용 가능한 쿠폰 : <span>2개</span></p>
+        <div class="coupon-list">
+            <!-- 쿠폰 1 -->
+            <div class="coupon-item">
+                <div class="coupon-left">
+                    <div class="coupon-amount">10% 할인</div>
+                    <div class="coupon-title">생일 쿠폰</div>
+                    <div class="coupon-desc">생일 축하 특별 할인</div>
+                    <div class="coupon-min">20,000원 이상 사용 가능</div>
+                    <div class="coupon-exp">사용 기한: 2025-07-18</div>
+                </div>
+                <button onclick="applyCoupon('coupon1')">사용하기</button>
+            </div>
+
+            <!-- 쿠폰 2 -->
+            <div class="coupon-item">
+                <div class="coupon-left">
+                    <div class="coupon-amount">5,000원 할인</div>
+                    <div class="coupon-title">첫 방문 쿠폰</div>
+                    <div class="coupon-desc">첫 방문 고객을 위한 특별 혜택</div>
+                    <div class="coupon-min">15,000원 이상 사용 가능</div>
+                    <div class="coupon-exp">사용 기한: 2025-07-18</div>
+                </div>
+                <button onclick="applyCoupon('coupon2')">사용하기</button>
+            </div>
+        </div>
+        <p>
+            <strong>할인 적용금액 :</strong>
+            <span id="applied-discount">총 원 할인</span>
+        </p>
+    </section>
+
+    <!-- 정액권 선택 섹션 -->
+    <section class="ticketselect" id="ticketSelect">
+        <h2>정액권 선택</h2>
+        <div class="ticket-list">
+            <!-- 정액권 1 -->
+            <div class="ticket-item">
+                <div class="ticket-left">
+                    <div class="ticket-amount">50,000원</div>
+                    <div class="ticket-title">[Salon De DW] 5만원 정액권</div>
+                </div>
+                <button onclick="applyTicket('ticket1')">사용하기</button>
+            </div>
+
+            <!-- 정액권 2 -->
+            <div class="ticket-item">
+                <div class="ticket-left">
+                    <div class="ticket-amount">200,000원</div>
+                    <div class="ticket-title">[Salon De DW] vip 20만원 정액권</div>
+                </div>
+                <button onclick="applyTicket('ticket2')">사용하기</button>
+            </div>
+        </div>
+
+        <p id="ticket-price" style="font-size: 16px; margin-top: 12px">
+            정액권 적용 금액: 원
+        </p>
+    </section>
+
+    <!-- 최종 예약 버튼 -->
+    <section class="finalreserve" id="finalReservation">
+        <div class="reserve-content">
+            <p id="total-price">총 결제 금액: 원</p>
+            <button>예약하기</button>
+        </div>
+    </section>
+</div>
+<th:block layout:fragment="script">
+    <script th:src="@{/javascript/shop/reCheckCoupon.js}" defer></script>
+</th:block>
+</body>
+</html>
