@@ -12,12 +12,15 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailAuthService {
 
+    // 메일 전송 객체
     private final JavaMailSender mailSender;
 
+    // 세션 키 정의
     private static final String AUTH_CODE_KEY = "authCode";
     private static final String AUTH_EMAIL_KEY = "authEmail";
     private static final String AUTH_SUCCESS_KEY = "authSuccess";
 
+    // 인증 코드 이메일 전송 메서드 (js에서 보낸거 받아서 분류 후 이메일보냄)
     public boolean sendCodeEmail(String email, String context, HttpSession session) {
         String code = generateCode();
 
@@ -52,6 +55,7 @@ public class EmailAuthService {
 
     }
 
+    // 비밀번호 변경 성공 후 전송되는 이메일
     public boolean sendPasswordResetNoticeEmail(String email) {
         String subject = "SalonLog 비밀번호가 변경되었습니다.";
         String text = "안녕하세요. SalonLog입니다. \n 요청하신 비밀번호가 성공적으로 변경되었습니다. \n\n" + "만약 본인이 비밀번호 변경을 요청한게 아닐시에는 즉시 비밀번호를 재변경하고 고객센터에 문의하여주십시오.";
@@ -59,6 +63,7 @@ public class EmailAuthService {
         return send(email, subject, text);
     }
 
+    // 실제 메일을 보내는 로직
     public boolean send (String email, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

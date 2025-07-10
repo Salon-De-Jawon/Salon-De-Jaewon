@@ -17,7 +17,9 @@ public class WebNotificationService {
     // 웹 알림 발생하는 시점에서 receiverId 저장해서(받는 유저) 넘기기
     public void sendWebSocketNotification (Long receiverId, WebNotification entity) {
 
+        // 웹알림 받는 사람
         String destination = "/topic/notify/" + receiverId;
+        // 웹 알림 내용
         WebNotificationDto dto = WebNotificationDto.from(entity);
 
         System.out.println("웹소켓 알림 전송 시도 → 대상: " + destination);

@@ -5,20 +5,19 @@ document.addEventListener("DOMContentLoaded", function() {
     const csrfToken = csrfTokenMeta?.getAttribute('content');
     const csrfHeader = csrfHeaderMeta?.getAttribute('content');
 
-    console.log("✅ DOM 로드됨");
-
     const memberId = window.currentMemberId;
-    console.log("현재 memberId:", memberId);
 
     if (!memberId) {
-        console.warn("❌ memberId 없음, 종료");
+        console.warn("memberId 없음, 종료");
         return;
     }
 
-    console.log("웹소켓 연결 시도 중...");
+    // 웹소켓 연결
+
     const socket = new SockJS("/ws");
     const stompClient = Stomp.over(socket);
 
+    // 발생한 이벤트를 알림으로 연결
     stompClient.connect({}, () => {
         console.log("웹소켓 연결 성공");
 
@@ -51,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         targetId: data.targetId
                     })
                 }).then(() => {
-        console.log("✅ 읽음 처리 완료");
+                        console.log("읽음 처리 완료");
                 }).catch(err => {
-        console.error("❌ 읽음 처리 실패", err);
+                    console.error("읽음 처리 실패", err);
                 });
 
                 // 페이지 이동
