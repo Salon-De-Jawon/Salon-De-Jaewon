@@ -52,15 +52,6 @@ public class ReviewService {
                 if(multipartFile != null && !multipartFile.isEmpty()) {
                     UploadedFileDto uploadedFile = fileService.upload(multipartFile, UploadType.REVIEW);
 
-                    File dest = new File(uploadedFile.getFolderPath(), uploadedFile.getFileName());
-                    try {
-
-                    multipartFile.transferTo(dest);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException("파일 저장 실패", e);
-                    }
-
                     ReviewImage image = new ReviewImage();
                     image.setReview(review);
                     image.setOriginalName(uploadedFile.getOriginalFileName());

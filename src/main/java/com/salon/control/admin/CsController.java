@@ -155,10 +155,5 @@ public class CsController {
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
-    @GetMapping("/couponList")
-    public String couponList(Model model){
-        List<CouponBannerListDto> couponList = csService.couponList();
-        model.addAttribute("couponList", couponList);
-        return "admin/couponList";
-    }
+
 }

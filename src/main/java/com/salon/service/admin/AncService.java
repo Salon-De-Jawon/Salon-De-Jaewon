@@ -50,7 +50,6 @@ public class AncService {
                 if (!file.isEmpty()) {
                     UploadedFileDto image = fileService.upload(file, UploadType.ANNOUNCEMENT);
 
-                    File dest = new File(image.getFolderPath(), image.getFileName());
 
                     String originalName = image.getOriginalFileName();
                     String extension = originalName.substring(originalName.lastIndexOf(".")+1);
@@ -65,11 +64,6 @@ public class AncService {
 
                     System.out.println("파일경로 : "+filePath + ",확장자: " + fileName);
 
-                    try {
-                        file.transferTo(dest);
-                    } catch (IOException e) {
-                        throw new RuntimeException("파일 저장 실패", e);
-                    }
 
                     AnnouncementFile announcementFile = new AnnouncementFile();
                     announcementFile.setOriginalName(originalName);
