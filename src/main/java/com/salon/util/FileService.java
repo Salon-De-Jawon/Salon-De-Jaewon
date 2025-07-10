@@ -50,15 +50,12 @@ public class FileService {
 
         // 확장자 png, jpg, pdf 등등
         String ext = originalFileName.substring(originalFileName.lastIndexOf(".")+1);
-
+        
         // 랜덤이름 + 확장자
         String uuidFileName = UUID.randomUUID() + "." + ext;
 
         // 업로드 타입별 폴더 경로
         String folderPath = getFolderPath(type);
-
-        // 저장 될 파일 경로
-        String fullPath = folderPath + uuidFileName;
 
         // 폴더가 없을시 생성
         File dir = new File(folderPath);
@@ -66,16 +63,16 @@ public class FileService {
             dir.mkdirs();
         }
 
-
         // 경로 + 파일이름 /shopImg/*****.jpg
         String fileUrl = type.getUrlPath() + uuidFileName;
 
         // 파일 저장
-        try(FileOutputStream fos = new FileOutputStream(fullPath)) {
+        try(FileOutputStream fos = new FileOutputStream(fileUrl)) {
             fos.write(multipartFile.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
 
         return new UploadedFileDto(originalFileName, uuidFileName, fileUrl);
     }
