@@ -1,14 +1,17 @@
 package com.salon.control;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.management.master.CouponDto;
 import com.salon.dto.management.master.MainDesignerPageDto;
 import com.salon.dto.management.master.ShopEditDto;
+import com.salon.dto.management.master.ShopImageDto;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.shop.ShopImage;
 import com.salon.service.management.master.MasterService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -84,7 +88,9 @@ public class MasterController {
     @PostMapping("/shop-edit/update")
     public String saveShop(
             @RequestParam("shopEditDto") String shopEditDtoJson,
-            @RequestParam("files") List<MultipartFile> files
+            @RequestParam(value = "files", required = false) List<MultipartFile> files,
+            @RequestParam(value = "deletedImageIds", required = false) String deletedImageIdsJson,
+            @RequestParam(value = "thumbnailImageId", required = false) String thumbnail
     ) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -92,12 +98,19 @@ public class MasterController {
 
         ShopEditDto dto = objectMapper.readValue(shopEditDtoJson, ShopEditDto.class);
 
-        System.out.println(dto);
-        System.out.println("받아온 파일: " + (files.isEmpty() ? "없음" : files.get(0).getOriginalFilename()));
+        List<Long> deletedImageIds = new ArrayList<>();
+        if (deletedImageIdsJson != null && !deletedImageIdsJson.isEmpty()) {
+            deletedImageIds = objectMapper.readValue(deletedImageIdsJson, new TypeReference<List<Long>>() {});
+        }
 
-        // 저장 로직 호출
+        // thumbnailJson은 보통 {"imgName":"abc.jpg"} 같은 형태일 텐데, 필요하면 DTO로 파싱
+        Long thumbnailId = null;
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            thumbnailId = Long.parseLong(thumbnail);
+        }
 
-        masterService.saveShopEdit(dto, files);
+
+        masterService.saveShopEdit(dto, files, deletedImageIds, thumbnailId);
 
         return "redirect:/master";
     }

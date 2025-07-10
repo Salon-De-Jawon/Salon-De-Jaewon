@@ -69,7 +69,7 @@ public class FileService {
 
 
         // 경로 + 파일이름 /shopImg/*****.jpg
-        String fileUrl = Paths.get(folderPath, uuidFileName).toString();
+        String fileUrl = type.getUrlPath() + uuidFileName;
 
         // 파일 저장
         try(FileOutputStream fos = new FileOutputStream(fullPath)) {

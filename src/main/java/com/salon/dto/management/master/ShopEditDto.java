@@ -42,10 +42,6 @@ public class ShopEditDto {
 
     // 기존 이미지
     private List<ShopImageDto> shopImages;
-    // 업로드 된 이미지
-    //private List<MultipartFile> files;
-    // 삭제될 이미지 ID 리스트 (프론트엔드에서 deletedImageIds로 전송)
-//    private List<Long> deletedImageIds;
 
 
     public static ShopEditDto from(Shop shop, List<ShopImageDto> images) {

@@ -209,28 +209,46 @@ public class MasterService {
 
     // 매장 수정 저장
     @Transactional
-    public void saveShopEdit(ShopEditDto dto, List<MultipartFile> files){
+    public void saveShopEdit(ShopEditDto dto, List<MultipartFile> files, List<Long> deletedImageIds, Long thumbnailImageId){
 
         Shop editedShop = shopRepo.findById(dto.getId()).orElse(null);
         Shop shop = dto.to(editedShop);
         shopRepo.save(shop);
 
-        // 이미지 저장
-        for(int i = 0; i <= files.size(); i++){
-
-            UploadedFileDto fileDto = fileService.upload(files.get(i), UploadType.SHOP);
-
-
-            // 첫번째 이미지 썸네일
-
-
+        // 기존 이미지 삭제 처리
+        if (deletedImageIds != null) {
+            for (Long id : deletedImageIds) {
+                shopImageRepo.deleteById(id);
+            }
         }
 
+        // 이미지 저장
+        if(files != null && !files.isEmpty()){
+            for (MultipartFile file : files) {
+                UploadedFileDto fileDto = fileService.upload(file, UploadType.SHOP);
+                ShopImage image = new ShopImage();
+                image.setShop(shop);
+                image.setOriginalName(fileDto.getOriginalFileName());
+                image.setImgName(fileDto.getFileName());
+                image.setImgUrl(fileDto.getFileUrl());
+                image.setIsThumbnail(false);
 
+                shopImageRepo.save(image);
+            }
+        }
 
+        // 썸네일 처리
 
+        List<ShopImage> allImages = shopImageRepo.findByShopId(shop.getId());
 
-
+        for (ShopImage img : allImages) {
+            if (thumbnailImageId != null && img.getId().equals(thumbnailImageId)) {
+                img.setIsThumbnail(true);
+            } else {
+                img.setIsThumbnail(false);
+            }
+            shopImageRepo.save(img);
+        }
 
 
     }
