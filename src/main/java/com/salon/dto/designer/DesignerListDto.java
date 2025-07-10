@@ -1,5 +1,6 @@
 package com.salon.dto.designer;
 
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,19 +21,26 @@ public class DesignerListDto {
     private int likeCount; // 디자이너 찜 갯수
     private int rating; // 디자이너 평점
 
-
+    private String profileSummary; // 디자이너 전문 시술 분야 + 연차
 
     // ShopDesigner(Entity) -> DesignerListDto
-    public static DesignerListDto from (ShopDesigner shopDesigner,int likeCount, int reviewCount){
+    public static DesignerListDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount){
         DesignerListDto designerListDto = new DesignerListDto();
 
         designerListDto.setId(shopDesigner.getId());
-        designerListDto.setName(shopDesigner.getDesigner().getMember().getName());
+
+        String name = shopDesigner.getDesigner().getMember().getName();
+        String position = shopDesigner.getPosition();
+        designerListDto.setName(name + " " + position + "디자이너");
+
         designerListDto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
         designerListDto.setPosition(shopDesigner.getPosition());
         designerListDto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
-        designerListDto.setLikeCount(likeCount);
         designerListDto.setReviewCount(reviewCount);
+        designerListDto.setLikeCount(likeCount);
+
+
+
         return designerListDto;
     }
 }

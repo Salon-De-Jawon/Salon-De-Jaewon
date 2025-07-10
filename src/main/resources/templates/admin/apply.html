@@ -42,6 +42,17 @@
     console.log("API key 확인:", apiKey);
     /*]]>*/
 
+    let error = /*[[${error}]]*/ null;
+    let message = /*[[${message}]]*/ null;
+
+    if(error){
+      alert(error)
+    }
+
+    if(message) {
+      alert(message);
+    }
+
     async function runOcr(){
       const fileInput = document.getElementById("fileInput");
       const file = fileInput.files[0];

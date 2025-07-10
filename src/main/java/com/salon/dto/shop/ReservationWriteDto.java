@@ -2,6 +2,7 @@ package com.salon.dto.shop;
 
 
 import com.salon.entity.Member;
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.ShopService;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 public class ReservationWriteDto {
 
-    private Long shopDesignerId; // 디자이너 테이블 아이디
+    private Long designerId; // 디자이너 테이블 아이디
     private String designerName; // 디자이너 이름
     private Long serviceId; // 서비스 테이블 아이디
     private String memberName; // 사용자 이름
@@ -30,10 +31,10 @@ public class ReservationWriteDto {
 
 
     // SelectDto -> WriteDto
-    public static ReservationWriteDto from (List<ReservationSelectDto> reservationSelectDtos, ShopDesigner shopDesigner, Member member, ShopService shopService){
+    public static ReservationWriteDto from (List<ReservationSelectDto> reservationSelectDtos,ShopDesigner shopDesigner ,Designer designer, Member member, ShopService shopService){
         ReservationWriteDto reservationWriteDto = new ReservationWriteDto();
 
-        reservationWriteDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
+        reservationWriteDto.setDesignerName(designer.getMember().getName());
         reservationWriteDto.setShopName(shopDesigner.getShop().getName());
         reservationWriteDto.setMemberName(member.getName());
         reservationWriteDto.setServiceAmount(shopService.getPrice());

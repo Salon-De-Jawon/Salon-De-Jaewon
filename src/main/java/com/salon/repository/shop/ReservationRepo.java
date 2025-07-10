@@ -18,7 +18,13 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     List<Reservation> findByMemberIdOrderByReservationDateDesc(Long memberId);
 
     // 방문횟수를 카운트하기 위한 메서드
-    Reservation countByMemberIdAndShopDesignerId(Long memberId, Long designerId);
+    @Query("""
+            SELECT COUNT(r)
+            FROM Reservation r
+            WHERE r.member.id = :memberId
+            AND r.shopDesigner.shop.id = :shopId
+            """)
+    int countVisitByMemberAndShop(@Param("memberId") Long memberId, @Param("shopId") Long shopId);
 
     // 오늘 예약 수 (디자이너)
     @Query("SELECT COUNT(r) FROM Reservation r " +

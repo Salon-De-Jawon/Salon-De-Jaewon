@@ -2,6 +2,7 @@ package com.salon.dto.shop;
 
 
 import com.salon.constant.ServiceCategory;
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.ShopService;
 import lombok.Getter;
@@ -26,13 +27,13 @@ public class ReservationSelectDto {
 
 
 
-    public static ReservationSelectDto from (ShopDesigner shopDesigner, ShopService shopService){
+    public static ReservationSelectDto from (Designer designer, ShopService shopService){
         ReservationSelectDto reservationSelectDto = new ReservationSelectDto();
         
-        reservationSelectDto.setShopDesignerId(shopDesigner.getId());
-        reservationSelectDto.setDesignerImg(shopDesigner.getDesigner().getImgUrl());
-        reservationSelectDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
-        reservationSelectDto.setDesignerWorkingYear(shopDesigner.getDesigner().getWorkingYears());
+        reservationSelectDto.setShopDesignerId(designer.getId());
+        reservationSelectDto.setDesignerImg(designer.getImgUrl());
+        reservationSelectDto.setDesignerName(designer.getMember().getName());
+        reservationSelectDto.setDesignerWorkingYear(designer.getWorkingYears());
         reservationSelectDto.setServiceCategory(shopService.getCategory());
         
         return reservationSelectDto;

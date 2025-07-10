@@ -6,13 +6,17 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/shop/shopDetail.css">
   </th:block>
+
+  <th:block layout:fragment="script" >
+    <script th:src="@{/javascript/shop/shopDetail.js}" defer></script>
+  </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
   <section class="shop-top">
     <div class="shop-main">
       <!-- 미용실 이미지 -->
-      <div class="shop-img" style="background-image: url()">이미지</div>
+      <div class="shop-img" th:style="'background-image: url(' + (shop.shopImageDtos != null ? shop.shopImageDtos.imgUrl : '/images/default.png') + ')'">이미지</div>
       <!-- 이미지 오른쪽 아이콘 버튼 영역 -->
       <div class="shop-side">
         <!-- 찜하기 -->
@@ -38,7 +42,7 @@
                 />
               </svg>
             </span>
-          <div class="text"><strong>찜하기</strong><small>| 480</small></div>
+          <div class="text"><strong>찜하기</strong><small> | <span th:text="${shop != null and shop.likeCount != null ? shop.likeCount : 0}">0</span></small></div>
         </button>
 
         <!-- 미용실 주소 -->
@@ -63,7 +67,7 @@
             </span>
           <div class="text">
             주소<br />
-            <small>대전 중구 대덕대로 192</small>
+            <small th:if="${shop != null and shop.address != null}" th:text="${shop.address}">대전 중구 대덕대로 192</small>
           </div>
         </div>
 
@@ -95,9 +99,10 @@
             </span>
           <div class="text">
             전화번호 <br />
-            <small>042-518-1884</small>
+            <small th:text="${shop != null and shop.tel != null ? shop.tel : '전화번호 정보 없음'}">042-518-1884</small>
           </div>
         </div>
+
         <!-- 공유하기 버튼 -->
         <button class="shop-btn">
             <span class="icon">
@@ -125,10 +130,11 @@
         <div id="share-modal" style="display: none">
           <div class="modal-content">
             <p>공유할 수 있는 링크 복사하기</p>
-            <input type="text" value="https://example.com/shop/1" readonly />
+            <input type="text" th:value="${shop != null ? 'https://localhost/shop/' + shop.id : '잘못된 링크'}" />
             <button>복사</button>
           </div>
         </div>
+
         <!-- 예약하기 버튼 -->
         <button class="shop-btn" type="button">
             <span class="icon">
@@ -159,8 +165,14 @@
     </div>
     <!-- 미용실 이름 및  평점 -->
     <div class="shop-title">
-      <h2>Salon De DW</h2>
-      <div class="rating">★★★★☆ 4.0</div>
+      <h2 th:text="${shop != null ? shop.name : '미용실 정보 없음'}">Salon De DW</h2>
+      <div class="rating">
+        <!-- 평점이 없는 경우 예외 처리 -->
+        <span th:if="${shop != null and shop.rating != null}" th:text="${'★'.repeat(shop.rating.intValue()) + '☆'.repeat(5 - shop.rating.intValue()) + ' ' + shop.rating}">
+          ★★★★☆ 4.0"</span>
+        <span th:if="${shop != null and shop.rating == null}">평점 없음</span>
+
+      </div>
     </div>
 
     <!-- 운영시간 및 주의사항 -->
@@ -170,6 +182,17 @@
         <span class="red">휴무일 : 매주 화요일</span> <br />
         ⏰ 평일운영 10:00~20:00 <br />⏰ 주말운영 10:00~20:00
       </p>
+      <!-- 매장 소개 -->
+      <div class="shop-description">
+        <p><strong>✔ 매장 소개 ✔</strong></p>
+        <p th:if="${shop != null and shop.description != null}"
+           th:utext="${#strings.replace(shop.description, '\n', '<br/>')}">
+        </p>
+        <p th:unless="${shop != null and shop.description != null}">
+          매장 소개 정보 없음
+        </p>
+      </div>
+
       <div class="notice">
         <p><strong>✔ 이용 전 안내 ✔</strong></p>
         <ul>
@@ -204,30 +227,16 @@
   <!-- 홈 섹션-->
   <section class="tab-content" id="section-home">
     <!-- 추천 시술 목록-->
-    <section class="recommend-service">
+    <section class="recommend-service" th:if="${recommendedService != null and !recommendedService.isEmpty()}">
       <h3>추천 시술</h3>
       <ul class="service-list">
-        <li class="service-item selected">
-          <div class="service-thumb"></div>
-          <div class="service-info">
-            <strong> 매직 + 새팅 + 아쿠아 케어</strong>
-            <p>120,000</p>
-            <span>커트 포함</span>
+        <li class="service-item selected" th:each="service : @{recommendedService}">
+          <div class="service-thumb"
+          th:style="background-image: url (' + (${service.imgUrl} != null ? ${service.imgUrl} : '/images/default.png') + ')'">
           </div>
-        </li>
-        <li class="service-item selected">
-          <div class="service-thumb"></div>
           <div class="service-info">
-            <strong> 매직 + 새팅 + 아쿠아 케어</strong>
-            <p>120,000</p>
-            <span>커트 포함</span>
-          </div>
-        </li>
-        <li class="service-item selected">
-          <div class="service-thumb"></div>
-          <div class="service-info">
-            <strong> 매직 + 새팅 + 아쿠아 케어</strong>
-            <p>120,000</p>
+            <strong th:text="${service.name}">시술 이름</strong>
+            <p th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">120,000</p>
             <span>커트 포함</span>
           </div>
         </li>
@@ -239,119 +248,93 @@
       </button>
     </section>
 
+    <!-- 추천 시술이 없을 경우 -->
+    <section th:if="${recommendedService == null or recommendedService.isEmpty()}">
+      <p>아직 추천 시술이 등록되지 않았습니다.</p>
+    </section>
+
+
     <!-- 디자이너 목록 -->
-    <section class="designer-section">
+    <section class="designer-section" th:if="${designerLists != null and !designerLists.isEmpty()}">
       <h3>디자이너</h3>
       <div class="designer-list">
-        <div class="designer-card">
+        <div class="designer-card" th:each="designer : ${designerLists}">
           <!-- 디자이너 프로필 이미지 -->
-          <div class="designer-photo"></div>
+          <div class="designer-photo"
+               th:style="'background-image:url(' + (${designer.imgUrl} != null ? ${designer.imgUrl} : '/images/default-profile.png') + ')'"
+          ></div>
           <!-- 디자이너 이름 & 직급 & 연차 -->
           <div class="designer-info">
-            <p><strong>대표 디자이너</strong><br />나미리 (12년차)</p>
+            <p>
+              <strong th:text="${designer.name}">나미리 원장디자이너</strong>
+            <span class="designer-summary" th:text="${designer.profileSummary}">펌, 클리닉 전문 (11년차)</span>
+            </p>
           </div>
           <!-- 디자이너 좋아요 & 리뷰 수 -->
           <div class="designer-status">
-            <span>💬 256</span>
-            <span>🤍 1,547</span>
+            <span>💬 <span th:text="${designer.reviewCount}">256</span> </span>
+            <span>🤍 <span th:text="${designer.likeCount}"> 1,547</span></span>
           </div>
-          <button class="btn-reserve">예약하기</button>
-        </div>
 
-        <div class="designer-card">
-          <!-- 디자이너 프로필 이미지 -->
-          <div class="designer-photo"></div>
-          <!-- 디자이너 이름 & 직급 & 연차 -->
-          <div class="designer-info">
-            <p><strong>실장 디자이너</strong><br />채송화(8년차)</p>
-          </div>
-          <!-- 디자이너 좋아요 & 리뷰 수 -->
-          <div class="designer-status">
-            <span>💬 125</span>
-            <span>🤍 985</span>
-          </div>
-          <button class="btn-reserve">예약하기</button>
-        </div>
-
-        <div class="designer-card">
-          <!-- 디자이너 프로필 이미지 -->
-          <div class="designer-photo"></div>
-          <!-- 디자이너 이름 & 직급 & 연차 -->
-          <div class="designer-info">
-            <p><strong>디자이너</strong><br />박미선(2년차)</p>
-          </div>
-          <!-- 디자이너 좋아요 & 리뷰 수 -->
-          <div class="designer-status">
-            <span>💬 98 </span>
-            <span>🤍 589</span>
-          </div>
-          <button class="btn-reserve">예약하기</button>
+          <!-- 예약하기 버튼 -->
+          <button class="btn-reserve"
+                  th:onclick="'location.href=\'/reservation/designer/' + ${designer.id} + '\';'">
+            예약하기
+          </button>
         </div>
       </div>
     </section>
 
     <!-- 리뷰 목록 -->
-    <section class="review-section">
-      <h3>리뷰 <span>2,582</span></h3>
+    <section class="review-section" th:if="${reviewList != null and !reviewList.isEmpty()}">
+      <h3>리뷰 <span th:text="${reviewList.size()}">0</span></h3>
       <div class="review-photo">
-        <div class="review-thumb"></div>
-        <div class="review-thumb"></div>
-        <div class="review-thumb"></div>
-        <div class="review-thumb"></div>
-        <div class="review-thumb"></div>
-        <div class="review-thumb"></div>
+        <div class="r-thumb" th:if="${r.imageDtos != null and #lists.size(r.imageDtos) > 0}">
+          <img th:src="${r.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
+        </div>
       </div>
 
       <!-- 리뷰 카드 -->
-      <article class="review-card">
-        <h4>여성 레이어드 커트 <span>by 장두목 디자이너</span></h4>
-        <div class="review-images">
-          <div class="photo"></div>
-          <div class="photo"></div>
-          <div class="photo"></div>
-        </div>
-        <div class="review-meta">
-          ★★★★★ 5.0 · 누*지 · 21일 전 · 4번째 방문
-        </div>
-        <p class="review-text">
-          디자이너님이 진짜 산적 두목같이 생기셔서 의심했는데 상냥하시고
-          섬세하세요...
-        </p>
-      </article>
+      <article class="review-card" th:each="review : ${reviewList}">
+        <h4>
+          <span th:text="${review.serviceName}">여성 레이어드 커트</span>
+          <span th:if="${review.designerName != null}">by <span th:text="${review.designerName}">장두목</span> 디자이너</span>
+        </h4>
 
-      <article class="review-card">
-        <h4>남성커트 <span>By 나미리 디자이너</span></h4>
-        <div class="review-meta">
-          ★★★★★ 5.0 · 김*지 · 23일 전 · 첫번째 방문
-        </div>
-        <p class="review-text">
-          첫 방문이었는데 너무 만족스럽습니다. 다음에 또 올게요.
-        </p>
-        <div class="disigner-reply">
-          <div class="disigner-avatar"></div>
-          <div class="designer-msg">
-            <strong>나미리 디자이너</strong>
-            <p>
-              안녕하세요 고객님의 헤어를 담당했던 나미리 디자이너입니다...
-            </p>
+
+        <!-- 리뷰 이미지 최대 3개 -->
+        <div class="review-images" th:if="${review.imageDtos != null}">
+          <div class="photo"
+               th:each="img, iStat : ${review.imageDtos}"
+               th:if="${iStat.index < 3}"
+               th:style="'background-image: url(' + ${img.imgUrl} + '); background-size: cover;'">
           </div>
         </div>
-      </article>
 
-      <article class="review-card">
-        <h4>여성 구름 펌<span>By 강루트 디자이너</span></h4>
-        <div class="review-meta">
-          ★★★★★ 5.0 · 강*미 · 30일 전 · 두번째 방문
-        </div>
-        <p class="review-text">
-          지난번 구름펌이 너무 마음에 들어서 다시 방문했습니다...
+        <!-- 리뷰 내용 -->
+        <p class="review-text" th:text="${review.content}">
+          디자이너님이 진짜 산적 두목같이 생기셔서 의심했는데...
         </p>
-      </article>
 
-      <!-- 리뷰 더보기 버튼 -->
+
+      <!-- 메타 정보 -->
+        <div class="review-meta">
+          ★★★★★ <span th:text="${#numbers.formatDecimal(review.rating, 1, 1)}">5.0</span> ·
+          <span th:text="${review.memberMaskedName}">누*지</span> ·
+          <span th:text="${review.daysAgo + '일 전'}">21일 전</span> ·
+          <span th:text="${review.visitCount + '번째 방문'}">4번째 방문</span>
+        </div>
+      </article>
+               <!-- 리뷰 더보기 버튼 -->
       <div class="review-more">
         <button class="btn-more">리뷰 더보기</button>
       </div>
+    </section>
+
+    <!-- 리뷰 없음 -->
+    <section class="review-section" th:if="${reviewList == null or reviewList.isEmpty()}">
+      <h3>리뷰</h3>
+      <p>아직 등록된 리뷰가 없습니다.</p>
     </section>
 
     <!-- 예약하기 버튼 -->
@@ -394,65 +377,14 @@
       <div class="category-section" id="pick-menu">
         <h3>추천 시술</h3>
         <!-- 추천시술 카테고리 리스트-->
-        <ul class="service-list category-pick-menu">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[여름맞이 이벤트]디자인컷 + 뿌리염색</strong
-            >
-            <div class="service-price">
-              <span class="discount">17%</span>
-              <span class="original">95,000</span>
-              <span class="final">79,000</span>
+        <ul class="service-list category-pick-menu"
+            th:if="${serviceSection != null and serviceSection.recommended != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.recommended}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
+            <div class="service-price"><span class="original"
+            th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">120,000원</span>
             </div>
-            <div class="service-extra">커트 포함 | 기장추가 없음</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[여름맞이 이벤트] 프리미엄 전체 염색 + 커트</strong
-            >
-            <div class="service-price">
-              <span class="discount">15%</span>
-              <span class="original">140,000</span>
-              <span class="final">119,000</span>
-            </div>
-            <div class="service-extra">커트 포함 | 기장추가</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[여름맞이 할인] 레이어드컷 + 레이어드 펌</strong
-            >
-            <div class="service-price">
-              <span class="discount">26%</span>
-              <span class="original">200,000</span>
-              <span class="final">149,000</span>
-            </div>
-            <div class="service-extra">커트 포함 | 기장추가</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[여름맞이 맨즈 완성] 맨즈 디자인펌 + 디자인컷</strong
-            >
-            <div class="service-price">
-              <span class="discount">20%</span>
-              <span class="original">100,000</span>
-              <span class="final">80,000</span>
-            </div>
-            <div class="service-extra">커트 포함</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[원장강력추천]뿌리매직 + 트윙클하프 클리닉</strong
-            >
-            <div class="service-price">
-              <span class="discount">20%</span>
-              <span class="original">150,000</span>
-              <span class="final">120,000</span>
-            </div>
-            <div class="service-extra">커트 별도</div>
           </li>
         </ul>
 
@@ -467,25 +399,15 @@
       <!-- 커트 카테고리 리스트 -->
       <div class="category-section" id="cut">
         <h3>커트</h3>
-        <ul class="service-list category-cut">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >여성 디자인컷 + 두피케어 헤드스파 + 힐링샴푸 마사지</strong
-            >
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CUT] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CUT]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">10%</span>
-              <span class="original">50,000</span>
-              <span class="final">45,000</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >남성 디자인컷 + 다운펌 + 두피팩 + 힐링샴푸</strong
-            >
-            <div class="service-price no-discount">
-              <span class="original">35,000</span>
-            </div>
+            <div class="service-extra">커트 포함</div>
           </li>
         </ul>
         <div class="service-more">
@@ -499,27 +421,18 @@
       <!-- 펌 카테고리 리스트 -->
       <div class="category-section" id="perm">
         <h3>펌</h3>
-        <ul class="service-list category-perm">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[펌기획전] 프리미엄 셋팅 or 디지털 + 디자인컷</strong
-            >
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).PERM] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).PERM]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">10%</span>
-              <span class="original">150,000</span>
-              <span class="final">135,000</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
-            <div class="service-extra">커트 포함 | 기장 추가</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name">베이직 디자인펌</strong>
-            <div class="service-price no-discount">
-              <span class="original">100,000</span>
-            </div>
-            <div class="service-extra">커트 포함 | 기장 추가</div>
+            <div class="service-extra">커트 포함</div>
           </li>
         </ul>
+
         <div class="service-more">
           <button class="more-btn">
             <span class="label">더보기</span>
@@ -531,23 +444,15 @@
       <!-- 클리닉 카테고리 리스트 -->
       <div class="category-section" id="clinic">
         <h3>클리닉</h3>
-        <ul class="service-list category-clinic">
-          <li class="service-item no-image">
-            <strong class="service-name">다이아 하프클리닉 3단계</strong>
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CLINIC] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CLINIC]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">30%</span>
-              <span class="original">150,000</span>
-              <span class="final">105,000</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
-            <div class="service-extra">커트 별도</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name">Natural care 신데렐라 클리닉</strong>
-            <div class="service-price no-discount">
-              <span class="original">170,000</span>
-            </div>
-            <div class="service-extra">커트 별도</div>
+            <div class="service-extra">커트 포함</div>
           </li>
         </ul>
         <div class="service-more">
@@ -561,21 +466,15 @@
       <!-- 업스타일 카테고리 리스트 -->
       <div class="category-section" id="upstyle">
         <h3>업스타일</h3>
-        <ul class="service-list category-upstyle">
-          <li class="service-item no-image">
-            <strong class="service-name">세미업스타일</strong>
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).UPSTYLE] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).UPSTYLE]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">30%</span>
-              <span class="original">88,000</span>
-              <span class="final">61,600</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name">내츄럴 업스타일</strong>
-            <div class="service-price no-discount">
-              <span class="original">88,000</span>
-            </div>
+            <div class="service-extra">커트 포함</div>
           </li>
         </ul>
         <div class="service-more">
@@ -589,25 +488,15 @@
       <!-- 드라이 카테고리 리스트 -->
       <div class="category-section" id="dry">
         <h3>드라이</h3>
-        <ul class="service-list category-dry">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >미리원장's 시그니처 컷 + 스타일링 드라이</strong
-            >
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).DRY] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).DRY]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">10%</span>
-              <span class="original">35,000</span>
-              <span class="final">31,500</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
             <div class="service-extra">커트 포함</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name">여자드라이</strong>
-            <div class="service-price no-discount">
-              <span class="original">25,000</span>
-            </div>
-            <div class="service-extra">커트 별도</div>
           </li>
         </ul>
         <div class="service-more">
@@ -621,25 +510,15 @@
       <!-- 염색 카테고리 리스트 -->
       <div class="category-section" id="color">
         <h3>염색</h3>
-        <ul class="service-list category-color">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[BEST] 전체염색 + 아윤채 3단계 클리닉</strong
-            >
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).COLOR] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).COLOR]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">19%</span>
-              <span class="original">160,000</span>
-              <span class="final">128,000</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
             <div class="service-extra">커트 포함</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name">뿌리 염색</strong>
-            <div class="service-price no-discount">
-              <span class="original">50,000</span>
-            </div>
-            <div class="service-extra">커트 별도</div>
           </li>
         </ul>
         <div class="service-more">
@@ -653,27 +532,15 @@
       <!-- 붘임머리 카테고리 리스트  -->
       <div class="category-section" id="hair-extension">
         <h3>붙임머리</h3>
-        <ul class="service-list category-hair-extension">
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >[event] 포인트 붙임머리 20가닥 (10쌍)</strong
-            >
+        <ul class="service-list category-cut"
+            th:if="${serviceSection != null and serviceSection.categoryMap != null and serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).HAIR_EXTENSION] != null}">
+          <li class="service-item no-image"
+              th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).HAIR_EXTENSION]}">
+            <strong class="service-name" th:text="${svc.name}">시술명</strong>
             <div class="service-price">
-              <span class="discount">20%</span>
-              <span class="original">100,000</span>
-              <span class="final">80,000</span>
+              <span class="original" th:text="${#numbers.formatInteger(svc.price, 3, 'COMMA')} + '원'">가격</span>
             </div>
-            <div class="service-extra">커트 별도</div>
-          </li>
-
-          <li class="service-item no-image">
-            <strong class="service-name"
-            >붙임머리 제거(자샵 / 타샵) + 샴푸 드라이</strong
-            >
-            <div class="service-price no-discount">
-              <span class="original">60,000</span>
-            </div>
-            <div class="service-extra">커트 별도</div>
+            <div class="service-extra">커트 포함</div>
           </li>
         </ul>
         <div class="service-more">
@@ -685,427 +552,34 @@
       </div>
     </div>
   </section>
+
   <!-- 디자이너 목록 섹션 -->
   <section class="tab-content" id="section-designer" style="display: none">
     <div class="container">
-      <ul class="designer-list-view">
+      <ul class="designer-list-view"  th:if="${designerLists != null and !designerLists.isEmpty()}">
         <li class="designer-item">
           <!-- 디자이너 프로필 사진 -->
           <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
+            <img th:src="${designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}"
+                 alt="프로필 사진" />
           </div>
-
           <!-- 디자이너 정보 -->
           <div class="designer-detail">
             <p class="designer-label">
-              <strong>나미리</strong>
-              <span class="designer-role">원장 디자이너</span>
+              <strong th:text="${designer.name}">디자이너 이름</strong>
+              <span class="designer-role" th:text="${designer.rank != null ? designer.rank : '디자이너'}">직급</span>
             </p>
             <p class="de-detail">
-              <span class="designer-speciality">커트,펌 전문</span>
-              <span class="designer-career">(11년차)</span>
+              <span class="designer-speciality" th:text="${designer.profileSummary}">전문분야</span>
             </p>
             <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
+              <span class="status-item">🤍 <span th:text="${#numbers.formatInteger(designer.likeCount, 3, 'COMMA')}">0</span></span>
+              <span class="status-item">💬 <span th:text="${#numbers.formatInteger(designer.reviewCount, 3, 'COMMA')}">0</span></span>
             </div>
           </div>
           <div class="designer-book">
-            <button class="btn-book">
-              <i class="fa fa-calendar-days"></i>예약
-            </button>
-          </div>
-        </li>
-        <li class="designer-item">
-          <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
-          </div>
-
-          <div class="designer-detail">
-            <p class="designer-label">
-              <strong>채송화</strong>
-              <span class="designer-role">실장 디자이너</span>
-            </p>
-            <p class="de-detail">
-              <span class="designer-speciality">펌, 염색 전문</span>
-              <span class="designer-career">(8년차)</span>
-            </p>
-            <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
-            </div>
-          </div>
-          <div class="designer-book">
-            <button class="btn-book">
-              <i class="fa fa-calendar-days"></i>예약
-            </button>
-          </div>
-        </li>
-
-        <li class="designer-item">
-          <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
-          </div>
-          <div class="designer-detail">
-            <p class="designer-label">
-              <strong>박미선</strong>
-              <span class="designer-role">디자이너</span>
-            </p>
-            <p class="de-detail">
-              <span class="designer-speciality">커트,염색,붙임머리 전문</span>
-              <span class="designer-career">(7년차)</span>
-            </p>
-            <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
-            </div>
-          </div>
-          <div class="designer-book">
-            <button class="btn-book">
-              <i class="fa fa-calendar-days"></i>예약
-            </button>
-          </div>
-        </li>
-
-        <li class="designer-item">
-          <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
-          </div>
-          <div class="designer-detail">
-            <p class="designer-label">
-              <strong>장두목</strong>
-              <span class="designer-role">디자이너</span>
-            </p>
-            <p class="de-detail">
-              <span class="designer-speciality">커트, 펌 전문</span>
-              <span class="designer-career">(7년차)</span>
-            </p>
-            <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
-            </div>
-          </div>
-          <div class="designer-book">
-            <button class="btn-book">
-              <i class="fa fa-calendar-days"></i>예약
-            </button>
-          </div>
-        </li>
-
-        <li class="designer-item">
-          <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
-          </div>
-          <div class="designer-detail">
-            <p class="designer-label">
-              <strong>강루트</strong>
-              <span class="designer-role">디자이너</span>
-            </p>
-            <p class="de-detail">
-              <span class="designer-speciality">펌, 스타일링 전문</span>
-              <span class="designer-career">(7년차)</span>
-            </p>
-            <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
-            </div>
-          </div>
-          <div class="designer-book">
-            <button class="btn-book">
-              <i class="fa fa-calendar-days"></i>예약
-            </button>
-          </div>
-        </li>
-
-        <li class="designer-item">
-          <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img src="" alt="프로필 사진" />
-          </div>
-          <div class="designer-detail">
-            <p class="designer-label">
-              <strong>서도하</strong>
-              <span class="designer-role">디자이너</span>
-            </p>
-            <p class="de-detail">
-              <span class="designer-speciality">커트,펌,염색</span>
-              <span class="designer-career">(8년차)</span>
-            </p>
-            <div class="designer-status">
-              <!-- 좋아요 아이콘 (Heart) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-heart"
-                  >
-                    <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5
-                          5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78
-                          1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    />
-                  </svg>
-                  1,320
-                </span>
-
-              <!-- 댓글 아이콘 (Message Circle) -->
-              <span class="status-item">
-                  <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-message-circle"
-                  >
-                    <path
-                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5
-                            8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38
-                            8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6
-                            8.38 8.38 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"
-                    />
-                  </svg>
-                  1,000
-                </span>
-            </div>
-          </div>
-          <div class="designer-book">
-            <button class="btn-book">
+            <button class="btn-book"
+                    th:onclick="'location.href=\'/reservation/designer/' + ${designer.id} + '\';'">
               <i class="fa fa-calendar-days"></i>예약
             </button>
           </div>
@@ -1142,14 +616,10 @@
 
         <!-- 리뷰 썸네일 -->
         <div class="r-thumbnails">
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-          <div class="r-thumb last">
+          <div class="r-thumb" th:each="review : ${reviewList}"
+               th:if="${review.imageDtos != null and !review.imageDtos.isEmpty()}"
+               th:remove="tag"> <!-- remove tag를 쓰면 텍스트 없이 img만 렌더링 -->
+            <img th:src="${review.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
             <img src="" alt="더보기 이미지" />
             <span class="r-plus">+ 더보기</span>
           </div>
@@ -1163,111 +633,27 @@
         </div>
 
         <!-- 리뷰 리스트 -->
-        <ul class="r-list">
-          <li class="r-item" data-category="style">
+        <ul class="r-list" th:if="${reviewList != null}">
+          <li class="r-item"
+              th:each="review : ${reviewList}"
+              th:attr="data-category=${review.category.name().toLowerCase()}">
             <div class="r-item-header">
-              <strong>여성 드라이</strong><span class="chevron">&gt;</span>
+              <strong th:text="${review.serviceName}">서비스명</strong>
+              <span class="chevron">&gt;</span>
             </div>
-            <div class="r-rating">★★★★☆ 4.0</div>
+            <div class="r-rating"
+                 th:text="${'★'.repeat(T(java.lang.Math).round(review.rating)) + '☆'.repeat(5 - T(java.lang.Math).round(review.rating)) + ' ' + #numbers.formatDecimal(review.rating,1,1)}">
+              ★★★★☆ 4.0
+            </div>
             <div class="r-content">
-              <p>스타일 너무 예쁘게 나왔어요! 추천합니다 !!</p>
-              <div class="r-meta">이*나 · 2025.06.28 · 3번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item" data-category="style">
-            <div class="r-item-header">
-              <strong>웨이브 고정 스타일링</strong
-              ><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★★ 5.0</div>
-            <div class="r-content">
-              <p>
-                오늘 급하게 잡힌 소개팅이있어서 집근처 아무 미용실이나
-                들어와서 드라이 받은건데 생각보다 너무 예쁘고 고정도 너무
-                잘해주셔서 덕분해 소개팅 너무 잘했습니다 ㅎㅎ 오늘 날씨 조금
-                많이 덥기도 하구 긴장도 되서 땀 많이 흘렸는데 집와서 보니까
-                머리가 그대로더라구요 ㅎㅎㅎㅎ 아 그리구 원장선생님이 머리를
-                너무 예쁘게 해주신 덕분에 애프터도 받았네요 ㅎㅎ 감사합니다!
-              </p>
-              <div class="r-meta">정*수 · 2025.06.25 · 5번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item" data-category="perm-m">
-            <div class="r-item-header">
-              <strong>다운펌 + 디자인 커트</strong
-              ><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★☆ 4.0</div>
-            <div class="r-content">
-              <p>벌써 3번째 방문이네요 올 때마다 잘해주셔서 감사합니다</p>
-              <div class="r-meta">정*훈 · 2025.06.28 · 3번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item" data-category="cut">
-            <div class="r-item-header">
-              <strong>여성 기본 커트</strong><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★☆ 4.0</div>
-            <div class="r-content">
-              <p>
-                머리가 너무 상해서 처음 방문했는데 원장님이 너무 예쁘시고
-                착하세요 !! 머리도 너무 마음에 듭니당 ㅎㅎ
-              </p>
-              <div class="r-meta">정*영 · 2025.06.23 · 첫번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item" data-category="cut">
-            <div class="r-item-header">
-              <strong>유아 커트</strong><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★★ 5.0</div>
-            <div class="r-content">
-              <p>
-                우리 아이 첫 배냇머리 커트하러 방문했습니다ㅎㅎ 아이에게 너무
-                잘해주시고 우리 아이도 처음하는 커트라 무서워서 많이 울고
-                떼쓰는데 그때마다 괜찮다면서 기다려주셔서 너무 감동했습니다
-                저희 아이때문에 뒤에 예약도 많이 밀려서 너무 죄송했어요 다음엔
-                제 머리 하러 올게요 감사합니다
-              </p>
-              <div class="r-meta">봉*선 · 2025.06.28 · 첫번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item">
-            <div class="r-item-header" data-category="clinic">
-              <strong>손상모 복구 클리닉</strong
-              ><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★★ 5.0</div>
-            <div class="r-content">
-              <p>
-                전에 염색이랑 탈색을 너무 많이해서 복구 클리닉 받으러 또
-                방문했습니다~ 너무 잘해주셔서 제 머리 같지 않고 오히려
-                저희집에 있는 손질 잘 된 가발 만지는 기분이에요 ㅎㅎㅎ
-              </p>
-              <div class="r-meta">이*진 · 2025.06.25 · 4번째 방문</div>
-            </div>
-          </li>
-
-          <li class="r-item">
-            <div class="r-item-header" data-category="perm-w">
-              <strong>여성 구름펌</strong><span class="chevron">&gt;</span>
-            </div>
-            <div class="r-rating">★★★★☆ 4.0</div>
-            <div class="r-content">
-              <p>
-                역시 구름펌 맛집! 시술도 처음부터 끝까지 꼼꼼하게 해주셔서
-                만족스러웠습니다!
-              </p>
-              <div class="r-meta">박*민 · 2025.06.25 · 4번째 방문</div>
+              <p th:text="${review.content}">리뷰 내용</p>
+              <div class="r-meta"
+                   th:text="${review.memberMaskedName + ' · ' + #temporals.format(review.createdAt, 'yyyy.MM.dd') + ' · ' + review.visitCount + '번째 방문'}">
+                이*나 · 2025.06.28 · 3번째 방문
+              </div>
             </div>
           </li>
         </ul>
-
         <!-- 더보기 버튼 -->
         <div class="r-more">
           <button class="r-toggle-btn">
@@ -1278,6 +664,10 @@
     </div>
   </section>
 </div>
-<th:block layout:fragment="script"></th:block>
+
+
+<th:block layout:fragment="script" >
+  <script th:src="@{/javascript/shop/shopDetail.js}" defer></script>
+</th:block>
 </body>
 </html>
