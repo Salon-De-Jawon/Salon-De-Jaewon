@@ -1,13 +1,15 @@
 package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.WebTarget;
 import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
-import com.salon.repository.admin.ApplyRepo;
+import com.salon.entity.admin.WebNotification;
+import com.salon.repository.WebNotificationRepo;
+import com.salon.service.WebNotificationService;
 import com.salon.service.admin.DesApplyService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -26,16 +29,12 @@ public class AdminDesignerController {
     private String ocrApiKey;
 
     private final DesApplyService desApplyService;
-    private final ApplyRepo applyRepo;
+
+    private final WebNotificationRepo webNotificationRepo;
+    private final WebNotificationService webNotificationService;
 
     @GetMapping("/request")
-    public String requestForm(Model model,
-                              @AuthenticationPrincipal CustomUserDetails userDetails){
-
-        Member member = userDetails.getMember();
-
-
-
+    public String requestForm(Model model){
         model.addAttribute("applyDto", new ApplyDto());
         model.addAttribute("ocrApiKey", ocrApiKey);
         return "admin/apply";
@@ -46,6 +45,9 @@ public class AdminDesignerController {
                           @RequestParam(value="file", required = false) MultipartFile file,
                           HttpSession session,
                           Model model){
+        System.out.println("✅ POST 요청 진입");
+        System.out.println("applyNumber: " + applyDto.getApplyNumber());
+        System.out.println("file: " + (file != null ? file.getOriginalFilename() : "없음"));
         Member member = userDetails.getMember();
         if(member == null){
             return "redirect:/";
@@ -54,9 +56,6 @@ public class AdminDesignerController {
             desApplyService.Apply(applyDto, member, file);
             model.addAttribute("message", "디자이너 승인 요청이 완료되었습니다.");
             return "redirect:/";
-        } catch (IllegalStateException e){
-            model.addAttribute("error", "이미 디자이너 신청을 하셨습니다.");
-            return "admin/apply";
         } catch (Exception e){
             model.addAttribute("error", "요청 처리 중 오류가 발생했습니다." + e.getMessage());
             model.addAttribute("ocrApiKey", ocrApiKey);
@@ -66,17 +65,17 @@ public class AdminDesignerController {
 
     @GetMapping("/list")
     public String list(Model model){
-        model.addAttribute("designerApplyList", desApplyService.listDesigner());
+        List<Apply> list = desApplyService.list();
+        model.addAttribute("applyList", list);
         return "admin/applyList";
     }
 
     @PostMapping("/approve/{id}")
     public String approve(@PathVariable Long id,
-                          @Valid
                           HttpSession session,
                           @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = userDetails.getMember();
-        desApplyService.approveDesigner(id, member);
+        desApplyService.approve(id, member);
         return "redirect:/admin/designer/list";
     }
 
@@ -84,8 +83,32 @@ public class AdminDesignerController {
     public String reject(@PathVariable Long id,
                          HttpSession session,
                          @AuthenticationPrincipal CustomUserDetails userDetails){
+        System.out.println("reject 컨트롤러 진입 : id = " + id);
         Member member = userDetails.getMember();
-        desApplyService.rejectDesigner(id, member);
+
+//      desApplyService.reject(id, member);
+
+        //알림 관련코드 (DesApplyService 수정했음. receiverId 가 나오도록 반환타입 변경.)
+
+        Long receiverId = desApplyService.reject(id, member);
+
+        // 알림 저장용 코드
+        WebNotification notify = new WebNotification();
+
+        notify.setMessage("디자이너 신청이 거절 되었습니다.");
+        notify.setWebTarget(WebTarget.DESAPPLY);
+        notify.setTargetId(receiverId);
+        notify.setRead(false);
+        notify.setCreateAt(LocalDateTime.now());
+
+        // 알림 DB 저장
+        webNotificationRepo.save(notify);
+
+        // 웹소켓 전송
+
+        webNotificationService.sendWebSocketNotification(receiverId, notify);
+
+
         return "redirect:/admin/designer/list";
     }
 

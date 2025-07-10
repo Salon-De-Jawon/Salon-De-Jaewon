@@ -58,34 +58,234 @@
                                 <div class="reservation-status" th:text="${res.status.getLabel()}">진행중</div>
                             </div>
                             <div class="my-reservation-details" style="display: none">
-                                <div class="price-details">
-                                    <div class="service-price">
-                                        <span>시술가격</span>
-                                        <span th:text="${res.servicePrice}">30000</span>
-                                        <div class="coupon-icon-area"></div>
-                                    </div>
-                                    <div class="coupon-discount" th:if="${res.couponUsed}">
-                                        <span>할인가격</span>
-                                        <span th:text="'-' + ${res.couponDiscount}">-5000</span>
-                                        <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
+                                <div th:switch="${res.status.name()}">
+                                    <!-- 분기 - 예약 진행중 -->
+                                    <div class="price-details" th:case="'RESERVED'">
+                                        <div class="service-price">
+                                            <div class="price-box">
+                                                <span>시술가격</span>
+                                                <span th:text="${res.servicePrice}">30000</span>
+                                            </div>
+                                            <div class="coupon-icon-area"></div>
+                                        </div>
+                                        <div class="coupon-discount" th:if="${res.couponUsed}">
+
+                                            <div class="price-box">
+                                                <span>할인가격</span>
+                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                            </div>
+                                            <div class="coupon-icon-area">
+                                                <div class="coupon-container">
+                                                    <img
+                                                            src="/images/coupon.png"
+                                                            alt="쿠폰"
+                                                            class="coupon-img"
+                                                    />
+                                                    <div class="tooltip">
+                                                        <div>
+                                                            <strong th:text="${res.couponName}">쿠폰이름</strong>
+                                                            <span class="tooltip-time"
+                                                                  th:if = "${res.daysExpire == 0}"
+                                                            >만료됨</span>
+                                                            <span class="tooltip-time"
+                                                                  th:if="${res.daysExpire != null and res.daysExpire > 0}"
+                                                            >만료 D-<span th:text="${res.daysExpire}"></span></span>
+                                                        </div>
+                                                        <div>
+                                                            <div>
+                                                                <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).PERCENT}"><span th:text="${res.discountValue}">15</span>%</strong>
+                                                                <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).AMOUNT}"><span th:text="${res.discountValue}">2000</span>원</strong>
+                                                            </div>
+                                                            <div class="tooltip-min">
+                                                                최소 금액 : <span th:text="${res.couponMin}">20,000</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ticket-used-amount" th:if="${res.ticketUsed}">
+                                            <div class="price-box">
+                                                <span>사용금액</span>
+                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                            </div>
+                                            <div class="coupon-icon-area">
+                                                <div class="coupon-container">
+                                                    <img
+                                                            src="/images/coupon.png"
+                                                            alt="쿠폰"
+                                                            class="coupon-img"
+                                                    />
+                                                    <div class="tooltip">
+                                                        <div>
+                                                            <strong><strong th:text="${res.shopName}">000샵</strong> 정액권</strong>
+                                                            <div th:text="${res.ticketTotalAmount}">100,000</div>
+                                                        </div>
+                                                        <div>
+                                                            <strong>현재 잔액</strong>
+                                                            <div th:text="${res.ticketNowAmount}">70,000</div>
+                                                        </div>
+                                                        <div>
+                                                            <strong>결제 예정액</strong>
+                                                            <div th:text="${'-' + res.ticketUsedAmount}">-25,000</div>
+                                                        </div>
+
+                                                        <div></div>
+
+                                                        <div>
+                                                            <strong>예정 잔액</strong>
+                                                            <div th:text="${res.ticketFinalAmount}">45,000</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="final-price">
+                                            <div class="price-box">
+                                                <span>지불 예정액</span>
+                                                <span th:text="${res.finalPrice}">0</span>
+                                            </div>
+                                            <div class="coupon-icon-area">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="ticket-used-amount" th:if="${res.ticketUsed}">
-                                        <span>사용금액</span>
-                                        <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
-                                        <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
+
+                                    <!-- 분기 - 완료 -->
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"th:case="'COMPLETED'">
+                                        <div class="price-details" >
+
+                                            <!--  결제 전  -->
+
+                                            <div style="display:block;" th:text="'예약 내역 (' + ${res.serviceName} + ')'" class="complete-reservation">
+                                            </div>
+                                            <div class="service-price">
+                                                <div class="price-box price-complete">
+                                                    <span>시술가격</span>
+                                                    <span th:text="${res.servicePrice}">30000</span>
+                                                </div>
+                                            </div>
+                                            <div class="coupon-discount" th:if="${res.couponUsed}">
+
+                                                <div class="price-box price-complete">
+                                                    <span>할인가격</span>
+                                                    <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                                </div>
+                                            </div>
+                                            <div class="ticket-used-amount" th:if="${res.ticketUsed}">
+                                                <div class="price-box price-complete">
+                                                    <span>사용금액</span>
+                                                    <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                                </div>
+                                            </div>
+                                            <div class="final-price">
+                                                <div class="price-box price-complete">
+                                                    <span>지불 예정액</span>
+                                                    <span th:text="${res.finalPrice}">0</span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!--  결제후  -->
+
+                                        <div style="display:block;" class="price-details payment-before">
+                                            <div th:text="'결제 내역 (' + ${res.myPaymentDto.payServiceName} + ')'" class="complete-reservation">
+                                            </div>
+
+                                            <div class="service-price">
+
+                                                <div class="price-box price-complete">
+                                                    <span>시술가격</span>
+                                                    <span th:text="${res.myPaymentDto.totalPrice}">30000</span>
+                                                </div>
+                                            </div>
+                                            <div class="coupon-discount">
+                                                <div class="price-box price-complete" th:if="${res.myPaymentDto != null}">
+                                                    <span>할인가격</span>
+                                                    <span th:text="${res.myPaymentDto.couponDiscountPrice}">-5000</span>
+                                                </div>
+                                            </div>
+                                            <div class="ticket-used-amount">
+                                                <div class="price-box price-complete">
+                                                    <span>정액권</span>
+                                                    <span th:text="${res.myPaymentDto.ticketUsedPrice}">-25000</span>
+                                                </div>
+                                            </div>
+                                            <div class="final-price">
+                                                <div class="price-box price-complete">
+                                                    <span>결제액</span>
+                                                    <span th:text="${res.myPaymentDto.finalPrice} + ' (' + ${res.myPaymentDto.paymentType.getLabel()} + ')'">0</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="final-price">
-                                        <span>지불 예정액</span>
-                                        <span th:text="${res.finalPrice}">0</span>
-                                        <div class="coupon-icon-area">
-                                            <img src="/images/coupon.png" alt="쿠폰" />
+
+
+                                    <!-- 분기 - 취소 -->
+
+                                    <div class="price-details" th:case="'CANCELED'">
+                                        <div>* 반복되는 예약취소는 미용실을 불안하게 해요 8^8</div>
+                                        <div class="service-price">
+                                            <div class="price-box price-complete">
+                                                <span>시술가격</span>
+                                                <span th:text="${res.servicePrice}">30000</span>
+                                            </div>
+                                        </div>
+                                        <div class="coupon-discount" th:if="${res.couponUsed}">
+
+                                            <div class="price-box price-complete">
+                                                <span>할인가격</span>
+                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                            </div>
+                                        </div>
+                                        <div class="ticket-used-amount" th:if="${res.ticketUsed}">
+                                            <div class="price-box price-complete">
+                                                <span>사용금액</span>
+                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                            </div>
+                                        </div>
+                                        <div class="final-price">
+                                            <div class="price-box price-complete">
+                                                <span>지불 예정액</span>
+                                                <span th:text="${res.finalPrice}">0</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <!-- 분기 - 노쇼 -->
+
+                                    <div class="price-details" th:case="'NOSHOW'">
+                                        <div>노쇼</div>
+                                        <div class="service-price">
+                                            <div class="price-box">
+                                                <span>시술가격</span>
+                                                <span th:text="${res.servicePrice}">30000</span>
+                                            </div>
+                                        </div>
+                                        <div class="coupon-discount" th:if="${res.couponUsed}">
+
+                                            <div class="price-box">
+                                                <span>할인가격</span>
+                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="ticket-used-amount" th:if="${res.ticketUsed}">
+                                            <div class="price-box">
+                                                <span>사용금액</span>
+                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                            </div>
+                                        </div>
+                                        <div class="final-price">
+                                            <div class="price-box">
+                                                <span>지불 예정액</span>
+                                                <span th:text="${res.finalPrice}">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                 </div>
+
 
                                 <div class="shop-info-details">
                                     <div class="address-box">
@@ -107,11 +307,10 @@
                                             href="">재예약하기</button>
                                     <button th:if="${res.canWriteReview}"
                                             class="review-create"
-                                            onclick="openCreateReviewModal()"
-                                    >
+                                            th:onclick="|openCreateReviewModal(${res.reservationId})|">
                                         리뷰쓰기
                                     </button>
-                                    <button  th:if="${res.reviewExists}" th:href="" class="review-show" href="">리뷰 보기</button>
+                                    <button  th:if="${res.reviewExists}" class="review-show" href="">리뷰 보기</button>
                                 </div>
                             </div>
                         </div>
@@ -137,13 +336,13 @@
 
             <div class="modal-main">
                 <form
-                        action="/createReview"
-                        onsubmit="return false;"
+                        action="/myPage/review/create"
+                        method="post"
                         enctype="multipart/form-data"
                 >
 
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
+                    <input type="hidden" name="reservationId" id="reservationIdInput" />
                     <div class="star-rating">
                         <span class="star" data-value="1">★</span>
                         <span class="star" data-value="2">★</span>
@@ -164,6 +363,7 @@
                       id="reviewText"
                       class="review-textarea"
                       rows="5"
+                      name="Comment"
                       required
               ></textarea>
                     </div>

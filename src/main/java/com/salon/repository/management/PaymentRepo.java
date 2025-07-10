@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PaymentRepo extends JpaRepository<Payment, Long> {
@@ -47,4 +48,8 @@ public interface PaymentRepo extends JpaRepository<Payment, Long> {
             "AND FUNCTION('YEAR', p.payDate) = FUNCTION('YEAR', CURRENT_DATE) " +
             "AND s.id = :shopId")
     int sumMonthlyTotalPrice(@Param("shopId") Long shopId);
+
+    // 예약 아이디 통해 결제 정보 가져오기
+
+    Optional<Payment> findByReservationId(Long reservationId);
 }

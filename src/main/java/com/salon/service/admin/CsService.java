@@ -184,7 +184,5 @@ public class CsService {
         applyRepo.save(apply);
     }
 
-    public List<CouponBannerListDto> couponList() {
-        List<Coupon> couponList = couponRepo.;
-    }
+
 }

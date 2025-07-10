@@ -18,6 +18,9 @@ public class WebNotification {
     @Column(name="id")
     private Long id;
 
+    @Column(name = "member_id", nullable = true)
+    private Long memberId;
+
     private String message;
 
     @Enumerated(EnumType.STRING)
