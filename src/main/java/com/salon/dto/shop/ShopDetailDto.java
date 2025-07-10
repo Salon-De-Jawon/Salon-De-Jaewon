@@ -1,5 +1,9 @@
 package com.salon.dto.shop;
 
+import com.salon.dto.designer.DesignerListDto;
+import com.salon.dto.management.ServiceForm;
+import com.salon.dto.management.master.ShopImageDto;
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
 import lombok.Getter;
@@ -22,11 +26,14 @@ public class ShopDetailDto {
     private String tel; // 미용실 전화번호
     private LocalTime openTime; // 미용실 오픈시간
     private LocalTime closeTime; // 미용실 마감시간
+    private String description; // 상세 설명
+    private int likeCount; // 미용실 찜
+    private float rating; // 미용실 평점
 
-
+    private List<ShopImageDto> shopImageDtos; // 미용실 이미지
 
     // Shop(Entity) -> ShopDetailDto
-    public static ShopDetailDto from (Shop shop, List<ShopImage> shopImages, int likeCount){
+    public static ShopDetailDto from (Shop shop, int likeCount, float rating){
         ShopDetailDto shopDetailDto = new ShopDetailDto();
 
         shopDetailDto.setId(shop.getId());
@@ -34,13 +41,19 @@ public class ShopDetailDto {
         shopDetailDto.setAddress(shop.getAddress());
         shopDetailDto.setAddressDetail(shop.getAddressDetail());
         shopDetailDto.setLatitude(shop.getLatitude());
-        shopDetailDto.setLatitude(shop.getLongitude());
+        shopDetailDto.setLongitude(shop.getLongitude());
         shopDetailDto.setOpenTime(shop.getOpenTime());
         shopDetailDto.setCloseTime(shop.getCloseTime());
         shopDetailDto.setTel(shop.getTel());
+        shopDetailDto.setLikeCount(likeCount);
+        shopDetailDto.setDescription(shop.getDescription());
+        shopDetailDto.setRating(rating);
+
+
 
         return shopDetailDto;
 
     }
+
 
 }
