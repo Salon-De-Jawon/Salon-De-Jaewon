@@ -96,3 +96,7 @@ h1 {
 .buttons button:hover{
     filter: brightness(1.05);
 }
+img{
+    width: 400px;
+    height: 200px;
+}

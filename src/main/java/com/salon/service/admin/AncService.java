@@ -1,8 +1,11 @@
 package com.salon.service.admin;
 
 import com.salon.constant.Role;
+import com.salon.constant.UploadType;
+import com.salon.dto.UploadedFileDto;
 import com.salon.dto.admin.AncCreateDto;
 import com.salon.dto.admin.AncDetailDto;
+import com.salon.dto.admin.AncFileDto;
 import com.salon.dto.admin.AncListDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Announcement;
@@ -10,7 +13,9 @@ import com.salon.entity.admin.AnnouncementFile;
 import com.salon.repository.MemberRepo;
 import com.salon.repository.admin.AnnouncementFileRepo;
 import com.salon.repository.admin.AnnouncementRepo;
+import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,22 +34,39 @@ public class AncService {
     private final MemberRepo memberRepo;
     private final AnnouncementRepo announcementRepo;
     private final AnnouncementFileRepo announcementFileRepo;
+    private final FileService fileService;
+
+    @Value("${file.anc-file-path}")
+    private String ancPath;
+
+
     public void registration(AncCreateDto ancCreateDto, Member member, List<MultipartFile> files) {
 
         Announcement announcement = AncCreateDto.to(ancCreateDto, member);
         announcement.setWriteAt(LocalDateTime.now());
 
-        Announcement saved = announcementRepo.save(announcement);
         if(files != null && !files.isEmpty()) {
             for(MultipartFile file : files) {
                 if (!file.isEmpty()) {
-                    String originalName = file.getOriginalFilename();
+                    UploadedFileDto image = fileService.upload(file, UploadType.ANNOUNCEMENT);
+
+                    File dest = new File(image.getFolderPath(), image.getFileName());
+
+                    String originalName = image.getOriginalFileName();
+                    String extension = originalName.substring(originalName.lastIndexOf(".")+1);
+
+                    if(extension == null){
+                        throw new RuntimeException("지원하지 않는 파일 형식입니다.");
+                    }
+
                     String uuid = UUID.randomUUID().toString();
-                    String fileName = uuid + "_" + originalName;
-                    String filePath = "C:/upload/" + fileName;
+                    String fileName = uuid + "." + extension;
+                    String filePath = "/ancFile/" + fileName;
+
+                    System.out.println("파일경로 : "+filePath + ",확장자: " + fileName);
 
                     try {
-                        file.transferTo(new File(filePath));
+                        file.transferTo(dest);
                     } catch (IOException e) {
                         throw new RuntimeException("파일 저장 실패", e);
                     }
@@ -52,14 +74,14 @@ public class AncService {
                     AnnouncementFile announcementFile = new AnnouncementFile();
                     announcementFile.setOriginalName(originalName);
                     announcementFile.setFileName(fileName);
-                    announcementFile.setFileUrl("/upload/" + fileName);
-                    announcementFile.setAnnouncement(saved);
+                    announcementFile.setFileUrl(filePath);
+                    announcementFile.setAnnouncement(announcement);
 
+                    announcementRepo.save(announcement);
                     announcementFileRepo.save(announcementFile);
                 }
             }
         }
-        announcementRepo.save(announcement);
     }
 
     public List<AncListDto> list() {
@@ -72,9 +94,18 @@ public class AncService {
 
             List<AnnouncementFile> files = announcementFileRepo.findByAnnouncement(announcement);
             if(!files.isEmpty()){
+
                 AnnouncementFile file = files.get(0);
-                ancListDto.setFileName(file.getOriginalName());
-                ancListDto.setFileUrl(file.getFileUrl());
+                String originalName = file.getOriginalName();
+
+                if(originalName != null && originalName.contains(".")) {
+                    String extension = originalName.substring(originalName.lastIndexOf(".") + 1);
+                    String uuid = UUID.randomUUID().toString();
+                    String fileName = uuid + "." + extension;
+                    String fileUrl = ancPath + fileName;
+                    ancListDto.setFileName(fileName);
+                    ancListDto.setFileUrl(fileUrl);
+                }
             }
 
             ancListDtoList.add(ancListDto);
@@ -88,17 +119,13 @@ public class AncService {
         AncDetailDto ancDetailDto = AncDetailDto.from(announcement);
 
         List<AnnouncementFile> files = announcementFileRepo.findByAnnouncement(announcement);
-        if(files != null && !files.isEmpty()) {
-            AnnouncementFile file = files.get(0);
-            ancDetailDto.setOriginalName(file.getOriginalName());
-            ancDetailDto.setFileName(file.getFileName());
-            ancDetailDto.setFileUrl(file.getFileUrl());
-
-            List<String> fileUrls = files.stream()
-                    .map(AnnouncementFile::getFileUrl)
-                    .toList();
-            ancDetailDto.setFileUrls(fileUrls);
+        List<AncFileDto> fileDtos = new ArrayList<>();
+        for(AnnouncementFile file : files){
+            fileDtos.add(AncFileDto.from(file));
         }
+
+        ancDetailDto.setFiles(fileDtos);
+
         Role role = announcement.getRole();
 
         boolean hasPrev = announcementRepo.findTopByRoleAndIdLessThanOrderByIdDesc(role, id).isPresent();
