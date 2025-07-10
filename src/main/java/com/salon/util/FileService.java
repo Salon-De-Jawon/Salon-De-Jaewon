@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -68,7 +69,7 @@ public class FileService {
 
 
         // 경로 + 파일이름 /shopImg/*****.jpg
-        String fileUrl = type.getUrlPath() + uuidFileName;
+        String fileUrl = Paths.get(folderPath, uuidFileName).toString();
 
         // 파일 저장
         try(FileOutputStream fos = new FileOutputStream(fullPath)) {
@@ -77,7 +78,7 @@ public class FileService {
             e.printStackTrace();
         }
 
-        return new UploadedFileDto(originalFileName, uuidFileName, fileUrl, folderPath);
+        return new UploadedFileDto(originalFileName, uuidFileName, fileUrl);
     }
 
     private String getFolderPath(UploadType type) {

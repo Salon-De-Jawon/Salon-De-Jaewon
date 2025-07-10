@@ -2,387 +2,113 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
-
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" th:href="@{/css/master/shopEdit.css}">
+        <link rel="stylesheet" th:href="@{/css/master/main.css}">
+        <link rel="stylesheet" th:href="@{/css/management/attendanceButtons.css}">
     </th:block>
 </head>
-
 <body>
+
 <div layout:fragment="main" id="main">
-    <div class="section-container">
-        <h3>매장 정보 수정</h3>
 
-        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <input type="hidden" name="id" th:value="${shop.id}"/>
+    <!-- 출퇴근 토큰용 -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-            <div class="customer-card">
-                <div class="customer-header">
-                    <strong>매장명</strong>
-                    <input type="text" name="name" placeholder="매장 이름을 입력하세요" th:value="${shop.name}" required />
-                </div>
-
-                <div class="customer-header">
-                    <strong>연락처</strong>
-                    <input type="text" name="tel" placeholder="전화번호 입력" th:value="${shop.tel}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>주소</strong>
-                    <div class="address-wrapper">
-                        <div class="address-row">
-                            <input type="text" id="postcode" placeholder="우편번호" readonly>
-                            <button type="button" class="btn-search-address" onclick="execDaumPostcode()">우편번호 찾기</button>
-                        </div>
-                        <input type="text" id="roadAddress" placeholder="도로명주소" th:value="${shop.address}" readonly>
-                        <div class="address-row">
-                            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소 입력"
-                                   th:value="${shop.addressDetail}">
-                            <input type="text" id="extraAddress" placeholder="참고항목" readonly>
-                        </div>
-                        <input type="hidden" name="latitude" th:value="${shop.latitude}" />
-                        <input type="hidden" name="longitude" th:value="${shop.longitude}" />
-                        <input type="hidden" name="address" id="fullAddress" th:value="${shop.address}" />
-                    </div>
-                </div>
-
-                <div id="addressModal" class="modal">
-                    <div class="modal-content">
-                        <div id="daumWrap" style="width:100%;height:100%;"></div>
-                    </div>
-                </div>
-
-                <div class="customer-header">
-                    <strong>운영시간</strong>
-                    <input type="time" name="openTime" th:value="${shop.openTime}" /> ~
-                    <input type="time" name="closeTime" th:value="${shop.closeTime}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>지각 기준 (분)</strong>
-                    <input type="number" name="lateMin" min="0" th:value="${shop.lateMin}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>조퇴 기준 (분)</strong>
-                    <input type="number" name="earlyLeaveMin" min="0" th:value="${shop.earlyLeaveMin}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>예약 간격 (분)</strong>
-                    <input type="number" name="reservationInterval" min="10" step="5" th:value="${shop.reservationInterval}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>마감 전 예약 제한시간 (분)</strong>
-                    <input type="number" name="timeBeforeClosing" min="0" th:value="${shop.timeBeforeClosing}" />
-                </div>
-
-                <div class="customer-header">
-                    <strong>휴무 요일</strong>
-                    <select name="dayOff" th:value="${shop.dayOff}">
-                        <option value="0" th:selected="${shop.dayOff == 0}">없음</option>
-                        <option value="1" th:selected="${shop.dayOff == 1}">월요일</option>
-                        <option value="2" th:selected="${shop.dayOff == 2}">화요일</option>
-                        <option value="4" th:selected="${shop.dayOff == 4}">수요일</option>
-                        <option value="8" th:selected="${shop.dayOff == 8}">목요일</option>
-                        <option value="16" th:selected="${shop.dayOff == 16}">금요일</option>
-                        <option value="32" th:selected="${shop.dayOff == 32}">토요일</option>
-                        <option value="64" th:selected="${shop.dayOff == 64}">일요일</option>
-                    </select>
-                    <span style="font-size: 13px; color: #999;">※ 이진법으로 계산됩니다.</span>
-                </div>
-
-                <div class="customer-header">
-                    <strong>매장 소개</strong>
-                    <textarea name="description" placeholder="매장 설명 입력"
-                              th:text="${shop.description}"></textarea>
-                </div>
-
-                <div class="shop-image-upload">
-                    <div class="shop-image-upload mb-3">
-                        <input type="file" id="shopImageInput" multiple accept="image/*" style="display: none;" />
-                        <button type="button" onclick="document.getElementById('shopImageInput').click()" class="custom-upload-label">📷 사진 업로드</button>
-                    </div>
-                    <div id="shopImagePreview" class="image-preview-container d-flex flex-wrap gap-2">
-                    </div>
-                </div>
-            </div>
-
-            <div style="text-align: right;">
-                <button type="submit" class="btn-edit">저장하기</button>
-            </div>
-        </form>
+    <div class="attendance-buttons">
+        <button id="btn-toggle-attendance">출근하기</button>
+        <button id="btn-request-leave">휴가 신청</button>
     </div>
+
+    <div class="attendance-times">
+        <p id="attendance-time-display"></p>
+    </div>
+
+    <div id="designer-main" class="designer-container">
+        <h2>대표디자이너 페이지</h2>
+
+        <section class="dashboard-summary">
+            <div class="card">
+                <h3>등록 디자이너 수</h3>
+                <p th:text="${dto.designerCount} + '명'">5명</p>
+            </div>
+            <div class="card">
+                <h3>금일 예약 수</h3>
+                <p th:text="${dto.todayReservationCount} + '건'">12건</p>
+            </div>
+            <div class="card">
+                <h3>오늘 매출</h3>
+                <p th:text="${dto.todayPay}">₩520,000</p>
+            </div>
+            <div class="card">
+                <h3>이번달 매출</h3>
+                <p th:text="${dto.monthlyPay}">₩8,350,000</p>
+            </div>
+        </section>
+
+        <section class="designer-section">
+            <h3>디자이너 관리</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>사진</th>
+                    <th>이름</th>
+                    <th>직급</th>
+                    <th>연차</th>
+                    <th>금일 예약 수</th>
+                    <th>근무 시간</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="designer : ${dto.designerList}">
+                    <td><img th:src="${designer.imgUrl}" alt="디자이너 사진" class="designer-img"></td>
+                    <td th:text="${designer.name}">김디자</td>
+                    <td th:text="${designer.position}">수석</td>
+                    <td th:text="${designer.workingYears} + '년차'">3년차</td>
+                    <td th:text="${designer.todayReservationCount} + '건'">4건</td>
+                    <td th:text="${designer.scheduledWorkTime}">09:00 ~ 18:00</td>
+                    <td><button class="btn-edit" th:attr="data-id=${designer.id}">상세</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="review-section">
+            <h3>오늘 예약 목록</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>시간</th>
+                    <th>고객명</th>
+                    <th>디자이너</th>
+                    <th>시술</th>
+                    <th>상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="schedule : ${dto.todaySchedules}">
+                    <td th:text="${schedule.time}">09:00</td>
+                    <td th:text="${schedule.customerName}">이영희</td>
+                    <td th:text="${schedule.designerName}">홍디자</td>
+                    <td th:text="${schedule.serviceName}">펌</td>
+                    <td th:text="${schedule.status}" th:class="'status-' + ${schedule.status.toLowerCase()}">예약중</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(dto.todaySchedules)}">
+                    <td colspan="5" class="table-empty"> 예약이 없습니다. </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+
 </div>
 
 <th:block layout:fragment="script">
-    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0bcfa737cae58afd2f78fe737895ea3b&autoload=false&libraries=services"></script>
-    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script>
-        // 전역에 미리 함수 선언
-        window.execDaumPostcode = function () {
-          alert('주소찾기 함수가 아직 준비되지 않았습니다. 잠시만 기다려주세요.');
-        };
-
-        let geocoder;
-
-        // kakao.maps SDK 로드 후 실행
-        kakao.maps.load(function () {
-          geocoder = new kakao.maps.services.Geocoder();
-
-          // 이제 execDaumPostcode를 진짜 함수로 덮어쓰기
-          window.execDaumPostcode = function () {
-            const modal = document.getElementById('addressModal');
-            const daumWrap = document.getElementById('daumWrap');
-
-            modal.style.display = 'block';
-
-            new daum.Postcode({
-              oncomplete: function(data) {
-                let roadAddr = data.roadAddress;
-                let extraAddr = '';
-
-                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-                  extraAddr += data.bname;
-                }
-                if (data.buildingName !== '' && data.apartment === 'Y') {
-                  extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                }
-
-                document.getElementById("postcode").value = data.zonecode;
-                document.getElementById("roadAddress").value = roadAddr;
-                document.getElementById("extraAddress").value = extraAddr;
-                document.getElementById("fullAddress").value =
-                  roadAddr + " " + document.getElementById("detailAddress").value;
-
-                // 좌표 변환
-                geocoder.addressSearch(roadAddr, function(result, status) {
-                  if (status === kakao.maps.services.Status.OK) {
-                    const lat = result[0].y;
-                    const lng = result[0].x;
-
-                    document.querySelector('input[name="latitude"]').value = lat;
-                    document.querySelector('input[name="longitude"]').value = lng;
-                  } else {
-                    console.error('주소 변환 실패:', status);
-                  }
-                });
-
-                // 잠시 후 모달 닫기
-                setTimeout(closeDaumPostcode, 100);
-              },
-              width: '100%',
-              height: '100%'
-            }).embed(daumWrap);
-          };
-
-          function closeDaumPostcode() {
-            document.getElementById('addressModal').style.display = 'none';
-            document.getElementById('daumWrap').innerHTML = "";
-          }
-
-          // 모달 외부 클릭 시 닫기
-          window.addEventListener("click", function(event) {
-            const modal = document.getElementById('addressModal');
-            if (event.target === modal) {
-              closeDaumPostcode();
-            }
-          });
-
-          // 상세주소 입력 시 전체 주소 실시간 업데이트
-          const detailInput = document.getElementById("detailAddress");
-          if (detailInput) {
-            detailInput.addEventListener("input", function () {
-              const road = document.getElementById("roadAddress").value;
-              const detail = this.value;
-              document.getElementById("fullAddress").value = road + " " + detail;
-            });
-          }
-        });
-    </script>
-
-    <script th:inline="javascript">
-        // images 배열은 {id, originalName, imgName, imgUrl, isThumbnail, imgFile} 객체들을 담습니다.
-        // imgFile은 새 파일인 경우에만 존재합니다.
-        let images = /*[[${shop.shopImages}]]*/ [];
-        // 삭제된 기존 이미지 ID를 추적할 배열 (백엔드에 deletedImageIds라는 이름으로 전송)
-        let deletedImageIds = [];
-
-        const previewContainer = document.getElementById("shopImagePreview");
-        const fileInput = document.getElementById("shopImageInput");
-        const shopEditForm = document.getElementById("shop-edit-form");
-
-        /**
-         * 이미지 미리보기를 렌더링하고 관련 이벤트 리스너를 설정합니다.
-         */
-        function renderPreviews() {
-            previewContainer.innerHTML = ""; // 기존 미리보기 초기화
-
-            images.forEach((imgObj, idx) => {
-                // deletedImageIds에 포함된 이미지는 렌더링하지 않습니다.
-                // 이 조건은 이미지가 images 배열에서 제거되지 않고 deletedImageIds에만 추가된 경우에 유효합니다.
-                // 현재 로직에서는 images 배열에서 splice로 제거하므로 이 검사는 필수는 아닙니다.
-                // 하지만 혹시 모를 상황을 대비해 남겨둘 수 있습니다.
-                if (deletedImageIds.includes(imgObj.id)) return;
-
-                const wrapper = document.createElement("div");
-                wrapper.className = "preview-image-wrapper";
-
-                const img = document.createElement("img");
-                img.className = "preview-image";
-                // 새 파일은 imgFile (Blob)에서 URL을 생성하고, 기존 파일은 imgUrl을 사용합니다.
-                img.src = imgObj.imgUrl || (imgObj.imgFile ? URL.createObjectURL(imgObj.imgFile) : "");
-                wrapper.appendChild(img);
-
-                // 썸네일 라디오 버튼
-                const radio = document.createElement("input");
-                radio.type = "radio";
-                radio.name = "shopImagesThumbnail"; // 모든 라디오 버튼이 동일한 name을 가져야 그룹으로 동작합니다.
-                radio.className = "thumbnail-radio";
-                radio.checked = imgObj.isThumbnail || false; // 현재 이미지의 썸네일 여부
-                radio.addEventListener("change", () => {
-                    // 모든 이미지의 isThumbnail을 false로 설정하고, 현재 선택된 이미지만 true로 설정합니다.
-                    images.forEach((i) => i.isThumbnail = false); // 이 라디오 그룹의 모든 썸네일 해제
-                    imgObj.isThumbnail = true; // 현재 이미지 썸네일 설정
-                    renderPreviews(); // 상태 변경 후 다시 렌더링하여 UI를 업데이트합니다.
-                });
-                wrapper.appendChild(radio);
-
-                // 삭제 버튼
-                const delBtn = document.createElement("button");
-                delBtn.type = "button";
-                delBtn.className = "btn-delete-img";
-                delBtn.innerText = "X";
-                delBtn.addEventListener("click", () => {
-                    if (confirm("이 이미지를 삭제하시겠습니까?")) {
-                        if (imgObj.id) { // ID가 있다면 기존 이미지인 경우
-                            deletedImageIds.push(imgObj.id); // 삭제할 ID 목록에 추가
-                        } else { // ID가 없다면 새 파일인 경우 (아직 업로드 안 됨)
-                            // 새 파일의 경우 Blob URL 해제하여 메모리 누수 방지
-                            if (imgObj.imgFile) URL.revokeObjectURL(img.src);
-                        }
-                        images.splice(idx, 1); // images 배열에서 해당 이미지 제거 (화면에서도 사라짐)
-                        renderPreviews(); // 미리보기 다시 렌더링
-                    }
-                });
-                wrapper.appendChild(delBtn);
-
-                previewContainer.appendChild(wrapper);
-            });
-        }
-
-
-        // 파일 입력 변경 이벤트 리스너
-        fileInput.addEventListener("change", (e) => {
-            const files = Array.from(e.target.files);
-            files.forEach(file => {
-                images.push({
-                    id: null, // 새 파일이므로 ID는 null
-                    originalName: file.name,
-                    imgName: "", // 백엔드에서 설정될 예정
-                    imgUrl: "",  // 백엔드에서 설정될 예정
-                    isThumbnail: false,
-                    imgFile: file // 실제 File 객체
-                });
-            });
-            // 새 파일이 추가되었으니 썸네일 상태가 제대로 반영되도록 다시 렌더링
-            // 만약 기존 썸네일이 없고, 추가된 이미지가 하나라면 첫 이미지를 썸네일로 설정
-            if (images.length === files.length && images.length === 1) { // 추가된 파일이 처음 파일이고 1개일때
-                images[0].isThumbnail = true;
-            } else if (!images.some(img => img.isThumbnail)) { // 썸네일이 아직 지정되지 않았다면
-                 if (images.length > 0) images[0].isThumbnail = true;
-            }
-            renderPreviews();
-            fileInput.value = ""; // 파일 입력 필드 초기화
-        });
-
-        // 초기 이미지 미리보기 렌더링 (페이지 로드 시)
-        // 기존 이미지가 있다면 첫 이미지를 썸네일로 설정 (썸네일이 없는 경우)
-        if (images.length > 0 && !images.some(img => img.isThumbnail)) {
-            images[0].isThumbnail = true;
-        }
-        renderPreviews();
-
-
-        // 폼 제출 이벤트 리스너 (fetch API 사용)
-        shopEditForm.addEventListener("submit", async function(event) {
-            event.preventDefault(); // 기본 폼 제출 동작 방지
-
-            const formData = new FormData();
-
-            // 1. CSRF 토큰을 폼에서 가져와 FormData에 추가
-            const csrfTokenInput = this.querySelector('input[name="_csrf"]');
-            if (csrfTokenInput) {
-                const csrfToken = csrfTokenInput.value;
-                formData.append("_csrf", csrfToken); // Spring Security가 기대하는 이름 (_csrf)
-            } else {
-                console.error("CSRF 토큰 input을 찾을 수 없습니다!");
-                alert("보안 토큰을 찾을 수 없습니다. 페이지를 새로고침 해주세요.");
-                return; // 토큰이 없으면 제출 중단
-            }
-
-            // 2. 매장 ID 추가
-            const shopId = this.querySelector('input[name="id"]').value;
-            formData.append("id", shopId);
-
-            // 3. 기타 일반 폼 필드 추가
-            const formElements = shopEditForm.querySelectorAll('input, select, textarea');
-            formElements.forEach(element => {
-                // CSRF 토큰, 매장 ID, 파일 입력, 라디오 버튼(썸네일 처리)은 별도로 처리하므로 건너뜁니다.
-                // shopImagesThumbnail 라디오 버튼의 name은 중복되므로 직접적으로 FormData에 넣지 않습니다.
-                if (element.name && element.name !== '_csrf' && element.name !== 'id' && element.type !== 'file' && element.type !== 'radio' && element.name !== 'shopImagesThumbnail') {
-                    formData.append(element.name, element.value);
-                }
-            });
-
-            // 4. 이미지 데이터 추가
-            images.forEach((imgObj, idx) => {
-                if (imgObj.imgFile) { // File 객체가 있다면 (새로운 파일)
-                    formData.append(`shopImages[${idx}].imgFile`, imgObj.imgFile);
-                    // DTO에 'isNew' 필드가 없으므로, 백엔드에서 imgFile의 존재 여부로 새 파일임을 판단합니다.
-                } else if (imgObj.id) { // ID가 있다면 (기존 파일)
-                    formData.append(`shopImages[${idx}].id`, imgObj.id);
-                    formData.append(`shopImages[${idx}].originalName`, imgObj.originalName);
-                    formData.append(`shopImages[${idx}].imgName`, imgObj.imgName);
-                    formData.append(`shopImages[${idx}].imgUrl`, imgObj.imgUrl);
-                }
-                // 썸네일 여부는 항상 전송 (새 이미지든 기존 이미지든)
-                formData.append(`shopImages[${idx}].isThumbnail`, imgObj.isThumbnail ? "true" : "false");
-            });
-
-            // 5. 삭제된 이미지 ID 리스트 추가
-            deletedImageIds.forEach((id, idx) => {
-                // deletedImageIds라는 이름으로 배열 형태로 전송 (백엔드 @RequestParam으로 받기 위함)
-                formData.append(`deletedImageIds[${idx}]`, id);
-            });
-
-            try {
-                const response = await fetch(shopEditForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    // FormData를 사용하면 Content-Type 헤더는 자동으로 'multipart/form-data'로 설정됩니다.
-                    // 따라서 이곳에 'Content-Type' 헤더를 명시적으로 설정하면 안 됩니다.
-                });
-
-                if (response.ok) {
-                    alert("매장 정보가 성공적으로 수정되었습니다.");
-                    window.location.href = "/master"; // 성공 시 리다이렉트
-                } else {
-                    const errorText = await response.text();
-                    console.error("폼 제출 실패:", response.status, errorText);
-                    alert(`매장 정보 수정에 실패했습니다. 오류: ${response.status} - ${errorText.substring(0, 150)}`); // 오류 메시지 일부 표시
-                }
-            } catch (error) {
-                console.error("네트워크 오류:", error);
-                alert("네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-            }
-        });
-
-    </script>
+    <script th:src="@{/javascript/management/attendanceButtons.js}"></script>
 </th:block>
-
 </body>
 </html>

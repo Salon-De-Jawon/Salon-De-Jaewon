@@ -1,5 +1,8 @@
 package com.salon.control;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.management.master.CouponDto;
 import com.salon.dto.management.master.MainDesignerPageDto;
@@ -14,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -70,6 +74,7 @@ public class MasterController {
 
         ShopEditDto shopEdit = masterService.getShopEdit(userDetails.getMember().getId());
 
+        System.out.println( shopEdit);
         model.addAttribute("shop", shopEdit);
 
         return "master/shopEdit";
@@ -77,15 +82,35 @@ public class MasterController {
 
     // 매장 수정 저장
     @PostMapping("/shop-edit/update")
-    public String saveShop(@ModelAttribute ShopEditDto dto,
-                           @AuthenticationPrincipal CustomUserDetails userDetails,
-                           @RequestParam(value = "deletedImageIds", required = false) List<Long> deletedImageIds){
+    public String saveShop(
+            @RequestParam("shopEditDto") String shopEditDtoJson,
+            @RequestParam("files") List<MultipartFile> files
+    ) throws JsonProcessingException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
-        masterService.saveShopEdit(dto, deletedImageIds ,userDetails.getMember().getId());
+        ShopEditDto dto = objectMapper.readValue(shopEditDtoJson, ShopEditDto.class);
+
+        System.out.println(dto);
+        System.out.println("받아온 파일: " + (files.isEmpty() ? "없음" : files.get(0).getOriginalFilename()));
+
+        // 저장 로직 호출
+
+        masterService.saveShopEdit(dto, files);
 
         return "redirect:/master";
     }
+//    @PostMapping("/shop-edit/update")
+//    public String saveShop(ShopEditDto shopEditDto,
+//                           @RequestParam("files")  List<MultipartFile> files){
+//
+//        System.out.println(shopEditDto);
+//        System.out.println( "받아온 파일" + files.get(0).getOriginalFilename() );
+//        //masterService.saveShopEdit(dto, userDetails.getMember().getId());
+//
+//        return "redirect:/master";
+//    }
 
 
 

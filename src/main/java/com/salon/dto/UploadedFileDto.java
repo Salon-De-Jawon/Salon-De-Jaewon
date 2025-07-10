@@ -8,5 +8,4 @@ public class UploadedFileDto {
     private String originalFileName;
     private String fileName;
     private String fileUrl;
-    private String folderPath;
 }

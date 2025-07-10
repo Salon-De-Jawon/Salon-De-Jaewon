@@ -20,6 +20,6 @@ public class ShopImage {
     private String originalName; // 이미지 원본이름
     private String imgName; // 이미지 저장 이름
     private String imgUrl; // 이미지 경로
-    private boolean isThumbnail; // 이미지 썸네일(미리보기)
+    private Boolean isThumbnail; // 이미지 썸네일(미리보기)
     
 }

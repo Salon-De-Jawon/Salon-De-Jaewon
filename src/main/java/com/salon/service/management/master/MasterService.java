@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -208,39 +209,27 @@ public class MasterService {
 
     // 매장 수정 저장
     @Transactional
-    public void saveShopEdit(ShopEditDto dto, List<Long> deletedImageIds ,Long memberId){
+    public void saveShopEdit(ShopEditDto dto, List<MultipartFile> files){
 
-        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
-
-        Shop shop = dto.to(designer.getShop());
+        Shop editedShop = shopRepo.findById(dto.getId()).orElse(null);
+        Shop shop = dto.to(editedShop);
         shopRepo.save(shop);
 
-        if (dto.getShopImages() != null) {
-            for (ShopImageDto imageDto : dto.getShopImages()) {
-                if (imageDto.getImgFile() != null && !imageDto.getImgFile().isEmpty()) {
-                    // DTO에 isNew가 없으므로 imgFile 존재 여부로 새 파일인지 판단
-                    UploadedFileDto uploadedFile = fileService.upload(imageDto.getImgFile(), UploadType.SHOP);
-                    ShopImage newShopImage = new ShopImage();
-                    newShopImage.setShop(shop);
-                    newShopImage.setOriginalName(uploadedFile.getOriginalFileName());
-                    newShopImage.setImgName(uploadedFile.getFileName());
-                    newShopImage.setImgUrl(uploadedFile.getFileUrl());
-                    newShopImage.setThumbnail(imageDto.isThumbnail());
-                    shopImageRepo.save(newShopImage);
-                } else if (imageDto.getId() != null) {
-                    // ID가 있다면 기존 이미지의 썸네일 상태 업데이트
-                    shopImageRepo.findById(imageDto.getId()).ifPresent(img -> {
-                        img.setThumbnail(imageDto.isThumbnail());
-                        shopImageRepo.save(img);
-                    });
-                }
-            }
+        // 이미지 저장
+        for(int i = 0; i <= files.size(); i++){
+
+            UploadedFileDto fileDto = fileService.upload(files.get(i), UploadType.SHOP);
+
+
+            // 첫번째 이미지 썸네일
+
+
         }
 
-        if (deletedImageIds != null && !deletedImageIds.isEmpty()) {
-            shopImageRepo.deleteAllById(deletedImageIds);
-            // 필요시, 실제 파일 시스템에서도 파일 삭제 로직 추가
-        }
+
+
+
+
 
 
 
