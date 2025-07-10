@@ -63,6 +63,14 @@ public class FileService {
         // 경로 + 파일이름 /shopImg/*****.jpg
         String fileUrl = type.getUrlPath() + uuidFileName;
 
+        // 파일 저장
+        try(FileOutputStream fos = new FileOutputStream(fileUrl)) {
+            fos.write(multipartFile.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         return new UploadedFileDto(originalFileName, uuidFileName, fileUrl, folderPath);
     }
 
