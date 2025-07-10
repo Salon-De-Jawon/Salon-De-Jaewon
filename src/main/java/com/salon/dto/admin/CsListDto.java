@@ -16,6 +16,7 @@ public class CsListDto {
     private CsCategory csCategory;
     private LocalDateTime questionAt;
     private CsStatus csStatus;
+    private String loginId;
 
     public static CsListDto from(CsCustomer csCustomer) {
         CsListDto csListDto = new CsListDto();
@@ -24,6 +25,9 @@ public class CsListDto {
         csListDto.setCsCategory(csCustomer.getCategory());
         csListDto.setQuestionAt(csCustomer.getQuestionAt());
         csListDto.setCsStatus(csCustomer.getStatus());
+
+        String loginId = csCustomer.getMember().getLoginId();
+        csListDto.setLoginId(loginId.startsWith("designer") ? "디자이너" : "회원");
         return csListDto;
     }
 }

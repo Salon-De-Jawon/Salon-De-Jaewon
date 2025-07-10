@@ -22,6 +22,8 @@ public class ServiceForm {
 
     private MultipartFile imgFile;
 
+    private boolean recommended;
+
     public static ServiceForm from (ShopService shopService) {
 
         ServiceForm dto = new ServiceForm();
@@ -35,6 +37,7 @@ public class ServiceForm {
         dto.setOriginalImgName(shopService.getOriginalImgName());
         dto.setImgName(shopService.getImgName());
         dto.setImgUrl(shopService.getImgUrl());
+        dto.setRecommended(shopService.isRecommended());
 
         return dto;
     }
