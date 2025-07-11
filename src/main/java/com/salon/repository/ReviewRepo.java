@@ -1,6 +1,7 @@
 package com.salon.repository;
 
 import com.salon.entity.Review;
+import com.salon.entity.ReviewImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,12 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
     float averageRatingByShopId(@Param("shopId") Long shopId);
 
     Optional<Review> findByReservationId(Long id);
+
+
+
+
+    // 디자이너 리뷰 목록
+    List<Review> findByReservation_shopDesiger( Long shopDesignerId );
+
+
 }

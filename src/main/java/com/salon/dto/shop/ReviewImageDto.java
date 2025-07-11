@@ -21,6 +21,13 @@ public class ReviewImageDto {
 
     // ReviewImage(Entity) -> ReviewImageDto
     public static ReviewImageDto from (ReviewImage reviewImage){
+
+        if (reviewImage == null) {
+            throw new IllegalArgumentException("ReviewImage entity is null");
+        }
+
+
+
         ReviewImageDto reviewImageDto = new ReviewImageDto();
 
         reviewImageDto.setReviewImageId(reviewImage.getId());
