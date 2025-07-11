@@ -275,6 +275,19 @@
   line-height: 1.4;
 }
 
+/* 스크롤관련 */
+
+[data-drag-scroll] {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+[data-drag-scroll].dragging {
+  cursor: grabbing;
+}
+
 /* 📱 0~480px: 모바일 - 1열 */
 @media (max-width: 480px) {
   .review-box {

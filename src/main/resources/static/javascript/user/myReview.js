@@ -1,4 +1,7 @@
+import { autoBindDragScroll } from '/javascript/dragScroll.js';
+
 document.addEventListener("DOMContentLoaded", () => {
+        autoBindDragScroll();
         const reviewBoxes = document.querySelectorAll(".review-box");
 
         reviewBoxes.forEach((box) => {
@@ -70,49 +73,51 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           });
         });
-      });
+});
 
-      // --- 캔버스 이미지 생성 함수 ---
-      function createReviewImage(rating, date, hairstyle) {
-        const canvas = document.createElement("canvas");
+// --- 캔버스 이미지 생성 함수 ---
+     function createReviewImage(rating, date, hairstyle) {
+       const canvas = document.createElement("canvas");
 
-        const width = 300;
-        const height = 400;
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
+       const width = 300;
+       const height = 400;
+       canvas.width = width;
+       canvas.height = height;
+       const ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = "#f8f8f8";
-        ctx.fillRect(0, 0, width, height);
+       ctx.fillStyle = "#f8f8f8";
+       ctx.fillRect(0, 0, width, height);
 
-        ctx.fillStyle = "#333";
-        ctx.textAlign = "center";
+       ctx.fillStyle = "#333";
+       ctx.textAlign = "center";
 
-        const starText = "★".repeat(parseInt(rating));
-        ctx.font = "bold 40px Arial";
-        ctx.fillText(starText, width / 2, height * 0.35);
+       const starText = "★".repeat(parseInt(rating));
+       ctx.font = "bold 40px Arial";
+       ctx.fillText(starText, width / 2, height * 0.35);
 
-        ctx.font = "24px Arial";
-        ctx.fillText(`- ${date} -`, width / 2, height * 0.5);
+       ctx.font = "24px Arial";
+       ctx.fillText(`- ${date} -`, width / 2, height * 0.5);
 
-        ctx.font = "bold 28px Arial";
-        ctx.fillText(hairstyle, width / 2, height * 0.65);
+       ctx.font = "bold 28px Arial";
+       ctx.fillText(hairstyle, width / 2, height * 0.65);
 
-        return canvas.toDataURL("image/jpeg", 0.9);
-      }
+       return canvas.toDataURL("image/jpeg", 0.9);
+     }
 
-      //모달 열고 닫기
+     //모달 열고 닫기
 
-      const modal = document.getElementById("review-details");
+     const modal = document.getElementById("review-details");
 
-      /* 리뷰 박스를 클릭하면 모달 열기 */
-      document.querySelectorAll(".review-box").forEach((box) => {
-        box.addEventListener("click", () => {
-          modal.classList.add("show"); // overlay ON
-        });
-      });
+     /* 리뷰 박스를 클릭하면 모달 열기 */
+     document.querySelectorAll(".review-box").forEach((box) => {
+       box.addEventListener("click", () => {
+         modal.classList.add("show"); // overlay ON
+       });
+     });
 
-      /* X 버튼으로 닫기 */
-      function closeReviewDetails() {
-        modal.classList.remove("show"); // overlay OFF
-      }
+     /* X 버튼으로 닫기 */
+     function closeReviewDetails() {
+       modal.classList.remove("show"); // overlay OFF
+     }
+
+     window.closeReviewDetails = closeReviewDetails;

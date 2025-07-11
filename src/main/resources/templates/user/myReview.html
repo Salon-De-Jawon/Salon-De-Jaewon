@@ -29,7 +29,7 @@
             </div>
 
             <div class="my-page-menu">
-              <a class="my-review" href="/myPage/reviewDetal"> 내 리뷰 </a>
+              <a class="my-review" href="/myPage/review"> 내 리뷰 </a>
             </div>
 
             <div class="my-page-menu">
@@ -144,19 +144,18 @@
 
 </div>
 <th:block layout:fragment="script">
+
   <script type="module">
-    import {autoBinoDragS} from "./dragScroll.js"; // js 경로
+    import { autoBindDragScroll } from '/javascript/dragScroll.js';
 
-    document.addEventListener("DOMContentLoaded", () => {
-      autoBindDragScroll();  // data-drag-scroll 달린 모든 요소에 적용.
+    // DOM 준비 후 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      autoBindDragScroll();          // data-drag-scroll 달린 요소 전체에 적용
     });
-
-    //스크롤 js 연결하는 js
   </script>
 
-  <script>
+  <script type="module" src="/javascript/user/myReview.js"></script>
 
-  </script>
 </th:block>
 </body>
 </html>
