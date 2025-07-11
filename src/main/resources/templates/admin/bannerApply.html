@@ -12,7 +12,9 @@
     <div class="modal-overlay" id="couponAdModal">
         <div class="modal">
             <h2>메인 배너 쿠폰 신청</h2>
-            <form id="couponAdForm" enctype="multipart/form-data">
+            <form id="couponAdForm" th:action="@{/admin/banner/apply}" method="post" enctype="multipart/form-data">
+
+
                 <label for="couponSelect">쿠폰 선택</label>
                 <select id="couponSelect" name="couponId" required>
                     <option value="" disabled selected>쿠폰을 선택하세요</option>

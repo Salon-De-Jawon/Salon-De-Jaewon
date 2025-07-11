@@ -28,7 +28,7 @@
         <!-- 답변 없음 + 관리자일 때: 작성 폼-->
         <div th:if="${csDetailDto.replyText == null}">
             <div th:if="${isAdmin}">
-                <form th:action="@{/admin/cs/reply}" method="post" th:object="${csDetailDto}">
+                <form th:action="@{/admin/cs/reply}" method="post" th:object="${csDetailDto}" onsubmit="return validateForm()">
                     <input type="hidden" th:field="*{id}">
                     <label for="replyText">답변 작성</label>
                     <textarea th:field="*{replyText}" id="replyText" rows="6" placeholder="답변을 입력하세요"></textarea>
@@ -51,6 +51,17 @@
         </a>
     </div>
 </div>
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+    <script>
+        function validateForm(){
+            const reply = document.getElementById('replyText').value.trim();
+            if(!reply){
+                alert('답변 내용을 입력해주세요.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</th:block>
 </body>
 </html>

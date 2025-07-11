@@ -35,6 +35,8 @@ import java.util.List;
 public class AdminAncController {
     private final AncService ancService;
     private final MemberRepo memberRepo;
+    @Value("${api.encodedKey}")
+    private String encodedKey;
     @Value("${file.anc-file-path}")
     private String ancPath;
     @GetMapping("/download")
@@ -56,17 +58,7 @@ public class AdminAncController {
                 .contentLength(file.length())
                 .body(resource);
     }
-    @GetMapping("")
-    public String list(Model model){
-        List<AncListDto> ancListDtoList = ancService.list();
-        model.addAttribute("ancListDto", ancListDtoList);
-        return "admin/announcement";
-    }
-    @GetMapping("/detail")
-    public String detail(@RequestParam("id") Long id, Model model){
-        AncDetailDto ancDetailDto = ancService.detail(id);
-        model.addAttribute("ancDetailDto", ancDetailDto);
-        return "admin/announcementDetail";}
+
     @GetMapping("/create")
     public String create(Model model){
         model.addAttribute("ancCreateDto", new AncCreateDto());
@@ -81,7 +73,7 @@ public class AdminAncController {
         Member member = userDetails.getMember();
 
         ancService.registration(ancCreateDto, member, files);
-        return "redirect:/";
+        return "redirect:/cs";
     }
     @GetMapping("/update")
     public String updateForm(@RequestParam("id") Long id, Model model){
@@ -94,11 +86,11 @@ public class AdminAncController {
                          @ModelAttribute AncCreateDto ancCreateDto){
         Member member = userDetails.getMember();
         ancService.update(ancCreateDto, member);
-        return "redirect:/";
+        return "redirect:/cs";
     }
     @PostMapping("/delete")
     public String delete(@RequestParam("id") Long id){
         ancService.delete(id);
-        return "redirect:/";
+        return "redirect:/cs";
     }
 }

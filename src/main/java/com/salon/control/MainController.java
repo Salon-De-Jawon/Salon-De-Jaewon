@@ -49,11 +49,19 @@ public class MainController {
 
 
     @GetMapping("/")
-    public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
-
+    public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login"; // 또는 redirect:/home 등 원하는 경로
+        }
         if (userDetails != null) {
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
+
+            boolean isAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            model.addAttribute("isAdmin", isAdmin);
+        } else {
+            model.addAttribute("isAdmin", false);
         }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

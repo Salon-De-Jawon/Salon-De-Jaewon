@@ -67,19 +67,7 @@ public class CsController {
     private final CsService csService;
 
     private final DesApplyService desApplyService;
-    @GetMapping("/question")
-    public String question(Model model){
-        model.addAttribute("csCreateDto", new CsCreateDto());
-        return "admin/question";
-    }
-    @PostMapping("/question")
-    public String questionSave(@AuthenticationPrincipal CustomUserDetails userDetails,
-                               CsCreateDto csCreateDto,
-                               @RequestParam("files") List<MultipartFile> files){
-        Member member = userDetails.getMember();
-        csService.questionSave(csCreateDto, member, files);
-        return "redirect:/admin/cs/questionList";
-    }
+
     @GetMapping("/questionList")
     public String questionList(Model model){
         List<CsListDto> csListDtoList = csService.List();
@@ -111,28 +99,6 @@ public class CsController {
         csService.replySave(csDetailDto, csCreateDto, csListDto);
         return "redirect:/admin/cs/questionList";
     }
-    @GetMapping("/shopApply")
-    public String shopApply(Model model){
-        model.addAttribute("applyDto", new ApplyDto());
-        return "admin/shopApply";
-    }
-    @PostMapping("/shopApply")
-    public String shopRegistration(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                   @ModelAttribute ApplyDto applyDto,
-                                   Model model){
-
-        System.out.println("폼 제출됨: " + applyDto.getApplyNumber());
-
-        Member member = userDetails.getMember();
-        try {
-            csService.registration(applyDto, member);
-        } catch(IllegalStateException e){
-            model.addAttribute("applyDto", applyDto);
-            model.addAttribute("errorMessage", e.getMessage());
-            return "admin/shopApply";
-        }
-        return "redirect:/admin/cs/shopList";
-    }
     @GetMapping("/shopList")
     public String shopList(Model model){
         List<Apply> list = csService.listShop();
@@ -154,6 +120,10 @@ public class CsController {
                              @AuthenticationPrincipal CustomUserDetails userDetails){
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
+    }
+    @GetMapping("/apply")
+    public String apply() {
+        return "admin/bannerApply";
     }
 
 }

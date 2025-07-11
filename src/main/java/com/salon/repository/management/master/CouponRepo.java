@@ -20,4 +20,6 @@ public interface CouponRepo extends JpaRepository<Coupon, Long> {
 
     // 유효기간 지난 쿠폰 목록
     List<Coupon> findByExpireDateBeforeAndIsActiveTrue(LocalDate now);
+
+    List<Coupon> findByShop_IdAndIsActiveTrue(Long shopId);
 }

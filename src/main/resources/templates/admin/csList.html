@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragment/default}">
+      layout:decorate="~{fragment/default}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <th:block layout:fragment="css">
         <link rel="stylesheet" href="/css/admin/csList.css">
@@ -31,7 +31,7 @@
         </tr>
         </tbody>
     </table>
-    <div class="button-wrapper">
+    <div class="button-wrapper" sec:authorize="!hasRole('ADMIN')">
         <a href="/admin/cs/question" id="button">
             <button class="primary-btn">문의 작성하기</button>
         </a>
