@@ -1,5 +1,6 @@
 package com.salon.dto.admin;
 
+import com.salon.entity.management.master.Coupon;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,5 @@ public class CouponBannerListDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String region;
+
 }

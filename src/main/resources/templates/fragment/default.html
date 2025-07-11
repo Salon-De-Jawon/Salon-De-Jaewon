@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="/css/management/designerMenu.css">
     <link rel="stylesheet" href="/css/master/masterMenu.css">
+    <link rel="stylesheet" href="/css/admin/adminMenu.css">
 
 
 
@@ -34,6 +35,9 @@
 
     <!-- 대표 디자이너 전용 메뉴 -->
     <th:block th:replace="~{fragment/masterMenu :: masterMenu}"></th:block>
+
+    <!-- 관리자 전용 메뉴 -->
+    <th:block th:replace="~{fragment/adminMenu :: adminMenu}"></th:block>
 
     <!-- 각 페이지 내용 -->
     <th:block layout:fragment="main">

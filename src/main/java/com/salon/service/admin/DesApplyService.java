@@ -102,6 +102,7 @@ public class DesApplyService {
 
         Member applicant = apply.getMember();
         applicant.setRole(Role.DESIGNER);
+//        return apply.getMember().getId();
     }
 
     // 원래 void 였던거 반환 타입 Apply로 변경 -

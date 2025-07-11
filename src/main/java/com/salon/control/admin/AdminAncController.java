@@ -35,20 +35,25 @@ import java.util.List;
 public class AdminAncController {
     private final AncService ancService;
     private final MemberRepo memberRepo;
+    @Value("${api.encodedKey}")
+    private String encodedKey;
     @Value("${file.anc-file-path}")
     private String ancPath;
 
-    @GetMapping("")
-    public String list(Model model){
-        List<AncListDto> ancListDtoList = ancService.list();
-        model.addAttribute("ancListDto", ancListDtoList);
-        return "admin/announcement";
+        if (!file.exists() || file.isDirectory()) {
+            throw new FileNotFoundException("파일이 없거나 디렉토리입니다.");
+        }
+
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8) + "\"")
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(file.length())
+                .body(resource);
     }
-    @GetMapping("/detail")
-    public String detail(@RequestParam("id") Long id, Model model){
-        AncDetailDto ancDetailDto = ancService.detail(id);
-        model.addAttribute("ancDetailDto", ancDetailDto);
-        return "admin/announcementDetail";}
+
     @GetMapping("/create")
     public String create(Model model){
         model.addAttribute("ancCreateDto", new AncCreateDto());
@@ -63,7 +68,7 @@ public class AdminAncController {
         Member member = userDetails.getMember();
 
         ancService.registration(ancCreateDto, member, files);
-        return "redirect:/";
+        return "redirect:/cs";
     }
     @GetMapping("/update")
     public String updateForm(@RequestParam("id") Long id, Model model){
@@ -76,11 +81,11 @@ public class AdminAncController {
                          @ModelAttribute AncCreateDto ancCreateDto){
         Member member = userDetails.getMember();
         ancService.update(ancCreateDto, member);
-        return "redirect:/";
+        return "redirect:/cs";
     }
     @PostMapping("/delete")
     public String delete(@RequestParam("id") Long id){
         ancService.delete(id);
-        return "redirect:/";
+        return "redirect:/cs";
     }
 }
