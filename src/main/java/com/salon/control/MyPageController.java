@@ -42,4 +42,11 @@ public class MyPageController {
         reviewService.saveReview(dto);
         return "redirect:/myPage/reservation";
     }
+
+    //리뷰
+
+    @GetMapping("/review")
+    public String myReviewPage() {
+        return "/user/myReview";
+    }
 }
