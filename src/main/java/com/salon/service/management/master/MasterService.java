@@ -30,9 +30,12 @@ import com.salon.repository.shop.ShopImageRepo;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -158,17 +161,28 @@ public class MasterService {
         return dtoList;
     }
 
-    // 미용실 디자이너 검색 후 목록 보여주기
-    public List<DesignerResultDto> getSearchResult(DesignerSearchDto searchDto){
+    // 디자이너 검색결과 리스트
+    public List<DesignerResultDto> getDesignerResult(DesignerSearchDto searchDto) {
 
-        List<Designer> designerList = designerRepo.findByMember_NameAndMember_Tel(searchDto.getName(), searchDto.getTel());
+        List<Designer> foundDesigners = new ArrayList<>();
 
-        List<DesignerResultDto> dtoList = new ArrayList<>();
-        for(Designer designer : designerList){
-            dtoList.add(DesignerResultDto.from(designer));
+        // 검색 조건에 따라 리포지토리 메서드 호출
+        if (searchDto.getName() != null && !searchDto.getName().trim().isEmpty()) {
+            foundDesigners = designerRepo.findByMember_NameContainingIgnoreCase(searchDto.getName());
+        } else if (searchDto.getTel() != null && !searchDto.getTel().trim().isEmpty()) {
+            foundDesigners = designerRepo.findByMember_Tel(searchDto.getTel());
+        } else {
+            // 검색어가 없으면 빈 목록 반환 (또는 모든 활성 디자이너 반환 등 정책에 따라)
+            return new ArrayList<>();
         }
 
+        List<DesignerResultDto> dtoList = new ArrayList<>();
+        for (Designer designer : foundDesigners) {
+            dtoList.add(DesignerResultDto.from(designer));
+        }
         return dtoList;
+
+
     }
 
     // 미용실 디자이너 등록 시 저장 메서드
@@ -301,7 +315,5 @@ public class MasterService {
             couponRepo.save(coupon);
         }
     }
-
-
 
 }
