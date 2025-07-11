@@ -52,4 +52,14 @@ public interface PaymentRepo extends JpaRepository<Payment, Long> {
     // 예약 아이디 통해 결제 정보 가져오기
 
     Optional<Payment> findByReservationId(Long reservationId);
+
+    // 페이먼트에서 reservationId 를 통해 ticketid 찾아서 해당 티켓에 연결된 페이먼트만 가져오기
+    @Query("""
+    SELECT p FROM Payment p
+    JOIN FETCH p.reservation r
+    JOIN FETCH p.shopDesigner sd
+    JOIN FETCH sd.shop s
+    WHERE r.ticket.id = :ticketId
+    """)
+    List<Payment> findByTicketId(@Param("ticketId") Long ticketId);
 }

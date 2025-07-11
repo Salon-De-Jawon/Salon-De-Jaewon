@@ -2,6 +2,7 @@ package com.salon.service.management.master;
 
 import com.salon.constant.LeaveStatus;
 import com.salon.constant.LikeType;
+import com.salon.constant.ServiceCategory;
 import com.salon.constant.UploadType;
 import com.salon.dto.UploadedFileDto;
 import com.salon.dto.designer.DesignerListDto;
@@ -12,6 +13,7 @@ import com.salon.entity.management.Designer;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
@@ -28,16 +30,18 @@ import com.salon.repository.shop.ShopImageRepo;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -140,31 +144,45 @@ public class MasterService {
     }
 
     // 미용실 소속 디자이너 목록 가져오기
-    public List<DesignerListDto> getDesignerList(Long shopId){
+    public List<DesignerListDto> getDesignerList(Long memberId){
+
+        Long shopId = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop().getId();
 
         List<ShopDesigner> designerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
 
         List<DesignerListDto> dtoList = new ArrayList<>();
         for(ShopDesigner designer : designerList){
+            DesignerService service = designerServiceRepo.findByShopDesignerId(designer.getId()).orElse(null);
             int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designer.getId());
             int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designer.getId());
-            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount));
+            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount, service));
         }
 
         return dtoList;
     }
 
-    // 미용실 디자이너 검색 후 목록 보여주기
-    public List<DesignerResultDto> getSearchResult(DesignerSearchDto searchDto){
+    // 디자이너 검색결과 리스트
+    public List<DesignerResultDto> getDesignerResult(DesignerSearchDto searchDto) {
 
-        List<Designer> designerList = designerRepo.findByMember_NameAndMember_Tel(searchDto.getName(), searchDto.getTel());
+        List<Designer> foundDesigners = new ArrayList<>();
 
-        List<DesignerResultDto> dtoList = new ArrayList<>();
-        for(Designer designer : designerList){
-            dtoList.add(DesignerResultDto.from(designer));
+        // 검색 조건에 따라 리포지토리 메서드 호출
+        if (searchDto.getName() != null && !searchDto.getName().trim().isEmpty()) {
+            foundDesigners = designerRepo.findByMember_NameContainingIgnoreCase(searchDto.getName());
+        } else if (searchDto.getTel() != null && !searchDto.getTel().trim().isEmpty()) {
+            foundDesigners = designerRepo.findByMember_Tel(searchDto.getTel());
+        } else {
+            // 검색어가 없으면 빈 목록 반환 (또는 모든 활성 디자이너 반환 등 정책에 따라)
+            return new ArrayList<>();
         }
 
+        List<DesignerResultDto> dtoList = new ArrayList<>();
+        for (Designer designer : foundDesigners) {
+            dtoList.add(DesignerResultDto.from(designer));
+        }
         return dtoList;
+
+
     }
 
     // 미용실 디자이너 등록 시 저장 메서드
@@ -195,29 +213,71 @@ public class MasterService {
     public ShopEditDto getShopEdit(Long memberId){
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
+        List<ShopImage> images = shopImageRepo.findByShopId(designer.getShop().getId());
 
-        return ShopEditDto.from(designer.getShop());
+        List<ShopImageDto> imageDtos = new ArrayList<>();
+        for(ShopImage image : images){
+            imageDtos.add(ShopImageDto.from(image));
+        }
+
+        return ShopEditDto.from(designer.getShop(), imageDtos);
 
     }
 
     // 매장 수정 저장
     @Transactional
-    public void saveShopEdit(ShopEditDto dto, Long memberId){
+    public void saveShopEdit(ShopEditDto dto, List<MultipartFile> files, List<Long> deletedImageIds, Long thumbnailImageId){
 
-        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId);
-
-        for(MultipartFile file : dto.getImages()){
-            UploadedFileDto image = fileService.upload(file, UploadType.SHOP);
-            ShopImage shopImage = new ShopImage();
-            shopImage.setShop(designer.getShop());
-            shopImage.setOriginalName(image.getOriginalFileName());
-            shopImage.setImgName(image.getFileName());
-            shopImage.setImgUrl(image.getFileUrl());
-            shopImageRepo.save(shopImage);
-        }
-        Shop shop = dto.to(designer.getShop());
-
+        Shop shop = shopRepo.findById(dto.getId()).orElse(null);
+        shop = dto.to(shop);
         shopRepo.save(shop);
+
+        // 기존 이미지 삭제 처리
+        if (deletedImageIds != null) {
+            for (Long id : deletedImageIds) {
+                shopImageRepo.deleteById(id);
+            }
+        }
+
+        // 새 이미지 저장 및 ID 매핑
+        Map<String, Long> newImageIdMap = new HashMap<>();
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                UploadedFileDto fileDto = fileService.upload(file, UploadType.SHOP);
+
+                ShopImage image = new ShopImage();
+                image.setShop(shop);
+                image.setOriginalName(fileDto.getOriginalFileName());
+                image.setImgName(fileDto.getFileName());
+                image.setImgUrl(fileDto.getFileUrl());
+                image.setIsThumbnail(false); // 기본 썸네일 아님
+
+                shopImageRepo.save(image);
+
+                // 고유 ID 매핑 → "new_filename_size"
+                String key = "new_" + file.getOriginalFilename() + "_" + file.getSize();
+                newImageIdMap.put(key, image.getId());
+            }
+        }
+
+        // 썸네일 지정
+        List<ShopImage> allImages = shopImageRepo.findByShopId(shop.getId());
+        for (ShopImage img : allImages) {
+            boolean isThumbnail = false;
+
+            if (thumbnailImageId != null && img.getId().equals(thumbnailImageId)) {
+                isThumbnail = true;
+            } else if (dto.getThumbnailImageTempId() != null && dto.getThumbnailImageTempId().startsWith("new_")) {
+                Long matchedId = newImageIdMap.get(dto.getThumbnailImageTempId());
+                if (matchedId != null && img.getId().equals(matchedId)) {
+                    isThumbnail = true;
+                }
+            }
+
+            img.setIsThumbnail(isThumbnail);
+            shopImageRepo.save(img);
+        }
+
     }
 
     // 쿠폰 페이지 목록
@@ -255,7 +315,5 @@ public class MasterService {
             couponRepo.save(coupon);
         }
     }
-
-
 
 }

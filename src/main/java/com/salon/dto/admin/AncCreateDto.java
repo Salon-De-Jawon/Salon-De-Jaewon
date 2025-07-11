@@ -19,6 +19,7 @@ public class AncCreateDto {
     private String fileUrl;
 
 
+
     public static Announcement to(AncCreateDto ancCreateDto, Member member){
         Announcement announcement = new Announcement();
         announcement.setTitle(ancCreateDto.getTitle());

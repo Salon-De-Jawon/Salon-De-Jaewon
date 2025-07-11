@@ -8,18 +8,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WebNotificationService {
     private final SimpMessagingTemplate messagingTemplate;
     private final WebNotificationRepo webNotificationRepo;
 
-    // 웹 알림 발생하는 시점에서 receiverId 저장해서(받는 유저) 넘기기
-    public void sendWebSocketNotification (Long receiverId, WebNotification entity) {
 
-        // 웹알림 받는 사람
+    //웹알림 저장 웹소켓 전송
+
+    public void notify(Long receiverId, String message, WebTarget target, Long targetId) {
+        // 알림 객체 생성
+        WebNotificationDto dto = new WebNotificationDto();
+        dto.setMessage(message);
+        dto.setReceiverId(receiverId);
+        dto.setWebTarget(target);
+        dto.setTargetId(targetId);
+
+        // Entity로 변환 및 저장
+        WebNotification saved = webNotificationRepo.save(dto.to());
+
+        // 웹소켓 전송
+        sendWebSocketNotification(receiverId, saved);
+    }
+
+    // 웹 알림 발생하는 시점에서 receiverId 저장해서(받는 유저) 넘기기
+    public void sendWebSocketNotification(Long receiverId, WebNotification entity) {
         String destination = "/topic/notify/" + receiverId;
-        // 웹 알림 내용
         WebNotificationDto dto = WebNotificationDto.from(entity);
 
         System.out.println("웹소켓 알림 전송 시도 → 대상: " + destination);
@@ -39,5 +56,16 @@ public class WebNotificationService {
             webNotification.setRead(true);
             webNotificationRepo.save(webNotification);
         }
+    }
+
+    public void markAllAsReadByMember(Long memberId) {
+        List<WebNotification> notifications = webNotificationRepo
+                .findAllByMemberIdAndIsReadFalse(memberId);
+
+        for (WebNotification n : notifications) {
+            n.setRead(true);
+        }
+
+        webNotificationRepo.saveAll(notifications);
     }
 }

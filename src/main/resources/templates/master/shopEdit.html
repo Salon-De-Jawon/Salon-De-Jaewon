@@ -13,40 +13,39 @@
 <div layout:fragment="main" id="main">
     <div class="section-container">
         <h3>매장 정보 수정</h3>
+        <div class="customer-card">
+            <form  th:object="${shop}">
+                <input type="hidden" th:field="*{id}" />
 
-        <form id="shop-edit-form" th:action="@{/master/shop-edit/update}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" th:value="${shop.id}"/>
-
-            <div class="customer-card">
 
                 <div class="customer-header">
                     <strong>매장명</strong>
-                    <input type="text" name="name" placeholder="매장 이름을 입력하세요" th:value="${shop.name}" required />
+                    <input type="text" th:field="*{name}" placeholder="매장 이름을 입력하세요" required />
                 </div>
 
                 <div class="customer-header">
                     <strong>연락처</strong>
-                    <input type="text" name="tel" placeholder="전화번호 입력" th:value="${shop.tel}" />
+                    <input type="text" th:field="*{tel}" placeholder="전화번호 입력" />
                 </div>
 
                 <div class="customer-header">
                     <strong>주소</strong>
                     <div class="address-wrapper">
                         <div class="address-row">
-                            <input type="text" id="postcode" placeholder="우편번호" readonly>
+                            <input type="text" id="postcode" placeholder="우편번호" readonly />
                             <button type="button" class="btn-search-address" onclick="execDaumPostcode()">우편번호 찾기</button>
                         </div>
 
-                        <input type="text" id="roadAddress" placeholder="도로명주소" th:value="${shop.address}" readonly>
+                        <input type="text" id="roadAddress" placeholder="도로명주소" th:value="*{address}" readonly />
 
                         <div class="address-row">
-                            <input type="text" id="detailAddress" name="addressDetail" placeholder="상세주소 입력"
-                                   th:value="${shop.addressDetail}">
-                            <input type="text" id="extraAddress" placeholder="참고항목" readonly>
+                            <input type="text" id="detailAddress" th:field="*{addressDetail}" placeholder="상세주소 입력" />
+                            <input type="text" id="extraAddress" placeholder="참고항목" readonly />
                         </div>
-                        <input type="hidden" name="latitude" th:value="${shop.latitude}" />
-                        <input type="hidden" name="longitude" th:value="${shop.longitude}" />
-                        <input type="hidden" name="address" id="fullAddress" th:value="${shop.address}" />
+
+                        <input type="hidden" th:field="*{latitude}" />
+                        <input type="hidden" th:field="*{longitude}" />
+                        <input type="hidden" th:field="*{address}" id="fullAddress" />
                     </div>
                 </div>
 
@@ -58,79 +57,92 @@
 
                 <div class="customer-header">
                     <strong>운영시간</strong>
-                    <input type="time" name="openTime" th:value="${shop.openTime}" /> ~
-                    <input type="time" name="closeTime" th:value="${shop.closeTime}" />
+                    <input type="time" name="openTime" id="openTime" th:value="${#temporals.format(shop.openTime, 'HH:mm')}" />
+                    <input type="time" name="closeTime" id="closeTime" th:value="${#temporals.format(shop.closeTime, 'HH:mm')}" />
                 </div>
 
                 <div class="customer-header">
                     <strong>지각 기준 (분)</strong>
-                    <input type="number" name="lateMin" min="0" th:value="${shop.lateMin}" />
+                    <input type="number" th:field="*{lateMin}" min="0" />
                 </div>
 
                 <div class="customer-header">
                     <strong>조퇴 기준 (분)</strong>
-                    <input type="number" name="earlyLeaveMin" min="0" th:value="${shop.earlyLeaveMin}" />
+                    <input type="number" th:field="*{earlyLeaveMin}" min="0" />
                 </div>
 
                 <div class="customer-header">
                     <strong>예약 간격 (분)</strong>
-                    <input type="number" name="reservationInterval" min="10" step="5" th:value="${shop.reservationInterval}" />
+                    <input type="number" th:field="*{reservationInterval}" min="10" step="5" />
                 </div>
 
                 <div class="customer-header">
                     <strong>마감 전 예약 제한시간 (분)</strong>
-                    <input type="number" name="timeBeforeClosing" min="0" th:value="${shop.timeBeforeClosing}" />
+                    <input type="number" th:field="*{timeBeforeClosing}" min="0" />
                 </div>
 
                 <div class="customer-header">
                     <strong>휴무 요일</strong>
-                    <select name="dayOff" th:value="${shop.dayOff}">
-                        <option value="0" th:selected="${shop.dayOff == 0}">없음</option>
-                        <option value="1" th:selected="${shop.dayOff == 1}">월요일</option>
-                        <option value="2" th:selected="${shop.dayOff == 2}">화요일</option>
-                        <option value="4" th:selected="${shop.dayOff == 4}">수요일</option>
-                        <option value="8" th:selected="${shop.dayOff == 8}">목요일</option>
-                        <option value="16" th:selected="${shop.dayOff == 16}">금요일</option>
-                        <option value="32" th:selected="${shop.dayOff == 32}">토요일</option>
-                        <option value="64" th:selected="${shop.dayOff == 64}">일요일</option>
+                    <select th:field="*{dayOff}">
+                        <option value="0">없음</option>
+                        <option value="1">월요일</option>
+                        <option value="2">화요일</option>
+                        <option value="4">수요일</option>
+                        <option value="8">목요일</option>
+                        <option value="16">금요일</option>
+                        <option value="32">토요일</option>
+                        <option value="64">일요일</option>
                     </select>
                     <span style="font-size: 13px; color: #999;">※ 이진법으로 계산됩니다.</span>
                 </div>
 
                 <div class="customer-header">
                     <strong>매장 소개</strong>
-                    <textarea name="description" placeholder="매장 설명 입력"
-                              th:text="${shop.description}"></textarea>
+                    <textarea th:field="*{description}" placeholder="매장 설명 입력"></textarea>
                 </div>
+            </form>
+            <form id="shop-edit-form"  enctype="multipart/form-data" >
+                <div class="customer-header">
+                    <strong>사진 업로드</strong>
+                    <div class="shop-image-upload">
+                        <!-- 업로드 버튼 -->
+                        <input type="file" id="shopImageInput" name="files" multiple accept="image/*" />
+                        <label for="shopImageInput" class="custom-upload-label">📷 사진 업로드</label>
 
-                <div class="shop-image-upload">
-                    <label for="shopImageInput" class="custom-upload-label">
-                        📷 사진 업로드
-                    </label>
-                    <!-- name="shopImages"로 지정, multiple 추가 -->
-                    <input type="file" id="shopImageInput" name="shopImages" multiple accept="image/*" />
+                        <!-- 이미지 미리보기 영역 -->
+                        <div id="shopImagePreview" class="image-preview-container">
+                            <th:block th:each="image, iterStat : ${shop.shopImages}">
+                                <div class="preview-image-wrapper" th:data-id="${image.id}">
+                                    <img th:src="@{${image.imgUrl}}" class="preview-image" th:alt="${image.originalName}" />
 
-                    <!-- 업로드된 이미지 미리보기 영역 -->
-                    <div id="shopImagePreview" class="image-preview-container">
-                        <!-- 자바스크립트로 미리보기 렌더링됨 -->
+                                    <!-- 썸네일 선택용 라디오 -->
+                                    <input type="radio"
+                                           name="thumbnailImageId"
+                                           class="thumbnail-radio"
+                                           th:value="${image.id}"
+                                           th:checked="${image.isThumbnail} ? 'checked' : null" />
+
+                                    <!-- 삭제 버튼 -->
+                                    <button type="button" class="btn-delete-img" th:data-id="${image.id}">×</button>
+
+                                </div>
+                            </th:block>
+                        </div>
                     </div>
                 </div>
 
-
-            </div>
-
-            <div style="text-align: right;">
-                <button type="submit" class="btn-edit">저장하기</button>
-            </div>
-        </form>
+                <div style="text-align: right;">
+                    <button type="button" class="btn-edit" onclick="submitShopEdit()">저장하기</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <th:block layout:fragment="script">
-
-    <!--  카카오 우편코드 스크립트  -->
     <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0bcfa737cae58afd2f78fe737895ea3b&autoload=false&libraries=services"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
     <script>
         // 전역에 미리 함수 선언
         window.execDaumPostcode = function () {
@@ -214,40 +226,165 @@
         });
     </script>
 
-    // 이미지 미리보기 및 삭제
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const input = document.getElementById("shopImageInput");
-          const preview = document.getElementById("shopImagePreview");
+        let selectedFiles = []; // 새로 선택한 파일들
+        let deletedImageIds = []; // 기존 이미지 삭제 id 모음
+        let thumbnailRadioMap = new Map(); // 새 이미지 썸네일 매핑용
 
-          input.addEventListener("change", function () {
-            preview.innerHTML = ""; // 초기화
+        // 기존 이미지 삭제
+        function deleteExistingImage(id) {
+          console.log('삭제 요청 id:', id);
+          const imageDiv = document.querySelector(`.preview-image-wrapper[data-id="${id}"]`);
+          if (imageDiv) {
+            const wasChecked = imageDiv.querySelector('input.thumbnail-radio')?.checked || false;
 
-            Array.from(input.files).forEach((file) => {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                const wrapper = document.createElement("div");
-                wrapper.className = "preview-image-wrapper";
+            imageDiv.remove();
+            deletedImageIds.push(Number(id));
+            console.log('삭제된 이미지 ID 목록:', deletedImageIds);
 
-                const img = document.createElement("img");
-                img.src = e.target.result;
+            if (wasChecked) {
+              // 썸네일 라디오가 삭제된 경우, 다른 라디오 선택
+              selectFirstAvailableThumbnail();
+            }
+          } else {
+            console.warn('삭제할 이미지 요소를 찾지 못했습니다:', id);
+          }
+        }
 
-                const delBtn = document.createElement("button");
-                delBtn.innerText = "삭제";
-                delBtn.className = "btn-delete-img";
-                delBtn.addEventListener("click", () => {
-                  wrapper.remove();
-                  input.value = "";
-                });
+        // 삭제 후 썸네일 라디오 최소 1개 유지 함수
+        function selectFirstAvailableThumbnail() {
+          const radios = document.querySelectorAll('input.thumbnail-radio');
+          if (radios.length === 0) return; // 라디오가 하나도 없으면 할 수 없음
 
-                wrapper.appendChild(img);
-                wrapper.appendChild(delBtn);
-                preview.appendChild(wrapper);
-              };
-              reader.readAsDataURL(file);
+          const anyChecked = Array.from(radios).some(r => r.checked);
+          if (!anyChecked) {
+            radios[0].checked = true;
+          }
+        }
+
+        // 새 이미지 선택 시 미리보기 추가
+        document.getElementById('shopImageInput').addEventListener('change', function () {
+            const preview = document.getElementById('shopImagePreview');
+            const newFiles = Array.from(this.files);
+
+            newFiles.forEach(file => {
+                if (selectedFiles.some(f => f.name === file.name && f.size === file.size)) return;
+
+                selectedFiles.push(file);
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('preview-image-wrapper');
+
+                    // 고유 ID: fileName + size (백엔드에서도 계산 가능)
+                    const newId = `new_${file.name}_${file.size}`;
+                    wrapper.setAttribute('data-id', newId);
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('preview-image');
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'thumbnailImageId';
+                    radio.classList.add('thumbnail-radio');
+                    radio.value = newId;
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerText = '×';
+                    deleteBtn.classList.add('btn-delete-img');
+                    deleteBtn.addEventListener('click', () => {
+                        wrapper.remove();
+                        selectedFiles = selectedFiles.filter(f => f !== file);
+                    });
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(radio);
+                    wrapper.appendChild(deleteBtn);
+                    document.getElementById('shopImagePreview').appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
             });
-          });
+
+
+            this.value = '';
         });
+
+        // 삭제 버튼 처리
+        document.getElementById('shopImagePreview').addEventListener('click', e => {
+            if (e.target.classList.contains('btn-delete-img')) {
+                const wrapper = e.target.closest('.preview-image-wrapper');
+                const id = wrapper?.getAttribute('data-id');
+
+                if (id && !id.startsWith('new_')) {
+                    deleteExistingImage(id); // 기존 이미지
+                } else {
+                    wrapper?.remove(); // 새 이미지
+                    selectedFiles = selectedFiles.filter((f, idx) => {
+                        const fileId = [...thumbnailRadioMap.entries()].find(([k, v]) => v === f)?.[0];
+                        return fileId !== id;
+                    });
+                    thumbnailRadioMap.delete(id);
+                }
+            }
+        });
+
+        // 저장 함수
+        function submitShopEdit() {
+            const formData = new FormData();
+
+            const shopData = {
+                id: document.querySelector('input[name="id"]').value,
+                name: document.querySelector('input[name="name"]').value,
+                tel: document.querySelector('input[name="tel"]').value,
+                address: document.querySelector('#roadAddress').value,
+                addressDetail: document.querySelector('#detailAddress').value,
+                latitude: document.querySelector('input[name="latitude"]').value,
+                longitude: document.querySelector('input[name="longitude"]').value,
+                openTime: document.querySelector('#openTime').value,
+                closeTime: document.querySelector('#closeTime').value,
+                lateMin: parseInt(document.querySelector('input[name="lateMin"]').value, 10),
+                earlyLeaveMin: parseInt(document.querySelector('input[name="earlyLeaveMin"]').value, 10),
+                reservationInterval: parseInt(document.querySelector('input[name="reservationInterval"]').value, 10),
+                timeBeforeClosing: parseInt(document.querySelector('input[name="timeBeforeClosing"]').value, 10),
+                dayOff: parseInt(document.querySelector('select[name="dayOff"]').value, 10),
+                description: document.querySelector('textarea[name="description"]').value
+            };
+
+            formData.append('shopEditDto', JSON.stringify(shopData));
+
+            // 썸네일 라디오 선택
+            const thumbnailRadio = document.querySelector('input[name="thumbnailImageId"]:checked');
+            const thumbnailId = thumbnailRadio ? thumbnailRadio.value : '';
+            formData.append('thumbnailImageId', thumbnailId);
+
+            // 새 이미지 추가
+            selectedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+
+            // 삭제된 이미지 ID
+            formData.append('deletedImageIds', JSON.stringify(deletedImageIds));
+
+            console.log('썸네일:', thumbnailId);
+            console.log('삭제 ID 목록:', deletedImageIds);
+            console.log('선택된 파일들:', selectedFiles);
+
+            fetch('/master/shop-edit/update', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    alert('저장 성공!');
+                    location.href = '/master';
+                } else {
+                    alert('저장 실패');
+                }
+            }).catch(error => {
+                console.error('전송 오류:', error);
+            });
+        }
     </script>
 
 
