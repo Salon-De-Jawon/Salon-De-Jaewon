@@ -3,6 +3,7 @@ package com.salon.control;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
+import com.salon.service.WebNotificationService;
 import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,6 +45,7 @@ public class MainController {
     private final KakaoMapService kakaoMapService;
     private final SalonService salonService;
     private final CompareService compareService;
+    private final WebNotificationService webNotificationService;
 
 
     @GetMapping("/")
@@ -52,6 +55,10 @@ public class MainController {
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
         }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal 클래스: " + principal.getClass());
+        System.out.println("principal 값: " + principal);
 
         model.addAttribute("kakaoMapsKey", kakaoMapsKey);
 
@@ -180,6 +187,14 @@ public class MainController {
     public Map<String, Boolean> checkLoginId(@RequestParam String loginId) {
        boolean exists = memberService.existsByLoginId(loginId);
        return Map.of("exists", exists);
+    }
+
+    // 웹 알림 읽음 표시
+    @PostMapping("/api/notification/read")
+    @ResponseBody
+    public ResponseEntity<?> markAsRead(@RequestBody NotificationReadDto dto) {
+        webNotificationService.markAsReadByTarget(dto.getWebTarget(), dto.getTargetId());
+        return ResponseEntity.ok().build();
     }
 
 

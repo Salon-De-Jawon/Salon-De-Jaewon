@@ -6,10 +6,6 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/shop/shopDetail.css">
   </th:block>
-
-  <th:block layout:fragment="script" >
-    <script th:src="@{/javascript/shop/shopDetail.js}" defer></script>
-  </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
@@ -623,13 +619,6 @@
             <img src="" alt="더보기 이미지" />
             <span class="r-plus">+ 더보기</span>
           </div>
-        </div>
-
-        <!-- 사진 리뷰 작성 버튼 -->
-        <div class="r-photo-btn-wrap">
-          <button class="r-photo-btn">
-            <i class="fa fa-image"></i> 사진 리뷰 작성
-          </button>
         </div>
 
         <!-- 리뷰 리스트 -->

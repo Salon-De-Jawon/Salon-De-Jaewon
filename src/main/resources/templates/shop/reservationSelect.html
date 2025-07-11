@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+  <th:block layout:fragment="css">
+    <link rel="stylesheet" href="/css/shop/reservationSelect.css">
+  </th:block>
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+</head>
+<body>
+<div layout:fragment="main" id="main">
+  <!-- 디자이너 선택 섹션 -->
+  <section id="designer-section" th:if="${selectedDesignerId == null}">
+    <!-- 디자이너 리스트 -->
+  </section>
+
+  <section id="designer-fixed-section" th:if="${selectedDesignerId != null}">
+    <p>디자이너: <span th:text="${selectedDesignerId}">디자이너 ID</span></p>
+    <button onclick="window.location.href='/reservation/write?shopId=${shopId}'">디자이너 변경</button>
+  </section>
+
+    <!-- 디자이너 리스트 더보기 버튼 -->
+    <div class="designer-more">
+      <button class="btn-more">더보기</button>
+    </div>
+
+    <!-- 디자이너 리스트 변경 버튼 처음엔 숨김 처리-->
+    <div
+            class="designer-selected-summary"
+            style="display: none; text-align: center; margin-top: 16px"
+    >
+      <p
+              class="selected-designer-name"
+              style="font-size: 16px; font-weight: 600"
+      ></p>
+      <button class="btn-more">디자이너 변경</button>
+    </div>
+  </section>
+
+  <!-- 선택한 디자이너의 전문시술 분야 리스트 -->
+  <section class="service-list">
+    <h2>시술 선택</h2>
+
+    <!-- 전문 시술 분야 카테고리 버튼 -->
+    <div class="service-filters">
+      <button class="category-btn active" data-tab="all">전체</button>
+      <button class="category-btn" data-tab="cut">커트</button>
+      <button class="category-btn" data-tab="perm">펌</button>
+      <button class="category-btn" data-tab="clinic">클리닉</button>
+    </div>
+
+    <!-- 커트 카테고리 리스트 -->
+    <div class="service-category" data-category="cut">
+      <h3>커트</h3>
+
+      <ul class="service-items">
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">여성커트</span>
+            <span class="service-price">20,000</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">남성커트</span>
+            <span class="service-price">15,000</span>
+          </div>
+        </li>
+      </ul>
+      <!-- 커트 리스트 더보기 버튼 -->
+      <div class="service-more">
+        <button class="btn-more">더보기</button>
+      </div>
+    </div>
+
+    <!-- 펌 카테고리 리스트 -->
+    <div class="service-category" data-category="perm">
+      <h3>펌</h3>
+
+      <ul class="service-items">
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">여성펌</span>
+            <span class="service-price">50,000</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">남성다운펌</span>
+            <span class="service-price">10,000</span>
+          </div>
+        </li>
+      </ul>
+      <!-- 펌 리스트 더보기 버튼 -->
+      <div class="service-more">
+        <button class="btn-more">더보기</button>
+      </div>
+    </div>
+
+    <!-- 클리닉 카테고리 리스트 -->
+    <div class="service-category" data-category="clinic">
+      <h3>클리닉</h3>
+
+      <ul class="service-items">
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">모발 영양 클리닉</span>
+            <span class="service-price">100,000</span>
+          </div>
+        </li>
+        <li>
+          <input type="checkbox" name="service" />
+          <div>
+            <span class="service-name">두피 스케일링</span>
+            <span class="service-price">100,000</span>
+          </div>
+        </li>
+      </ul>
+      <!-- 클리닉 리스트 더보기 버튼 -->
+      <div class="service-more">
+        <button class="btn-more">더보기</button>
+      </div>
+    </div>
+    <!-- 시술 선택 결과 표시 (처음엔 숨김) -->
+    <div
+            class="service-selected-summary"
+            style="display: none; text-align: center; margin-top: 24px"
+    >
+      <p
+              class="selected-service-info"
+              style="font-size: 16px; font-weight: 500"
+      ></p>
+      <button class="btn-more change-service-btn">시술 변경</button>
+    </div>
+  </section>
+
+  <section class="datetimeselect" id="schedule-select">
+    <h2>날짜 및 시간 선택</h2>
+
+    <!-- 월 + 날짜 버튼 묶음 -->
+    <div class="date-picker-wrap">
+      <div class="claendar-month-label">7월</div>
+      <div class="date-picker">
+        <button class="date-btn">
+          <span class="day">화</span><span class="date">08</span>
+        </button>
+        <button class="date-btn">
+          <span class="day">수</span><span class="date">09</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 시간 선택 그리드 -->
+    <div class="time-grid">
+      <button class="time-btn">12:30</button>
+      <button class="time-btn">13:00</button>
+      <button class="time-btn">13:30</button>
+      <button class="time-btn">14:00</button>
+      <button class="time-btn">14:30</button>
+
+      <button class="time-btn">15:00</button>
+      <button class="time-btn">15:30</button>
+      <button class="time-btn">16:00</button>
+      <button class="time-btn">16:30</button>
+      <button class="time-btn">17:00</button>
+    </div>
+  </section>
+
+  <!-- 조건 만족 시 -->
+  <div class="reservation-summary">
+    <div class="reservation-inner">
+      <div class="total-price">
+        총 결제금액: <span id="selected-price"></span>원
+      </div>
+      <button class="btn-reserve">예약하기</button>
+    </div>
+  </div>
+
+</div>
+<th:block layout:fragment="script">
+  <script th:src="@{/javascript/shop/reservation.js}" defer></script>
+</th:block>
+</body>
+</html>

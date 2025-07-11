@@ -19,4 +19,6 @@ public interface MemberRepo extends JpaRepository<Member, Long> {
     boolean existsByLoginId(String loginId);
 
     List<Member> findByNameContainingIgnoreCaseOrTelContaining(String namePart, String telPart);
+
+
 }

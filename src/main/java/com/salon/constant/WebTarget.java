@@ -1,5 +1,5 @@
 package com.salon.constant;
 
 public enum WebTarget {
-    REVIEW
+    REVIEW, DESAPPLY, SHOPAPPLY, CS, BANNER, RESERVATION
 }
