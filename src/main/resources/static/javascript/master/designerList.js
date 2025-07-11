@@ -194,6 +194,5 @@ document.addEventListener('DOMContentLoaded', () => {
        } else {
          alert('디자이너를 선택해주세요.');
        }
-     });
   });
 });

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.designer.DesignerListDto;
+import com.salon.dto.management.ServiceForm;
 import com.salon.dto.management.master.*;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -76,23 +78,23 @@ public class MasterController {
         return ResponseEntity.ok(foundDesigners);
     }
 
-//    // 디자이너 추가 API
-//    @PostMapping("/add-designer")
-//    public ResponseEntity<DesignerListDto> addDesignerToShop(
-//            @RequestParam Long designerId, // <-- DesignerAddRequestDto 대신 @RequestParam으로 직접 받습니다.
-//            @AuthenticationPrincipal Long memberId) {
-//
-//        try {
-//            // 서비스 메서드 호출 시 designerId를 직접 전달합니다.
-//            DesignerListDto newShopDesignerDto = masterService.addDesigner(designerId, memberId);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(newShopDesignerDto);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().build();
-//        } catch (Exception e) {
-//            System.err.println("디자이너 추가 중 서버 오류: " + e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    // 디자이너 추가 API
+    @PostMapping("/add-designer")
+    public ResponseEntity<DesignerListDto> addDesignerToShop(
+            @RequestParam Long designerId, // <-- DesignerAddRequestDto 대신 @RequestParam으로 직접 받습니다.
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        try {
+            // 서비스 메서드 호출 시 designerId를 직접 전달합니다.
+            DesignerListDto newShopDesignerDto = masterService.addDesignerList(designerId, userDetails.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(newShopDesignerDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            System.err.println("디자이너 추가 중 서버 오류: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     // 디자이너 수정 페이지
     @GetMapping("/designer/edit")
@@ -102,12 +104,45 @@ public class MasterController {
     }
 
 
-    // 예약 관리
-    @GetMapping("/reservations")
-    public String reservations(){
+    // 시술 관리 페이지
+    @GetMapping("/services")
+    public String reservations(@AuthenticationPrincipal CustomUserDetails userDetails,
+                               Model model){
 
-        return "master/reservations";
+        List<ServiceForm> serviceList = masterService.getServiceList(userDetails.getId());
+
+        model.addAttribute("serviceList", serviceList);
+
+        return "master/services";
     }
+
+    // 시술 수정 페이지
+    @GetMapping("/services/{serviceId}")
+    @ResponseBody
+    public ResponseEntity<ServiceForm> getServiceDetails(@PathVariable Long serviceId) {
+
+        Optional<ServiceForm> serviceFormOptional = masterService.getServiceEdit(serviceId);
+
+        if (serviceFormOptional.isPresent()) {
+            return ResponseEntity.ok(serviceFormOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 시술 저장
+    @PostMapping("/services")
+    @ResponseBody
+    public ResponseEntity<ServiceForm> createService(@ModelAttribute ServiceForm serviceForm,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        ServiceForm createdService = masterService.addService(userDetails.getId(), serviceForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
+    }
+
+
+
+
 
     // 매장 관리
     @GetMapping("/shop-edit")
@@ -178,8 +213,5 @@ public class MasterController {
 
         return "redirect:/master/coupons";
     }
-
-
-
 
 }
