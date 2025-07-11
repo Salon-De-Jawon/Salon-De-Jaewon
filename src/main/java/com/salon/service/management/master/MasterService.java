@@ -36,9 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -211,8 +209,8 @@ public class MasterService {
     @Transactional
     public void saveShopEdit(ShopEditDto dto, List<MultipartFile> files, List<Long> deletedImageIds, Long thumbnailImageId){
 
-        Shop editedShop = shopRepo.findById(dto.getId()).orElse(null);
-        Shop shop = dto.to(editedShop);
+        Shop shop = shopRepo.findById(dto.getId()).orElse(null);
+        shop = dto.to(shop);
         shopRepo.save(shop);
 
         // 기존 이미지 삭제 처리
@@ -222,34 +220,44 @@ public class MasterService {
             }
         }
 
-        // 이미지 저장
-        if(files != null && !files.isEmpty()){
+        // 새 이미지 저장 및 ID 매핑
+        Map<String, Long> newImageIdMap = new HashMap<>();
+        if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 UploadedFileDto fileDto = fileService.upload(file, UploadType.SHOP);
+
                 ShopImage image = new ShopImage();
                 image.setShop(shop);
                 image.setOriginalName(fileDto.getOriginalFileName());
                 image.setImgName(fileDto.getFileName());
                 image.setImgUrl(fileDto.getFileUrl());
-                image.setIsThumbnail(false);
+                image.setIsThumbnail(false); // 기본 썸네일 아님
 
                 shopImageRepo.save(image);
+
+                // 고유 ID 매핑 → "new_filename_size"
+                String key = "new_" + file.getOriginalFilename() + "_" + file.getSize();
+                newImageIdMap.put(key, image.getId());
             }
         }
 
-        // 썸네일 처리
-
+        // 썸네일 지정
         List<ShopImage> allImages = shopImageRepo.findByShopId(shop.getId());
-
         for (ShopImage img : allImages) {
+            boolean isThumbnail = false;
+
             if (thumbnailImageId != null && img.getId().equals(thumbnailImageId)) {
-                img.setIsThumbnail(true);
-            } else {
-                img.setIsThumbnail(false);
+                isThumbnail = true;
+            } else if (dto.getThumbnailImageTempId() != null && dto.getThumbnailImageTempId().startsWith("new_")) {
+                Long matchedId = newImageIdMap.get(dto.getThumbnailImageTempId());
+                if (matchedId != null && img.getId().equals(matchedId)) {
+                    isThumbnail = true;
+                }
             }
+
+            img.setIsThumbnail(isThumbnail);
             shopImageRepo.save(img);
         }
-
 
     }
 

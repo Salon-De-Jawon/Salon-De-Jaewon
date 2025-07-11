@@ -16,6 +16,7 @@ public class ShopImageDto {
 
     public static ShopImageDto from (ShopImage image) {
         ShopImageDto dto = new ShopImageDto();
+        dto.setId(image.getId());
         dto.setImgUrl(image.getImgUrl());
         dto.setIsThumbnail(image.getIsThumbnail());
 

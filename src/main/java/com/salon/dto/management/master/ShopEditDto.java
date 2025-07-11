@@ -43,6 +43,9 @@ public class ShopEditDto {
     // 기존 이미지
     private List<ShopImageDto> shopImages;
 
+    // "new_xxx"용 임시 ID
+    private String thumbnailImageTempId;
+
 
     public static ShopEditDto from(Shop shop, List<ShopImageDto> images) {
         ShopEditDto dto = new ShopEditDto();

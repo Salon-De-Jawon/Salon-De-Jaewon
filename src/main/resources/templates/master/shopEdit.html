@@ -144,20 +144,38 @@
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <script>
-
         let selectedFiles = []; // 새로 선택한 파일들
         let deletedImageIds = []; // 기존 이미지 삭제 id 모음
+        let thumbnailRadioMap = new Map(); // 새 이미지 썸네일 매핑용
 
-        // 기존 이미지 삭제 시 호출
+        // 기존 이미지 삭제
         function deleteExistingImage(id) {
           console.log('삭제 요청 id:', id);
           const imageDiv = document.querySelector(`.preview-image-wrapper[data-id="${id}"]`);
           if (imageDiv) {
+            const wasChecked = imageDiv.querySelector('input.thumbnail-radio')?.checked || false;
+
             imageDiv.remove();
-            deletedImageIds.push(Number(id)); // id가 문자열이면 숫자 변환 권장
+            deletedImageIds.push(Number(id));
             console.log('삭제된 이미지 ID 목록:', deletedImageIds);
+
+            if (wasChecked) {
+              // 썸네일 라디오가 삭제된 경우, 다른 라디오 선택
+              selectFirstAvailableThumbnail();
+            }
           } else {
             console.warn('삭제할 이미지 요소를 찾지 못했습니다:', id);
+          }
+        }
+
+        // 삭제 후 썸네일 라디오 최소 1개 유지 함수
+        function selectFirstAvailableThumbnail() {
+          const radios = document.querySelectorAll('input.thumbnail-radio');
+          if (radios.length === 0) return; // 라디오가 하나도 없으면 할 수 없음
+
+          const anyChecked = Array.from(radios).some(r => r.checked);
+          if (!anyChecked) {
+            radios[0].checked = true;
           }
         }
 
@@ -167,7 +185,6 @@
             const newFiles = Array.from(this.files);
 
             newFiles.forEach(file => {
-                // 중복 체크
                 if (selectedFiles.some(f => f.name === file.name && f.size === file.size)) return;
 
                 selectedFiles.push(file);
@@ -177,56 +194,63 @@
                     const wrapper = document.createElement('div');
                     wrapper.classList.add('preview-image-wrapper');
 
+                    // 고유 ID: fileName + size (백엔드에서도 계산 가능)
+                    const newId = `new_${file.name}_${file.size}`;
+                    wrapper.setAttribute('data-id', newId);
+
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.classList.add('preview-image');
 
-                    // 새 이미지는 id가 없으니 data-id 안 붙임
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'thumbnailImageId';
+                    radio.classList.add('thumbnail-radio');
+                    radio.value = newId;
 
                     const deleteBtn = document.createElement('button');
                     deleteBtn.innerText = '×';
                     deleteBtn.classList.add('btn-delete-img');
-                    // 새 이미지 삭제 시 selectedFiles에서 제거
                     deleteBtn.addEventListener('click', () => {
                         wrapper.remove();
                         selectedFiles = selectedFiles.filter(f => f !== file);
                     });
 
                     wrapper.appendChild(img);
+                    wrapper.appendChild(radio);
                     wrapper.appendChild(deleteBtn);
-                    preview.appendChild(wrapper);
+                    document.getElementById('shopImagePreview').appendChild(wrapper);
                 };
                 reader.readAsDataURL(file);
             });
 
-            this.value = ''; // 같은 파일 다시 선택 가능하게 초기화
+
+            this.value = '';
         });
 
-        // 이벤트 위임으로 삭제 버튼 처리 (기존 이미지 및 새 이미지 삭제)
+        // 삭제 버튼 처리
         document.getElementById('shopImagePreview').addEventListener('click', e => {
-          if (e.target.classList.contains('btn-delete-img')) {
-            // 기존 이미지 삭제용 data-id가 있으면 그걸 사용
-            const id = e.target.getAttribute('data-id');
-            if (id) {
-              deleteExistingImage(id);
-            } else {
-              // 새 이미지 삭제: 버튼이 있는 div를 찾아서 제거
-              const wrapper = e.target.closest('.preview-image-wrapper');
-              if (wrapper) {
-                wrapper.remove();
-                // 새 이미지 삭제 시 selectedFiles 갱신 필요
-                // 삭제된 파일 찾기 위해 wrapper 내부 img src로 비교 가능하나 복잡하면 생략 가능
-                // 또는 selectedFiles 초기화 후 다시 선택하도록 안내
-              }
+            if (e.target.classList.contains('btn-delete-img')) {
+                const wrapper = e.target.closest('.preview-image-wrapper');
+                const id = wrapper?.getAttribute('data-id');
+
+                if (id && !id.startsWith('new_')) {
+                    deleteExistingImage(id); // 기존 이미지
+                } else {
+                    wrapper?.remove(); // 새 이미지
+                    selectedFiles = selectedFiles.filter((f, idx) => {
+                        const fileId = [...thumbnailRadioMap.entries()].find(([k, v]) => v === f)?.[0];
+                        return fileId !== id;
+                    });
+                    thumbnailRadioMap.delete(id);
+                }
             }
-          }
         });
 
         // 저장 함수
         function submitShopEdit() {
             const formData = new FormData();
 
-            // shop 정보 수집 (id, name 등)
             const shopData = {
                 id: document.querySelector('input[name="id"]').value,
                 name: document.querySelector('input[name="name"]').value,
@@ -247,16 +271,22 @@
 
             formData.append('shopEditDto', JSON.stringify(shopData));
 
-            // 새 이미지들 formData에 추가
+            // 썸네일 라디오 선택
+            const thumbnailRadio = document.querySelector('input[name="thumbnailImageId"]:checked');
+            const thumbnailId = thumbnailRadio ? thumbnailRadio.value : '';
+            formData.append('thumbnailImageId', thumbnailId);
+
+            // 새 이미지 추가
             selectedFiles.forEach(file => {
                 formData.append('files', file);
             });
 
-            // 썸네일 이미지 id는 지금 사용 안 하니 빈값 전송 가능
-            formData.append('thumbnailImageId', '');
-
-            // 삭제할 기존 이미지 ID 배열을 JSON 문자열로 전송
+            // 삭제된 이미지 ID
             formData.append('deletedImageIds', JSON.stringify(deletedImageIds));
+
+            console.log('썸네일:', thumbnailId);
+            console.log('삭제 ID 목록:', deletedImageIds);
+            console.log('선택된 파일들:', selectedFiles);
 
             fetch('/master/shop-edit/update', {
                 method: 'POST',
@@ -272,8 +302,8 @@
                 console.error('전송 오류:', error);
             });
         }
-
     </script>
+
 
 </th:block>
 

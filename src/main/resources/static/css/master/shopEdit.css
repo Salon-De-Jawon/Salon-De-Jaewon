@@ -45,7 +45,6 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   font-family: var(--font-noto-snas);
-  min-width: 200px;
 }
 
 .customer-header textarea {

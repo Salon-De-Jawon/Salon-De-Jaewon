@@ -96,21 +96,30 @@ public class MasterController {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
+        // DTO 파싱
         ShopEditDto dto = objectMapper.readValue(shopEditDtoJson, ShopEditDto.class);
 
+        // 삭제 이미지 ID 파싱
         List<Long> deletedImageIds = new ArrayList<>();
         if (deletedImageIdsJson != null && !deletedImageIdsJson.isEmpty()) {
             deletedImageIds = objectMapper.readValue(deletedImageIdsJson, new TypeReference<List<Long>>() {});
         }
 
-        // thumbnailJson은 보통 {"imgName":"abc.jpg"} 같은 형태일 텐데, 필요하면 DTO로 파싱
-        Long thumbnailId = null;
+        // 썸네일 ID 처리
+        Long thumbnailImageId = null;
+        String thumbnailTempId = null;
+
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            thumbnailId = Long.parseLong(thumbnail);
+            if (thumbnail.startsWith("new_")) {
+                thumbnailTempId = thumbnail; // new_sample.jpg_1345123
+            } else if (thumbnail.matches("\\d+")) {
+                thumbnailImageId = Long.parseLong(thumbnail); // 기존 이미지 ID
+            }
         }
+        dto.setThumbnailImageTempId(thumbnailTempId);
 
 
-        masterService.saveShopEdit(dto, files, deletedImageIds, thumbnailId);
+        masterService.saveShopEdit(dto, files, deletedImageIds, thumbnailImageId);
 
         return "redirect:/master";
     }
