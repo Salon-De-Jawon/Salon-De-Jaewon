@@ -46,21 +46,25 @@ public class DesignerListDto {
         designerListDto.setReviewCount(reviewCount);
         designerListDto.setLikeCount(likeCount);
 
-        List<ServiceCategory> assignedCategories = designerService.getAssignedCategories();
-        List<String> categoryLabels = new ArrayList<>(); // 한글 라벨을 저장할 리스트
+        if (designerService != null) {
+            List<ServiceCategory> assignedCategories = designerService.getAssignedCategories();
+            List<String> categoryLabels = new ArrayList<>();
 
-        for (ServiceCategory category : assignedCategories) {
-            categoryLabels.add(category.getLabel()); // getLabel() 메서드를 사용하여 한글 라벨 추가
+            for (ServiceCategory category : assignedCategories) {
+                categoryLabels.add(category.getLabel());
+            }
+
+            String categoriesString = String.join(", ", categoryLabels);
+
+            if (!categoriesString.isEmpty()) {
+                categoriesString += " 담당";
+            }
+            // 커트, 염색, 펌 담당 (n년차)
+            designerListDto.setProfileSummary(categoriesString + " (" + workingYears + "년차)");
+        } else {
+            // n년차
+            designerListDto.setProfileSummary(workingYears + "년차");
         }
-
-        String categoriesString = String.join(", ", categoryLabels); // 쉼표와 공백으로 연결
-
-        // "담당" 문구 추가 (시술 카테고리가 있을 경우만)
-        if (!categoriesString.isEmpty()) {
-            categoriesString += " 담당";
-        }
-
-        designerListDto.setProfileSummary(categoriesString + " (" + workingYears + "년차)");
 
 
 

@@ -149,7 +149,7 @@ public class MasterService {
 
         List<DesignerListDto> dtoList = new ArrayList<>();
         for(ShopDesigner designer : designerList){
-            DesignerService service = designerServiceRepo.findByShopDesignerId(designer.getId()).orElseThrow();
+            DesignerService service = designerServiceRepo.findByShopDesignerId(designer.getId()).orElse(null);
             int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designer.getId());
             int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designer.getId());
             dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount, service));
