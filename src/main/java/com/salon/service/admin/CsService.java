@@ -179,7 +179,6 @@ public class CsService {
         applyRepo.save(apply);
     }
 
-
     public void applyBanner(BannerApplyDto bannerApplyDto, Long memberId, MultipartFile file) {
         Coupon coupon = couponRepo.findById(bannerApplyDto.getCouponId())
                 .orElseThrow(()-> new IllegalArgumentException("선택된 쿠폰이 유효하지 않습니다: " + bannerApplyDto.getCouponId()));

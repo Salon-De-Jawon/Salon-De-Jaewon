@@ -25,4 +25,5 @@ public interface CouponRepo extends JpaRepository<Coupon, Long> {
     List<Coupon> findByShop_IdAndIsActiveTrue(Long shopId);
 
     List<Coupon> findByShopAndIsActiveTrue(Shop shop);
+  
 }

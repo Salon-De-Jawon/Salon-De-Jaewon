@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,7 +52,7 @@ public class ShopController {
 
         // 리뷰 리스트
         List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId, category, sort);
-        model.addAttribute("reviewList",reviewLists);
+        model.addAttribute("reviewList", reviewLists != null ? reviewLists : new ArrayList<>());
 
         // 시술 섹션 (시술 카테고리별 시술 목록 출력)
         ShopServiceSectionDto serviceSection = shopDetailService.getShopServiceSections(shopId);

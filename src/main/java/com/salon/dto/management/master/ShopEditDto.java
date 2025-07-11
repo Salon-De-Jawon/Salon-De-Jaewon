@@ -4,6 +4,7 @@ import com.salon.entity.shop.Shop;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Getter @Setter
+@ToString
 public class ShopEditDto {
 
     private Long id; // 매장 ID
@@ -38,9 +40,14 @@ public class ShopEditDto {
     private BigDecimal latitude;       // 위도 (카카오맵용)
     private BigDecimal longitude;      // 경도 (카카오맵용)
 
-    private List<MultipartFile> images;
+    // 기존 이미지
+    private List<ShopImageDto> shopImages;
 
-    public static ShopEditDto from(Shop shop) {
+    // "new_xxx"용 임시 ID
+    private String thumbnailImageTempId;
+
+
+    public static ShopEditDto from(Shop shop, List<ShopImageDto> images) {
         ShopEditDto dto = new ShopEditDto();
 
         // detail 뺀 주소 출력하기
@@ -72,6 +79,8 @@ public class ShopEditDto {
         dto.setEarlyLeaveMin(shop.getEarlyLeaveMin());
         dto.setLatitude(shop.getLatitude());
         dto.setLongitude(shop.getLongitude());
+        dto.setShopImages(images);
+
         return dto;
     }
 

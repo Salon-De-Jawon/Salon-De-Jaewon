@@ -58,13 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.style.display = "none";
     }
   });
-  //  예약하기 버튼 클릭 시 예약 페이지로 이동
-  document
-    .querySelector(".shop-btn .lucide-calendar")
-    ?.closest("button")
-    .addEventListener("click", () => {
-      window.location.href = "/reservation";
-    });
+
 
   /**
    * 2. 메뉴 탭 전환 기능
