@@ -49,7 +49,9 @@ public class ServiceForm {
         shopService.setName(this.name);
         shopService.setShop(shop);
         shopService.setPrice(this.price);
+        shopService.setCategory(this.category);
         shopService.setDescription(this.description);
+        shopService.setRecommended(this.recommended);
 
         return shopService;
 

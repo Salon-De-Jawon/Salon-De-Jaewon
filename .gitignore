@@ -39,3 +39,6 @@ out/
 ### api ###
 
 application-secret.properties
+
+### js ###
+apikey.js
