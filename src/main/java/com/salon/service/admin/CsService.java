@@ -1,22 +1,23 @@
 package com.salon.service.admin;
 
-import com.salon.constant.ApplyStatus;
-import com.salon.constant.ApplyType;
-import com.salon.constant.CsStatus;
-import com.salon.constant.Role;
+import com.salon.constant.*;
 import com.salon.dto.BizCheckRequestDto;
 import com.salon.dto.BizStatusDto;
+import com.salon.dto.UploadedFileDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.entity.admin.CouponBanner;
 import com.salon.entity.admin.CsCustomer;
 import com.salon.entity.admin.CsFile;
 import com.salon.entity.management.master.Coupon;
 import com.salon.repository.MemberRepo;
 import com.salon.repository.admin.ApplyRepo;
+import com.salon.repository.admin.CouponBannerRepo;
 import com.salon.repository.admin.CsCustomerFileRepo;
 import com.salon.repository.admin.CsCustomerRepo;
 import com.salon.repository.management.master.CouponRepo;
+import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,27 +42,20 @@ public class CsService {
     private final ApplyRepo applyRepo;
     private final MemberRepo memberRepo;
     private final CouponRepo couponRepo;
+    private final FileService fileService;
+    private final CouponBannerRepo couponBannerRepo;
     public void questionSave(CsCreateDto csCreateDto, Member member, List<MultipartFile> files) {
         CsCustomer csCustomer = CsCreateDto.to(csCreateDto, member);
         csCustomer = csCustomerRepo.save(csCustomer);
         if(files != null && !files.isEmpty()){
             for(MultipartFile file : files){
                 if(!file.isEmpty()){
-                    String originalName = file.getOriginalFilename();
-                    String uuid = UUID.randomUUID().toString();
-                    String fileName = uuid + "_" + originalName;
-                    String filePath = "C:/upload/" + fileName;
-
-                    try {
-                        file.transferTo(new File(filePath));
-                    } catch(IOException e){
-                        throw new RuntimeException("파일 저장 실패", e);
-                    }
+                    UploadedFileDto image = fileService.upload(file, UploadType.CUSTOMER_SERVICE);
 
                     CsFile csFile = new CsFile();
-                    csFile.setOriginalName(originalName);
-                    csFile.setFileName(fileName);
-                    csFile.setFileUrl("/upload/"+fileName);
+                    csFile.setOriginalName(image.getOriginalFileName());
+                    csFile.setFileName(image.getFileName());
+                    csFile.setFileUrl(image.getFileUrl());
                     csFile.setCsCustomer(csCustomer);
 
                     csCustomerFileRepo.save(csFile);
@@ -184,4 +179,35 @@ public class CsService {
         applyRepo.save(apply);
     }
 
+    public void applyBanner(BannerApplyDto bannerApplyDto, Long memberId, MultipartFile file) {
+        Coupon coupon = couponRepo.findById(bannerApplyDto.getCouponId())
+                .orElseThrow(()-> new IllegalArgumentException("선택된 쿠폰이 유효하지 않습니다: " + bannerApplyDto.getCouponId()));
+        Member member = memberRepo.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("신청자 회원 정보를 찾을 수 없습니다."));
+
+       /* UploadedFileDto image = fileService.upload(file, UploadType.CUSTOMER_SERVICE);*/
+
+
+
+        CouponBanner couponBanner = new CouponBanner();
+        couponBanner.setCoupon(coupon);
+        couponBanner.setStartDate(bannerApplyDto.getStartDate());
+        couponBanner.setEndDate(bannerApplyDto.getEndDate());
+        String originalFileName = file.getOriginalFilename();
+        couponBanner.setOriginalName(originalFileName);
+        String uuidFileName = UUID.randomUUID() + ".png";
+        String fullPath = "C:/salon/csFile/" + uuidFileName;
+        try {
+            file.transferTo(new File(fullPath));
+        } catch(IOException | IllegalStateException e){
+            throw new RuntimeException("파일 저장 실패" + e.getMessage(), e);
+        }
+        String imgUrl = "/csFile/" + uuidFileName;
+        couponBanner.setImgName(uuidFileName);
+        couponBanner.setImgUrl(imgUrl);
+        couponBanner.setCreatedAt(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.WAITING);
+
+        couponBannerRepo.save(couponBanner);
+    }
 }

@@ -26,6 +26,7 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-websocket
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket:3.4.1'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail

@@ -1,6 +1,7 @@
 package com.salon.repository.management.master;
 
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.shop.Shop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,9 @@ public interface CouponRepo extends JpaRepository<Coupon, Long> {
 
     // 유효기간 지난 쿠폰 목록
     List<Coupon> findByExpireDateBeforeAndIsActiveTrue(LocalDate now);
+
+    List<Coupon> findByShop_IdAndIsActiveTrue(Long shopId);
+
+    List<Coupon> findByShopAndIsActiveTrue(Shop shop);
+  
 }

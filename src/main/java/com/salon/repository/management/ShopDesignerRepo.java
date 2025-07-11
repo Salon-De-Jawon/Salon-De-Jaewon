@@ -1,5 +1,6 @@
 package com.salon.repository.management;
 
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
@@ -22,5 +24,8 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
 
     // 미용실 소속 디자이너 수
     int countByShopIdAndIsActiveTrue(Long id);
+
+    Optional<ShopDesigner> findByDesigner(Designer designer);
+    Optional<ShopDesigner> findByDesignerId(Long designerId);
 
 }

@@ -31,7 +31,7 @@
         <tbody id="noticeTable">
         <tr th:each="ancList : ${ancListDto}" th:data-role="${ancList.roleName}">
             <td class="number"></td>
-            <td class="title"><a th:href="@{/admin/anc/detail(id=${ancList.id})}" th:text="${ancList.title}"></a></td>
+            <td class="title"><a th:href="@{/cs/detail(id=${ancList.id})}" th:text="${ancList.title}"></a></td>
             <td th:text="${#temporals.format(ancList.writeAt, 'yyyy-MM-dd')}"></td>
             <td>
                 <span th:if="${ancList.fileUrl != null}">

@@ -20,6 +20,7 @@ public class CouponListDto {
     private int DiscountAmount; // 할인 금액
     private boolean isActive; // 활성화 유무
     private LocalDate expireDate; // 쿠폰 소멸일
+    private Long shopId;   // 샵 아이디
 
 
 
@@ -33,8 +34,10 @@ public class CouponListDto {
         couponListDto.setCouponType(coupon.getDiscountType());
         couponListDto.setActive(coupon.isActive());
         couponListDto.setExpireDate(coupon.getExpireDate());
+        couponListDto.setShopId(shop.getId());
 
         return couponListDto;
     }
+
 
 }
