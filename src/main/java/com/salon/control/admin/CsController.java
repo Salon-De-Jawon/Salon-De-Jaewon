@@ -155,4 +155,5 @@ public class CsController {
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
+
 }
