@@ -4,10 +4,13 @@ import com.salon.entity.Member;
 import com.salon.entity.Review;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.ShopService;
+import com.salon.entity.shop.Reservation;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,25 +20,31 @@ public class ReviewListDto {
     private Long id; //리뷰테이블 아이디
     private String memberName; // 리뷰작성자 이름
     private LocalDateTime createAt; // 리뷰작성 날짜
+    private String serviceName; // 시술 이름
     private int visitCount; // 사용자 방문 횟수
     private int rating; // 평점
     private String comment; // 리뷰내용
-    private List<ReviewImageDto> reviewImg; // 리뷰이미지
     private String designerName; // 시술한 디자이너 이름
     private int designerWorkingYears; // 시술한 디자이너 연차
 
-
+    private List<ReviewImageDto> imageDtos = new ArrayList<>(); // 리뷰 이미지
 
     // Review(Entity) -> ReviewListDto
-    public static ReviewListDto from (Review review, ShopDesigner shopDesigner, List<ReviewImageDto> reviewImg, int visitCount){
+    public static ReviewListDto from (Review review, ShopDesigner shopDesigner, List<ReviewImageDto> reviewImgs, int visitCount){
         ReviewListDto reviewListDto = new ReviewListDto();
 
+        Reservation res = review.getReservation();
+        ShopService service = res != null ? res.getShopService() : null;
+        String serviceName = service != null ? service.getName() : null;
+
+        reviewListDto.setServiceName(serviceName);
+
         reviewListDto.setId(review.getId());
-        reviewListDto.setMemberName(review.getReservation().getMember().getName());
+        reviewListDto.setServiceName(review.getReservation().getShopService().getName());
         reviewListDto.setCreateAt(review.getCreateAt());
         reviewListDto.setRating(review.getRating());
         reviewListDto.setComment(review.getComment());
-        reviewListDto.setReviewImg(reviewImg);
+        reviewListDto.setImageDtos(reviewImgs != null ? reviewImgs : new ArrayList<>());
         reviewListDto.setVisitCount(visitCount);
         reviewListDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
         reviewListDto.setDesignerWorkingYears(shopDesigner.getDesigner().getWorkingYears());

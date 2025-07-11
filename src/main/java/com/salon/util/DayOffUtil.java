@@ -37,4 +37,18 @@ public class DayOffUtil {
         return (dayOff & (1 << (6 - index))) != 0;
     }
 
+    // 한글 요일 변환 함수
+    public static String getKoreanDay(DayOfWeek day) {
+        return switch (day) {
+            case MONDAY    -> "월요일";
+            case TUESDAY   -> "화요일";
+            case WEDNESDAY -> "수요일";
+            case THURSDAY  -> "목요일";
+            case FRIDAY    -> "금요일";
+            case SATURDAY  -> "토요일";
+            case SUNDAY    -> "일요일";
+        };
+    }
+
+
 }

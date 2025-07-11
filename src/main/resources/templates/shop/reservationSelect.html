@@ -6,24 +6,26 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/shop/reservationSelect.css">
   </th:block>
-  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
 </head>
 <body>
 <div layout:fragment="main" id="main">
   <!-- 디자이너 선택 섹션 -->
   <section id="designer-section" th:if="${selectedDesignerId == null}">
     <!-- 디자이너 리스트 -->
+
+
+    <!-- 디자이너 리스트 더보기 버튼 -->
+    <div class="designer-more">
+      <button class="btn-more">더보기</button>
+    </div>
+
   </section>
 
   <section id="designer-fixed-section" th:if="${selectedDesignerId != null}">
     <p>디자이너: <span th:text="${selectedDesignerId}">디자이너 ID</span></p>
     <button onclick="window.location.href='/reservation/write?shopId=${shopId}'">디자이너 변경</button>
   </section>
-
-    <!-- 디자이너 리스트 더보기 버튼 -->
-    <div class="designer-more">
-      <button class="btn-more">더보기</button>
-    </div>
 
     <!-- 디자이너 리스트 변경 버튼 처음엔 숨김 처리-->
     <div
@@ -45,88 +47,34 @@
     <!-- 전문 시술 분야 카테고리 버튼 -->
     <div class="service-filters">
       <button class="category-btn active" data-tab="all">전체</button>
-      <button class="category-btn" data-tab="cut">커트</button>
-      <button class="category-btn" data-tab="perm">펌</button>
-      <button class="category-btn" data-tab="clinic">클리닉</button>
+      <button th:each="category : ${assignedCategories}"
+              class="category-btn"
+              th:data-tab="${category.name().toLowerCase()}"
+              th:text="${category.getDisplayName()}">카테고리명</button>
     </div>
 
-    <!-- 커트 카테고리 리스트 -->
-    <div class="service-category" data-category="cut">
-      <h3>커트</h3>
+    <!-- 시술 리스트 출력 -->
+    <div th:each="categoryDto : ${serviceCategoryList}"
+         class="service-category"
+         th:data-category="${categoryDto.category.name().toLowerCase()}">
+
+      <h3 th:text="${categoryDto.category.getDisplayName()}">카테고리명</h3>
 
       <ul class="service-items">
-        <li>
-          <input type="checkbox" name="service" />
+        <li th:each="service : ${categoryDto.services}">
+          <input type="radio" name="shopServiceId" th:value="${service.id}" />
           <div>
-            <span class="service-name">여성커트</span>
-            <span class="service-price">20,000</span>
-          </div>
-        </li>
-        <li>
-          <input type="checkbox" name="service" />
-          <div>
-            <span class="service-name">남성커트</span>
-            <span class="service-price">15,000</span>
+            <span class="service-name" th:text="${service.name}">시술명</span>
+            <span class="service-price" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">가격</span>
           </div>
         </li>
       </ul>
-      <!-- 커트 리스트 더보기 버튼 -->
+
       <div class="service-more">
         <button class="btn-more">더보기</button>
       </div>
     </div>
 
-    <!-- 펌 카테고리 리스트 -->
-    <div class="service-category" data-category="perm">
-      <h3>펌</h3>
-
-      <ul class="service-items">
-        <li>
-          <input type="checkbox" name="service" />
-          <div>
-            <span class="service-name">여성펌</span>
-            <span class="service-price">50,000</span>
-          </div>
-        </li>
-        <li>
-          <input type="checkbox" name="service" />
-          <div>
-            <span class="service-name">남성다운펌</span>
-            <span class="service-price">10,000</span>
-          </div>
-        </li>
-      </ul>
-      <!-- 펌 리스트 더보기 버튼 -->
-      <div class="service-more">
-        <button class="btn-more">더보기</button>
-      </div>
-    </div>
-
-    <!-- 클리닉 카테고리 리스트 -->
-    <div class="service-category" data-category="clinic">
-      <h3>클리닉</h3>
-
-      <ul class="service-items">
-        <li>
-          <input type="checkbox" name="service" />
-          <div>
-            <span class="service-name">모발 영양 클리닉</span>
-            <span class="service-price">100,000</span>
-          </div>
-        </li>
-        <li>
-          <input type="checkbox" name="service" />
-          <div>
-            <span class="service-name">두피 스케일링</span>
-            <span class="service-price">100,000</span>
-          </div>
-        </li>
-      </ul>
-      <!-- 클리닉 리스트 더보기 버튼 -->
-      <div class="service-more">
-        <button class="btn-more">더보기</button>
-      </div>
-    </div>
     <!-- 시술 선택 결과 표시 (처음엔 숨김) -->
     <div
             class="service-selected-summary"
@@ -143,44 +91,40 @@
   <section class="datetimeselect" id="schedule-select">
     <h2>날짜 및 시간 선택</h2>
 
-    <!-- 월 + 날짜 버튼 묶음 -->
-    <div class="date-picker-wrap">
-      <div class="claendar-month-label">7월</div>
-      <div class="date-picker">
-        <button class="date-btn">
-          <span class="day">화</span><span class="date">08</span>
-        </button>
-        <button class="date-btn">
-          <span class="day">수</span><span class="date">09</span>
-        </button>
-      </div>
+    <!-- 날짜 선택 -->
+    <div class="date-picker">
+      <button class="date-btn"
+              th:each="d : ${availableDates}"
+              th:data-date="${d}"
+              th:text="${#temporals.format(d, 'MM월 dd일 (E)')}">
+        날짜버튼
+      </button>
     </div>
 
-    <!-- 시간 선택 그리드 -->
-    <div class="time-grid">
-      <button class="time-btn">12:30</button>
-      <button class="time-btn">13:00</button>
-      <button class="time-btn">13:30</button>
-      <button class="time-btn">14:00</button>
-      <button class="time-btn">14:30</button>
+    <!-- 시간 선택 -->
+    <div class="time-grid" th:if="${!availableTimeSlot.holiday}">
+      <button class="time-btn"
+              th:each="time : ${availableTimeSlot.availableTimes}"
+              th:data-time="${#temporals.format(time, 'HH:mm')}"
+              th:text="${#temporals.format(time, 'HH:mm')}">
+        시간
+      </button>
+    </div>
 
-      <button class="time-btn">15:00</button>
-      <button class="time-btn">15:30</button>
-      <button class="time-btn">16:00</button>
-      <button class="time-btn">16:30</button>
-      <button class="time-btn">17:00</button>
+    <!-- 휴무일 안내 -->
+    <div th:if="${availableTimeSlot.holiday}">
+      <p style="color: red;">이 날짜는 매장 휴무일입니다.</p>
     </div>
   </section>
 
-  <!-- 조건 만족 시 -->
-  <div class="reservation-summary">
-    <div class="reservation-inner">
-      <div class="total-price">
-        총 결제금액: <span id="selected-price"></span>원
-      </div>
-      <button class="btn-reserve">예약하기</button>
-    </div>
-  </div>
+  <form th:action="@{/reservation/confirm}" method="post" id="reservationForm">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <input type="hidden" name="memberId" th:value="${member.id}" />
+    <input type="hidden" name="shopDesignerId" th:value="${selectedDesignerId}" />
+    <input type="hidden" name="shopServiceId" id="selectedServiceId" />
+    <input type="hidden" name="dateTime" id="selectedDateTime" />
+    <button type="submit" class="btn-reserve">예약하기</button>
+  </form>
 
 </div>
 <th:block layout:fragment="script">

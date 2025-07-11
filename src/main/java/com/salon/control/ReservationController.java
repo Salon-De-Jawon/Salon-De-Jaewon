@@ -34,6 +34,7 @@ public class ReservationController {
         if (shopDeisngerId == null){
             List<DesignerListDto> designerList = reservationServcie.getDesignerList(shopId);
             model.addAttribute("designerList", designerList);
+            model.addAttribute("selectedDesignerId",null);
         } else {
             // 선택된 디자이너의 전문 시술 분야 가져오기
             List<DesignerServiceCategoryDto> serviceCategories = reservationServcie.getDesignerServiceCategoeies(shopDeisngerId);

@@ -6,12 +6,15 @@ import com.salon.dto.management.master.ShopImageDto;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
+import com.salon.util.DayOffUtil;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,6 +32,8 @@ public class ShopDetailDto {
     private String description; // 상세 설명
     private int likeCount; // 미용실 찜
     private float rating; // 미용실 평점
+    private int dayOff; // 미용실 정기 휴무 날짜
+    private String dayOffText; // 미용실 정기 휴무 요일
 
     private List<ShopImageDto> shopImageDtos; // 미용실 이미지
 
@@ -55,5 +60,24 @@ public class ShopDetailDto {
 
     }
 
+    // 미용실 정기 휴무일 및 휴무요일
+    public void  setDayOff(int dayOff) {
+        this.dayOff = dayOff;
+        this.dayOffText = generateDayOffText(dayOff);
+
+    }
+
+    public String getDayOffText() {
+        return  dayOffText;
+    }
+
+    private String generateDayOffText(int dayOffBit ){
+        List<DayOfWeek> days = DayOffUtil.decodeDayOff(dayOffBit);
+        if (days.isEmpty()) return "휴무일 없음";
+
+        return days.stream()
+                .map(DayOffUtil::getKoreanDay)
+                .collect(Collectors.joining(", ", "매주 ", ""));
+    }
 
 }

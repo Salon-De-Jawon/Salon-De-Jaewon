@@ -76,6 +76,10 @@ public class ShopDetailService {
         // 이미지 리스트를 Dtod에 추가 세팅
         dto.setShopImageDtos(imageDtos);
         dto.setRating(avgRating); // 반올림 후 정수값으로 세팅
+        dto.setDayOff(shop.getDayOff());
+
+
+
 
         return dto;
     }
@@ -253,6 +257,7 @@ public class ShopDetailService {
         // 모든 리뷰 불러오기
         List<Review> allReviews = reviewRepo.findAll().stream()
                 .filter(r -> r.getReservation() != null) // 아직 가져올 데이터가 없으므로 임시방편!
+                .filter(r -> r.getReservation().getShopService() != null)
                 .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
                 .collect(Collectors.toList());
 
@@ -262,6 +267,8 @@ public class ShopDetailService {
                     .filter(r -> r.getReservation().getShopService().getCategory().equals(category))
                     .collect(Collectors.toList());
         }
+
+
 
         // 정렬 조건 적용
         Comparator<Review> comparator = switch (sortType) {
@@ -284,6 +291,9 @@ public class ShopDetailService {
                     .map(ReviewImageDto::from)
                     .toList();
 
+
+
+
             // 작성자의 방문 횟수 계산 (같은 샵, 같은 유저 기준)
             int visitCount = (int) allReviews.stream()
                     .filter(r -> r.getReservation().getMember().getId().equals(memberId))
@@ -291,6 +301,10 @@ public class ShopDetailService {
 
             // 디자이너 정보
             ShopDesigner shopDesigner = review.getReservation().getShopDesigner();
+
+            // 💡 안전하게 빈 리스트로 초기화
+            List<ReviewImageDto> safeImgs = reviewImgs != null ? reviewImgs : new ArrayList<>();
+
 
             // dto 변환 후 추가
             ReviewListDto dto = ReviewListDto.from(review,shopDesigner,reviewImgs, visitCount);
