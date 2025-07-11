@@ -144,6 +144,89 @@
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <script>
+        // 전역에 미리 함수 선언
+        window.execDaumPostcode = function () {
+          alert('주소찾기 함수가 아직 준비되지 않았습니다. 잠시만 기다려주세요.');
+        };
+
+        let geocoder;
+
+        // kakao.maps SDK 로드 후 실행
+        kakao.maps.load(function () {
+          geocoder = new kakao.maps.services.Geocoder();
+
+          // 이제 execDaumPostcode를 진짜 함수로 덮어쓰기
+          window.execDaumPostcode = function () {
+            const modal = document.getElementById('addressModal');
+            const daumWrap = document.getElementById('daumWrap');
+
+            modal.style.display = 'block';
+
+            new daum.Postcode({
+              oncomplete: function(data) {
+                let roadAddr = data.roadAddress;
+                let extraAddr = '';
+
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                  extraAddr += data.bname;
+                }
+                if (data.buildingName !== '' && data.apartment === 'Y') {
+                  extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+
+                document.getElementById("postcode").value = data.zonecode;
+                document.getElementById("roadAddress").value = roadAddr;
+                document.getElementById("extraAddress").value = extraAddr;
+                document.getElementById("fullAddress").value =
+                  roadAddr + " " + document.getElementById("detailAddress").value;
+
+                // 좌표 변환
+                geocoder.addressSearch(roadAddr, function(result, status) {
+                  if (status === kakao.maps.services.Status.OK) {
+                    const lat = result[0].y;
+                    const lng = result[0].x;
+
+                    document.querySelector('input[name="latitude"]').value = lat;
+                    document.querySelector('input[name="longitude"]').value = lng;
+                  } else {
+                    console.error('주소 변환 실패:', status);
+                  }
+                });
+
+                // 잠시 후 모달 닫기
+                setTimeout(closeDaumPostcode, 100);
+              },
+              width: '100%',
+              height: '100%'
+            }).embed(daumWrap);
+          };
+
+          function closeDaumPostcode() {
+            document.getElementById('addressModal').style.display = 'none';
+            document.getElementById('daumWrap').innerHTML = "";
+          }
+
+          // 모달 외부 클릭 시 닫기
+          window.addEventListener("click", function(event) {
+            const modal = document.getElementById('addressModal');
+            if (event.target === modal) {
+              closeDaumPostcode();
+            }
+          });
+
+          // 상세주소 입력 시 전체 주소 실시간 업데이트
+          const detailInput = document.getElementById("detailAddress");
+          if (detailInput) {
+            detailInput.addEventListener("input", function () {
+              const road = document.getElementById("roadAddress").value;
+              const detail = this.value;
+              document.getElementById("fullAddress").value = road + " " + detail;
+            });
+          }
+        });
+    </script>
+
+    <script>
         let selectedFiles = []; // 새로 선택한 파일들
         let deletedImageIds = []; // 기존 이미지 삭제 id 모음
         let thumbnailRadioMap = new Map(); // 새 이미지 썸네일 매핑용

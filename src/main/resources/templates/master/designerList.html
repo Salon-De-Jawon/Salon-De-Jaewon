@@ -15,10 +15,10 @@
   <div class="section-container">
     <div class="page-header">
       <h3>디자이너 목록</h3>
-      <a href="/shop/designer/add" class="btn-add">디자이너 추가</a>
+      <a href="#" id="openDesignerModal" class="btn-add">디자이너 추가</a>
     </div>
 
-    <div class="designer-card-list">
+    <div class="designer-card-list" id="designerCardList">
       <div class="designer-card">
         <img src="/images/sample.jpg" alt="디자이너 사진" class="designer-photo" />
         <div class="designer-info">
@@ -46,6 +46,31 @@
       </div>
     </div>
   </div>
+
+  <div id="designerModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>디자이너 추가</h2>
+        <span class="close-button">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="search-container">
+          <input type="text" id="designerSearchInput" placeholder="이름 또는 전화번호로 검색" />
+          <button id="searchDesignerBtn">검색</button>
+        </div>
+        <div id="designerSearchResults" class="search-results">
+          <p class="no-results">검색 결과가 없습니다.</p>
+        </div>
+        <div class="add-designer-btn-container">
+          <button id="addSelectedDesignerBtn">선택한 디자이너 추가</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<th:block layout:fragment="script">
+  <script src="/javascript/master/designerList.js"></script>
+</th:block>
+
 </body>
 </html>

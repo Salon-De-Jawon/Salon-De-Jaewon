@@ -5,10 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.salon.config.CustomUserDetails;
-import com.salon.dto.management.master.CouponDto;
-import com.salon.dto.management.master.MainDesignerPageDto;
-import com.salon.dto.management.master.ShopEditDto;
-import com.salon.dto.management.master.ShopImageDto;
+import com.salon.dto.designer.DesignerListDto;
+import com.salon.dto.management.master.*;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.shop.ShopImage;
@@ -36,9 +34,8 @@ public class MasterController {
     @GetMapping("")
     public String getMain(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
 
-        Long memberId = userDetails.getMember().getId();
 
-        model.addAttribute("dto", masterService.getMainPage(memberId));
+        model.addAttribute("dto", masterService.getMainPage(userDetails.getMember().getId()));
 
         return "master/main";
     }
@@ -52,7 +49,13 @@ public class MasterController {
 
     // 디자이너 관리
     @GetMapping("/designer-list")
-    public String designerList(){
+    public String designerList(@AuthenticationPrincipal CustomUserDetails userDetails,
+                               Model model){
+
+        List<DesignerListDto> designerList = masterService.getDesignerList(userDetails.getMember().getId());
+
+        model.addAttribute("designerList", designerList);
+        model.addAttribute("designerSearch", new DesignerSearchDto());
 
         return "master/designerList";
     }
@@ -78,7 +81,6 @@ public class MasterController {
 
         ShopEditDto shopEdit = masterService.getShopEdit(userDetails.getMember().getId());
 
-        System.out.println( shopEdit);
         model.addAttribute("shop", shopEdit);
 
         return "master/shopEdit";
@@ -123,18 +125,6 @@ public class MasterController {
 
         return "redirect:/master";
     }
-//    @PostMapping("/shop-edit/update")
-//    public String saveShop(ShopEditDto shopEditDto,
-//                           @RequestParam("files")  List<MultipartFile> files){
-//
-//        System.out.println(shopEditDto);
-//        System.out.println( "받아온 파일" + files.get(0).getOriginalFilename() );
-//        //masterService.saveShopEdit(dto, userDetails.getMember().getId());
-//
-//        return "redirect:/master";
-//    }
-
-
 
     // 쿠폰 관리
     @GetMapping("/coupons")

@@ -117,3 +117,27 @@ h2 {
   margin: 4px 0;
   font-size: 16px;
 }
+
+/* 모달 전체 배경 */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* 모달 내용 */
+.modal-content {
+  position: relative;
+  width: 550px;
+  max-width: 90%;
+  height: 500px;
+  margin: 10% auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}

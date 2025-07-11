@@ -2,6 +2,7 @@ package com.salon.service.management.master;
 
 import com.salon.constant.LeaveStatus;
 import com.salon.constant.LikeType;
+import com.salon.constant.ServiceCategory;
 import com.salon.constant.UploadType;
 import com.salon.dto.UploadedFileDto;
 import com.salon.dto.designer.DesignerListDto;
@@ -12,6 +13,7 @@ import com.salon.entity.management.Designer;
 import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
@@ -139,15 +141,18 @@ public class MasterService {
     }
 
     // 미용실 소속 디자이너 목록 가져오기
-    public List<DesignerListDto> getDesignerList(Long shopId){
+    public List<DesignerListDto> getDesignerList(Long memberId){
+
+        Long shopId = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop().getId();
 
         List<ShopDesigner> designerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
 
         List<DesignerListDto> dtoList = new ArrayList<>();
         for(ShopDesigner designer : designerList){
+            DesignerService service = designerServiceRepo.findByShopDesignerId(designer.getId()).orElseThrow();
             int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designer.getId());
             int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designer.getId());
-            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount));
+            dtoList.add(DesignerListDto.from(designer, likeCount, reviewCount, service));
         }
 
         return dtoList;
