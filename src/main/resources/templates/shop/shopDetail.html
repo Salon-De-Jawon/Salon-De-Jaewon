@@ -520,27 +520,20 @@
   <section class="tab-content" id="section-designer" style="display: none">
     <div class="container">
       <ul class="designer-list-view"  th:if="${designerLists != null and !designerLists.isEmpty()}">
-        <li class="designer-item">
+        <li class="designer-item" th:each="designer : ${designerList}">
           <!-- 디자이너 프로필 사진 -->
-          <th:block th:each="designer : ${designerList}">
             <img th:src="${designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}" />
-          </th:block>
           <!-- 디자이너 정보 -->
           <div class="designer-detail">
             <p class="designer-label">
-              <th:block th:with="safeName=${designer != null && designer.name != null ? designer.name : '이름 없음'}">
-                <strong th:text="${safeName}"></strong>
-              </th:block>
-              <th:block th:each="designer : ${designerList}">
-                  <span th:text="${designer.position != null ? designer.position : '디자이너'}">디자이너</span>
-              </th:block>
+              <span th:text="${designer.name}">이름</span>
+
+              <span th:text="${designer.position != null ? designer.position : '디자이너'}">디자이너</span>
             </p>
             <p class="de-detail">
-              <th:block th:each="designer : ${designerList}">
                 <div class="designer-card">
-                  <p th:text="${designer.profileSummary}">전문시술 분야 + 연차</p>
+                  <p th:text="${designer != null and designer.profileSummary != null ? designer.profileSummary : '소개 정보 없음'}">전문시술 분야 + 연차</p>
                 </div>
-              </th:block>
             </p>
             <div class="designer-status">
               <span class="status-item">🤍 <span th:text="${#numbers.formatInteger(designer.likeCount, 3, 'COMMA')}">0</span></span>
