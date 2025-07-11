@@ -130,33 +130,6 @@
             <button>복사</button>
           </div>
         </div>
-
-        <!-- 예약하기 버튼 -->
-        <button class="shop-btn" type="button">
-            <span class="icon">
-              <!-- Lucide Calendar 아이콘 -->
-              <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-calendar"
-              >
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            </span>
-          <div class="text">
-            <strong>예약하기</strong>
-          </div>
-        </button>
       </div>
     </div>
     <!-- 미용실 이름 및  평점 -->
@@ -175,34 +148,20 @@
     <div class="shop-info-box">
       <h3>✔ 매장 운영시간 ✔</h3>
       <p>
-        <span class="red">휴무일 : 매주 화요일</span> <br />
-        ⏰ 평일운영 10:00~20:00 <br />⏰ 주말운영 10:00~20:00
+        <span class="red" th:text="|휴무일 : ${shop.dayOffText}|">휴무일 안내</span><br />
+        ⏰ 평일운영 10:00~20:00 <br /> ⏰ 주말운영 10:00~20:00
       </p>
       <!-- 매장 소개 -->
       <div class="shop-description">
         <p><strong>✔ 매장 소개 ✔</strong></p>
+
         <p th:if="${shop != null and shop.description != null}"
            th:utext="${#strings.replace(shop.description, '\n', '<br/>')}">
         </p>
+
         <p th:unless="${shop != null and shop.description != null}">
           매장 소개 정보 없음
         </p>
-      </div>
-
-      <div class="notice">
-        <p><strong>✔ 이용 전 안내 ✔</strong></p>
-        <ul>
-          <li>상담예약은 고객과의 정확한 예약을 위해 필수 입니다.</li>
-          <li>
-            부득이한 경우 제외, 무단 취소 및 노쇼 시 불이익이 발생합니다.
-          </li>
-          <li>고객 보호를 위해 정해진 예약시간을 엄수해주시기 바랍니다.</li>
-          <li>
-            고객 사정으로 인해 시술이 어려울 경우 환불 및 일정 조율이
-            불가합니다.
-          </li>
-          <li>주차는 건물 내 무료 주차장이 있으니 많은 이용 바랍니다.</li>
-        </ul>
       </div>
     </div>
 
@@ -283,28 +242,36 @@
 
     <!-- 리뷰 목록 -->
     <section class="review-section" th:if="${reviewList != null and !reviewList.isEmpty()}">
-      <h3>리뷰 <span th:text="${reviewList.size()}">0</span></h3>
-      <div class="review-photo">
-        <div class="r-thumb" th:if="${r.imageDtos != null and #lists.size(r.imageDtos) > 0}">
-          <img th:src="${r.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
+      <h3>리뷰 <span th:text="${reviewList.size()}">0</span></h3> <article class="review-card" th:each="review : ${reviewList}">
+      <h4>
+        <div th:if="${review != null and review.serviceName != null}">
+          <span th:text="${review.serviceName}">시술명</span>
         </div>
-      </div>
+        <span th:if="${review.designerName != null}">by <span th:text="${review.designerName}">장두목</span> 디자이너</span>
+      </h4>
+
+      <th:block th:each="review : ${reviewList}">
+        <div th:if="${review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb" th:remove="tag">
+          <img th:src="${review.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
+          <img src="" alt="더보기 이미지" />
+          <span class="r-plus">+ 더보기</span>
+        </div>
+      </th:block>
+
+
 
       <!-- 리뷰 카드 -->
-      <article class="review-card" th:each="review : ${reviewList}">
-        <h4>
-          <span th:text="${review.serviceName}">여성 레이어드 커트</span>
-          <span th:if="${review.designerName != null}">by <span th:text="${review.designerName}">장두목</span> 디자이너</span>
-        </h4>
 
 
         <!-- 리뷰 이미지 최대 3개 -->
         <div class="review-images" th:if="${review.imageDtos != null}">
-          <div class="photo"
-               th:each="img, iStat : ${review.imageDtos}"
-               th:if="${iStat.index < 3}"
-               th:style="'background-image: url(' + ${img.imgUrl} + '); background-size: cover;'">
-          </div>
+          <th:block th:each="review : ${reviewList}">
+            <div th:if="${review.imageDtos != null}" class="r-thumb" th:remove="tag">
+              <img th:src="${review.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
+              <img src="" alt="더보기 이미지" />
+              <span class="r-plus">+ 더보기</span>
+            </div>
+          </th:block>
         </div>
 
         <!-- 리뷰 내용 -->
@@ -336,7 +303,7 @@
     <!-- 예약하기 버튼 -->
     <div class="fixed-reserve">
       <div class="reserve-inner">
-        <button class="reserve-btn">예약하기</button>
+        <a th:href="@{/reservation/write(shopId=${shop.id})}" class="reserve-btn">예약하기</a>
       </div>
     </div>
   </section>
@@ -553,20 +520,20 @@
   <section class="tab-content" id="section-designer" style="display: none">
     <div class="container">
       <ul class="designer-list-view"  th:if="${designerLists != null and !designerLists.isEmpty()}">
-        <li class="designer-item">
+        <li class="designer-item" th:each="designer : ${designerList}">
           <!-- 디자이너 프로필 사진 -->
-          <div class="designer-thumb">
-            <img th:src="${designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}"
-                 alt="프로필 사진" />
-          </div>
+            <img th:src="${designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}" />
           <!-- 디자이너 정보 -->
           <div class="designer-detail">
             <p class="designer-label">
-              <strong th:text="${designer.name}">디자이너 이름</strong>
-              <span class="designer-role" th:text="${designer.rank != null ? designer.rank : '디자이너'}">직급</span>
+              <span th:text="${designer.name}">이름</span>
+
+              <span th:text="${designer.position != null ? designer.position : '디자이너'}">디자이너</span>
             </p>
             <p class="de-detail">
-              <span class="designer-speciality" th:text="${designer.profileSummary}">전문분야</span>
+                <div class="designer-card">
+                  <p th:text="${designer != null and designer.profileSummary != null ? designer.profileSummary : '소개 정보 없음'}">전문시술 분야 + 연차</p>
+                </div>
             </p>
             <div class="designer-status">
               <span class="status-item">🤍 <span th:text="${#numbers.formatInteger(designer.likeCount, 3, 'COMMA')}">0</span></span>
@@ -575,7 +542,7 @@
           </div>
           <div class="designer-book">
             <button class="btn-book"
-                    th:onclick="'location.href=\'/reservation/designer/' + ${designer.id} + '\';'">
+                    th:onclick="|location.href='/reservation/designer/${designer.id}'|">
               <i class="fa fa-calendar-days"></i>예약
             </button>
           </div>
@@ -612,13 +579,14 @@
 
         <!-- 리뷰 썸네일 -->
         <div class="r-thumbnails">
-          <div class="r-thumb" th:each="review : ${reviewList}"
-               th:if="${review.imageDtos != null and !review.imageDtos.isEmpty()}"
-               th:remove="tag"> <!-- remove tag를 쓰면 텍스트 없이 img만 렌더링 -->
-            <img th:src="${review.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
-            <img src="" alt="더보기 이미지" />
-            <span class="r-plus">+ 더보기</span>
-          </div>
+
+          <th:block th:each="review : ${reviewList}">
+            <div th:if="${review.imageDtos != null}" class="r-thumb" th:remove="tag">
+              <img th:src="${review.imageDtos[0].imgUrl}" alt="리뷰 이미지" />
+              <img src="" alt="더보기 이미지" />
+              <span class="r-plus">+ 더보기</span>
+            </div>
+          </th:block>
         </div>
 
         <!-- 리뷰 리스트 -->

@@ -117,7 +117,16 @@ public class ReservationService {
     // 날짜 시간 선택 섹션
     public AvailableTimeSlotDto getAvailableTimeSlots (Long shopDesignerId, LocalDate date) {
 
+        if (shopDesignerId == null) {
+            throw new IllegalArgumentException("디자이너 ID가 전달되지 않았습니다.");
+        }
         ShopDesigner designer = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
+        if (designer == null) {
+            throw new IllegalArgumentException("해당 디자이너가 존재하지 않거나 비활성화 상태입니다.");
+        }
+
+
+        ShopDesigner designerActive = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
         Shop shop = designer.getShop();
 
         LocalTime startTime = designer.getScheduledStartTime() != null ? designer.getScheduledStartTime() : shop.getOpenTime();
