@@ -59,7 +59,8 @@ public class SecurityConfig {
                                         "/auth/email/reset-complete",
                                         "/auth/email/find-id",
                                         "/master/shop-edit/update",
-                                        "/ws/**"  // 웹소켓
+                                        "/ws/**",  // 웹소켓
+                                        "/master/add-designer"
                                 )
                                 .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())

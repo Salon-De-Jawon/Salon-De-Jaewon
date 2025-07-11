@@ -26,12 +26,12 @@
   --font-noto-snas: "Noto Sans KR", sans-serif;
 }
 
-a {
+.user-navbar li a {
   text-decoration: none;
   color: black;
 }
 
-a:visited {
+user-navbar li a:visited {
   text-decoration: none;
   color: black;
 }

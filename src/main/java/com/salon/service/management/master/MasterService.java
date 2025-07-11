@@ -7,6 +7,7 @@ import com.salon.constant.UploadType;
 import com.salon.dto.UploadedFileDto;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.LeaveRequestDto;
+import com.salon.dto.management.ServiceForm;
 import com.salon.dto.management.TodayScheduleDto;
 import com.salon.dto.management.master.*;
 import com.salon.entity.management.Designer;
@@ -14,6 +15,7 @@ import com.salon.entity.management.LeaveRequest;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.management.master.DesignerService;
+import com.salon.entity.management.master.ShopService;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
@@ -187,17 +189,27 @@ public class MasterService {
 
     // 미용실 디자이너 등록 시 저장 메서드
     @Transactional
-    public void addDesigner(Long memberId, Long shopId){
+    public DesignerListDto addDesignerList(Long designerId, Long memberId){
 
-        Designer designer = designerRepo.findByMember_Id(memberId);
-        Shop shop = shopRepo.findById(shopId).orElseThrow();
+        Designer designer = designerRepo.findByMember_Id(designerId);
+        Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
 
-        ShopDesigner entity = new ShopDesigner();
-        entity.setDesigner(designer);
-        entity.setShop(shop);
-        entity.setActive(true);
+        ShopDesigner newDes = new ShopDesigner();
+        newDes.setDesigner(designer);
+        newDes.setShop(shop);
+        newDes.setPosition("디자이너"); // default
+        newDes.setScheduledStartTime(shop.getOpenTime()); // default = 오픈시간
+        newDes.setScheduledEndTime(shop.getCloseTime().minusMinutes(shop.getTimeBeforeClosing())); // default = 예약마감시간
+        newDes.setActive(true);
 
-        shopDesignerRepo.save(entity);
+        shopDesignerRepo.save(newDes);
+
+        DesignerService service = designerServiceRepo.findByShopDesignerId(newDes.getId()).orElse(null);
+        int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, newDes.getId());
+        int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(newDes.getId());
+
+        return DesignerListDto.from(newDes, likeCount, reviewCount, service);
+
     }
 
     // 미용실 디자이너 삭제 시
@@ -208,6 +220,53 @@ public class MasterService {
         shopDesigner.setActive(false);
 
     }
+
+    // 시술 목록 가져오기
+    public List<ServiceForm> getServiceList(Long memberId){
+
+        Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
+
+        List<ShopService> serviceList = shopServiceRepo.findByShopId(shop.getId());
+        List<ServiceForm> forms = new ArrayList<>();
+        for(ShopService service : serviceList){
+            forms.add(ServiceForm.from(service));
+        }
+
+        return forms;
+    }
+
+    // 시술 수정
+    public Optional<ServiceForm> getServiceEdit(Long serviceId){
+
+        Optional<ShopService> shopServiceOptional = shopServiceRepo.findById(serviceId);
+
+        if (shopServiceOptional.isPresent()) {
+            ShopService shopService = shopServiceOptional.get();
+            return Optional.of(ServiceForm.from(shopService));
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    // 시술 생성
+    public ServiceForm addService(Long memberId, ServiceForm form){
+
+        Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
+
+        ShopService service = form.to(shop);
+        if (form.getImgFile() != null && !form.getImgFile().isEmpty()) {
+            UploadedFileDto fileDto = fileService.upload(form.getImgFile(), UploadType.SHOP_SERVICE);
+            service.setOriginalImgName(fileDto.getOriginalFileName());
+            service.setImgName(fileDto.getFileName());
+            service.setImgUrl(form.getImgUrl());
+        }
+
+        ShopService addedService = shopServiceRepo.save(service);
+
+        return ServiceForm.from(addedService);
+    }
+
 
     // 매장 수정 시 ShopEditDto 보내기
     public ShopEditDto getShopEdit(Long memberId){
