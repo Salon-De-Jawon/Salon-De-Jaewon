@@ -6,6 +6,7 @@
   <th:block layout:fragment="css">
     <link rel="stylesheet" href="/css/shop/reservationSelect.css">
   </th:block>
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 </head>
 <body>
 <div layout:fragment="main" id="main">

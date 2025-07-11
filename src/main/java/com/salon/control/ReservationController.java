@@ -25,18 +25,6 @@ public class ReservationController {
     private final ReservationService reservationServcie;
 
 
-    @GetMapping("/write")
-    public String getrservationSelect(){
-
-        return "shop/reservationSelect";
-    }
-
-    @GetMapping("/check")
-    public String getreservationCheck(){
-
-        return "shop/reCheckCoupon";
-    }
-
 
     // 예약 작성 페이지 Get매핑
     @GetMapping("/write")
