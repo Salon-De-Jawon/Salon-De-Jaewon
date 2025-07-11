@@ -1,25 +1,72 @@
 package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
-import com.salon.dto.admin.CsCreateDto;
-import com.salon.dto.admin.CsDetailDto;
-import com.salon.dto.admin.CsListDto;
+import com.salon.dto.BizStatusDto;
+import com.salon.dto.admin.*;
 import com.salon.entity.Member;
+import com.salon.entity.admin.Apply;
+import com.salon.entity.management.master.Coupon;
+import com.salon.repository.management.master.CouponRepo;
 import com.salon.service.admin.CsService;
+import com.salon.service.admin.DesApplyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/cs")
 public class CsController {
+    @Value("${api.encodedKey}")
+    private String encodedKey;
+
+    private final CouponRepo couponRepo;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @GetMapping("/api/bizCheck")
+    public ResponseEntity<?> check(@RequestParam String bizNo) {
+        System.out.println("bizNo: " + bizNo);
+        // 요청 JSON 구성
+        Map<String, Object> body = new HashMap<>();
+        body.put("b_no", List.of(bizNo));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+        String url = "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + encodedKey;
+
+        try {
+            ResponseEntity<BizStatusDto> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    BizStatusDto.class
+            );
+            System.out.println("API 응답: " + response.getBody());
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("API 오류: " + e.getMessage());
+        }
+
+    }
+
     private final CsService csService;
+
+    private final DesApplyService desApplyService;
     @GetMapping("/question")
     public String question(Model model){
         model.addAttribute("csCreateDto", new CsCreateDto());
@@ -45,28 +92,68 @@ public class CsController {
                         Model model){
         CsCreateDto csCreateDto = csService.create(id);
         CsListDto csListDto = csService.list(id);
+        CsDetailDto csDetailDto = csService.detail(id);
         boolean isAdmin = userDetails.getMember().getRole().name().equals("ADMIN");
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("csCreateDto", csCreateDto);
         model.addAttribute("csListDto", csListDto);
-        model.addAttribute("csDetailDto", new CsDetailDto());
+        model.addAttribute("csDetailDto", csDetailDto);
         model.addAttribute("isAdmin", isAdmin);
         return "admin/reply";
     }
     @PostMapping("/reply")
-    public String replySave(){
+    public String replySave(@AuthenticationPrincipal CustomUserDetails userDetails,
+                            @ModelAttribute CsDetailDto csDetailDto){
+        Long id = csDetailDto.getId();
+        CsCreateDto csCreateDto = csService.create(id);
+        CsListDto csListDto = csService.list(id);
+        csDetailDto.setLoginId(userDetails.getUsername());
+        csService.replySave(csDetailDto, csCreateDto, csListDto);
         return "redirect:/admin/cs/questionList";
     }
-    @GetMapping("/problem")
-    public String problem(){
-        return "admin/problem";
-    }
     @GetMapping("/shopApply")
-    public String shopApply(){
+    public String shopApply(Model model){
+        model.addAttribute("applyDto", new ApplyDto());
         return "admin/shopApply";
     }
-    @GetMapping("bannerApply")
-    public String bannerApply(){
-        return "admin/bannerApply";
+    @PostMapping("/shopApply")
+    public String shopRegistration(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                   @ModelAttribute ApplyDto applyDto,
+                                   Model model){
+
+        System.out.println("폼 제출됨: " + applyDto.getApplyNumber());
+
+        Member member = userDetails.getMember();
+        try {
+            csService.registration(applyDto, member);
+        } catch(IllegalStateException e){
+            model.addAttribute("applyDto", applyDto);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/shopApply";
+        }
+        return "redirect:/admin/cs/shopList";
     }
+    @GetMapping("/shopList")
+    public String shopList(Model model){
+        List<Apply> list = csService.listShop();
+        System.out.println("샵 신청 목록 수: " + list.size());
+        for (Apply a : list) {
+            System.out.println("신청: " + a.getApplyNumber() + " / 타입: " + a.getApplyType() + " / 상태: " + a.getStatus());
+        }
+        model.addAttribute("shopApplyList", list);
+        return "admin/shopList";
+    }
+    @PostMapping("/approve/{id}")
+    public String approveShop(@PathVariable Long id,
+                              @AuthenticationPrincipal CustomUserDetails userDetails){
+        csService.approveShop(id, userDetails.getMember());
+        return "redirect:/admin/cs/shopList";
+    }
+    @PostMapping("/reject/{id}")
+    public String rejectShop(@PathVariable Long id,
+                             @AuthenticationPrincipal CustomUserDetails userDetails){
+        csService.rejectShop(id, userDetails.getMember());
+        return "redirect:/admin/cs/shopList";
+    }
+
 }

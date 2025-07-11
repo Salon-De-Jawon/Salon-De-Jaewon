@@ -25,6 +25,10 @@ public class CustomUserDetails implements UserDetails {
         return this.member;
     }
 
+    public Long getId() {
+        return member.getId();
+    }
+
     public String getName() {
         String name = member.getName();
         return name != null ? name : "이름없음";

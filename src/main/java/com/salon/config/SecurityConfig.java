@@ -20,6 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+
                 .formLogin(form -> form
 
                         .loginPage("/login") // 커스텀 로그인 페이지 주소
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
@@ -55,7 +57,8 @@ public class SecurityConfig {
                                         "/auth/email/send",
                                         "/auth/email/verify",
                                         "/auth/email/reset-complete",
-                                        "/auth/email/find-id"
+                                        "/auth/email/find-id",
+                                        "/ws/**"  // 웹소켓
                                 )
                                 .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())

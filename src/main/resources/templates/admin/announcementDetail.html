@@ -19,11 +19,14 @@
         <div class="content">
             <span th:utext="${ancDetailDto.content}"></span>
         </div>
-        <div th:if="${ancDetailDto.fileUrls}" class="attachment">
+        <li th:each="file : ${ancDetailDto.files}">
+            <ul><img th:src="${file.fileUrl}" alt=""></ul>
+        </li>
+        <div th:if="${ancDetailDto.files}" class="attachment">
             <span>첨부파일 : </span>
             <ul>
-                <li th:each="url : ${ancDetailDto.fileUrls}">
-                    <a th:href="${url}" th:text="${#strings.substringAfter(url, '/upload/')}" target="_blank"></a>
+                <li th:each="file : ${ancDetailDto.files}">
+                    <a th:href="@{/admin/anc/download(fileName=${file.fileName})}" th:text="${file.fileName}" download target="_blank"></a>
                 </li>
             </ul>
         </div>

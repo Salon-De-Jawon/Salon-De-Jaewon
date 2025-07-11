@@ -1,5 +1,6 @@
 package com.salon.dto.admin;
 
+import com.salon.entity.management.master.Coupon;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
