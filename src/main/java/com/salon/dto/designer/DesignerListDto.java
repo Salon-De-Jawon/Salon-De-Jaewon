@@ -1,11 +1,15 @@
 package com.salon.dto.designer;
 
+import com.salon.constant.ServiceCategory;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.DesignerService;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,7 +29,7 @@ public class DesignerListDto {
     private String profileSummary; // 디자이너 전문 시술 분야 + 연차
 
     // ShopDesigner(Entity) -> DesignerListDto
-    public static DesignerListDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount){
+    public static DesignerListDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount, DesignerService designerService){
         DesignerListDto designerListDto = new DesignerListDto();
 
         designerListDto.setId(shopDesigner.getId());
@@ -35,11 +39,28 @@ public class DesignerListDto {
         String position = shopDesigner.getPosition();
         designerListDto.setName(name + " " + position + "디자이너");
 
-        designerListDto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
-        designerListDto.setPosition(shopDesigner.getPosition());
+        int workingYears = shopDesigner.getDesigner().getWorkingYears();
+        designerListDto.setWorkingYear(workingYears);
+        designerListDto.setPosition(position);
         designerListDto.setImgUrl(shopDesigner.getDesigner().getImgUrl());
         designerListDto.setReviewCount(reviewCount);
         designerListDto.setLikeCount(likeCount);
+
+        List<ServiceCategory> assignedCategories = designerService.getAssignedCategories();
+        List<String> categoryLabels = new ArrayList<>(); // 한글 라벨을 저장할 리스트
+
+        for (ServiceCategory category : assignedCategories) {
+            categoryLabels.add(category.getLabel()); // getLabel() 메서드를 사용하여 한글 라벨 추가
+        }
+
+        String categoriesString = String.join(", ", categoryLabels); // 쉼표와 공백으로 연결
+
+        // "담당" 문구 추가 (시술 카테고리가 있을 경우만)
+        if (!categoriesString.isEmpty()) {
+            categoriesString += " 담당";
+        }
+
+        designerListDto.setProfileSummary(categoriesString + " (" + workingYears + "년차)");
 
 
 

@@ -58,6 +58,7 @@ public class SecurityConfig {
                                         "/auth/email/verify",
                                         "/auth/email/reset-complete",
                                         "/auth/email/find-id",
+                                        "/master/shop-edit/update"
                                         "/ws/**"  // 웹소켓
                                 )
                                 .csrfTokenRepository(

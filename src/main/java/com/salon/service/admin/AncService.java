@@ -64,11 +64,10 @@ public class AncService {
 
                     System.out.println("파일경로 : "+filePath + ",확장자: " + fileName);
 
-
                     AnnouncementFile announcementFile = new AnnouncementFile();
-                    announcementFile.setOriginalName(originalName);
-                    announcementFile.setFileName(fileName);
-                    announcementFile.setFileUrl(filePath);
+                    announcementFile.setOriginalName(image.getOriginalFileName());
+                    announcementFile.setFileName(image.getFileName());
+                    announcementFile.setFileUrl(image.getFileUrl());
                     announcementFile.setAnnouncement(announcement);
 
                     announcementRepo.save(announcement);

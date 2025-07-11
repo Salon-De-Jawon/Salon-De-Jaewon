@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -57,20 +58,24 @@ public class FileService {
         // 업로드 타입별 폴더 경로
         String folderPath = getFolderPath(type);
 
+        // 저장 될 파일 경로
+        String fullPath = folderPath + uuidFileName;
+
         // 폴더가 없을시 생성
         File dir = new File(folderPath);
         if (!dir.exists()) {
             dir.mkdirs();
         }
 
+
         // 경로 + 파일이름 /shopImg/*****.jpg
         String fileUrl = type.getUrlPath() + uuidFileName;
 
         // 파일 저장
-        try(FileOutputStream fos = new FileOutputStream(fileUrl)) {
+        try(FileOutputStream fos = new FileOutputStream(fullPath)) {
             fos.write(multipartFile.getBytes());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
 

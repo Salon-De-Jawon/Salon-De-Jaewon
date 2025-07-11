@@ -1,7 +1,12 @@
+
 .section-container {
   max-width: 960px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  font-family: var(--font-noto-snas);
 }
 
 .page-header {
@@ -25,6 +30,7 @@
   text-decoration: none;
   font-weight: 500;
   transition: background-color 0.2s ease;
+  cursor: pointer; /* 버튼에 커서 포인터 추가 */
 }
 
 .btn-add:hover {
@@ -88,4 +94,153 @@
 .btn-book:hover {
   background-color: var(--main-color);
   color: white;
+}
+
+/* 모달 스타일 추가 */
+    .modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed; /* 화면에 고정 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%; /* 전체 너비 */
+    height: 100%; /* 전체 높이 */
+    overflow: auto; /* 내용이 넘칠 경우 스크롤 */
+    background-color: rgba(0,0,0,0.4); /* 배경 반투명 검정 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* 모달 너비 */
+    max-width: 600px; /* 최대 너비 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-body {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-container input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-container button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+
+.search-results {
+    border: 1px solid #eee;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item.selected {
+    background-color: #e9e9e9;
+}
+
+.search-result-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.search-result-info .name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.no-results {
+    text-align: center;
+    color: #777;
+    padding: 20px;
+}
+
+.add-designer-btn-container {
+    text-align: right;
+    margin-top: 15px;
+}
+
+#addSelectedDesignerBtn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: none; /* 기본적으로 숨김 */
+}
+
+#addSelectedDesignerBtn:hover {
+    background-color: #218838;
 }

@@ -101,13 +101,14 @@ public class ShopDetailService {
         return shopDesigners.stream()
                 .map(sd -> {
                     Long designerId = sd.getDesigner().getId();
+                    DesignerService service = designerServiceRepo.findByShopDesignerId(designerId).orElse(null);
 
                     // 찜 갯수
                     int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designerId);
                     // 리뷰 갯수
                     int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designerId);
 
-                    return DesignerListDto.from(sd, likeCount, reviewCount);
+                    return DesignerListDto.from(sd, likeCount, reviewCount, service);
                 }).collect(Collectors.toList());
     }
 
@@ -225,7 +226,7 @@ public class ShopDetailService {
             String profileSummary = specialties + "(" + workingYear + "년차)";
 
             // Dto 가공
-            DesignerListDto dto = DesignerListDto.from(sd,likeCount,reviewCount);
+            DesignerListDto dto = DesignerListDto.from(sd,likeCount,reviewCount, designerService);
             dto.setWorkingYear(workingYear);
             dto.setProfileSummary(profileSummary);
 

@@ -37,25 +37,7 @@ public class AdminAncController {
     private final MemberRepo memberRepo;
     @Value("${file.anc-file-path}")
     private String ancPath;
-    @GetMapping("/download")
-    public ResponseEntity<Resource> downloadPdf(@RequestParam("fileName") String fileName) throws IOException {
-        String filePath = ancPath + fileName;
-        File file = new File(filePath);
-        System.out.println("파일 존재 여부: " + file.exists() + ", 경로: " + file.getAbsolutePath());
 
-        if (!file.exists() || file.isDirectory()) {
-            throw new FileNotFoundException("파일이 없거나 디렉토리입니다.");
-        }
-
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8) + "\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(file.length())
-                .body(resource);
-    }
     @GetMapping("")
     public String list(Model model){
         List<AncListDto> ancListDtoList = ancService.list();
