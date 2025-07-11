@@ -51,6 +51,7 @@ public class AdminAncController {
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8) + "\"")
