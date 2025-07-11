@@ -16,6 +16,7 @@ public class LikeDesignerDto {
     private Long id;  // Like 테이블 Id
     private String designerName;  // 디자이너 이름
     private int workingYear; // 경력
+    private String position; // 포지션
     private String shopName; // 가게 이름
     private LocalTime startTime; // 기본 예약 시작 시간
     private LocalTime endTime;  //  기본 예약 끝나는 시간
@@ -25,9 +26,9 @@ public class LikeDesignerDto {
         LikeDesignerDto dto = new LikeDesignerDto();
 
         dto.setId(like.getId());
-        // 서비스에서 typeid와 shopDesigner의 id를 매핑
         dto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
         dto.setWorkingYear(shopDesigner.getDesigner().getWorkingYears());
+        dto.setPosition(shopDesigner.getPosition());
         dto.setShopName(shopDesigner.getShop().getName());
         dto.setStartTime(shopDesigner.getScheduledStartTime());
         dto.setEndTime(shopDesigner.getScheduledEndTime());

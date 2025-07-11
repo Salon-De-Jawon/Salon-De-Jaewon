@@ -1,19 +1,20 @@
 package com.salon.service.user;
 
+
 import com.salon.constant.LikeType;
-import com.salon.dto.management.master.DesignerSummaryDto;
 import com.salon.dto.shop.CouponListDto;
+import com.salon.dto.user.LikeDesignerDto;
 import com.salon.dto.user.MyTicketListDto;
-import com.salon.entity.Member;
+
 import com.salon.entity.management.MemberCoupon;
 import com.salon.entity.management.Payment;
-import com.salon.entity.management.master.Coupon;
 import com.salon.entity.management.master.Ticket;
+
 import com.salon.entity.shop.SalonLike;
-import com.salon.entity.shop.Shop;
 import com.salon.repository.management.MemberCouponRepo;
 import com.salon.repository.management.PaymentRepo;
-import com.salon.repository.management.master.CouponRepo;
+
+import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.TicketRepo;
 import com.salon.repository.shop.SalonLikeRepo;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class MypageService {
     private final MemberCouponRepo memberCouponRepo;
     private final TicketRepo ticketRepo;
     private final PaymentRepo paymentRepo;
+    private final ShopDesignerRepo shopDesignerRepo;
     private final SalonLikeRepo salonLikeRepo;
 
     // 마이 쿠폰
@@ -63,6 +66,25 @@ public class MypageService {
     }
 
     // 내 찜 목록
+    // 내 디자이너
 
+    public List<LikeDesignerDto> getDesignerLike(Long memberId) {
+        List<SalonLike> salonLikes = salonLikeRepo.findByMemberIdAndLikeType(memberId, LikeType.DESIGNER);
+
+        List<LikeDesignerDto> result = new ArrayList<>();
+
+        for (SalonLike salonLike : salonLikes) {
+            Long designerId = salonLike.getTypeId();
+
+            shopDesignerRepo.findById(designerId).ifPresent(shopDesigner -> {
+                LikeDesignerDto dto = LikeDesignerDto.from(salonLike, shopDesigner);
+                result.add(dto);
+            });
+        }
+
+        return result;
+    }
+
+    public
 
 }

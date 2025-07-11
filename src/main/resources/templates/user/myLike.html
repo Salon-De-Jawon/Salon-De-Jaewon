@@ -51,15 +51,19 @@
 
               <div class="scroll-wrapper">
                 <div class="designer-list">
-                  <!-- 쿠폰 박스 -->
-                  <div class="designer-box">
+                  <!-- 디자이너 박스 -->
+                  <div class="designer-box" th:each="designer : ${myLikeDesigner}">
                     <div class="designer-img">
-                      <img src="" alt="디자이너 이미지" />
+                      <img th:src="${designer.imgUrl}" alt="디자이너 이미지" />
                     </div>
-                    <div class="designer-name">누구누구 수석 디자이너</div>
+                    <div class="designer-name" th:text="${designer.position} + ' ' + ${designer.designerName}">누구누구 수석 디자이너</div>
                     <div class="btn-area">
-                      <button>예약</button>
-                      <button>상세</button>
+                      <a href="">
+                        <button type="button">예약</button>
+                      </a>
+                      <a href="">
+                        <button type="button">상세</button>
+                      </a>
                     </div>
                   </div>
                 </div>

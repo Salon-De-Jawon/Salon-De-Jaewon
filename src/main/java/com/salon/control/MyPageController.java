@@ -2,6 +2,7 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.CouponListDto;
+import com.salon.dto.user.LikeDesignerDto;
 import com.salon.dto.user.MyReservationDto;
 import com.salon.dto.user.MyTicketListDto;
 import com.salon.dto.user.ReviewCreateDto;
@@ -70,7 +71,14 @@ public class MyPageController {
     //찜목록
 
     @GetMapping("/likeList")
-    public String likeList() {
+    public String likeList(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Long memberId=userDetails.getId();
+
+        List<LikeDesignerDto> likeDesignerDtos = mypageService.getDesignerLike(memberId);
+
+        model.addAttribute("myLikeDesigner", likeDesignerDtos);
+
+
         return "/user/myLike";
     }
 
