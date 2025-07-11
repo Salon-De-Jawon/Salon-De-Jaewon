@@ -40,6 +40,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -194,6 +198,10 @@ public class MasterService {
         Designer designer = designerRepo.findByMember_Id(designerId);
         Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
 
+        if (shopDesignerRepo.existsByDesignerId(designerId)) {
+            throw new IllegalArgumentException("이미 미용실에 소속된 디자이너입니다.");
+        }
+
         ShopDesigner newDes = new ShopDesigner();
         newDes.setDesigner(designer);
         newDes.setShop(shop);
@@ -235,21 +243,8 @@ public class MasterService {
         return forms;
     }
 
-    // 시술 수정
-    public Optional<ServiceForm> getServiceEdit(Long serviceId){
-
-        Optional<ShopService> shopServiceOptional = shopServiceRepo.findById(serviceId);
-
-        if (shopServiceOptional.isPresent()) {
-            ShopService shopService = shopServiceOptional.get();
-            return Optional.of(ServiceForm.from(shopService));
-        } else {
-            return Optional.empty();
-        }
-
-    }
-
     // 시술 생성
+    @Transactional
     public ServiceForm addService(Long memberId, ServiceForm form){
 
         Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
@@ -265,6 +260,62 @@ public class MasterService {
         ShopService addedService = shopServiceRepo.save(service);
 
         return ServiceForm.from(addedService);
+    }
+
+    // 시술 수정 모달용
+    public Optional<ServiceForm> getServiceEdit(Long serviceId){
+
+        Optional<ShopService> shopServiceOptional = shopServiceRepo.findById(serviceId);
+
+        if (shopServiceOptional.isPresent()) {
+            ShopService shopService = shopServiceOptional.get();
+            return Optional.of(ServiceForm.from(shopService));
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    // 시술 수정
+    @Transactional
+    public ServiceForm updateService(Long serviceId, ServiceForm form){
+
+        ShopService service = shopServiceRepo.findById(serviceId).orElseThrow(()
+                -> new IllegalArgumentException("존재하지 않는 시술"));
+
+        ShopService updatedService = form.to(service.getShop());
+        updatedService.setId(serviceId);
+
+        if (form.getImgFile() != null && !form.getImgFile().isEmpty()) {
+            UploadedFileDto fileDto = fileService.upload(form.getImgFile(), UploadType.SHOP_SERVICE);
+            updatedService.setOriginalImgName(fileDto.getOriginalFileName());
+            updatedService.setImgName(fileDto.getFileName());
+            updatedService.setImgUrl(fileDto.getFileUrl());
+        }
+
+        shopServiceRepo.save(updatedService);
+
+        return ServiceForm.from(updatedService);
+    }
+
+    // 시술 삭제
+    @Transactional
+    public void deleteService(Long serviceId){
+
+        ShopService service = shopServiceRepo.findById(serviceId).orElseThrow(()
+                -> new IllegalArgumentException("없는 서비스"));
+
+        // 이미지 삭제
+        if(service.getImgName() != null){
+            Path filePath = Paths.get(UploadType.SHOP_SERVICE.getUrlPath(), service.getImgName());
+            try {
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        shopServiceRepo.delete(service);
     }
 
 

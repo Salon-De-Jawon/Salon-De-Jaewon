@@ -28,4 +28,6 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
     Optional<ShopDesigner> findByDesigner(Designer designer);
     Optional<ShopDesigner> findByDesignerId(Long designerId);
 
+    // 이미 미용실 소속된 디자이너인지 확인
+    boolean existsByDesignerId(Long designerId);
 }

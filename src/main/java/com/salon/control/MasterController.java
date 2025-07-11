@@ -116,7 +116,17 @@ public class MasterController {
         return "master/services";
     }
 
-    // 시술 수정 페이지
+    // 시술 저장
+    @PostMapping("/services")
+    @ResponseBody
+    public ResponseEntity<ServiceForm> createService(@ModelAttribute ServiceForm serviceForm,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        ServiceForm createdService = masterService.addService(userDetails.getId(), serviceForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
+    }
+
+    // 시술 수정 모달
     @GetMapping("/services/{serviceId}")
     @ResponseBody
     public ResponseEntity<ServiceForm> getServiceDetails(@PathVariable Long serviceId) {
@@ -130,17 +140,24 @@ public class MasterController {
         }
     }
 
-    // 시술 저장
-    @PostMapping("/services")
+    // 시술 수정
+    @PutMapping("/services/{serviceId}")
     @ResponseBody
-    public ResponseEntity<ServiceForm> createService(@ModelAttribute ServiceForm serviceForm,
-                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<ServiceForm> updateService(
+            @PathVariable Long serviceId,
+            @ModelAttribute ServiceForm serviceForm) {
+        ServiceForm updatedService = masterService.updateService(serviceId, serviceForm);
+        return ResponseEntity.ok(updatedService);
 
-        ServiceForm createdService = masterService.addService(userDetails.getId(), serviceForm);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
     }
 
-
+    // 시술 삭제
+    @DeleteMapping("/services/{serviceId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteService(@PathVariable Long serviceId) {
+        masterService.deleteService(serviceId);
+        return ResponseEntity.noContent().build();
+    }
 
 
 
