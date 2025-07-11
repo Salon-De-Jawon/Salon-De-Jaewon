@@ -1,13 +1,16 @@
 package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.Role;
 import com.salon.dto.BizStatusDto;
-import com.salon.dto.admin.AncDetailDto;
-import com.salon.dto.admin.AncListDto;
-import com.salon.dto.admin.ApplyDto;
-import com.salon.dto.admin.CsCreateDto;
+import com.salon.dto.admin.*;
 import com.salon.entity.Member;
+import com.salon.entity.management.Designer;
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.shop.Shop;
+import com.salon.repository.management.DesignerRepo;
+import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
 import com.salon.service.admin.AncService;
 import com.salon.service.admin.CsService;
@@ -22,10 +25,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +37,8 @@ import java.util.Map;
 public class UserCsController {
     private final AncService ancService;
     private final DesApplyService desApplyService;
+    private final DesignerRepo designerRepo;
+    private final ShopDesignerRepo shopDesignerRepo;
     @Value("${ocr.api}")
     private String ocrApiKey;
     @Value("${api.encodedKey}")
@@ -147,5 +153,49 @@ public class UserCsController {
         }
         return "redirect:/admin/cs/shopList";
     }
+    // 배너 신청 폼을 보여주는 GET 요청
+    @GetMapping("/apply")
+    public String applyForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        Member member = userDetails.getMember();
 
+        Shop shop = null;
+        List<Coupon> activeCouponList = Collections.emptyList();
+
+        if (member.getRole().equals(Role.MAIN_DESIGNER)) {
+            Optional<Designer> designerOptional = designerRepo.findByMemberId(member.getId());
+            if (designerOptional.isPresent()) {
+                Optional<ShopDesigner> shopDesignerOptional = shopDesignerRepo.findByDesignerId(designerOptional.get().getId());
+                System.out.println("designer : " + designerOptional.get().getId());
+                if (shopDesignerOptional.isPresent()) {
+                    shop = shopDesignerOptional.get().getShop();
+                    activeCouponList = couponRepo.findByShopAndIsActiveTrue(shop); // 샵에 연결된 활성 쿠폰 조회
+                } else {
+                    model.addAttribute("error", "해당 디자이너는 소속된 미용실이 없습니다.");
+                    model.addAttribute("couponList", activeCouponList);
+                    return "admin/bannerApply";
+                }
+            } else {
+                model.addAttribute("error", "해당 회원과 연결된 디자이너 정보가 없습니다.");
+                model.addAttribute("couponList", activeCouponList);
+                return "admin/bannerApply";
+            }
+        } else {
+            // MAIN_DESIGNER 외 다른 모든 역할 (ADMIN 포함)은 권한이 없습니다.
+            model.addAttribute("error", "쿠폰 배너 신청 권한이 없습니다. (디자이너만 가능)");
+            model.addAttribute("couponList", activeCouponList);
+            return "admin/bannerApply";
+        }
+
+        model.addAttribute("couponList", activeCouponList);
+        return "admin/bannerApply";
+    }
+    // 쿠폰 배너 신청 폼 데이터를 처리하는 POST 요청
+    @PostMapping("/apply")
+    public String bannerApply(@ModelAttribute BannerApplyDto bannerApplyDto,
+                              @AuthenticationPrincipal CustomUserDetails userDetails,
+                                @RequestParam("file") MultipartFile file){
+        Long memberId = userDetails.getMember().getId();
+        csService.applyBanner(bannerApplyDto, memberId, file);
+        return "redirect:/admin/cs/apply";
+    }
 }

@@ -5,8 +5,14 @@ import com.salon.dto.BizStatusDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.entity.management.Designer;
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.shop.Shop;
+import com.salon.repository.management.DesignerRepo;
+import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
+import com.salon.repository.shop.ShopRepo;
 import com.salon.service.admin.CsService;
 import com.salon.service.admin.DesApplyService;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +24,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,6 +40,9 @@ public class CsController {
     private String encodedKey;
 
     private final CouponRepo couponRepo;
+    private final ShopDesignerRepo shopDesignerRepo;
+    private final DesignerRepo designerRepo;
+    private final ShopRepo shopRepo;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -121,9 +133,4 @@ public class CsController {
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
-    @GetMapping("/apply")
-    public String apply() {
-        return "admin/bannerApply";
-    }
-
 }
