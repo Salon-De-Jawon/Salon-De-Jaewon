@@ -67,8 +67,11 @@ public class ReservationService {
             // 디자이너 리뷰 갯수 조회
             int reviewcount = reviewRepo.countByReservation_ShopDesigner_Id(designerId);
 
+            // 디자이너 시술 카테고리 조회
+            DesignerService designerService = designerServiceRepo.findByShopDesignerId(designerId).orElse(null);
+
             // dto로 반환
-            DesignerListDto designerListDto = DesignerListDto.from(sd,likeCount,reviewcount);
+            DesignerListDto designerListDto = DesignerListDto.from(sd,likeCount,reviewcount, designerService);
             dtos.add(designerListDto);
         }
         return dtos;
@@ -161,7 +164,7 @@ public class ReservationService {
     public ReservationPreviewDto getReservationPreview(Long memberId, Long shopDesignerId,Long shopServiceId, LocalDate date, LocalTime time){
 
         ShopDesigner designer = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
-        DesignerListDto selectedDesigner = DesignerListDto.from(designer,salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER,shopDesignerId),reviewRepo.countByReservation_ShopDesigner_Id(shopDesignerId));
+        DesignerListDto selectedDesigner = DesignerListDto.from(designer,salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER,shopDesignerId),reviewRepo.countByReservation_ShopDesigner_Id(shopDesignerId), designerServiceRepo.findByShopDesignerId(designer.getId()).orElse(null));
 
         ShopService service = shopServiceRepo.findById(shopServiceId)
                 .orElseThrow(() -> new EntityNotFoundException("시술 정보 없음"));

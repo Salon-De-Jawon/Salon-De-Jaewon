@@ -13,6 +13,8 @@ import com.salon.entity.shop.ShopImage;
 import com.salon.service.management.master.MasterService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -59,6 +61,38 @@ public class MasterController {
 
         return "master/designerList";
     }
+
+    // 미용실 디자이너 검색 후 목록 보여주기
+    // 디자이너 검색 API 엔드포인트
+    @GetMapping("/designer-search")
+    public ResponseEntity<List<DesignerResultDto>> searchDesigners(@ModelAttribute DesignerSearchDto searchDto) {
+
+        System.out.println("검색 이름: " + searchDto.getName()); // 로그 추가해서 확인 가능
+        System.out.println("검색 번호: " + searchDto.getTel());   // 로그 추가해서 확인 가능
+        
+        // 서비스 계층의 검색 메서드 호출
+        List<DesignerResultDto> foundDesigners = masterService.getDesignerResult(searchDto);
+
+        return ResponseEntity.ok(foundDesigners);
+    }
+
+//    // 디자이너 추가 API
+//    @PostMapping("/add-designer")
+//    public ResponseEntity<DesignerListDto> addDesignerToShop(
+//            @RequestParam Long designerId, // <-- DesignerAddRequestDto 대신 @RequestParam으로 직접 받습니다.
+//            @AuthenticationPrincipal Long memberId) {
+//
+//        try {
+//            // 서비스 메서드 호출 시 designerId를 직접 전달합니다.
+//            DesignerListDto newShopDesignerDto = masterService.addDesigner(designerId, memberId);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(newShopDesignerDto);
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().build();
+//        } catch (Exception e) {
+//            System.err.println("디자이너 추가 중 서버 오류: " + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     // 디자이너 수정 페이지
     @GetMapping("/designer/edit")

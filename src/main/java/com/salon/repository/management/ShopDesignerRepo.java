@@ -22,4 +22,5 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
 
     // 미용실 소속 디자이너 수
     int countByShopIdAndIsActiveTrue(Long id);
+
 }
