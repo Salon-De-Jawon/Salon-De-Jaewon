@@ -259,7 +259,7 @@ public class MasterService {
             UploadedFileDto fileDto = fileService.upload(form.getImgFile(), UploadType.SHOP_SERVICE);
             service.setOriginalImgName(fileDto.getOriginalFileName());
             service.setImgName(fileDto.getFileName());
-            service.setImgUrl(form.getImgUrl());
+            service.setImgUrl(fileDto.getFileUrl());
         }
 
         ShopService addedService = shopServiceRepo.save(service);
