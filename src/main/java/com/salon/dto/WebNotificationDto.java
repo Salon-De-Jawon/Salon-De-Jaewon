@@ -2,6 +2,7 @@ package com.salon.dto;
 
 import com.salon.constant.WebTarget;
 import com.salon.entity.admin.WebNotification;
+import com.salon.util.DateTimeUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,32 +26,12 @@ public class WebNotificationDto {
         dto.setMessage(entity.getMessage());
         dto.setWebTarget(entity.getWebTarget());
         dto.setTargetId(entity.getTargetId());
-        dto.setCreateAt(getTimeAgo(entity.getCreateAt()));
+        dto.setCreateAt(DateTimeUtil.getTimeAgo(entity.getCreateAt(), false));
         dto.setReceiverId(entity.getMemberId());
 
         return dto;
     }
 
-    // 방금전, 몇시간전, 몇일전, 날짜(7일이상) 으로 날짜 바꾸기 코드
-    public static String getTimeAgo(LocalDateTime createAt) {
-        LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(createAt, now);
-
-        long seconds = duration.getSeconds();
-        long minutes = duration.toMinutes();
-        long hours = duration.toHours();
-        long days = duration.toDays();
-
-        if (seconds < 60) return "방금 전";
-        if (minutes < 60) return minutes + "분 전";
-        if (hours < 24) return hours + "시간 전";
-        if (days == 1) return "하루 전";
-        if (days == 2) return "이틀 전";
-        if (days < 7) return days + "일 전";
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return createAt.format(formatter);
-    }
 
     //웹알림 저장 코드
 

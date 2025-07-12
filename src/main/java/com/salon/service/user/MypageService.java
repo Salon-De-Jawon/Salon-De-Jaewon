@@ -2,18 +2,24 @@ package com.salon.service.user;
 
 
 import com.salon.constant.LikeType;
+import com.salon.constant.WebTarget;
 import com.salon.dto.DayOffShowDto;
 import com.salon.dto.shop.CouponListDto;
-import com.salon.dto.user.LikeDesignerDto;
-import com.salon.dto.user.LikeShopDto;
-import com.salon.dto.user.MyTicketListDto;
+import com.salon.dto.shop.ReviewImageDto;
+import com.salon.dto.user.*;
 
+import com.salon.entity.Review;
+import com.salon.entity.ReviewImage;
+import com.salon.entity.admin.WebNotification;
 import com.salon.entity.management.MemberCoupon;
 import com.salon.entity.management.Payment;
 import com.salon.entity.management.master.Ticket;
 
 import com.salon.entity.shop.SalonLike;
 import com.salon.entity.shop.Shop;
+import com.salon.repository.ReviewImageRepo;
+import com.salon.repository.ReviewRepo;
+import com.salon.repository.WebNotificationRepo;
 import com.salon.repository.management.MemberCouponRepo;
 import com.salon.repository.management.PaymentRepo;
 
@@ -24,11 +30,16 @@ import com.salon.repository.shop.ShopImageRepo;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.security.access.AccessDeniedException;
 
 
 @Service
@@ -43,6 +54,9 @@ public class MypageService {
     private final CouponService couponService;
     private final ReviewService reviewService;
     private final ShopImageRepo shopImageRepo;
+    private final ReviewRepo reviewRepo;
+    private final ReviewImageRepo reviewImageRepo;
+    private final WebNotificationRepo webNotificationRepo;
 
     // 마이 쿠폰
 
@@ -113,7 +127,6 @@ public class MypageService {
             DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
 
 
-
             LikeShopDto dto = LikeShopDto.from(salonLike, shop, shopImageRepo, avgRating, reviewCount, hasCoupon, dayOffShowDto);
 
 
@@ -121,6 +134,90 @@ public class MypageService {
         }
 
         return result;
+    }
+
+    // 내 리뷰 목록
+
+
+    //리뷰 목록 불러오기
+
+    public Page<MyReviewListDto> getMyReviewList(Long memberId, Pageable pageable) {
+
+        Page<Review> reviewPage = reviewRepo.findByReservation_Member_Id(memberId, pageable);
+
+        // 각 리뷰 → MyReviewListDto 변환
+        List<MyReviewListDto> content = reviewPage.getContent().stream().map(review -> {
+            // 이미지 가져오기
+            List<ReviewImageDto> reviewImageDtos = reviewImageRepo.findAllByReview_Id(review.getId())
+                    .stream()
+                    .map(ReviewImageDto::from)
+                    .collect(Collectors.toList());
+
+            // 알림 가져오기
+            WebNotification webNotification = webNotificationRepo
+                    .findTopByWebTargetAndTargetIdAndMemberId(WebTarget.REVIEW, review.getId(), memberId)
+                    .orElse(null);
+
+            return MyReviewListDto.from(review, reviewImageDtos, webNotification);
+
+        }).collect(Collectors.toList());
+
+        return new PageImpl<>(content, pageable, reviewPage.getTotalElements());
+    }
+//
+//    public List<MyReviewListDto> getMyReviewList(Long memberId) {
+//
+//        List<Review> reviews = reviewRepo.findByReservation_Member_id(memberId);
+//        List<MyReviewListDto> result = new ArrayList<>();
+//
+//        for(Review review : reviews) {
+//            List<ReviewImage> reviewImages = reviewImageRepo.findAllByReview_Id(review.getId());
+//            List<ReviewImageDto> reviewImageDtos = reviewImages.stream()
+//                    .map(ReviewImageDto::from)
+//                    .collect(Collectors.toList());
+//
+//
+//            // 알림 가져오기
+//            WebNotification webNotification = webNotificationRepo
+//                    .findTopByWebTargetAndTargetIdAndMemberId(WebTarget.REVIEW, review.getId(), memberId)
+//                    .orElse(null);
+//
+//            // Dto 생성
+//            result.add(MyReviewListDto.from(review, reviewImageDtos, webNotification));
+//        }
+//
+//        return result;
+//    }
+
+    // 리뷰 상세보기
+
+    public MyReviewDetailDto getMyReviewDetail(Long reviewId, Long memberId) {
+        Review review = reviewRepo.findById(reviewId).orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        // 소유자 검증 코드
+        if(!review.getReservation().getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("본인 리뷰만 열람 가능합니다.");
+        }
+
+        // 리뷰 이미지
+
+        List<ReviewImageDto> imgDtos = reviewImageRepo.findAllByReview_Id(reviewId)
+                .stream()
+                .map(ReviewImageDto::from)
+                .collect(Collectors.toList());
+
+        WebNotification notify = webNotificationRepo.findTopByWebTargetAndTargetIdAndMemberId(WebTarget.REVIEW, reviewId, memberId)
+                .orElse(null);
+
+        if(notify != null && !notify.isRead()) {
+            notify.setRead(true);
+            webNotificationRepo.save(notify);
+        }
+
+        MyReviewListDto listDto = MyReviewListDto.from(review, imgDtos, notify);
+
+        return MyReviewDetailDto.from(review, listDto);
+
     }
 
 }

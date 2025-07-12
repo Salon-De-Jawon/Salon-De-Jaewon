@@ -1,10 +1,14 @@
 package com.salon.repository;
 
+
 import com.salon.entity.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -31,5 +35,13 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
             """)
     float averageRatingByShopId(@Param("shopId") Long shopId);
 
+    // 리뷰 예약 아이디로 찾기
     Optional<Review> findByReservationId(Long id);
+
+    // 해당 유저가 작성한 리뷰 전부 불러오기
+    List<Review> findByReservation_Member_id(Long memberId);
+
+    // 페이지 에이블 추가
+    Page<Review> findByReservation_Member_Id(Long memberId, Pageable pageable);
+
 }
