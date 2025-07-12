@@ -1,5 +1,6 @@
 package com.salon.dto.shop;
 
+import com.salon.dto.DayOffShowDto;
 import com.salon.dto.management.master.ShopImageDto;
 import com.salon.entity.shop.Shop;
 import com.salon.util.DayOffUtil;
@@ -30,8 +31,7 @@ public class ShopListDto {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private List<ShopDesignerProfileDto> designerList = new ArrayList<>();
-    private int dayOff; // 미용실 정기 휴무 날짜
-    private String dayOffText; // 미용실 정기 휴무 날짜
+    private DayOffShowDto dayOffShowDto;
 
     public static ShopListDto from(Shop shop, ShopImageDto shopImageDto, float avgRating, int reviewCount, boolean hasCoupon) {
         ShopListDto dto = new ShopListDto();
@@ -48,22 +48,6 @@ public class ShopListDto {
         dto.setHasCoupon(hasCoupon);
 
         return dto;
-    }
-
-
-    public void  setDayOff(int dayOff) {
-        this.dayOff = dayOff;
-        this.dayOffText = generateDayOffText(dayOff);
-    }
-
-
-    private String generateDayOffText(int dayOffBit ){
-        List<DayOfWeek> days = DayOffUtil.decodeDayOff(dayOffBit);
-        if (days.isEmpty()) return "휴무일 없음";
-
-        return days.stream()
-                .map(DayOffUtil::getKoreanDay)
-                .collect(Collectors.joining(", ", "매주 ", ""));
     }
 
 

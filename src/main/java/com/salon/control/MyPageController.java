@@ -2,10 +2,7 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.shop.CouponListDto;
-import com.salon.dto.user.LikeDesignerDto;
-import com.salon.dto.user.MyReservationDto;
-import com.salon.dto.user.MyTicketListDto;
-import com.salon.dto.user.ReviewCreateDto;
+import com.salon.dto.user.*;
 import com.salon.service.user.MyReservationService;
 import com.salon.service.user.MypageService;
 import com.salon.service.user.ReviewService;
@@ -76,8 +73,10 @@ public class MyPageController {
 
         List<LikeDesignerDto> likeDesignerDtos = mypageService.getDesignerLike(memberId);
 
-        model.addAttribute("myLikeDesigner", likeDesignerDtos);
+        List<LikeShopDto> likeShopDtos = mypageService.getShopLike(memberId);
 
+        model.addAttribute("myLikeDesigner", likeDesignerDtos);
+        model.addAttribute("myLikeShop", likeShopDtos);
 
         return "/user/myLike";
     }

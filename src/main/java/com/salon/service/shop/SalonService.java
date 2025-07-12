@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SalonService {
-
+// shopService, 미용실 헤어 엔티티를 shopService 로 사용했기 때문에 salonService로 이름 변경.
     private final ShopRepo shopRepo;
     private final ShopImageService shopImageService;
     private final ReviewService reviewService;

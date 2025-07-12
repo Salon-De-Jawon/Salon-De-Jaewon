@@ -2,8 +2,10 @@ package com.salon.service.user;
 
 
 import com.salon.constant.LikeType;
+import com.salon.dto.DayOffShowDto;
 import com.salon.dto.shop.CouponListDto;
 import com.salon.dto.user.LikeDesignerDto;
+import com.salon.dto.user.LikeShopDto;
 import com.salon.dto.user.MyTicketListDto;
 
 import com.salon.entity.management.MemberCoupon;
@@ -11,12 +13,16 @@ import com.salon.entity.management.Payment;
 import com.salon.entity.management.master.Ticket;
 
 import com.salon.entity.shop.SalonLike;
+import com.salon.entity.shop.Shop;
 import com.salon.repository.management.MemberCouponRepo;
 import com.salon.repository.management.PaymentRepo;
 
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.TicketRepo;
 import com.salon.repository.shop.SalonLikeRepo;
+import com.salon.repository.shop.ShopImageRepo;
+import com.salon.repository.shop.ShopRepo;
+import com.salon.service.management.master.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +39,10 @@ public class MypageService {
     private final PaymentRepo paymentRepo;
     private final ShopDesignerRepo shopDesignerRepo;
     private final SalonLikeRepo salonLikeRepo;
+    private final ShopRepo shopRepo;
+    private final CouponService couponService;
+    private final ReviewService reviewService;
+    private final ShopImageRepo shopImageRepo;
 
     // 마이 쿠폰
 
@@ -85,6 +95,32 @@ public class MypageService {
         return result;
     }
 
-    public
+    public List<LikeShopDto> getShopLike (Long memberId) {
+        List<SalonLike> salonLikes = salonLikeRepo.findByMemberIdAndLikeType(memberId, LikeType.SHOP);
+        List<LikeShopDto> result = new ArrayList<>();
+
+        for(SalonLike salonLike : salonLikes) {
+            Shop shop = shopRepo.findById(salonLike.getTypeId())
+                    .orElse(null);
+
+            if (shop == null) continue;
+
+            boolean hasCoupon = couponService.hasActiveCoupon(shop.getId());
+
+            int reviewCount = reviewService.getReviewCountByShop(shop.getId());
+            float avgRating = reviewService.getAverageRatingByShop(shop.getId());
+
+            DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
+
+
+
+            LikeShopDto dto = LikeShopDto.from(salonLike, shop, shopImageRepo, avgRating, reviewCount, hasCoupon, dayOffShowDto);
+
+
+            result.add(dto);
+        }
+
+        return result;
+    }
 
 }
