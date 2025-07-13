@@ -73,26 +73,37 @@ public class MainController {
         return "/mainpage";
     }
 
+    // 위치 정보 제공 동의
+
+    @PatchMapping("/api/member/location-consent")
+    public ResponseEntity<Void> updateLocationConsent(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getMember().getId();
+        memberService.updateAgreeLocation(userId); // 동의 처리
+        return ResponseEntity.ok().build();
+    }
+
 
     // 위도경도를 주소로 변환
     @GetMapping("/api/coord-to-address")
-    public ResponseEntity<?> getAddressFormCoords (@RequestParam double x, @RequestParam double y) {
+    public ResponseEntity<?> getAddressFormCoords(@RequestParam BigDecimal x, @RequestParam BigDecimal y) {
         try {
             UserLocateDto location = kakaoMapService.getUserAddress(x, y);
             return ResponseEntity.ok(location);
         } catch (RuntimeException e) {
-
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    // 메인 지도에 표시할 샵 목록 불러오기
 
+
+    // 메인 지도에 표시할 샵 목록 불러오기
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
         return salonService.getAllShopsForMap(lat, lon);
     }
+
+
 
     @GetMapping("/shopList")
     public String shopListPage() {

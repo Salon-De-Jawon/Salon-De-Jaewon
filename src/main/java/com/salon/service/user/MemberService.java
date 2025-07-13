@@ -46,4 +46,14 @@ public class MemberService {
     public boolean existsByLoginId(String loginId) {
         return memberRepo.existsByLoginId(loginId);
     }
+
+
+    // 알림 동의
+    @Transactional
+    public void updateAgreeLocation(Long memberId) {
+        Member member = memberRepo.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보 없음"));
+
+        member.setAgreeLocation(true); // 동의 처리
+    }
 }

@@ -15,28 +15,81 @@
     <div class="container">
       <!-- 상단 검색 영역 -->
       <div class="top-bar">
-        <div class="location-area">
-          <div class="search-area">
-            <div class="shop-search-box">
+        <div class="header-content">
+          <div class="initial-display active">
+            <div class="shop-search-box" id="initialShopSearchBox">
               <div class="search-icon">
                 <img src="/images/search.png" alt="돋보기" />
               </div>
+              <input
+                      type="text"
+                      class="shop-search-input"
+                      placeholder="미용실 검색"
+                      readonly
+              />
+              <ul class="shop-suggestion-list" style="display: none;"></ul>
             </div>
 
-            <div class="location-search-area">
+            <div class="location-search-area" id="initialLocationSearchArea">
               <div class="location-icon">
                 <img src="/images/location.png" alt="위치아이콘" />
               </div>
-              <div class="location-now"><span id="user-region">대전시 어쩌구</span></div>
+              <div class="location-now" id="user-region">대전 중구</div>
             </div>
           </div>
+
+          <div
+                  class="shop-search-expanded-area hidden"
+                  id="expandedShopSearchArea"
+          >
+            <div class="expanded-search-box-centered">
+              <div class="search-icon">
+                <img src="/images/search.png" alt="돋보기" />
+              </div>
+              <input
+                      type="text"
+                      class="shop-search-input-expanded"
+                      placeholder="검색어를 입력하세요"
+                      autofocus
+              />
+            </div>
+            <div class="shop-search-options">
+              <button class="close-search-mode-button">닫기</button>
+            </div>
+          </div>
+
+          <!-- 검색창 시작 -->
+          <div
+                  class="address-input-area hidden"
+                  id="expandedAddressInputArea"
+          >
+            <div class="location-now-centered">
+              <div class="location-icon">
+                <img src="/images/location.png" alt="위치아이콘" />
+              </div>
+              <div class="location-now-text">현재 위치 선택</div>
+            </div>
+            <div class="address-search-box" style="position: relative">
+              <input
+                      type="text"
+                      class="address-search-input"
+                      placeholder="주소를 검색하거나 입력하세요"
+              />
+              <ul class="address-suggestion-list" style="display: none;"></ul>
+            </div>
+            <div class="address-manual-input">
+              <button class="close-location-mode-button">닫기</button>
+            </div>
+          </div>
+
+          <!-- 검색창 -->
         </div>
       </div>
 
       <!-- 필터 + 가격비교 선택 -->
       <div class="shop-list-filter">
         <select class="order-ops">
-          <option vlaue="" selected>정렬</option>
+          <option value="" selected>정렬</option>
           <option value="distance-orders">거리순</option>
           <option value="distance-orders">평점순</option>
           <option value="distance-orders">리뷰순</option>
@@ -104,45 +157,69 @@
     </div>
   </div>
 
+<!-- 위치 동의 모달 -->
+  <div id="location-agree-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <p class="modal-message">
+        이 기능을 사용하려면<br><strong>위치 정보 제공 동의</strong>가 필요합니다.<br>
+        동의하시겠습니까?
+      </p>
+      <div class="modal-actions">
+        <button id="location-agree-accept" class="btn-confirm" type="button">동의</button>
+        <button id="location-agree-cancel" class="btn-cancel" type="button">취소</button>
+      </div>
+    </div>
+  </div>
+
+
 <!-- fragment end -->
 </div>
 
 <th:block layout:fragment="script">
 
+
   <script>
-    const wrapper = document.querySelector(".profile-icons-wrapper");
 
-    let isDown = false;
-    let startX;
-    let scrollLeft;
+    window.currentUserId = [[${#authorization.expression('isAuthenticated()') ? #authentication.principal.id : 'null'}]];
+    if (window.currentUserId === 'null') window.currentUserId = null;
 
-    wrapper.addEventListener("mousedown", (e) => {
-      isDown = true;
-      wrapper.classList.add("dragging");
-      startX = e.pageX - wrapper.offsetLeft;
-      scrollLeft = wrapper.scrollLeft;
-    });
+     const wrapper = document.querySelector(".profile-icons-wrapper");
 
-    wrapper.addEventListener("mouseleave", () => {
-      isDown = false;
-      wrapper.classList.remove("dragging");
-    });
+     if (wrapper) {
+     let isDown = false;
+     let startX;
+     let scrollLeft;
 
-    wrapper.addEventListener("mouseup", () => {
-      isDown = false;
-      wrapper.classList.remove("dragging");
-    });
+     wrapper.addEventListener("mousedown", (e) => {
+       isDown = true;
+       wrapper.classList.add("dragging");
+       startX = e.pageX - wrapper.offsetLeft;
+       scrollLeft = wrapper.scrollLeft;
+     });
 
-    wrapper.addEventListener("mousemove", (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - wrapper.offsetLeft;
-      const walk = (x - startX) * 1.5; // 스크롤 속도 조절
-      wrapper.scrollLeft = scrollLeft - walk;
-    });
+     wrapper.addEventListener("mouseleave", () => {
+       isDown = false;
+       wrapper.classList.remove("dragging");
+     });
+
+     wrapper.addEventListener("mouseup", () => {
+       isDown = false;
+       wrapper.classList.remove("dragging");
+     });
+
+     wrapper.addEventListener("mousemove", (e) => {
+       if (!isDown) return;
+       e.preventDefault();
+       const x = e.pageX - wrapper.offsetLeft;
+       const walk = (x - startX) * 1.5;
+       wrapper.scrollLeft = scrollLeft - walk;
+     });
+   }
+
   </script>
-
-  <script src="/javascript/user/shopList.js"></script>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script type="module" src="/javascript/user/shopList.js"></script>
 </th:block>
 </body>
 </html>
