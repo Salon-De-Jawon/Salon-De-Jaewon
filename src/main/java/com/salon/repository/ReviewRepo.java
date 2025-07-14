@@ -1,14 +1,13 @@
 package com.salon.repository;
 
-
 import com.salon.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import com.salon.entity.ReviewImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -56,4 +55,12 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
     Review findTopByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(Long designerId);
 
     List<Review> findTop10ByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(Long designerId);
+
+
+
+
+    // 디자이너 리뷰 목록
+    List<Review> findByReservation_shopDesignerId( Long shopDesignerId );
+
+
 }

@@ -14,6 +14,7 @@ import com.salon.dto.shop.ShopDetailDto;
 import com.salon.dto.shop.ShopServiceSectionDto;
 import com.salon.entity.Review;
 import com.salon.entity.ReviewImage;
+import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.management.master.ShopService;
@@ -32,6 +33,7 @@ import com.salon.repository.shop.ShopRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -142,34 +144,47 @@ public class ShopDetailService {
             // 디자이너 정보 가져오기
            ShopDesigner shopDesigner = review.getReservation().getShopDesigner();
 
+
+            // 디자이너 답글
+            ReviewReplyDto replyDto = ReviewReplyDto.from(review);
+
             // 리뷰 작성자가 몇번째 방문인지 계산(방문횟수)
             int visitCount = (int) reviews.stream()
                     .filter(r -> r.getReservation().getMember().getId()
                     .equals(review.getReservation().getMember().getId()))
                     .count();
 
-            ReviewListDto reviewListDto = ReviewListDto.from(review,shopDesigner,imageDtos,visitCount);
+            ReviewListDto reviewListDto = ReviewListDto.from(review,shopDesigner,imageDtos,visitCount,replyDto);
             reviewListDtos.add(reviewListDto);
         }
         return reviewListDtos;
     }
 
     // 디자이너 답글 dto 반환 메서드
-    public List<ReviewReplyDto> getReviewReplies(Long shopId) {
+    public List<Map<String, Object>> getReviewReplySummaries(Long shopId){
         List<Review> reviews = reviewRepo.findAll().stream()
-                .filter(r -> r.getReservation() != null) // 아직 가져올 수 있는 데이터가 없으므로 임시방편!
+                .filter(r -> r.getReservation() != null)
                 .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
+                .filter(r -> r.getReplyComment() != null && !r.getReplyComment().isBlank())
                 .collect(Collectors.toList());
 
         return reviews.stream()
-                .filter(r -> r.getReplyComment() != null && !r.getReplyComment().isBlank())
                 .map(r -> {
                     ShopDesigner shopDesigner = r.getReservation().getShopDesigner();
-                    return ReviewReplyDto.from(r, shopDesigner.getDesigner());
-                })
-                .toList();
-    }
+                    Designer designer = shopDesigner.getDesigner();
 
+                    Map<String, Object> replyInfo = new HashMap<>();
+                    replyInfo.put("reviewId", r.getId());
+                    replyInfo.put("designerName", designer.getMember().getName());
+                    replyInfo.put("designerPosition", shopDesigner.getPosition());
+                    replyInfo.put("designerImg", designer.getImgUrl());
+                    replyInfo.put("replyComment", r.getReplyComment());
+                    replyInfo.put("replyAt", r.getReplyAt());
+
+                    return replyInfo;
+                }).toList();
+
+    }
     // 카테고리별 시술 리스트  -> 시술목록 섹션
     public ShopServiceSectionDto getShopServiceSections(Long shopId) {
         ShopServiceSectionDto serviceSectionDto = new ShopServiceSectionDto();
@@ -302,12 +317,16 @@ public class ShopDetailService {
             // 디자이너 정보
             ShopDesigner shopDesigner = review.getReservation().getShopDesigner();
 
+            // 디자이너 답글
+            ReviewReplyDto replyDto = ReviewReplyDto.from(review);
+
+
             // 💡 안전하게 빈 리스트로 초기화
             List<ReviewImageDto> safeImgs = reviewImgs != null ? reviewImgs : new ArrayList<>();
 
 
             // dto 변환 후 추가
-            ReviewListDto dto = ReviewListDto.from(review,shopDesigner,reviewImgs, visitCount);
+            ReviewListDto dto = ReviewListDto.from(review,shopDesigner,reviewImgs, visitCount,replyDto);
             reviewLists.add(dto);
 
         }
