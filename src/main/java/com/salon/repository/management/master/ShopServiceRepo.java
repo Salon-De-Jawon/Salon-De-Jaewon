@@ -19,4 +19,6 @@ public interface ShopServiceRepo extends JpaRepository<ShopService, Long> {
     // 미용실 추천 시술 목록
     List<ShopService> findByShopIdAndIsRecommendedTrue(Long shopId);
 
+    // 키워드로 서비스 검색
+    List<ShopService> findByNameContainingIgnoreCase(String keyword);
 }

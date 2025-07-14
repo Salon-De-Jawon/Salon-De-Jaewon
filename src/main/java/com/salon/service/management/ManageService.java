@@ -5,6 +5,7 @@ import com.salon.constant.LeaveStatus;
 import com.salon.dto.management.WeekDto;
 import com.salon.dto.management.*;
 import com.salon.dto.management.master.CouponDto;
+import com.salon.dto.shop.ShopServiceDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.*;
 import com.salon.entity.management.master.Attendance;
@@ -290,6 +291,14 @@ public class ManageService {
         return new MemberCouponDto(couponDtos, ticketBalance);
     }
 
+    // 예약 수정 Form
+    public ReservationForm getReservationForm(Long reservationId) {
+        Reservation res = reservationRepo.findById(reservationId).orElseThrow();
+
+        return ReservationForm.from(res);
+    }
+
+
     // 디자이너 페이지 예약 저장시
     @Transactional
     public void saveReservation(ReservationForm newRes, Long memberId){
@@ -356,7 +365,17 @@ public class ManageService {
 
     }
 
+    // 예약 등록시 시술 검색용
+    public List<ShopServiceDto> searchServicesByKeyword(String keyword) {
+        List<ShopService> services = shopServiceRepo.findByNameContainingIgnoreCase(keyword);
 
+        List<ShopServiceDto> dtoList = new ArrayList<>();
+        for(ShopService service : services){
+            dtoList.add(ShopServiceDto.from(service));
+        }
+
+        return dtoList;
+    }
 
     // 디자이너 매출 목록 (일별)
     public List<PaymentListDto> getPaymentList(Long memberId, LocalDate selectedDate){
@@ -459,5 +478,6 @@ public class ManageService {
             memberCardRepo.save(newCard);
         }
     }
+
 }
 

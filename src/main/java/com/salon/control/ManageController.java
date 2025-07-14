@@ -2,6 +2,7 @@ package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.dto.management.*;
+import com.salon.dto.shop.ShopServiceDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
@@ -18,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -212,6 +214,47 @@ public class ManageController {
         model.addAttribute("newRes", new ReservationForm());
 
         return "management/reservationForm";
+    }
+
+    // 예약 수정 페이지
+    @GetMapping("/reservations/edit/{id}")
+    public String editReservationPage(@PathVariable("id") Long reservationId, Model model) {
+        ReservationForm reservationForm = manageService.getReservationForm(reservationId); // 서비스에서 ReservationForm DTO를 가져오는 메서드 필요
+        model.addAttribute("newRes", reservationForm); // 기존 등록 폼의 th:object 이름과 동일하게
+        model.addAttribute("reservationId", reservationId); // HTML에서 등록/수정 모드를 구분하기 위해 ID 전달
+        return "management/reservationForm"; // 기존 등록 폼 템플릿 재사용
+
+    }
+
+    // 예약 수정 Form api
+    @GetMapping("/reservations/{id}")
+    @ResponseBody // JSON 응답을 위해
+    public ResponseEntity<ReservationForm> getReservationDetailsApi(@PathVariable("id") Long id) {
+        ReservationForm reservationForm = manageService.getReservationForm(id);
+        if (reservationForm == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(reservationForm);
+    }
+
+    // 예약 수정
+    @PutMapping("/reservations/update/{id}")
+    public String updateReservation(@PathVariable("id") Long id,
+                                    @AuthenticationPrincipal CustomUserDetails userDetails,
+                                    @ModelAttribute ReservationForm reservationForm,
+                                    RedirectAttributes redirectAttributes) {
+        // reservationForm.setId(id); // PathVariable의 ID를 DTO에 설정 (필요한 경우)
+        manageService.saveReservation(reservationForm, userDetails.getId()); // 서비스에서 예약 수정 로직 호출
+        redirectAttributes.addFlashAttribute("message", "예약이 성공적으로 수정되었습니다.");
+        return "redirect:/manage/reservations"; // 수정 후 예약 목록 페이지로 리다이렉트
+    }
+
+    // 시술 검색 api
+    @GetMapping("/services/search")
+    @ResponseBody
+    public ResponseEntity<List<ShopServiceDto>> searchServices(@RequestParam String keyword) {
+        List<ShopServiceDto> services = manageService.searchServicesByKeyword(keyword); // 서비스에서 시술 검색 로직 호출
+        return ResponseEntity.ok(services);
     }
 
     // 멤버 검색 시 api
