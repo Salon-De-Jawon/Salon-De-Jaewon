@@ -127,10 +127,9 @@ public class MainController {
         return salonService.getRecommendedShops(region, lat, lon);
     }
 
-
-    // e디자이너 추천
-
-    @GetMapping("/recommend-des")
+    // 디자이너 추천
+    @GetMapping("/api/salon/designers/recommend")
+    @ResponseBody
     public ResponseEntity<List<RecommendDesignerDto>> getRecommendedDesigners(
             @RequestParam("region") String region1depth
     ) {

@@ -617,159 +617,125 @@ img.sizer {
   margin-left: 12px;
 }
 
-/* 디자이너 컨테이너 부분 */
+/* ===== 디자이너 추천 ===== */
+.best-designer-area {
+  margin: 100px 0;
+}
+
+.best-designer-title-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.best-designer-title-box img {
+  width: 30px;
+  transform: rotate(90deg);
+}
+
 .best-designer-container {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2열 유지 */
-  gap: 30px; /* 그리드 간격 */
-  width: 100%; /* 반응형 */
-  border-radius: 15px;
+  grid-template-columns: 1fr 1fr;
   background-color: var(--light-gray);
-  margin: 20px auto; /* 중앙 정렬 */
-  padding: 40px; /* 패딩 조절 */
-  box-sizing: border-box;
-  box-shadow: 0 5px 15px var(--box-shadow);
+  border-radius: 15px;
+  padding: 40px;
+  gap: 20px;
 }
 
 .best-designer-list-box {
-  width: 100%; /* 반응형 */
   display: flex;
   flex-direction: column;
-  gap: 15px; /* 디자이너 박스 간격 */
+  gap: 20px;
 }
 
 .best-designer-box {
-  background-color: white;
-  height: 120px; /* 높이 조절 */
   display: flex;
-  padding: 15px; /* 패딩 조절 */
   align-items: center;
-  border-radius: 10px; /* 모서리 둥글게 */
-  box-shadow: 0 2px 8px var(--box-shadow);
-  transition: transform 0.2s ease; /* 호버 효과 */
-  cursor: pointer;
-}
-
-.best-designer-box:hover {
-  transform: translateY(-3px); /* 호버 시 살짝 위로 */
+  background: white;
+  padding: 10px;
 }
 
 .designer-profile-box {
-  background-color: var(--border-color); /* 색상 변경 */
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  min-width: 90px; /* 최소 너비 고정 */
-  height: 90px; /* 높이 고정 */
+  background-color: var(--light-gray);
   margin-right: 20px;
-  overflow: hidden; /* 이미지 넘침 방지 */
-  flex-shrink: 0; /* 크기 축소 방지 */
-}
-
-.designer-profile-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 이미지가 박스에 꽉 차게 */
 }
 
 .designer-info-box {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 세로 중앙 정렬 */
-  height: 90px; /* 프로필 박스 높이와 맞춤 */
-  flex-grow: 1; /* 남은 공간 채우기 */
+  justify-content: center;
 }
 
 .designer-name {
-  font-size: 24px; /* 폰트 크기 조절 */
+  font-size: 20px;
   font-weight: bold;
-  margin-bottom: 5px;
-  color: var(--point-color);
 }
 
-.designer-shop {
-  color: var(--medium-gray);
-  font-size: 15px;
-  margin-bottom: 5px;
-}
-
-.designer-specialty-area {
-  display: flex; /* 태그가 여러 개일 경우를 대비 */
-  gap: 5px;
-}
-
+.designer-shop,
 .designer-specialty-tag {
-  background-color: var(--pink-background); /* 태그 배경색 */
-  color: var(--main-color); /* 태그 폰트 색상 */
-  padding: 4px 10px;
-  border-radius: 15px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  color: #777;
 }
 
-/* 디자이너 버블 */
 .designer-bubble {
-  height: auto; /* 내용에 맞춰 자동 높이 */
-  display: grid;
-  grid-template-columns: 0.1fr 0.9fr; /* 비율 조절 */
-  align-items: stretch; /* 그리드 아이템 높이 맞추기 */
-}
-
-.bubble-tall {
-  background-color: var(--main-color); /* 막대 색상 */
-  border-radius: 5px;
-  width: 8px; /* 막대 두께 */
-  margin-right: 15px; /* 막대와 콘텐츠 사이 간격 */
-  margin-left: auto; /* 오른쪽으로 붙이기 */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .bubble-content {
-  width: 100%;
-  height: 100%; /* 부모 높이 상속 */
-  background-color: white;
+  background: white;
   border-radius: 15px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 30px; /* 패딩 조절 */
-  box-sizing: border-box;
-  box-shadow: 0 5px 15px var(--box-shadow);
+  height: 100%;
 }
 
 .review-img {
-  background-color: var(--light-gray);
-  height: 350px; /* 높이 조절 */
-  border-radius: 10px;
-  margin-bottom: 20px;
-  /* 여기에 실제 리뷰 이미지를 위한 스타일 추가 */
+  background: var(--light-gray);
+  height: 300px;
 }
 
 .review-info-area {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end; /* 하단 정렬 유지 */
-  margin-top: auto; /* 항상 하단에 위치 */
+  align-items: center;
+  margin-top: 10px;
 }
 
 .review-rating-box {
   display: flex;
-  justify-content: flex-start;
-  font-size: 20px; /* 폰트 크기 조절 */
   align-items: center;
-  color: var(--dark-gray);
-  font-weight: bold;
+  font-size: 18px;
 }
 
-.review-rating-box > img {
-  width: 25px; /* 별 아이콘 크기 조절 */
-  height: 25px;
+.review-rating-box img {
+  width: 20px;
   margin-right: 8px;
 }
 
 .review-create-at {
   font-size: 14px;
-  color: var(--medium-gray);
+  color: gray;
 }
 
+.img-fit.portrait  { height: 100%; width: auto;  object-fit: cover; }
+.img-fit.landscape { width: 100%;  height: auto; object-fit: cover; }
 
+img.img-fit {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
 
 /* 위치 동의 모달 */
 
@@ -1034,11 +1000,25 @@ img.sizer {
     padding: 10px;
   }
 
-  .designer-profile-box {
-    min-width: 70px;
-    height: 70px;
-    margin-right: 15px;
-  }
+.designer-profile-box {
+  width: 70px;
+  height: 70px;
+  margin-right: 15px;
+  border-radius: 50%;     /* ← 원형 */
+  overflow: hidden;       /* ← 넘치는 이미지 잘라냄 */
+  flex-shrink: 0;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.designer-profile-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* ← 박스를 가득 채우고 잘라냄 */
+  display: block;
+}
 
   .designer-info-box {
     height: 70px;

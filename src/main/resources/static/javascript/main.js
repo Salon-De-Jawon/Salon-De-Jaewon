@@ -1,5 +1,6 @@
 import { initAddressSearchToggle } from '/javascript/user/addressSearchUtil.js ';
 import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
+import { adjustImageFitAll } from '/javascript/imageFitUtil.js';
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -446,6 +447,91 @@ function renderRecommendShopSlides(shopList) {
     adjustImageFitAll('.shopSwiper img.img-fit', 4 / 3);
 }
 
+// 추천 디자이너 로딩
+if (storedLocation?.region1depth) {
+  fetch(`/api/salon/designers/recommend?region=${encodeURIComponent(storedLocation.region1depth)}`)
+    .then(res => res.json())
+    .then(designers => {
+      console.log("추천 디자이너 목록:", designers);
+      if (Array.isArray(designers) && designers.length > 0) {
+        renderRecommendedDesigners(designers);
+      } else {
+        console.warn("추천 디자이너 없음 또는 형식 오류");
+      }
+    })
+    .catch(err => {
+      console.error("추천 디자이너 로딩 실패:", err);
+    });
+}
+function renderRecommendedDesigners(designers) {
+  const listBox   = document.getElementById('designer-recommend-box');
+  const bubbleBox = document.querySelector('.designer-bubble');
+  if (!listBox || !bubbleBox) return;
+
+  listBox.innerHTML  = '';
+  bubbleBox.innerHTML = '';
+
+  designers.forEach((designer, idx) => {
+    /* --- 왼쪽 디자이너 카드 생성 --- */
+    const card = document.createElement('div');
+    card.className = 'best-designer-box';
+    card.innerHTML = `
+      <div class="designer-profile-box">
+        <img src="${designer.profileImgUrl || '/images/default-profile.png'}"
+             alt="프로필 이미지"
+             class="designer-photo" />
+      </div>
+      <div class="designer-info-box">
+        <div class="designer-name">${designer.designerName}</div>
+        <div class="designer-shop">${designer.shopName}</div>
+        <div class="designer-specialty-area">
+          ${(designer.tags || ['헤어']).map(t => `
+            <span class="designer-specialty-tag">${t}</span>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    card.addEventListener('click', () => {
+      renderDesignerBubble(designer);
+    });
+
+    listBox.appendChild(card);
+
+    if (idx === 0) renderDesignerBubble(designer); // 첫 디자이너 미리 보여주기
+  });
+
+  /* 모든 이미지(프로필 포함) 1:1 비율 보정 */
+  adjustImageFitAll('#designer-recommend-box img', 1);
+}
+
+
+function renderDesignerBubble(designer) {
+  const bubbleBox = document.querySelector('.designer-bubble');
+  if (!bubbleBox) return;
+
+  const reviewImgUrl = designer.reviewImgList?.[0]?.imgUrl || '/images/default.png';
+  const rating = designer.reviewRating?.toFixed?.(1) ?? '5.0';
+  const date = designer.createAt ?? '';
+
+  bubbleBox.innerHTML = `
+    <div class="bubble-tall"></div>
+    <div class="bubble-content">
+      <div class="review-img">
+        <img src="${reviewImgUrl}" class="img-fit" alt="리뷰 이미지" />
+      </div>
+      <div class="review-info-area">
+        <div class="review-rating-box">
+          <img src="/images/pointed-star.png" alt="별">
+          <div class="review-rating">${rating}</div>
+        </div>
+        <div class="review-create-at">${date}</div>
+      </div>
+    </div>
+  `;
+
+  adjustImageFitAll('.designer-bubble img.img-fit', 4 / 3);
+}
 
 //document end
 
