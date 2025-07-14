@@ -1,7 +1,12 @@
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css"></th:block>
+</head>
 <body>
-<th:block>
+<div layout:fragment="main" id="main">
     <div th:fragment="userMenu" class="user-footer">
         <ul>
             <li><a href="/cs">공지사항</a></li>
@@ -20,6 +25,7 @@
         대표자 : 000 | 사업자 등록번호 : 300-22-41524<br>
         ⓒ 어쩌구저쩌구 Corp
     </div>
-</th:block>
+</div>
+<th:block layout:fragment="script"></th:block>
 </body>
 </html>
