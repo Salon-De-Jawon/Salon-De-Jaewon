@@ -131,6 +131,18 @@ public class UserCsController {
         csService.questionSave(csCreateDto, member, files);
         return "redirect:/admin/cs/questionList";
     }
+    @GetMapping("/questionList")
+    public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<CsListDto> csListDtoList = csService.List();
+        Member member = userDetails.getMember();
+        if(member.getRole() == Role.ADMIN){
+            csListDtoList = csService.findAll();
+        } else {
+            csListDtoList = csService.findByMember(member);
+        }
+        model.addAttribute("csListDtoList", csListDtoList);
+        return "admin/csList";
+    }
     @GetMapping("/shopApply")
     public String shopApply(Model model){
         model.addAttribute("applyDto", new ApplyDto());

@@ -210,4 +210,17 @@ public class CsService {
 
         couponBannerRepo.save(couponBanner);
     }
+
+    public List<CsListDto> findAll() {
+        return csCustomerRepo.findAll().stream()
+                .map(CsListDto::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<CsListDto> findByMember(Member member) {
+        List<CsCustomer> csCustomerList = csCustomerRepo.findByMember(member);
+        return csCustomerList.stream()
+                .map(CsListDto::from)
+                .collect(Collectors.toList());
+    }
 }
