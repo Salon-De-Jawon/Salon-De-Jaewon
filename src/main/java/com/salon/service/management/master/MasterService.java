@@ -6,13 +6,16 @@ import com.salon.constant.ServiceCategory;
 import com.salon.constant.UploadType;
 import com.salon.dto.UploadedFileDto;
 import com.salon.dto.designer.DesignerListDto;
+import com.salon.dto.management.AttendanceListDto;
 import com.salon.dto.management.LeaveRequestDto;
 import com.salon.dto.management.ServiceForm;
 import com.salon.dto.management.TodayScheduleDto;
 import com.salon.dto.management.master.*;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.LeaveRequest;
+import com.salon.entity.management.Payment;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.Attendance;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.management.master.ShopService;
@@ -47,6 +50,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -84,7 +88,7 @@ public class MasterService {
         MainDesignerPageDto dto = new MainDesignerPageDto();
 
         // 소속 디자이너 수
-        dto.setDesignerCount(shopDesignerRepo.countByShopIdAndIsActiveTrue(shop.getId()));
+        dto.setDesignerCount(designers.size());
 
         // 오늘의 예약 수 (미용실)
         int countRes = 0;
@@ -108,7 +112,7 @@ public class MasterService {
         List<DesignerSummaryDto> designerDtoList = new ArrayList<>();
         for(ShopDesigner shopDesigner : designers ){
             int todayResCount = reservationRepo.countTodayReservations(shopDesigner.getId());
-            designerDtoList.add(DesignerSummaryDto.from(designer, todayResCount));
+            designerDtoList.add(DesignerSummaryDto.from(shopDesigner, todayResCount));
         }
 
         dto.setDesignerList(designerDtoList);
@@ -184,7 +188,8 @@ public class MasterService {
 
         List<DesignerResultDto> dtoList = new ArrayList<>();
         for (Designer designer : foundDesigners) {
-            dtoList.add(DesignerResultDto.from(designer));
+            boolean isAffiliated = shopDesignerRepo.existsByDesigner_Id(designer.getId());
+            dtoList.add(DesignerResultDto.from(designer, isAffiliated));
         }
         return dtoList;
 
@@ -195,10 +200,10 @@ public class MasterService {
     @Transactional
     public DesignerListDto addDesignerList(Long designerId, Long memberId){
 
-        Designer designer = designerRepo.findByMember_Id(designerId);
+        Designer designer = designerRepo.findById(designerId).orElseThrow();
         Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(memberId).getShop();
 
-        if (shopDesignerRepo.existsByDesignerId(designerId)) {
+        if (shopDesignerRepo.existsByDesigner_Id(designerId)) {
             throw new IllegalArgumentException("이미 미용실에 소속된 디자이너입니다.");
         }
 
@@ -318,6 +323,127 @@ public class MasterService {
         shopServiceRepo.delete(service);
     }
 
+    // 디자이너별 출퇴근 기록
+    public List<DesAttDto> getDesAttList(Long designerId) {
+
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
+        Shop shop = designer.getShop();
+
+        // 미용실 소속 디자이너
+        List<ShopDesigner> designers = shopDesignerRepo.findByShopIdAndIsActiveTrue(shop.getId());
+
+        List<DesAttDto> dto = new ArrayList<>();
+
+        // 각 디자이너 별 근태 목록
+        for(ShopDesigner shopDesigner : designers){
+            List<Attendance> attendances = attendanceRepo.findByShopDesignerIdOrderByIdDesc(shopDesigner.getId());
+            List<AttendanceListDto> attendanceList = new ArrayList<>();
+            for(Attendance attendance : attendances){
+                attendanceList.add(AttendanceListDto.from(attendance));
+            }
+            dto.add(DesAttDto.from(shopDesigner, attendanceList));
+        }
+
+        return dto;
+    }
+
+    // 매출 내역 가져오기
+    public SalesPageDto getSalesDashboard(Long shopDesignerId, int year, int month) {
+
+        Shop shop = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(shopDesignerId).getShop();
+
+        YearMonth yearMonth = YearMonth.of(year, month);
+        // 월간 기간 잡기
+        LocalDateTime startOfMonth = yearMonth.atDay(1).atStartOfDay();
+        LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(23,59,59);
+
+        // 매장 결제내역 가져오기
+        List<Payment> payments = paymentRepo.findByShopDesigner_Shop_IdAndPayDateBetween(shop.getId(), startOfMonth, endOfMonth);
+
+        // 총 매출액
+        Long totalSales = 0L;
+
+        // <카테고리, 총 금액>
+        Map<ServiceCategory, Long> categorySalesMap = new EnumMap<>(ServiceCategory.class);
+        // <ShopDesignerId, 총 금액>
+        Map<Long, Long> designerSalesMap = new HashMap<>();
+        // <ShopDesignerId, <카테고리, 총 금액> >
+        Map<Long, Map<ServiceCategory, Long>> designerCategorySalesMap = new HashMap<>();
+
+        // 카테고리별 맵 전부 0으로 초기화
+        for (ServiceCategory category : ServiceCategory.values()) {
+            categorySalesMap.put(category, 0L);
+        }
+
+        for(Payment payment : payments){
+            Long totalPrice = (long) payment.getTotalPrice();
+            ServiceCategory category = payment.getServiceCategory();
+            Long designerId = payment.getShopDesigner().getId();
+
+            // 총 매출
+            totalSales += totalPrice;
+
+            // 카테고리별 매출
+            categorySalesMap.put(category, categorySalesMap.get(category) + totalPrice);
+
+            // 디자이너 매출
+            designerSalesMap.put(designerId, designerSalesMap.getOrDefault(designerId, 0L) + totalPrice);
+
+            // 디자이너 카테고리별 매출
+            Map<ServiceCategory, Long> categorySales = designerCategorySalesMap.get(designerId);
+
+            // 처음 생성시 초기화 해주기
+            if(categorySales == null){
+                categorySales = new EnumMap<>(ServiceCategory.class);
+                for (ServiceCategory serviceCategory : ServiceCategory.values()) {
+                    categorySales.put(serviceCategory, 0L);
+                }
+                designerCategorySalesMap.put(designerId, categorySales);
+            }
+            categorySales.put(category, categorySales.get(category) + totalPrice);
+
+        }
+
+        // CategorySalesDto 만들기
+        List<CategorySalesDto> categorySalesDtoList = new ArrayList<>();
+        for(Map.Entry<ServiceCategory, Long> entry : categorySalesMap.entrySet()){
+            categorySalesDtoList.add(CategorySalesDto.from(entry.getKey(), entry.getValue()));
+        }
+        
+        // DesignerSalesDto List 만들기
+        List<DesignerSalesDto> designerSalesDtoList = new ArrayList<>();
+        
+        // DesignerSalesMap 에 담긴 designerId 리스트
+        List<Long> shopDesignerIds = new ArrayList<>(designerSalesMap.keySet());
+
+        // <shopDesignerId, ShopDesigner> Map  에 담기
+        Map<Long, ShopDesigner> shopDesignerMap = new HashMap<>();
+        if(!shopDesignerIds.isEmpty()){
+            List<ShopDesigner> shopDesigners = shopDesignerRepo.findAllById(shopDesignerIds);
+            for(ShopDesigner designer : shopDesigners){
+                shopDesignerMap.put(designer.getId(), designer);
+            }
+        }
+
+        // 각 디자이너별 DesignerSalesDto 만들기
+        for(Long designerId : shopDesignerMap.keySet()){
+            ShopDesigner designer = shopDesignerMap.get(designerId);
+            Long designerTotalSales = designerSalesMap.get(designerId);
+
+            // 해당 디자이너의 List<CategorySales> 가져오기
+            Map<ServiceCategory, Long> designerCategorySales = designerCategorySalesMap.get(designerId);
+            List<CategorySalesDto> categorySales = new ArrayList<>();
+            for(Map.Entry<ServiceCategory, Long> entry : designerCategorySales.entrySet()){
+                categorySales.add(CategorySalesDto.from(entry.getKey(), entry.getValue()));
+            }
+
+            // 해당 디자이너의 DesignerSalesDto 를 리스트에 담기
+            designerSalesDtoList.add(new DesignerSalesDto(designerId, designer.getDesigner().getMember().getName(),
+                    designerTotalSales, categorySales));
+        }
+
+        return new SalesPageDto(totalSales, categorySalesDtoList, designerSalesDtoList);
+    }
 
     // 매장 수정 시 ShopEditDto 보내기
     public ShopEditDto getShopEdit(Long memberId){
@@ -425,5 +551,7 @@ public class MasterService {
             couponRepo.save(coupon);
         }
     }
+
+
 
 }

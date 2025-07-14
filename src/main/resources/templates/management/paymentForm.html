@@ -54,6 +54,15 @@
         </select>
       </div>
       <div class="form-row">
+        <label for="serviceCategory">시술 카테고리</label>
+        <select id="serviceCategory" th:field="*{serviceCategory}" required>
+          <option value="">선택</option>
+          <option th:each="category : ${T(com.salon.constant.ServiceCategory).values()}"
+                  th:value="${category}" th:text="${category.label}">
+          </option>
+        </select>
+      </div>
+      <div class="form-row">
         <label for="memo">메모</label>
         <textarea id="memo" th:field="*{memo}" rows="3" placeholder="시술 후기 또는 특이사항 입력"></textarea>
       </div>

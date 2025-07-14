@@ -12,6 +12,7 @@ import com.salon.service.management.ManageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class ManageController {
 
     // 메인페이지
     @GetMapping("")
-    public String getMain(@AuthenticationPrincipal CustomUserDetails userDetails, Model model){
+    public String getMain(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 
         Long memberId = userDetails.getMember().getId();
         DesignerMainPageDto dto = manageService.getMainPage(memberId);
@@ -53,13 +54,13 @@ public class ManageController {
     public String attendance(@AuthenticationPrincipal CustomUserDetails userDetails,
                              @RequestParam(defaultValue = "#{T(java.time.LocalDate).now().withDayOfMonth(1)}") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate monthStart,
                              @RequestParam(required = false) Integer selectedWeek,
-                             Model model){
+                             Model model) {
 
         ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(userDetails.getMember().getId());
 
         LocalDate startOfMonth = monthStart.withDayOfMonth(1);
         LocalDate endOfMonth = monthStart.withDayOfMonth(monthStart.lengthOfMonth());
-        LocalDate today =LocalDate.now();
+        LocalDate today = LocalDate.now();
 
         List<WeekDto> weeks = manageService.getWeeksOfMonth(startOfMonth);
         int defaultWeekIndex = 0;
@@ -81,7 +82,7 @@ public class ManageController {
                 designer.getId(), selectedWeekDto.getStartDate().atStartOfDay(), selectedWeekDto.getEndDate().atTime(LocalTime.MAX));
 
         List<AttendanceListDto> dtoList = new ArrayList<>();
-        for(Attendance att : attendanceList){
+        for (Attendance att : attendanceList) {
             dtoList.add(AttendanceListDto.from(att));
         }
 
@@ -126,27 +127,18 @@ public class ManageController {
         return ResponseEntity.ok(status);
     }
 
-
-
-    // 일일 통계
-    @GetMapping("/statistics")
-    public String statistics(){
-
-        return "management/statistics";
-    }
-
     // 매출 내역
     @GetMapping("/sales")
     public String sales(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                        Model model){
+                        Model model) {
 
         // 선택한 날 가져오기
         LocalDate selectedDate = (date != null) ? date : LocalDate.now();
 
         // 날짜 3일 범위 생성
         List<LocalDate> dateList = new ArrayList<>();
-        for(int i = -3; i <=3; i++){
+        for (int i = -3; i <= 3; i++) {
             dateList.add(selectedDate.plusDays(i));
         }
 
@@ -165,17 +157,17 @@ public class ManageController {
 
     // 방문 결제 등록 페이지
     @GetMapping("/sales/new")
-    public String newSales(Model model){
+    public String newSales(Model model) {
 
         model.addAttribute("newPay", new PaymentForm());
 
         return "management/paymentForm";
     }
-    
+
     // 방문 결제 등록
     @PostMapping("/sales/new")
     public String saveSale(@Valid PaymentForm form,
-                           @AuthenticationPrincipal CustomUserDetails userDetails){
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         manageService.savePayment(form, userDetails.getMember().getId());
 
@@ -184,7 +176,7 @@ public class ManageController {
 
     // 결제 상세페이지
     @GetMapping("/sales/detail")
-    public String salesDetail(){
+    public String salesDetail() {
 
         return "management/paymentDetail";
     }
@@ -193,14 +185,14 @@ public class ManageController {
     @GetMapping("/reservations")
     public String reservation(@AuthenticationPrincipal CustomUserDetails userDetails,
                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                              Model model){
+                              Model model) {
 
         // 선택한 날 가져오기
         LocalDate selectedDate = (date != null) ? date : LocalDate.now();
 
         // 날짜 3일 범위 생성
         List<LocalDate> dateList = new ArrayList<>();
-        for(int i = -3; i <=3; i++){
+        for (int i = -3; i <= 3; i++) {
             dateList.add(selectedDate.plusDays(i));
         }
 
@@ -215,7 +207,7 @@ public class ManageController {
 
     // 예약 등록 페이지
     @GetMapping("/reservations/new")
-    public String newRes(Model model){
+    public String newRes(Model model) {
 
         model.addAttribute("newRes", new ReservationForm());
 
@@ -234,7 +226,7 @@ public class ManageController {
     @GetMapping("/members/{memberId}/coupons")
     public MemberCouponDto getMemberCoupons(@PathVariable Long memberId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Member designer  = userDetails.getMember();
+        Member designer = userDetails.getMember();
 
         return manageService.getCoupons(memberId, designer.getId());
     }
@@ -242,7 +234,7 @@ public class ManageController {
 
     // 예약 저장
     @PostMapping("/reservations/save")
-    public String saveRes(@Valid ReservationForm newRes, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public String saveRes(@Valid ReservationForm newRes, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         manageService.saveReservation(newRes, userDetails.getMember().getId());
 
@@ -251,9 +243,52 @@ public class ManageController {
 
     // 회원관리카드
     @GetMapping("/member-card")
-    public String memberCard(){
+    public String memberCard(Model model) {
 
         return "management/memberCard";
+    }
+
+    // 회원관리카드 목록 api
+    @GetMapping("/members")
+    public ResponseEntity<List<MemberListDto>> getMemberList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        List<MemberListDto> memberList = manageService.getMemberCardList(userDetails.getId());
+
+        return new ResponseEntity<>(memberList, HttpStatus.OK);
+    }
+
+    // 회원 개인메모 작성
+    @PutMapping("/members/{memberId}/memo")
+    public ResponseEntity<Void> updateMemberMemo(
+            @PathVariable Long memberId,
+            @RequestParam("memo") String newMemoContent,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        try {
+            manageService.writeMemberMemo(memberId, userDetails.getId(), newMemoContent);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 회원 관리카드 메모
+    @PutMapping("/membercards/{paymentId}/memo")
+    public ResponseEntity<Void> updateMemberCardMemo(
+            @PathVariable Long paymentId,
+            @RequestParam("memo") String newMemoContent) {
+        try {
+            manageService.writeMemberCardMemo(paymentId, newMemoContent);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

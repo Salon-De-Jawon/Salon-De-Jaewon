@@ -21,4 +21,6 @@ public interface AttendanceRepo extends JpaRepository<Attendance, Long> {
     // 출근 여부 (퇴근용)
     Optional<Attendance> findByShopDesignerIdAndClockInBetween(Long id, LocalDateTime dayStart, LocalDateTime dayEnd);
 
+    // 디자이너 출근 목록
+    List<Attendance> findByShopDesignerIdOrderByIdDesc(Long id);
 }
