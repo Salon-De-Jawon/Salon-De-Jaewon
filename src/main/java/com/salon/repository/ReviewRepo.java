@@ -44,4 +44,16 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
     // 페이지 에이블 추가
     Page<Review> findByReservation_Member_Id(Long memberId, Pageable pageable);
 
+
+    // 디자이너 평점
+    @Query("""
+    SELECT AVG(r.rating)
+    FROM Review r
+    WHERE r.reservation.shopDesigner.designer.id = :designerId
+    """)
+    Float findAvgRatingByDesignerId(@Param("designerId") Long designerId);
+
+    Review findTopByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(Long designerId);
+
+    List<Review> findTop10ByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(Long designerId);
 }

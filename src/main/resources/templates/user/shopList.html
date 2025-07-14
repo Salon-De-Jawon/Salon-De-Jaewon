@@ -34,7 +34,7 @@
               <div class="location-icon">
                 <img src="/images/location.png" alt="위치아이콘" />
               </div>
-              <div class="location-now" id="user-region">대전 중구</div>
+              <div class="location-now" id="user-region">대전 광역시청</div>
             </div>
           </div>
 
@@ -183,39 +183,40 @@
 
     window.currentUserId = [[${#authorization.expression('isAuthenticated()') ? #authentication.principal.id : 'null'}]];
     if (window.currentUserId === 'null') window.currentUserId = null;
+    window.userAgreeLocation = [[${userAgreeLocation}]];
 
-     const wrapper = document.querySelector(".profile-icons-wrapper");
+ const wrapper = document.querySelector(".profile-icons-wrapper");
 
-     if (wrapper) {
-     let isDown = false;
-     let startX;
-     let scrollLeft;
+ if (wrapper) {
+ let isDown = false;
+ let startX;
+ let scrollLeft;
 
-     wrapper.addEventListener("mousedown", (e) => {
-       isDown = true;
-       wrapper.classList.add("dragging");
-       startX = e.pageX - wrapper.offsetLeft;
-       scrollLeft = wrapper.scrollLeft;
-     });
+ wrapper.addEventListener("mousedown", (e) => {
+   isDown = true;
+   wrapper.classList.add("dragging");
+   startX = e.pageX - wrapper.offsetLeft;
+   scrollLeft = wrapper.scrollLeft;
+ });
 
-     wrapper.addEventListener("mouseleave", () => {
-       isDown = false;
-       wrapper.classList.remove("dragging");
-     });
+ wrapper.addEventListener("mouseleave", () => {
+   isDown = false;
+   wrapper.classList.remove("dragging");
+ });
 
-     wrapper.addEventListener("mouseup", () => {
-       isDown = false;
-       wrapper.classList.remove("dragging");
-     });
+ wrapper.addEventListener("mouseup", () => {
+   isDown = false;
+   wrapper.classList.remove("dragging");
+ });
 
-     wrapper.addEventListener("mousemove", (e) => {
-       if (!isDown) return;
-       e.preventDefault();
-       const x = e.pageX - wrapper.offsetLeft;
-       const walk = (x - startX) * 1.5;
-       wrapper.scrollLeft = scrollLeft - walk;
-     });
-   }
+ wrapper.addEventListener("mousemove", (e) => {
+   if (!isDown) return;
+   e.preventDefault();
+   const x = e.pageX - wrapper.offsetLeft;
+   const walk = (x - startX) * 1.5;
+   wrapper.scrollLeft = scrollLeft - walk;
+ });
+}
 
   </script>
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

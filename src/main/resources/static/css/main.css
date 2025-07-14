@@ -25,8 +25,7 @@ body {
   font-family: var(--font-pretendard), var(--font-noto-sans);
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  background-color: #f9f9f9; /* 배경색 추가 */
+  box-sizing: border-box; /* 배경색 추가 */
   color: var(--dark-gray);
 }
 
@@ -373,19 +372,17 @@ body {
   max-width: 1280px; /* 원본보다 커지지 않게 */
   margin: 30px auto 0;
   overflow: hidden;
-  box-shadow: 0 4px 10px var(--box-shadow);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .main-content-area .main-map {
-  position: absolute;
 
+  position: absolute;
   width: 80%;
   height: 80%;
-  background-color: gray;
-  z-index: -1; /* 이미지 위에 겹친다면 조절 */
+  z-index: 1; /* 이미지 위에 겹친다면 조절 */
 }
 
 .main-content-area > img {
@@ -394,6 +391,8 @@ body {
   height: auto;
   object-fit: cover;
 }
+
+#map      { width: 100%; height: 100%; }
 
 /* 스플릿 */
 
@@ -446,6 +445,17 @@ img.sizer {
 .split-overlay.open::after {
   transform: translateX(100%);
 }
+
+/* 메인 맵 위치 관련 */
+
+.main-map            { z-index: 1; opacity: 0; transition: opacity .4s ease; }
+.main-map.front      { z-index: 3; }   /* 애니 끝난 뒤에만 붙임 */
+
+.split-overlay       { z-index: 2; }
+.split-overlay.open  { /* 애니메이션만 담당, 지도 z-index는 건드리지 않음 */ }
+.split-overlay.open::before { transform: translateX(-100%); }
+.split-overlay.open::after  { transform: translateX(100%);  }
+
 
 /* 광고 배너 */
 .ad-banner-swiper {
