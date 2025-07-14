@@ -81,7 +81,7 @@ public class ReviewService {
             throw new IllegalArgumentException("해당 디자이너 정보를 찾을 수 없습니다");
         }
 
-        List<Review> reviews = reviewRepo.findByReservation_shopDesiger(shopDesignerId);
+        List<Review> reviews = reviewRepo.findByReservation_shopDesignerId(shopDesignerId);
         List<ReviewListDto> reviewList = new ArrayList<>();
 
         for (Review review : reviews) {

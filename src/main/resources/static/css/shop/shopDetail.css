@@ -415,23 +415,14 @@ body {
   box-sizing: border-box;
 }
 
-/* 디자이너 프로필 이미지 (임시) */
-.designer-photo {
-  width: 100px;
-  height: 100px;
-  background-color: #ccc;
+.designer-item img {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  margin: 0 auto 12px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  margin-right: 16px;
 }
-
-/* 원형 프로필 이미지 (나중에 실전에 사용할 거)
-.designer-photo {
-  width: 100px;
-  height: 100px;
-  background-color: f0f0f0;
-  border-radius: 50%;
-  margin-bottom: 12px;
-} */
 
 /* 디자이너 정보  */
 .designer-info strong {
@@ -445,7 +436,12 @@ body {
   color: #888;
   margin-bottom: 8px;
 }
-
+.designer-card {
+  border: none;
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 4px;
+}
 /* 아이콘 + 숫자 */
 .designer-status {
   display: flex;

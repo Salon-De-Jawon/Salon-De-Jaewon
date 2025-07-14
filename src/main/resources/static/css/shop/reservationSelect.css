@@ -1,408 +1,456 @@
-
-/*  디자이너 리스트 Section */
-.designer-list {
-  padding: 40px 0;
+/* 기본 설정 */
+body {
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  background-color: #ffffff;
+  color: #333;
+  margin: 0;
+  padding: 0;
 }
 
-/* 카드 리스트 - 세로형 */
+/* 메인 컨테이너 */
+#main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  box-sizing: border-box;
+}
+
+/* 리스트: 세로 정렬 */
 .designer-card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: block;
 }
 
-/* 🪪 개별 카드 - 직사각형 + 약간 둥근모서리 */
+/* 디자이너 카드: 기본 세로 나열 */
 .designer-card {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid #e2e7e4;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
 }
 
-/* 프로필 이미지 (원형, 좌측 중앙정렬) */
+.designer-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.designer-card.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+  filter: grayscale(80%);
+}
+
+
+/* 디자이너 이미지 */
 .designer-card img {
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: #ccc;
   margin-right: 20px;
+  flex-shrink: 0;
 }
 
-/* 텍스트 정보 박스 */
+
+/* 디자이너 정보 */
 .designer-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 6px;
 }
 
-/*  디자이너 이름 + 직급 + 경력 */
-.designer-info h3 {
+.designer-name-title {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.designer-name-title h3 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.designer-name-title .summary {
   font-size: 18px;
   font-weight: 600;
-  color: #000000;
-  margin: 0;
+  color: #333;
 }
 
-.designer-info .summary {
-  font-size: 14px;
-  color: #566a8e; /* 포인트 컬러 */
-  font-weight: 400;
-  margin-left: 6px;
-}
-
-/* 리뷰 / 좋아요 */
-.rating {
-  font-size: 14px;
-  color: #566a8e;
-  margin-top: 6px;
-}
-.rating span {
-  color: #8c9ed9;
-  margin-left: 4px;
-}
-
+/* 디자이너 좋아요, 리뷰 수*/
 .designer-meta {
   display: flex;
-  gap: 16px; /* 항목 간 간격 */
+  align-items: center;
+  gap: 16px;
   margin-top: 8px;
-}
-
-.designer-meta p {
-  margin: 0;
   font-size: 14px;
   color: #566a8e;
 }
 
-.designer-meta span {
-  margin-left: 4px;
-  color: #8c9ed9; /* 메인 컬러 강조 */
+.designer-meta .rating,
+.designer-meta .likes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.designer-more,
-.designer-selected-summary {
-  text-align: center;
-}
-/* 카테고리별 더보기  */
-.service-more {
+
+/* 더보기 버튼 wrapper */
+.designer-more {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: 12px;
 }
 
+/* 더보기 버튼 */
 .btn-more {
-  margin: 0 auto;
-  background: none;
-  border: none;
-  color: #8c9ed9;
+  all: unset;
+  cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
+  color: #444;
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 4px;
-  padding: 8px 0;
+
 }
 
-.btn-more::after {
-  content: "∨";
-  font-size: 12px;
-  color: #566a8e;
-  transition: transform 0.2s ease;
+/* 아이콘 (⌄) */
+.btn-more .arrow {
+  font-size: 14px;
+  transform: translateY(1px);
 }
 
-/* 호버 시 컬러 전환 */
+/* hover 효과: 테두리/배경 없이 깔끔 */
 .btn-more:hover {
+    background: none;
+    border: none;
+    color: #566A8E;
+    font-size: 16px;
+}
+
+/* 화살표 */
+.btn-more .arrow {
+  font-size: 16px;
+  display: inline-block;
+  transform: translateY(1px);
+}
+/* 선택된 디자이너 요약 섹션 */
+#designer-fixed-section {
+  background-color: #f9f9fc;
+  border: 1px solid #dfe3f0;
+  padding: 24px;
+  border-radius: 12px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 디자이너 정보 텍스트 */
+.designer-summary {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.designer-summary strong {
+  font-weight: 600;
   color: #566a8e;
 }
 
-/* 시술 선택 섹션 전체 섹션 레이아웃 */
-.service-list {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  color: #000000;
+/* 디자이너 변경 버튼 */
+.designer-more .btn-more {
+  background-color: transparent;
+  border: 1px solid #8c9ed9;
+  color: #8c9ed9;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/*  카테고리 필터 버튼 (가로 일렬 정렬) */
-.service-filters {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+.designer-more .btn-more:hover {
+  background-color: #8c9ed9;
+  color: #fff;
+}
+
+
+/* 시술 선택 전체 영역 */
+.service-list {
+  padding: 40px 24px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 32px;
+}
+
+/* 제목 */
+.service-list h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 20px;
 }
 
-.category-btn {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid #8c9ed9;
-  background-color: transparent;
-  color: #8c9ed9;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.category-btn:hover,
-.category-btn.active {
-  background-color: #566a8e; /* hover: 포인트 색상 */
-  color: #fff;
-  border-color: #566a8e;
-}
-
-/*  각 시술 카테고리 블록 */
-.service-category {
-  margin-bottom: 40px;
-}
-
-.service-category h3 {
-  font-size: 16px;
-  margin-bottom: 12px;
-  color: #566a8e; /* 포인트 색상 */
-}
-
-/* 시술 아이템 리스트 */
-.service-items {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.service-filters {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 개별 시술 항목 */
-.service-items li {
-  display: flex;
-  align-items: flex-start;
   gap: 12px;
-  padding: 12px;
-  border: 1px solid #e2e7e4;
-  border-radius: 12px;
-  background-color: #fafafa;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
 }
 
-/*  체크박스 */
-.service-items li input[type="checkbox"] {
-  accent-color: #8c9ed9;
-  width: 18px;
-  height: 18px;
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-/* 시술 이름 + 가격 묶음 */
-.service-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000000;
-}
-
-.service-price {
+/* 시술 더보기 버튼 */
+.category-btn {
+  padding: 6px 14px;
   font-size: 14px;
-  color: #566a8e;
-  margin-top: 4px;
-  display: block;
-}
-
-/* ⬇ 더보기 버튼 (공통 btn-more 활용 가능) */
-.service-more {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-.date-picker-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0 8px;
-}
-
-.claendar-month-label {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  padding-left: 2px;
-  color: #2a2a2a;
-}
-
-.date-picker {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  width: 100%;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-  justify-content: center;
-}
-.date-picker::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-.date-btn {
-  flex: 0 0 auto;
-  width: 60px;
-  height: 60px;
-  border: none;
-  background-color: transparent;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-}
-
-/* 요일 */
-.date-btn .day {
-  font-size: 12px;
-  color: #777;
-  margin-bottom: 2px;
-}
-
-/* 날짜 숫자 */
-.date-btn .date {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-}
-
-/* 🟣 Hover 시 동그라미에 포인트 색상 */
-.date-btn:hover,
-.date-btn.selected {
-  background-color: #8c9ed9; /* 포인트 컬러 */
-  color: #fff;
-}
-
-.date-btn:hover .day,
-.date-btn.selected .day,
-.date-btn:hover .date,
-.date-btn.selected .date {
-  color: #fff;
-}
-.date-btn:hover .date,
-.date-btn.selected .date {
-  color: #ffffff;
-}
-
-/*  일요일 & 휴무일 (class로 구분 시) */
-.date-btn.holiday .day,
-.date-btn.holiday .date {
-  color: red !important;
-}
-
-/*  토요일 */
-.date-btn.sat .day,
-.date-btn.sat .date {
-  color: #3c72e4 !important;
-}
-
-.time-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px 18px;
-  justify-content: center;
-  margin: 30px auto 0;
-  max-width: 400px;
-  padding: 10px 0;
-}
-
-.time-btn {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 14px;
+  border-radius: 20px;
   border: 1px solid #ccc;
-  background: #fff;
-  color: #333;
-  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #666;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin: 6px 4px;
+  transition: all 0.2s;
 }
-.time-btn.selected {
+
+.category-btn:hover {
+  background-color: #e6eaf8;
+  color: #333;
+}
+
+.category-btn.active {
   background-color: #8c9ed9;
   color: #fff;
   border-color: #8c9ed9;
 }
 
-.time-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+/* 시술 카테고리 */
+.service-category {
+  margin-bottom: 36px;
 }
 
-.time-btn:hover {
-  background-color: #566a8e;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(86, 106, 142, 0.3);
-  border-color: #566a8e;
+.service-category h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #566a8e;
+  margin-bottom: 12px;
 }
 
-/*  경고 메시지 */
-.reservation-warning-message {
-  color: #d84040;
-  text-align: center;
+/* 시술 항목 */
+.service-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.service-items li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.service-items input[type="radio"] {
+  accent-color: #8c9ed9;
+  transform: scale(1.2);
+}
+
+.service-items .service-name {
   font-size: 15px;
   font-weight: 500;
-  margin-top: 16px;
+  color: #333;
+  margin-right: 8px;
 }
 
-/*  예약 요약 박스 */
-.date-btn.holiday .day {
-  color: #d84040;
+.service-items .service-price {
+  font-size: 14px;
+  color: #666;
 }
 
-.reservation-warning-message {
-  color: #d84040;
-  font-weight: 500;
+/* 시술카테고리별 더보기 */
+.service-more {
   text-align: center;
   margin-top: 16px;
 }
 
-/* ✅ 고정된 바 영역 */
-.reservation-summary {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-  z-index: 999;
-  padding: 16px 0;
+.service-more .btn-more {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #8c9ed9;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* ✅ 내부 콘텐츠 너비 제한 + 정렬 */
-.reservation-inner {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 20px;
+.service-more .btn-more:hover {
+  color: #566a8e;
+}
 
+/* 선택된 시술 요약 */
+.service-selected-summary {
+  margin-top: 24px;
+  padding: 20px;
+  background-color: #f4f6fc;
+  border: 1px dashed #8c9ed9;
+  border-radius: 10px;
+}
+
+.service-selected-summary .selected-service-info {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.service-selected-summary .change-service-btn {
+  background: transparent;
+  border: 1px solid #8c9ed9;
+  color: #8c9ed9;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.service-selected-summary .change-service-btn:hover {
+  background-color: #8c9ed9;
+  color: #fff;
+}
+
+
+/* 날짜 및 시간 선택 섹션 */
+.calendar-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.calendar-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.weekdays div {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #888;
+  font-size: 13px;
+}
+
+.date-list {
+  flex-wrap: wrap;
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* 기본 날짜 박스 스타일 */
+.date-box {
+  margin: 2px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background-color: #f6f7fc;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 2px;
+}
+
+/* 내부 글자: 날짜, 요일 등 다 검정색 유지 */
+.date-day,
+.date-number,
+.date-label {
+  color: #333;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* 선택된 날짜만 원형 + 색상 변경 */
+.date-box.selected {
+  border-radius: 50%;
+  background-color: #566A8E;
+  color: #fff;
+  transform: scale(1.05);
+  font-weight: bold;
+}
+
+.date-box.selected .date-day,
+.date-box.selected .date-number,
+.date-box.selected .date-label {
+  color: #fff;
+}
+/* 휴무일 안내 메세지  */
+.reservation-warning-message {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #d9534f;
+  background-color: #fcebec;
+  border: 1px solid #f5c2c7;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 8px 0;
+  margin-bottom: 12px;
 }
 
-/* 💰 금액 */
-.total-price {
-  font-size: 22px;
-  font-weight: 700;
-  color: #2a2a2a;
-}
-
-/* 🔘 버튼 */
-.btn-reserve {
-  background-color: #566a8e;
-  color: white;
-  font-size: 16px;
-  padding: 10px 24px;
+.arrow-btn {
+  font-size: 20px;
+  background: none;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
+  color: #666;
+}
+
+
+/* 최종 예약하기 버튼 */
+.btn-reserve {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 32px auto 0;
+  padding: 12px 0;
+  font-size: 16px;
+  background-color: #8c9ed9;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-reserve:hover {
+  background-color: #566a8e;
+}
+
+
+.reservation-warning-message {
+  color: #8c9ed9;
+  font-size: 14px;
+  border: none;
+  background: none;
+}
+
+.reservation-summary p {
+  margin: 4px 0;
 }

@@ -15,5 +15,5 @@ public interface ReviewImageRepo extends JpaRepository<ReviewImage, Long> {
     List<ReviewImage> findByReviewId(Long reviewId);
 
     // 리뷰 이미지 최신순으로 8장만 가져오기
-    List<ReviewImage> findByTop8OrderByDesc();
+    List<ReviewImage> findTop8ByOrderByIdDesc();
 }

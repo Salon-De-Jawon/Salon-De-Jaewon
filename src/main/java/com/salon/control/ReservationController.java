@@ -35,7 +35,7 @@ public class ReservationController {
 
     // 예약 작성 페이지 Get매핑
     @GetMapping("/write")
-    public String writeReservation(@RequestParam Long shopId, @RequestParam(required = false) Long shopDeisngerId, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date,Principal principal ,Model model) {
+    public String writeReservation(@RequestParam Long shopId, @RequestParam(required = false) Long shopDesignerId, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date,Principal principal ,Model model) {
 
 
         // 로그인 사용자 정보 바인딩
@@ -46,25 +46,25 @@ public class ReservationController {
         }
 
         model.addAttribute("shopId", shopId);
-        model.addAttribute("selectedDesginerId", shopDeisngerId);
+        model.addAttribute("selectedDesignerId", shopDesignerId);
 
-        if (shopDeisngerId == null){
+        if (shopDesignerId == null){
             // 디자이너 선택이 안 된 상태일때 - 디자이너 리스트만 보여주기
-            List<DesignerListDto> designerList = reservationServcie.getDesignerList(shopDeisngerId);
-            model.addAttribute("designerList",designerList);
+            List<DesignerListDto> designerList = reservationServcie.getDesignerList(shopId);
+             model.addAttribute("designerList", designerList);
 
         }else {
             // 디자이너가 선택된 경우
-            ShopDesigner shopDesigner = shopDesignerRepo.findByIdAndIsActiveTrue(shopDeisngerId);
-            if (shopDeisngerId == null){
-                throw new IllegalArgumentException("존재하지 않거나 비활성화된 디자이너 입니다 ID : "+shopDeisngerId);
+            ShopDesigner shopDesigner = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
+            if (shopDesignerId == null){
+                throw new IllegalArgumentException("존재하지 않거나 비활성화된 디자이너 입니다 ID : " + shopDesignerId);
             }
             model.addAttribute("designer",shopDesigner);
 
-            List<DesignerServiceCategoryDto> serviceCategories  = reservationServcie.getDesignerServiceCategoeies(shopDeisngerId);
+            List<DesignerServiceCategoryDto> serviceCategories  = reservationServcie.getDesignerServiceCategoeies(shopDesignerId);
             model.addAttribute("serviceCategories", serviceCategories);
 
-            AvailableTimeSlotDto timeSlotDto = reservationServcie.getAvailableTimeSlots(shopDeisngerId,date);
+            AvailableTimeSlotDto timeSlotDto = reservationServcie.getAvailableTimeSlots(shopDesignerId,date);
             model.addAttribute("availableTimeSlot", timeSlotDto);
         }
 
@@ -72,7 +72,7 @@ public class ReservationController {
     }
 
     // 예약 작성 Post -> 예약 확인 페이지로
-    @PostMapping("/comfirm")
+    @PostMapping("/confirm")
     public String confirmReservaiton(@ModelAttribute ReservationRequestDto requestDto, Principal principal, Model model){
 
         // 예약자 정보 조회
@@ -122,7 +122,7 @@ public class ReservationController {
     }
 
     // 예약 확정 및 저장 (post)
-    @PostMapping("complete")
+    @PostMapping("/complete")
     public String completeReservation(@ModelAttribute ReservationRequestDto requestDto, RedirectAttributes redirect,Principal principal,Model model){
 
         // 예약자 정보 조회

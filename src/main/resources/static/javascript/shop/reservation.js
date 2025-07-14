@@ -1,62 +1,98 @@
+document.addEventListener("DOMContentLoaded", () => {
+  initDesignerSection();
+  initServiceSection();
+  initDateTimeSection(); // 초기에는 비어 있는 캘린더만 준비
+  initReservationSubmit();
+});
 
-// 디자이너 선택 섹션
 
 function initDesignerSection() {
   const maxVisible = 3;
   let expanded = false;
+  let selectedDesigner = null;
 
+  const designerSection = document.getElementById("designer-section");
   const designerCards = document.querySelectorAll(".designer-card");
-  const moreBtn = document.querySelector(".designer-more .btn-more");
-  const designerSection = document.querySelector("#designer-section");
-  const fixedSection = document.querySelector("#designer-fixed-section");
-  const selectedDesignerNameDisplay = document.querySelector(".selected-designer-name");
-  const hiddenDesignerIdInput = document.querySelector('input[name="shopDesignerId"]');
+  const designerMoreWrapper = designerSection.querySelector(".designer-more");
+  const hiddenDesignerIdInput = document.querySelector("#selectedDesignerInput");
 
-  // 초기에 3개만 표시
-  designerCards.forEach((card, i) => {
-    card.style.display = i < maxVisible ? "block" : "none";
-  });
+  const summaryBox = document.querySelector(".designer-selected-summary");
+  const summaryName = summaryBox.querySelector(".selected-designer-name");
+  const changeBtn = summaryBox.querySelector(".btn-reset-designer");
 
-  moreBtn?.addEventListener("click", () => {
+  const moreBtn = document.createElement("button");
+  moreBtn.type = "button";
+  moreBtn.className = "btn-more";
+  moreBtn.textContent = "더보기";
+  designerMoreWrapper.innerHTML = "";
+  designerMoreWrapper.appendChild(moreBtn);
+
+  moreBtn.addEventListener("click", () => {
     expanded = !expanded;
     designerCards.forEach((card, i) => {
-      card.style.display = expanded ? "block" : i < maxVisible ? "block" : "none";
+      card.style.display = expanded || i < maxVisible ? "block" : "none";
     });
     moreBtn.textContent = expanded ? "닫기" : "더보기";
   });
 
   designerCards.forEach(card => {
     card.addEventListener("click", () => {
-      const selectedId = card.dataset.id;
-      const designerName = card.querySelector(".name")?.textContent;
+      if (selectedDesigner) return;
 
-      // 값 반영
-      hiddenDesignerIdInput.value = selectedId;
-      selectedDesignerNameDisplay.textContent = designerName;
+      const id = card.dataset.id;
+      const name = card.querySelector("h3")?.textContent;
 
-      fixedSection.style.display = "block";
-      designerSection.style.display = "none";
+      selectedDesigner = card;
+      hiddenDesignerIdInput.value = id;
+      summaryName.textContent = name;
 
-      designerCards.forEach(c => {
-        if (c !== card) c.classList.add("disabled");
-        else c.classList.add("selected");
-      });
+      //  리스트의 모든 카드 숨김
+      designerCards.forEach(c => c.style.display = "none");
 
-      document.querySelector(".designer-more")?.style.display = "none";
+      //  더보기 버튼도 숨기기
+      designerMoreWrapper.style.display = "none";
+
+      //  요약 영역만 보여주기
+      summaryBox.style.display = "block";
+
+      resetDateTimeSection();
+      generateSlidingDateGrid();
     });
   });
+
+  changeBtn.onclick = () => {
+    selectedDesigner = null;
+    hiddenDesignerIdInput.value = "";
+    summaryName.textContent = "이름 없음";
+
+    //  요약 영역 숨기기
+    summaryBox.style.display = "none";
+
+    //  카드들 다시 표시
+    designerCards.forEach((c, i) => {
+      c.classList.remove("selected", "disabled");
+      c.style.display = i < maxVisible ? "block" : "none";
+    });
+
+    //  더보기 버튼 다시 보이기
+      designerMoreWrapper.style.display = "block";
+
+    //  더보기 버튼 복원
+    designerMoreWrapper.innerHTML = "";
+    moreBtn.textContent = "더보기";
+    designerMoreWrapper.appendChild(moreBtn);
+
+    resetDateTimeSection();
+  };
 }
 
-
-// 시술 리스트 선택 섹션
 
 function initServiceSection() {
   const categoryTabs = document.querySelectorAll(".category-btn");
   const categorySections = document.querySelectorAll(".service-category");
-  const selectedServiceSummary = document.querySelector(".service-selected-summary");
-  const selectedServiceInfo = document.querySelector(".selected-service-info");
+  const summaryBox = document.querySelector(".service-selected-summary");
+  const summaryText = document.querySelector(".selected-service-info");
   const hiddenServiceInput = document.querySelector("#selectedServiceId");
-  const maxVisible = 3;
 
   categoryTabs.forEach(tab => {
     tab.addEventListener("click", () => {
@@ -66,82 +102,154 @@ function initServiceSection() {
       tab.classList.add("active");
 
       categorySections.forEach(section => {
-        section.style.display = (target === "all" || section.dataset.category === target) ? "block" : "none";
-
-        const items = section.querySelectorAll("li");
-        items.forEach((item, i) => {
-          item.style.display = i < maxVisible ? "block" : "none";
-        });
-
-        const moreBtn = section.querySelector(".btn-more");
-        if (moreBtn) {
-          moreBtn.textContent = "더보기";
-          moreBtn.addEventListener("click", () => {
-            const expanded = moreBtn.textContent === "더보기";
-            items.forEach((item, i) => {
-              item.style.display = expanded ? "block" : i < maxVisible ? "block" : "none";
-            });
-            moreBtn.textContent = expanded ? "닫기" : "더보기";
-          });
-        }
+        const matched = target === "all" || section.dataset.category === target;
+        section.style.display = matched ? "block" : "none";
       });
     });
   });
 
-  // 시술 선택
   document.querySelectorAll("input[name='shopServiceId']").forEach(input => {
     input.addEventListener("change", () => {
-      const serviceName = input.closest("li").querySelector(".service-name").textContent;
-      selectedServiceInfo.textContent = serviceName;
-      hiddenServiceInput.value = input.value;
+      const li = input.closest("li");
+      const serviceName = li.querySelector(".service-name").textContent;
 
-      selectedServiceSummary.style.display = "block";
+      hiddenServiceInput.value = input.value;
+      summaryText.textContent = serviceName;
+      summaryBox.style.display = "block";
+
+      document.querySelectorAll(".service-category").forEach(cat => {
+        cat.style.display = "none";
+      });
+
+      const changeBtn = summaryBox.querySelector(".change-service-btn");
+      changeBtn.onclick = () => {
+        hiddenServiceInput.value = "";
+        summaryBox.style.display = "none";
+        document.querySelector(".category-btn[data-tab='all']").click();
+      };
     });
   });
 }
 
+let startOffset = 0;
 
-// 날짜 / 시간 선택 섹션
+function resetDateTimeSection() {
+  document.querySelector("#selectedDateTime").value = "";
+  document.getElementById("dateList").innerHTML = "";
+  document.querySelector(".time-grid").innerHTML = "";
+  document.getElementById("currentMonth").textContent = "";
+  document.querySelector(".reservation-warning-message").innerHTML = "";
+}
 
-function initScheduleSection() {
-  const dateButtons = document.querySelectorAll(".date-btn");
-  const timeButtons = document.querySelectorAll(".time-btn");
-  const hiddenDateTimeInput = document.querySelector("#selectedDateTime");
+function generateSlidingDateGrid() {
+  const dateList = document.getElementById("dateList");
+  const monthTitle = document.getElementById("currentMonth");
+  const hiddenDateInput = document.querySelector("#selectedDateTime");
+  const today = new Date();
+  dateList.innerHTML = "";
 
-  let selectedDate = null;
-  let selectedTime = null;
+  const firstDate = new Date(today);
+  firstDate.setDate(today.getDate() + startOffset);
+  const displayMonth = firstDate.getMonth() + 1;
+  const displayYear = firstDate.getFullYear();
 
-  dateButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      dateButtons.forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
+  if (monthTitle) {
+    monthTitle.textContent = `${displayYear}년 ${displayMonth}월`;
+  }
 
-      selectedDate = btn.dataset.date;
-      updateHiddenDateTime();
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + startOffset + i);
+
+    const dayNum = date.getDate();
+    const dayOfWeek = date.getDay();
+    const isToday = startOffset + i === 0;
+    const isoDate = date.toISOString().split("T")[0];
+
+    const dateBox = document.createElement("div");
+    dateBox.classList.add("date-box");
+    if (isToday) dateBox.classList.add("selected");
+    dateBox.dataset.date = isoDate;
+
+    dateBox.innerHTML = `
+      <div class="date-day">${["일","월","화","수","목","금","토"][dayOfWeek]}</div>
+      <div class="date-number">${dayNum}</div>
+      <div class="date-label">${isToday ? '오늘' : ''}</div>
+    `;
+
+    dateBox.addEventListener("click", () => {
+      document.querySelectorAll(".date-box").forEach(d => d.classList.remove("selected"));
+      dateBox.classList.add("selected");
+      hiddenDateInput.value = isoDate;
+      fetchAvailableTimes(isoDate);
     });
-  });
 
-  timeButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      timeButtons.forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-
-      selectedTime = btn.dataset.time;
-      updateHiddenDateTime();
-    });
-  });
-
-  function updateHiddenDateTime() {
-    if (selectedDate && selectedTime) {
-      hiddenDateTimeInput.value = `${selectedDate}T${selectedTime}`;
-    }
+    dateList.appendChild(dateBox);
   }
 }
 
+function moveDateWindow(direction) {
+  if (direction === 'prev') {
+    startOffset = Math.max(0, startOffset - 14);
+  } else if (direction === 'next') {
+    startOffset += 14;
+  }
+  generateSlidingDateGrid();
+}
 
-// 마지막 초기화 실행
-document.addEventListener("DOMContentLoaded", () => {
-  initDesignerSection();
-  initServiceSection();
-  initScheduleSection();
-});
+function initDateTimeSection() {
+  document.querySelector("#btn-prev")?.addEventListener("click", () => moveDateWindow("prev"));
+  document.querySelector("#btn-next")?.addEventListener("click", () => moveDateWindow("next"));
+}
+
+function fetchAvailableTimes(dateStr) {
+  const designerId = document.querySelector("#selectedDesignerInput").value;
+  if (!designerId) return;
+
+  fetch(`/reservation/available-times?designerId=${designerId}&date=${dateStr}`)
+    .then(res => res.json())
+    .then(data => {
+      const timeGrid = document.querySelector(".time-grid");
+      const warning = document.querySelector(".reservation-warning-message");
+      timeGrid.innerHTML = "";
+
+      if (data.holiday) {
+        warning.innerHTML = `<span>휴무일입니다</span>`;
+        return;
+      }
+
+      warning.innerHTML = `<span>정상 운영일입니다</span>`;
+
+      data.availableTimes.forEach(timeStr => {
+        const btn = document.createElement("button");
+        btn.className = "time-btn";
+        btn.dataset.time = timeStr;
+        btn.textContent = timeStr;
+
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".time-btn").forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+
+          const selectedDate = document.querySelector("#selectedDateTime").value;
+                  document.querySelector("#selectedDateTime").value = `${selectedDate}T${timeStr}`;
+                  updateSummary();
+                });
+
+                timeGrid.appendChild(btn);
+              });
+            });
+        }
+
+        function updateSummary() {
+          const designerName = document.querySelector(".selected-designer-name").textContent;
+          const serviceName = document.querySelector(".selected-service-info").textContent;
+          const dateTime = document.querySelector("#selectedDateTime").value;
+          const summaryArea = document.querySelector(".reservation-summary");
+          if (!summaryArea) return;
+
+          summaryArea.innerHTML = `
+            <p><strong>${designerName}</strong> 디자이너</p>
+            <p>시술: ${serviceName}</p>
+            <p>일정: ${dateTime.replace("T", " ")}</p>
+          `;
+        }

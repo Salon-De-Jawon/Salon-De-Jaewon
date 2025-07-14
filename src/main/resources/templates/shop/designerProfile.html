@@ -14,98 +14,39 @@
     <section class="designer-profile-top">
         <div class="container">
             <div class="designer-profile-box">
-                <!-- 디자이너 프로필 이미지 -->
                 <div class="designer-photo-wrapper">
-                    <img class="designer-photo" src="" alt="프로필사진" />
+                    <img class="designer-photo" th:src="${dto?.designerImgUrl ?: '/images/default.png'}" alt="프로필사진" />
                 </div>
 
                 <div class="designer-content-wrapper">
                     <div class="designer-info">
-                        <!-- 디자이너 이름 + 직급 -->
-                        <h2 class="designer-name">나미리 원장디자이너</h2>
-                        <!-- 디자이너 연차 + 시술 전문분야 -->
-                        <p class="designer-subinfo">커트, 펌,전문 (11년차)</p>
-                        <!-- 디자이너 소속 미용실 -->
+                        <h2 class="designer-name" th:text="${dto?.designerName ?: '이름 없음'}">디자이너 이름</h2>
+                        <p class="designer-subinfo" th:text="${dto?.expertise ?: '전문분야 없음'}">전문분야</p>
                         <div class="designer-salon">
                             <i class="fa-solid fa-scissors"></i>
-                            @Salon De DW대전점
+                            <span th:text="${dto?.salonName ?: '@소속 미용실'}">@Salon</span>
                         </div>
-                        <!-- 디자이너 휴무일 -->
-                        <p class="off-day">📅 휴무일 : 매주 월요일 , 일요일</p>
-                        <button class="toggle-description">
-                            더보기 <i class="fa-solid fa-chevron-down"></i>
-                        </button>
+                        <p class="off-day" th:text="|\ud83d\uddd3\ufe0f 휴무일 : ${dto?.offDays ?: '정보 없음'}|">휴무일</p>
+                        <button class="toggle-description">더보기 <i class="fa-solid fa-chevron-down"></i></button>
                     </div>
 
-                    <!-- 디자이너 상세 설명-->
                     <div class="designer-description">
-                        <p>
-                            [레이어드컷, 빌드펌, 맨즈 다운펌 전문][헤어컨설팅]<br /><br />
-                            디테일한 퍼스널 상담으로 당신의 가치를 높여주는 디자이너<br /><br />
-                            신뢰할 수 있는 기술과 편안한 서비스로<br />
-                            감사한 마음을 담아 한 분 한 분<br />
-                            최선을 다해 시술해드리겠습니다 :)<br /><br />
-                            얇고 힘없는 모발 / 펌이 잘 안 나오는 모발 / 손상도가 높은
-                            모발등<br />
-                            다양한 모발에 특화되어 있는 내공이 담긴 디자인<br /><br />
-                            레이어드컷, 빌드펌, 맨즈 다운펌 전문 디자이너입니다.
-                        </p>
+                        <p th:text="${dto?.description ?: '소개글이 없습니다.'}">소개글</p>
                     </div>
 
                     <div class="profile-actions">
-                        <!-- 찜하기 -->
                         <button class="icon-text-btn">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-heart"
-                            >
-                                <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78
-                     7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                                />
-                            </svg>
+                            <svg ... class="lucide lucide-heart">...</svg>
                             찜하기
                         </button>
-
-                        <!-- 공유하기 -->
                         <button class="icon-text-btn">
-                            <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-share-2"
-                            >
-                                <circle cx="18" cy="5" r="3" />
-                                <circle cx="6" cy="12" r="3" />
-                                <circle cx="18" cy="19" r="3" />
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                            </svg>
+                            <svg ... class="lucide lucide-share-2">...</svg>
                             공유
                         </button>
-                        <!-- 공유하기 모달 -->
                         <div id="share-modal" style="display: none">
                             <div class="modal-content">
                                 <p>공유할 수 있는 링크 복사하기</p>
-                                <input
-                                        type="text"
-                                        value="https://example.com/designer/1"
-                                        readonly
-                                />
+                                <input type="text" th:value="${dto?.shareLink ?: 'localhost/designerPorfile/@{designerId}'}" readonly />
                                 <button>복사</button>
                             </div>
                         </div>
@@ -128,12 +69,8 @@
         </div>
     </section>
 
-    <!-- 시술 카테고리 탭-->
-    <section
-            class="category-tabs-wrapper"
-            id="categoryTabs"
-            style="display: none"
-    >
+    <!-- 시술 카테고리 탭 -->
+    <section class="category-tabs-wrapper" id="categoryTabs" style="display: none">
         <div class="category-tabs">
             <button class="category-btn active" data-category="cut">커트</button>
             <button class="category-btn" data-category="perm-w">여성펌</button>
@@ -143,118 +80,62 @@
         </div>
     </section>
 
-    <!-- 메뉴바 탭 컨텐츠 -->
-
-    <!-- 홈 -->
+    <!-- 메뉴 탭 콘텐츠: 홈 -->
     <section class="tab-content" id="tab-home" style="display: block">
         <div class="container">
-            <!-- 전문 시술 분야 + 디자이너 이름 + 직급 -->
-            <h3>나미리 원장 디자이너의 시술 미리보기</h3>
+            <h3 th:text="|${dto?.designerName ?: '디자이너'}의 시술 미리보기|">시술 미리보기</h3>
             <ul class="service-list">
-                <li class="service-item">
-                    <div class="service-img"><img src="" alt="시술사진" /></div>
-                    <div class="service-info">
-                        <strong class="service-name">매직 + 세팅펌</strong>
-                        <div class="service-price">
-                            <span class="discount">30%</span>
-                            <span class="original">120,000</span>
-                            <span class="final">84,000</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 없음</div>
+                <li class="service-item" th:each="service : ${dto?.previewServices}">
+                    <div class="service-img">
+                        <img th:src="${service.imgUrl ?: '/images/placeholder.png'}" alt="시술사진" />
                     </div>
-                </li>
-
-                <li class="service-item">
-                    <div class="service-img"><img src="" alt="시술사진" /></div>
                     <div class="service-info">
-                        <strong class="service-name">여성 구름펌</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">150,000</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 없음</div>
-                    </div>
-                </li>
-
-                <li class="service-item">
-                    <div class="service-img"><img src="" alt="시술사진" /></div>
-                    <div class="service-info">
-                        <strong class="service-name">남성 디자인 컷 + 다운펌</strong>
+                        <strong class="service-name" th:text="${service.name ?: '이름 없음'}">시술명</strong>
                         <div class="service-price">
-                            <span class="original">44,000</span>
-                            <span class="discount">11%</span>
-                            <span class="final">39,000</span>
+                            <span class="discount" th:if="${service.discountPercent > 0}" th:text="|${service.discountPercent}%|">할인율</span>
+                            <span class="original" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">정가</span>
+                            <span class="final" th:if="${service.discountPercent > 0}" th:text="|${#numbers.formatInteger(service.finalPrice, 3, 'COMMA')}원|">할인가</span>
                         </div>
-                    </div>
-                </li>
-
-                <li class="service-item">
-                    <div class="service-img"><img src="" alt="시술사진" /></div>
-                    <div class="service-info">
-                        <strong class="service-name"
-                        >여성 레이어드컷 + 빌드펌 + 클리닉</strong
-                        >
-                        <div class="service-price">
-                            <span class="original">180,000</span>
-                            <span class="discount">29%</span>
-                            <span class="final">127,000</span>
-                        </div>
-                        <div class="service-extra">기장추가 없음</div>
+                        <div class="service-extra" th:text="${service.extraInfo ?: ''}">추가정보</div>
                     </div>
                 </li>
             </ul>
         </div>
-        <!-- 홈 콘텐츠 - 리뷰 영역 -->
+
+        <!-- 리뷰 요약 -->
         <div class="designer-review-section">
             <div class="review-container">
-                <h3 class="review-title">리뷰 | <span>120</span></h3>
-
-                <!-- 리뷰 이미지 미리보기 -->
-                <div class="review-thumbnails">
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail"><img src="" alt="리뷰이미지" /></div>
-                    <div class="thumbnail last">
-                        <img src="" alt="추가 이미지" />
+                <h3 class="review-title">리뷰 | <span th:text="${dto?.reviewCount ?: 0}">0</span></h3>
+                <div class="review-thumbnails" th:if="${dto?.thumbnailDtos != null}">
+                    <div class="thumbnail" th:each="img, iter : ${dto.thumbnailDtos}" th:if="${iter.count <= 7}" th:remove="tag">
+                        <img th:src="${img.imgUrl ?: '/images/placeholder.png'}" alt="리뷰이미지" />
+                    </div>
+                    <div class="thumbnail last" th:if="${dto.thumbnailDtos.size() >= 8}">
+                        <img th:src="${dto.thumbnailDtos[7].imgUrl ?: '/images/placeholder.png'}" alt="추가 이미지" />
                         <span class="plus">+</span>
                     </div>
                 </div>
 
-                <!-- 리뷰 리스트 -->
                 <ul class="review-list">
-                    <li class="review-item">
+                    <li class="review-item" th:each="review : ${dto?.reviewListDtos}">
                         <div class="review-header">
-                            <strong>매직 + 새팅펌</strong><span class="chevron">&gt;</span>
+                            <strong th:text="${review.serviceName ?: '시술명 없음'}"></strong><span class="chevron">&gt;</span>
                         </div>
-                        <div class="review-rating">★★★★★ 5.0</div>
+                        <div class="review-rating" th:text="${review.rating != null ? review.rating + '점' : '평점 없음'}"></div>
                         <div class="review-content">
-                            <p>
-                                디자이너님이 정말 친절하시고 커트도 너무 마음에 들었어요.
-                                다음에 또 제 머리 책임져 주세요🤭
-                            </p>
-                            <div class="review-meta">김*지 · 3일 전 · 2번째 방문</div>
+                            <p th:text="${review.reviewText ?: '리뷰 없음'}">리뷰내용</p>
+                            <div class="review-meta" th:text="|${review.memberName ?: '익명'} · ${#temporals.format(review.createdAt ?: @java.time.LocalDate.now(), 'yyyy.MM.dd')} · ${(review.visitCount != null ? review.visitCount + '번째 방문' : '')}|">
+                                작성자 · 날짜 · 방문횟수
+                            </div>
                         </div>
-                    </li>
-
-                    <li class="review-item">
-                        <div class="review-header">
-                            <strong>여성 구름펌</strong><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="review-rating">★★★★☆ 4.0</div>
-                        <div class="review-content">
-                            <p>
-                                역시 구름펌 맛집! 시술도 처음부터 끝까지 꼼꼼하게 해주셔서
-                                너무너무 만족스러웠습니다!
-                            </p>
-                            <div class="review-meta">박*민 · 1주 전 · 첫 방문</div>
+                        <div class="r-reply" th:if="${review.replyDto != null}">
+                            <strong>디자이너 답글</strong>
+                            <p th:text="${review.replyDto.replyComment ?: '답글 없음'}">답글 내용</p>
+                            <div class="r-meta" th:text="${#temporals.format(review.replyDto.replyAt ?: @java.time.LocalDate.now(), 'yyyy.MM.dd')}">답글 날짜</div>
                         </div>
                     </li>
                 </ul>
 
-                <!-- 더보기 버튼 -->
                 <div class="review-more">
                     <button class="reviewmore-btn">더보기</button>
                 </div>
@@ -262,470 +143,28 @@
         </div>
     </section>
 
-    <!-- 시술 메뉴 탭 컨텐츠-->
+    <!-- 메뉴 탭 콘텐츠: 메뉴 -->
     <section class="tab-content" id="tab-menu" style="display: none">
         <div class="container">
-            <!-- 커트 -->
-            <div class="category-section" id="cut">
-                <h3>커트</h3>
-                <ul class="service-list">
-                    <li class="service-item no-image">
-                        <strong class="service-name">남성 디자인 커트</strong>
-                        <div class="service-price">
-                            <span class="discount">10%</span>
-                            <span class="original">20,000</span>
-                            <span class="final">18,000</span>
-                        </div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">여성 기본 커트</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">30,000원</span>
-                        </div>
-                        <div class="service-extra">기장추가 +10,000</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">학생 커트</strong>
-                        <div class="service-price">
-                <span class="discount">20%</span
-                ><span class="original">18,000원</span
-                        ><span class="final">14,400원</span>
-                        </div>
-                        <div class="service-extra">기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">유아 커트</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">15,000원</span>
-                        </div>
-                        <div class="service-extra">기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">시니어 커트</strong>
-                        <div class="service-price">
-                <span class="discount">15%</span
-                ><span class="original">25,000원</span
-                        ><span class="final">21,250원</span>
-                        </div>
-                        <div class="service-extra">기장추가 없음</div>
+            <th:block th:each="entry : ${dto?.serviceMap}">
+                <h3 th:text="${entry.key == 'RECOMMENED' ? '추천 시술' : entry.key.label}">카테고리명</h3>
+                <ul>
+                    <li th:each="service : ${entry.value}">
+                        <span th:text="${service.name ?: '이름 없음'}"></span>
+                        <span th:if="${service.discountPercent > 0}">
+                            <span th:text="|${service.discountPercent}%|"></span>
+                            <span class="original" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|"></span>
+                            <span class="final" th:text="|${#numbers.formatInteger(service.finalPrice, 3, 'COMMA')}원|"></span>
+                        </span>
+                        <span th:if="${service.discountPercent == 0}" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">정가</span>
                     </li>
                 </ul>
-
-                <div class="service-more">
-                    <button class="more-btn">
-                        <span class="label">더보기</span>
-                        <i class="chevron fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- 여성 펌 -->
-            <div class="category-section" id="perm-w">
-                <h3>여성펌</h3>
-                <ul class="service-list">
-                    <li class="service-item no-image">
-                        <strong class="service-name">빌드펌</strong>
-                        <div class="service-price">
-                            <span class="discount">20%</span>
-                            <span class="original">120,000</span>
-                            <span class="final">96,000</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">세팅펌</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">100,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">디지털펌</strong>
-                        <div class="service-price">
-                <span class="discount">10%</span
-                ><span class="original">110,000원</span
-                        ><span class="final">99,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">볼륨매직</strong>
-                        <div class="service-price">
-                <span class="discount">15%</span
-                ><span class="original">130,000원</span
-                        ><span class="final">110,500원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">루트펌</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">90,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-                </ul>
-
-                <!-- 더보기 버튼 -->
-                <div class="service-more">
-                    <button class="more-btn">
-                        <span class="label">더보기</span>
-                        <i class="chevron fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- 남성펌 -->
-            <div class="category-section" id="perm-m">
-                <h3>남성펌</h3>
-                <ul class="service-list">
-                    <li class="service-item no-image">
-                        <strong class="service-name">다운펌 + 디자인 커트</strong>
-                        <div class="service-price">
-                            <span class="discount">15%</span>
-                            <span class="original">55,000</span>
-                            <span class="final">47,000</span>
-                        </div>
-                        <div class="service-extra">커트 포함</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">쉐도우펌</strong>
-                        <div class="service-price">
-                <span class="discount">10%</span
-                ><span class="original">70,000원</span
-                        ><span class="final">63,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">가르마펌</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">65,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">볼륨펌</strong>
-                        <div class="service-price">
-                <span class="discount">20%</span
-                ><span class="original">80,000원</span
-                        ><span class="final">64,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">애즈펌</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">60,000원</span>
-                        </div>
-                        <div class="service-extra">커트 포함 | 기장추가 있음</div>
-                    </li>
-                </ul>
-
-                <!-- 더보기 버튼 -->
-                <div class="service-more">
-                    <button class="more-btn">
-                        <span class="label">더보기</span>
-                        <i class="chevron fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- 클리닉 -->
-            <div class="category-section" id="clinic">
-                <h3>클리닉</h3>
-                <ul class="service-list">
-                    <li class="service-item no-image">
-                        <strong class="service-name">수분 집중 클리닉</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">60,000</span>
-                        </div>
-                        <div class="service-extra">커트 별도</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">단백질 집중 클리닉</strong>
-                        <div class="service-price">
-                <span class="discount">10%</span
-                ><span class="original">80,000원</span
-                        ><span class="final">72,000원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">손상모 복구 클리닉</strong>
-                        <div class="service-price">
-                <span class="discount">20%</span
-                ><span class="original">100,000원</span
-                        ><span class="final">80,000원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 있음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">두피 클리닉</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">50,000원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">열 클리닉</strong>
-                        <div class="service-price">
-                <span class="discount">15%</span
-                ><span class="original">90,000원</span
-                        ><span class="final">76,500원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 있음</div>
-                    </li>
-                </ul>
-
-                <!-- 더보기 버튼 -->
-                <div class="service-more">
-                    <button class="more-btn">
-                        <span class="label">더보기</span>
-                        <i class="chevron fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- 스타일링 -->
-            <div class="category-section" id="style">
-                <h3>스타일링</h3>
-                <ul class="service-list">
-                    <li class="service-item no-image">
-                        <strong class="service-name">여성 S컬 스타일링</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">25,000</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">남성 왁스 스타일링</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">20,000원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">웨이브 고정 스타일링</strong>
-                        <div class="service-price">
-                <span class="discount">15%</span
-                ><span class="original">30,000원</span
-                        ><span class="final">25,500원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">고데기 컬링 스타일링</strong>
-                        <div class="service-price no-discount">
-                            <span class="original">22,000원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-
-                    <li class="service-item no-image">
-                        <strong class="service-name">롤 브러시 스타일링</strong>
-                        <div class="service-price">
-                <span class="discount">10%</span
-                ><span class="original">28,000원</span
-                        ><span class="final">25,200원</span>
-                        </div>
-                        <div class="service-extra">커트 별도 | 기장추가 없음</div>
-                    </li>
-                </ul>
-
-                <!-- 더보기 버튼 -->
-                <div class="service-more">
-                    <button class="more-btn">
-                        <span class="label">더보기</span>
-                        <i class="chevron fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-            </div>
+            </th:block>
         </div>
     </section>
-
-    <section class="tab-content" id="tab-review" style="display: none">
-        <div class="container">
-            <!-- 카테고리 탭 -->
-            <div class="r-tabs-wrapper">
-                <div class="r-tabs">
-                    <button class="r-tab active" data-category="all">전체</button>
-                    <button class="r-tab" data-category="cut">커트</button>
-                    <button class="r-tab" data-category="perm-w">여성펌</button>
-                    <button class="r-tab" data-category="perm-m">남성펌</button>
-                    <button class="r-tab" data-category="style">스타일링</button>
-                    <button class="r-tab" data-category="clinic">클리닉</button>
-                </div>
-            </div>
-
-            <div class="r-toolbar">
-                <!-- 고객 리뷰 제목 + 정렬 필터 -->
-                <div class="r-header">
-                    <h3 class="r-title">고객 리뷰</h3>
-
-                    <select class="r-sort">
-                        <option value="latest">최신순</option>
-                        <option value="high">별점 높은순</option>
-                        <option value="low">별점 낮은순</option>
-                    </select>
-                </div>
-
-                <!-- 리뷰 썸네일 -->
-                <div class="r-thumbnails">
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb"><img src="" alt="리뷰 이미지" /></div>
-                    <div class="r-thumb last">
-                        <img src="" alt="더보기 이미지" />
-                        <span class="r-plus">+ 더보기</span>
-                    </div>
-                </div>
-
-                <!-- 사진 리뷰 작성 버튼 -->
-                <div class="r-photo-btn-wrap">
-                    <button class="r-photo-btn">
-                        <i class="fa fa-image"></i> 사진 리뷰 작성
-                    </button>
-                </div>
-
-                <!-- 리뷰 리스트 -->
-                <ul class="r-list">
-                    <li class="r-item" data-category="style">
-                        <div class="r-item-header">
-                            <strong>여성 드라이</strong><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★☆ 4.0</div>
-                        <div class="r-content">
-                            <p>스타일 너무 예쁘게 나왔어요! 추천합니다 !!</p>
-                            <div class="r-meta">이*나 · 2025.06.28 · 3번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item" data-category="style">
-                        <div class="r-item-header">
-                            <strong>웨이브 고정 스타일링</strong
-                            ><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★★ 5.0</div>
-                        <div class="r-content">
-                            <p>
-                                오늘 급하게 잡힌 소개팅이있어서 집근처 아무 미용실이나
-                                들어와서 드라이 받은건데 생각보다 너무 예쁘고 고정도 너무
-                                잘해주셔서 덕분해 소개팅 너무 잘했습니다 ㅎㅎ 오늘 날씨 조금
-                                많이 덥기도 하구 긴장도 되서 땀 많이 흘렸는데 집와서 보니까
-                                머리가 그대로더라구요 ㅎㅎㅎㅎ 아 그리구 원장선생님이 머리를
-                                너무 예쁘게 해주신 덕분에 애프터도 받았네요 ㅎㅎ 감사합니다!
-                            </p>
-                            <div class="r-meta">정*수 · 2025.06.25 · 5번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item" data-category="perm-m">
-                        <div class="r-item-header">
-                            <strong>다운펌 + 디자인 커트</strong
-                            ><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★☆ 4.0</div>
-                        <div class="r-content">
-                            <p>벌써 3번째 방문이네요 올 때마다 잘해주셔서 감사합니다</p>
-                            <div class="r-meta">정*훈 · 2025.06.28 · 3번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item" data-category="cut">
-                        <div class="r-item-header">
-                            <strong>여성 기본 커트</strong><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★☆ 4.0</div>
-                        <div class="r-content">
-                            <p>
-                                머리가 너무 상해서 처음 방문했는데 원장님이 너무 예쁘시고
-                                착하세요 !! 머리도 너무 마음에 듭니당 ㅎㅎ
-                            </p>
-                            <div class="r-meta">정*영 · 2025.06.23 · 첫번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item" data-category="cut">
-                        <div class="r-item-header">
-                            <strong>유아 커트</strong><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★★ 5.0</div>
-                        <div class="r-content">
-                            <p>
-                                우리 아이 첫 배냇머리 커트하러 방문했습니다ㅎㅎ 아이에게 너무
-                                잘해주시고 우리 아이도 처음하는 커트라 무서워서 많이 울고
-                                떼쓰는데 그때마다 괜찮다면서 기다려주셔서 너무 감동했습니다
-                                저희 아이때문에 뒤에 예약도 많이 밀려서 너무 죄송했어요 다음엔
-                                제 머리 하러 올게요 감사합니다
-                            </p>
-                            <div class="r-meta">봉*선 · 2025.06.28 · 첫번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item">
-                        <div class="r-item-header" data-category="clinic">
-                            <strong>손상모 복구 클리닉</strong
-                            ><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★★ 5.0</div>
-                        <div class="r-content">
-                            <p>
-                                전에 염색이랑 탈색을 너무 많이해서 복구 클리닉 받으러 또
-                                방문했습니다~ 너무 잘해주셔서 제 머리 같지 않고 오히려
-                                저희집에 있는 손질 잘 된 가발 만지는 기분이에요 ㅎㅎㅎ
-                            </p>
-                            <div class="r-meta">이*진 · 2025.06.25 · 4번째 방문</div>
-                        </div>
-                    </li>
-
-                    <li class="r-item">
-                        <div class="r-item-header" data-category="perm-w">
-                            <strong>여성 구름펌</strong><span class="chevron">&gt;</span>
-                        </div>
-                        <div class="r-rating">★★★★☆ 4.0</div>
-                        <div class="r-content">
-                            <p>
-                                역시 구름펌 맛집! 시술도 처음부터 끝까지 꼼꼼하게 해주셔서
-                                만족스러웠습니다!
-                            </p>
-                            <div class="r-meta">박*민 · 2025.06.25 · 4번째 방문</div>
-                        </div>
-                    </li>
-                </ul>
-
-                <!-- 더보기 버튼 -->
-                <div class="r-more">
-                    <button class="r-toggle-btn">
-                        더보기 <span class="arrow">▼</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
 </div>
 
-<th:block layout:fragment="script" >
+<th:block layout:fragment="script">
     <script th:src="@{/javascript/shop/designerProfile.js}" defer></script>
 </th:block>
 </body>

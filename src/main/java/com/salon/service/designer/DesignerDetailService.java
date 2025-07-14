@@ -1,6 +1,7 @@
 package com.salon.service.designer;
 
 import com.salon.constant.LikeType;
+import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerDetailDto;
 import com.salon.dto.designer.DesignerHomeDto;
 import com.salon.dto.designer.ReviewReplyDto;
@@ -10,11 +11,13 @@ import com.salon.dto.shop.ReviewListDto;
 import com.salon.entity.Review;
 import com.salon.entity.ReviewImage;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.management.master.ShopService;
 import com.salon.entity.shop.Reservation;
 import com.salon.repository.ReviewImageRepo;
 import com.salon.repository.ReviewRepo;
 import com.salon.repository.management.ShopDesignerRepo;
+import com.salon.repository.management.master.DesignerServiceRepo;
 import com.salon.repository.management.master.ShopServiceRepo;
 import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.SalonLikeRepo;
@@ -23,10 +26,7 @@ import com.salon.service.user.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +41,7 @@ public class DesignerDetailService {
     private final ShopServiceRepo shopServiceRepo;
     private final ReviewImageRepo reviewImageRepo;
     private final ReservationRepo reservationRepo;
+    private final DesignerServiceRepo designerServiceRepo;
 
 
     // 디자이너 상세정보 조회
@@ -63,7 +64,7 @@ public class DesignerDetailService {
 
 
 
-    // 디자이너 리뷰, 전문 시술 분야 , 시술 리스트 ( 홈 섹션)
+    // 디자이너 리뷰, 전문 시술 분야 , 시술 리스트 ( 홈 섹션, 리뷰 섹션)
     public DesignerHomeDto getDesignerHomeInfo (Long shopDesignerId) {
 
         ShopDesigner shopDesigner = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
@@ -81,13 +82,13 @@ public class DesignerDetailService {
         int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(shopDesignerId);
 
         // 리뷰 이미지 썸네일 ( 최대 8장 최신순으로 )
-        List<ReviewImage> thumbnails = reviewImageRepo.findByTop8OrderByDesc();
+        List<ReviewImage> thumbnails = reviewImageRepo.findTop8ByOrderByIdDesc();
         List<ReviewImageDto> thumbnailDtos = thumbnails.stream()
                 .map(ReviewImageDto :: from)
                 .collect(Collectors.toList());
 
         // 디자이너 리뷰 조회
-        List<Review> reviews = reviewRepo.findByReservation_shopDesiger(shopDesignerId);
+        List<Review> reviews = reviewRepo.findByReservation_shopDesignerId(shopDesignerId);
         List<ReviewListDto> reviewListDtos = new ArrayList<>();
 
         for (Review review : reviews) {
@@ -123,4 +124,35 @@ public class DesignerDetailService {
                 .collect(Collectors.toList());
     }
 
+
+
+
+    // 디자이너가 담당하는 카테고리와 시술목록을 카테고리로 묶어 반환하는 메서드 (디자이너 상세페이지 - 시술 리스트 섹션)
+    public Map<Object, List<ServiceForm>> getServiceListByDesigner(Long shopDesignerId, Long shopId) {
+        // 디자이너가 담당하는 카테고리 가져오기
+        DesignerService ds = designerServiceRepo.findByShopDesignerId(shopDesignerId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 디자이너의 시술 정보가 없습니다"));
+
+        List<ServiceCategory> assignedCategories = ds.getAssignedCategories();
+
+        // 시술 필터링
+        List<ShopService> filteredServices = shopServiceRepo.findByShopIdAndCategoryIn(shopId, assignedCategories);
+
+        // 카테고리별로 묶기
+        Map<Object, List<ServiceForm>> serviceMap = filteredServices.stream()
+                .map(ServiceForm::from)
+                .collect(Collectors.groupingBy(ServiceForm::getCategory, LinkedHashMap::new, Collectors.toList()));
+
+        // 추천 시술 추가
+        List<ShopService> recommendedList = shopServiceRepo.findByShopIdAndIsRecommendedTrue(shopId);
+        List<ServiceForm> recommendedForms = recommendedList.stream()
+                .map(ServiceForm::from)
+                .collect(Collectors.toList());
+
+        if (!recommendedForms.isEmpty()) {
+            serviceMap.put("RECOMMENED", recommendedForms); // 문자열 키
+        }
+
+        return serviceMap;
+    }
 }

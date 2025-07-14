@@ -38,7 +38,7 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
 
 
     // 디자이너 리뷰 목록
-    List<Review> findByReservation_shopDesiger( Long shopDesignerId );
+    List<Review> findByReservation_shopDesignerId( Long shopDesignerId );
 
 
 }
