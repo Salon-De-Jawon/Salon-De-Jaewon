@@ -3,15 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const csrfToken  = document.querySelector('meta[name="_csrf"]')?.content;
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
-  // 1️⃣ 변수 이름 통일
-  const userId = window.currentUserId;     // ← 여기만 바꿔주면 끝
+  // 변수 이름 통일
+  const userId = window.currentUserId;
 
   if (!userId) {
     console.warn("currentUserId 없음, 알림 기능 건너뜀");
     return;
   }
 
-  /* ---------- WebSocket ---------- */
+  /* 웹소켓 연결 - */
   const sock   = new SockJS("/ws");
   const stomp  = Stomp.over(sock);
 
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stomp.subscribe(`/topic/notify/${userId}`, (msg) => {
       const data = JSON.parse(msg.body);   // { message, webTarget, targetId, unreadTotal }
 
-      /* 2️⃣ 배지 숫자를 서버가 보내준 unreadTotal 로 갱신 */
+      /* 배지 숫자를 서버가 보내준 unreadTotal 로 갱신 */
       const badge = document.getElementById("notification-badge");
       if (badge) {
         if (data.unreadTotal > 0) {
@@ -36,30 +36,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
       /* ------ 사이드바 알림 카드 렌더링 ------ */
       const container = document.getElementById("sidebar-alert-container");
-      if (!container) return;
+            if (!container) return;
 
-      const alertDiv = document.createElement("div");
-      alertDiv.className = "sidebar-alert";
-      alertDiv.textContent = data.message;
+            const card = document.createElement("div");
+            card.className      = "sidebar-alert";
+            card.dataset.target = data.webTarget;
+            card.dataset.id     = data.targetId;
 
-      alertDiv.addEventListener("click", () => {
-        // 읽음 처리
-        fetch("/api/notification/read", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            [csrfHeader]: csrfToken,
-          },
-          body: JSON.stringify({
-            webTarget: data.webTarget,
-            targetId: data.targetId
-          })
-        })
-        .catch(err => console.error("읽음 처리 실패", err));
+            // (2) 내용 span
+            const content = document.createElement("span");
+            content.className   = "alert-content";
+            content.textContent = data.message;
+
+            // (3) 날짜 span (필요하면 createAt 포맷팅)
+            const date = document.createElement("span");
+            date.className   = "alert-date";
+            date.textContent = data.createAt || "방금 전"
+
+            card.append(content, date);
+
+            card.addEventListener("click", (e) => {
+              console.log("클릭 잡힙", e.target);
+              /* 읽음 처리 */
+              fetch("/api/notification/read", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+                },
+                body: JSON.stringify({
+                  webTarget: data.webTarget,
+                  targetId : data.targetId
+                })
+              })
+              .then(res => {
+                if(!res.ok) throw new Error ("HTTP " + res.status);
+
+                console.log("지우려 시도는 함");
+
+                if(["DESAPPLY", "SHOPAPPLY", "BANNER"].includes(data.webTarget)) {
+                    card.remove();
+                    const unreadLeft =
+                      container.querySelectorAll(".sidebar-alert").length;
+
+                    badge.dataset.count = unreadLeft;
+                    badge.textContent   = unreadLeft;
+                    badge.style.display = unreadLeft > 0 ? "inline-block" : "none";
+
+                }
+              })
+              .catch(err => console.error("읽음 처리 실패:", err));
+
+
+
         /* 필요 시 페이지 이동 로직 */
       });
 
-      container.prepend(alertDiv);
+
+      container.prepend(card);
       while (container.children.length > 3) container.removeChild(container.lastChild);
     });
   }, err => console.error("웹소켓 연결 실패:", err));

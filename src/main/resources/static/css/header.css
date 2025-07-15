@@ -283,8 +283,24 @@ user-navbar li a:visited {
   margin-top: 20px;
   background: #eee;
   padding: 10px;
+  z-index: 1000;
   text-align: center;
   font-size: 14px;
+  cursor:pointer;
+}
+
+
+.sidebar-alert .alert-content,
+.sidebar-alert .alert-date{
+  display:block;           /* inline → block  */
+  line-height:1.4;         /* 살짝 여유 */
+}
+
+/* 날짜(두 번째 줄)를 살짝 연하게 */
+.sidebar-alert .alert-date{
+  font-size:.85rem;
+  color:#666;
+  margin-top:.2rem;
 }
 
 .sidebar-close > img {

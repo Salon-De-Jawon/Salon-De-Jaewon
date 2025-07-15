@@ -229,7 +229,8 @@ document.addEventListener("DOMContentLoaded", function () {
       `).join("");
 
       card.innerHTML = `
-        <div class="shop-img" style="background-image: url('${shop.shopImageDto?.imgUrl || '/images/default.png'}'); background-size: cover;"></div>
+        <div class="shop-img" style="background-image: url('${shop.shopImageDto && shop.shopImageDto.imgUrl ? shop.shopImageDto.imgUrl : '/images/default.png'}'); background-size: cover;"></div>
+
         <div class="shop-info-area">
           <div class="shop-info">
             <div class="shop-header">

@@ -78,4 +78,12 @@ public class WebNotificationService {
     public long countUnreadByMemberId(Long memberId) {
         return webNotificationRepo.countByMemberIdAndIsReadFalse(memberId);
     }
+
+    public List<WebNotificationDto> getUnreadTop3(Long memberId) {
+        return webNotificationRepo
+                .findTop3ByMemberIdAndIsReadFalseOrderByCreateAtDesc(memberId)
+                .stream()
+                .map(WebNotificationDto::from)
+                .toList();
+    }
 }

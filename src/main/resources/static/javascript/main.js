@@ -80,6 +80,7 @@ if (storedLocation) {
   userLon = 127.3845475;
   $regionLabel.textContent = "대전 광역시청";
   loadAreaResources(region);
+  loadShopMarkers(userLat, userLon);
 }
 
 /* ───────────── 이벤트 바인딩 ───────────── */
@@ -104,6 +105,15 @@ $cancelBtn?.addEventListener('click', () => {
 initAddressSearchToggle({
   onSelectAddress: ({ userAddress, userLatitude, userLongitude, region1depth, region2depth }) => {
     applyDetectedLocation({ lat: userLatitude, lon: userLongitude, userAddress, region1depth, region2depth });
+
+    //DOM 업데이트를 기다렸다가 Swiper/이미지 리렌더
+    setTimeout(() => {
+      window.adBannerSwiper?.update();
+      window.shopSwiper?.update();
+      adjustImageFitAll('.shopSwiper img.img-fit', 4 / 3);
+      adjustImageFitAll('#designer-recommend-box img.img-fit', 1);
+      adjustImageFitAll('.designer-bubble img.img-fit', 4 / 3);
+    }, 100);
   },
 });
 
@@ -178,23 +188,41 @@ function loadShopMarkers(lat, lon) {
 }
 
 function updateMarkersInViewport() {
-  const { sw, ne } = map.getBounds();
+  const bounds = map.getBounds();
+  if (!bounds || typeof bounds.getSouthWest !== 'function' || typeof bounds.getNorthEast !== 'function') {
+    console.warn("지도 범위(getBounds) 정보 없음");
+    return;
+  }
+
+  const sw = bounds.getSouthWest();
+  const ne = bounds.getNorthEast();
+
+  if (!sw || !ne || typeof sw.getLat !== 'function' || typeof ne.getLat !== 'function') {
+    console.warn("지도 좌표 정보가 올바르지 않음");
+    return;
+  }
+
   const visible = allShops.filter(({ latitude, longitude }) =>
     latitude  >= sw.getLat() && latitude  <= ne.getLat() &&
     longitude >= sw.getLng() && longitude <= ne.getLng()
   );
+
   clearMarkers();
+
   visible.forEach(shop => {
     const marker = new kakao.maps.Marker({
       map,
       position: new kakao.maps.LatLng(shop.latitude, shop.longitude),
     });
+
     const info = new kakao.maps.InfoWindow({
       content: `<div style="padding:5px;font-size:14px;">${shop.shopName}</div>`,
     });
+
     kakao.maps.event.addListener(marker, 'mouseover', () => info.open(map, marker));
     kakao.maps.event.addListener(marker, 'mouseout', () => info.close());
     kakao.maps.event.addListener(marker, 'click', () => location.href = `/shop/${shop.id}`);
+
     markers.push(marker);
   });
 }

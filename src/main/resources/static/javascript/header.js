@@ -91,6 +91,40 @@
         }
         showBadge(initCnt);   // 최초 표시
 
+        // 알림 클릭 처리
+        const container = document.getElementById("sidebar-alert-container");
+          if (container) {
+            container.addEventListener("click", function (e) {
+              const card = e.target.closest(".sidebar-alert");
+              if (!card) return;
+
+              const target = card.dataset.target;
+              const id     = card.dataset.id;
+
+              fetch("/api/notification/read", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+                },
+                body: JSON.stringify({
+                  webTarget: target,
+                  targetId : id
+                })
+              })
+              .then(res => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+
+                if (["DESAPPLY", "SHOPAPPLY", "BANNER"].includes(target)) {
+                  card.remove();
+                  const remain = container.querySelectorAll(".sidebar-alert").length;
+                  showBadge(remain);
+                }
+              })
+              .catch(err => console.error("읽음 처리 실패", err));
+            });
+          }
+
         // WebSocket 구독으로 실시간 갱신
         if(userId){
             const sock  = new SockJS('/ws');
@@ -98,11 +132,38 @@
             stomp.connect({}, ()=>{
                 stomp.subscribe(`/topic/notify/${userId}`, msg=>{
                     const { unreadTotal } = JSON.parse(msg.body); // 서비스에서 넣어준 값
-                    showBadge(unreadTotal);
+                    const data = JSON.parse(msg.body);
+                    showBadge(data.unreadTotal);
+                    addAlertCard(data);
                 });
             });
         }
 
 
+      function addAlertCard(data) {
+          const container = document.getElementById("sidebar-alert-container");
+          if (!container) return;
+
+          const card = document.createElement("div");
+          card.className = "sidebar-alert";
+          card.dataset.target = data.webTarget;
+          card.dataset.id = data.targetId;
+
+          const content = document.createElement("span");
+          content.className = "alert-content";
+          content.textContent = data.message;
+
+          const date = document.createElement("span");
+          date.className = "alert-date";
+          date.textContent = data.createAt || "방금 전";
+
+          card.append(content, date);
+          container.prepend(card);
+
+          // 최대 3개 유지
+          while (container.children.length > 3) {
+            container.removeChild(container.lastChild);
+          }
+        }
 
   });

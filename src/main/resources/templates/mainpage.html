@@ -105,11 +105,11 @@
 
             <div class="swiper ad-banner-swiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">배너 광고1</div>
-                    <div class="swiper-slide">배너 광고2</div>
-                    <div class="swiper-slide">배너 광고3</div>
-                    <div class="swiper-slide">배너 광고4</div>
-                    <div class="swiper-slide">배너 광고5</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
                 </div>
             </div>
 
@@ -214,10 +214,6 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <script th:inline="javascript">
-<!--        window.currentUserId = [[${#authorization.expression('isAuthenticated()') ? #authentication.principal.id : 'null'}]];-->
-<!--        if (window.currentUserId === 'null') window.currentUserId = null;-->
-<!--        window.userAgreeLocation = [[${userAgreeLocation}]];-->
-
 
           // 배너 스와이퍼 코드
           window.adBannerSwiper = new Swiper(".ad-banner-swiper", {
