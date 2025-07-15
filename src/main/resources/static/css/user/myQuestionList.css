@@ -91,3 +91,74 @@
   padding-bottom: 15px; /* 밑줄과의 간격 */
   border-bottom: 3px solid #007bff; /* 두꺼운 파란색 밑줄 */
 }
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #8C9ED9; /* 벽자색 */
+    padding-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    background-color: #ffffff;
+}
+
+thead {
+    background-color: #8C9ED9; /* 벽자색 */
+    color: #ffffff;
+}
+
+th, td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+tr.list:hover {
+    background-color: #f5f7ff;
+}
+
+a {
+    color: #566A8E; /* 청현색 */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.primary-btn {
+    background-color: #ff4d78; /* 진한 핑크 */
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.primary-btn:hover {
+    background-color: #e6406c;
+}
+
+.secondary-btn {
+    background-color: transparent;
+    border: 2px solid #ccc;
+    color: #666;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.disabled-btn {
+    background-color: #ccc;
+    color: #eee;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: not-allowed;
+}
