@@ -5,11 +5,9 @@ import com.salon.constant.LeaveStatus;
 import com.salon.dto.management.WeekDto;
 import com.salon.dto.management.*;
 import com.salon.dto.management.master.CouponDto;
+import com.salon.dto.shop.ShopServiceDto;
 import com.salon.entity.Member;
-import com.salon.entity.management.LeaveRequest;
-import com.salon.entity.management.MemberCoupon;
-import com.salon.entity.management.Payment;
-import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.management.*;
 import com.salon.entity.management.master.Attendance;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.management.master.ShopService;
@@ -17,10 +15,7 @@ import com.salon.entity.management.master.Ticket;
 import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
 import com.salon.repository.MemberRepo;
-import com.salon.repository.management.LeaveRequestRepo;
-import com.salon.repository.management.MemberCouponRepo;
-import com.salon.repository.management.PaymentRepo;
-import com.salon.repository.management.ShopDesignerRepo;
+import com.salon.repository.management.*;
 import com.salon.repository.management.master.*;
 import com.salon.repository.shop.ReservationRepo;
 import com.salon.repository.shop.ShopRepo;
@@ -55,6 +50,8 @@ public class ManageService {
     private final MemberCouponRepo memberCouponRepo;
     private final TicketRepo ticketRepo;
     private final CouponRepo couponRepo;
+    private final MemberMemoRepo memberMemoRepo;
+    private final MemberCardRepo memberCardRepo;
 
 
     // 메인페이지 출력용 메서드
@@ -253,6 +250,10 @@ public class ManageService {
             // 당일 예약 구분
             dto.setToday(entity.getReservationDate().toLocalDate().isEqual(LocalDate.now()));
 
+            // 해당 예약 결제 여부
+            boolean isPaid = paymentRepo.existsByReservation(entity);
+            dto.setPaid(isPaid);
+
             dtoList.add(dto);
         }
 
@@ -289,6 +290,14 @@ public class ManageService {
         // 3. 통합 반환
         return new MemberCouponDto(couponDtos, ticketBalance);
     }
+
+    // 예약 수정 Form
+    public ReservationForm getReservationForm(Long reservationId) {
+        Reservation res = reservationRepo.findById(reservationId).orElseThrow();
+
+        return ReservationForm.from(res);
+    }
+
 
     // 디자이너 페이지 예약 저장시
     @Transactional
@@ -356,7 +365,17 @@ public class ManageService {
 
     }
 
+    // 예약 등록시 시술 검색용
+    public List<ShopServiceDto> searchServicesByKeyword(String keyword) {
+        List<ShopService> services = shopServiceRepo.findByNameContainingIgnoreCase(keyword);
 
+        List<ShopServiceDto> dtoList = new ArrayList<>();
+        for(ShopService service : services){
+            dtoList.add(ShopServiceDto.from(service));
+        }
+
+        return dtoList;
+    }
 
     // 디자이너 매출 목록 (일별)
     public List<PaymentListDto> getPaymentList(Long memberId, LocalDate selectedDate){
@@ -393,6 +412,72 @@ public class ManageService {
         paymentRepo.save(payment);
     }
 
+    // 회원 관리카드목록
+    public List<MemberListDto> getMemberCardList(Long designerId) {
 
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
+
+        // 디자이너에게 시술받은 회원 목록
+        List<Member> members = paymentRepo.findDistinctMembersByShopDesignerId(designer.getId());
+
+        List<MemberListDto> memberList = new ArrayList<>();
+        for(Member member : members){
+            // 회원 메모
+            MemberMemo memberMemo = memberMemoRepo.findByMemberIdAndShopDesignerId(member.getId(), designer.getId())
+                    .orElse(null);
+
+            // 해당 회원 결제내역(방문x)
+            List<Payment> payments = paymentRepo.findByMemberIdAndDesignerId(member.getId(), designer.getId());
+            List<MemberCardListDto> cardList = new ArrayList<>();
+            for(Payment payment : payments){
+                MemberCard memberCard = memberCardRepo.findByPaymentId(payment.getId()).orElse(null);
+                cardList.add(MemberCardListDto.from(memberCard, payment));
+            }
+
+            memberList.add(MemberListDto.from(member, memberMemo, cardList));
+        }
+
+        return memberList;
+    }
+
+    // 회원 개인메모 작성
+    @Transactional
+    public void writeMemberMemo(Long memberId, Long designerId, String newMemoContent) {
+
+        MemberMemo memberMemo = memberMemoRepo.findByMemberIdAndShopDesignerId(memberId, designerId).orElse(null);
+        if(memberMemo != null){
+            memberMemo.setMemo(newMemoContent);
+            memberMemoRepo.save(memberMemo);
+        } else{
+            MemberMemo memo = new MemberMemo();
+            Member member = memberRepo.findById(memberId).orElseThrow();
+            ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
+            memo.setMember(member);
+            memo.setShopDesigner(designer);
+            memo.setMemo(newMemoContent);
+            memberMemoRepo.save(memo);
+        }
+
+    }
+
+    // 회원 관리카드 작성
+    @Transactional
+    public void writeMemberCardMemo(Long paymentId, String newMemoContent) {
+
+        Payment payment = paymentRepo.findById(paymentId).orElseThrow();
+
+        MemberCard memberCard = memberCardRepo.findByPaymentId(paymentId).orElse(null);
+        if(memberCard != null) {
+            memberCard.setMemo(newMemoContent);
+            memberCardRepo.save(memberCard);
+        } else {
+            MemberCard newCard = new MemberCard();
+            newCard.setPayment(payment);
+            newCard.setMemo(newMemoContent);
+            newCard.setCreateAt(LocalDateTime.now());
+            memberCardRepo.save(newCard);
+        }
+    }
 
 }
+

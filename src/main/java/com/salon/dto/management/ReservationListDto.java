@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class ReservationListDto {
 
-    private Long reservationId;
+    private Long id;
 
 
     private String memberName; // 디자이너 전용
@@ -24,10 +24,11 @@ public class ReservationListDto {
     private ReservationStatus status;
     
     private boolean isToday; // 당일 여부
+    private boolean isPaid; // 결제 여부
 
     public static ReservationListDto from (Reservation reservation){
         ReservationListDto dto = new ReservationListDto();
-        dto.setReservationId(reservation.getId());
+        dto.setId(reservation.getId());
         dto.setMemberName(reservation.getMember().getName());
         dto.setServiceName(reservation.getShopService() != null ? reservation.getShopService().getName() : reservation.getServiceName());
         dto.setDate(reservation.getReservationDate());

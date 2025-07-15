@@ -44,13 +44,6 @@ public class MasterController {
         return "master/main";
     }
 
-    // 매장 근태 관리
-    @GetMapping("/attendance")
-    public String attendance(){
-
-        return "master/attendance";
-    }
-
     // 디자이너 관리
     @GetMapping("/designer-list")
     public String designerList(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -69,9 +62,6 @@ public class MasterController {
     @GetMapping("/designer-search")
     public ResponseEntity<List<DesignerResultDto>> searchDesigners(@ModelAttribute DesignerSearchDto searchDto) {
 
-        System.out.println("검색 이름: " + searchDto.getName()); // 로그 추가해서 확인 가능
-        System.out.println("검색 번호: " + searchDto.getTel());   // 로그 추가해서 확인 가능
-        
         // 서비스 계층의 검색 메서드 호출
         List<DesignerResultDto> foundDesigners = masterService.getDesignerResult(searchDto);
 
@@ -116,7 +106,17 @@ public class MasterController {
         return "master/services";
     }
 
-    // 시술 수정 페이지
+    // 시술 저장
+    @PostMapping("/services")
+    @ResponseBody
+    public ResponseEntity<ServiceForm> createService(@ModelAttribute ServiceForm serviceForm,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        ServiceForm createdService = masterService.addService(userDetails.getId(), serviceForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
+    }
+
+    // 시술 수정 모달
     @GetMapping("/services/{serviceId}")
     @ResponseBody
     public ResponseEntity<ServiceForm> getServiceDetails(@PathVariable Long serviceId) {
@@ -130,18 +130,59 @@ public class MasterController {
         }
     }
 
-    // 시술 저장
-    @PostMapping("/services")
+    // 시술 수정
+    @PutMapping("/services/{serviceId}")
     @ResponseBody
-    public ResponseEntity<ServiceForm> createService(@ModelAttribute ServiceForm serviceForm,
-                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<ServiceForm> updateService(
+            @PathVariable Long serviceId,
+            @ModelAttribute ServiceForm serviceForm) {
+        ServiceForm updatedService = masterService.updateService(serviceId, serviceForm);
+        return ResponseEntity.ok(updatedService);
 
-        ServiceForm createdService = masterService.addService(userDetails.getId(), serviceForm);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
     }
 
+    // 시술 삭제
+    @DeleteMapping("/services/{serviceId}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteService(@PathVariable Long serviceId) {
+        masterService.deleteService(serviceId);
+        return ResponseEntity.noContent().build();
+    }
 
+    // 출퇴근 내역 페이지
+    @GetMapping("/attendances")
+    public String attendance(){
 
+        return "master/attendances";
+    }
+
+    // 출퇴근 내역 디자이너 목록 api
+    @GetMapping("/attDes")
+    public ResponseEntity<List<DesAttDto>> getAttDes(@AuthenticationPrincipal CustomUserDetails userDetails){
+
+        List<DesAttDto> desAttList = masterService.getDesAttList(userDetails.getId());
+
+        return new ResponseEntity<>(desAttList, HttpStatus.OK);
+    }
+
+    // 매장 매출 내역
+    @GetMapping("/sales")
+    public String getSales(){
+
+        return "/master/sales";
+    }
+
+    // 매장 매출 api
+    @GetMapping("/sales-dashboard")
+    public ResponseEntity<SalesPageDto> salesDashboard(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                       @RequestParam int year,
+                                                       @RequestParam int month){
+
+        SalesPageDto salesPageDto = masterService.getSalesDashboard(userDetails.getId(), year, month);
+
+        return ResponseEntity.ok(salesPageDto);
+
+    }
 
 
     // 매장 관리
