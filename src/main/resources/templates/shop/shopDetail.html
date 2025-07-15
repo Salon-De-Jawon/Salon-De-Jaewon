@@ -178,40 +178,43 @@
 
     <!-- 리뷰 목록 -->
     <section class="review-section" th:if="${reviewList != null and !reviewList.isEmpty()}">
-      <h3>리뷰 <span th:text="${reviewList?.size() ?: 0}">0</span></h3>
+      <h3>리뷰 <span th:text="${#lists.size(reviewList)}">0</span></h3>
       <article class="review-card" th:each="review : ${reviewList}">
         <h4>
-          <div th:if="${review?.serviceName != null}">
+          <div th:if="${review.serviceName != null}">
             <span th:text="${review.serviceName}">시술명</span>
           </div>
-          <span th:if="${review?.designerName != null}">by <span th:text="${review.designerName}">장두목</span> 디자이너</span>
+          <span th:if="${review.designerName != null}">
+        by <span th:text="${review.designerName}">디자이너명</span> 디자이너
+      </span>
         </h4>
 
-        <div th:if="${review?.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb">
-          <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
-          <img src="" alt="더보기 이미지" />
-          <span class="r-plus">+ 더보기</span>
-        </div>
-
-        <div class="review-images" th:if="${review?.imageDtos != null}">
+        <div th:if="${review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="review-images">
           <div class="r-thumb">
-            <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
+            <img th:src="${review.imageDtos[0].imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
             <img src="" alt="더보기 이미지" />
             <span class="r-plus">+ 더보기</span>
           </div>
         </div>
 
-        <p class="review-text" th:text="${review?.content ?: '리뷰 내용 없음'}">
-          디자이너님이 진짜 산적 두목같이 생기셔서 의심했는데...
-        </p>
+        <th:block th:if="${review != null}">
+          <span th:if="${review.content != null}" th:text="${review.content}"></span>
+          <span th:unless="${review.content != null}">리뷰 내용 없음</span>
+        </th:block>
+
+        <th:block th:each="review : ${reviewList}">
+          <span th:text="${review.content != null ? review.content : '리뷰 내용 없음'}">내용</span>
+        </th:block>
 
         <div class="review-meta">
-          ★★★★★ <span th:text="${review?.rating != null ? #numbers.formatDecimal(review.rating, 1, 1) : '0.0'}">5.0</span> ·
-          <span th:text="${review?.memberMaskedName ?: '익명'}">누*지</span> ·
-          <span th:text="${review?.daysAgo != null ? review.daysAgo + '일 전' : '날짜 정보 없음'}">21일 전</span> ·
-          <span th:text="${review?.visitCount != null ? review.visitCount + '번째 방문' : '방문 정보 없음'}">4번째 방문</span>
+          ★★★★★
+          <span th:text="${review.rating != null ? #numbers.formatDecimal(review.rating, 1, 1) : '0.0'}">5.0</span> ·
+          <span th:text="${review.memberMaskedName ?: '익명'}">익명</span> ·
+          <span th:text="${review.daysAgo != null ? review.daysAgo + '일 전' : '날짜 정보 없음'}">X일 전</span> ·
+          <span th:text="${review.visitCount != null ? review.visitCount + '번째 방문' : '방문 정보 없음'}">X번째 방문</span>
         </div>
       </article>
+
       <div class="review-more">
         <button class="btn-more">리뷰 더보기</button>
       </div>
@@ -353,7 +356,7 @@
       <!-- 디자이너가 없을 경우 -->
       <p th:if="${designerLists == null or designerLists.isEmpty()}">등록된 디자이너가 없습니다.</p>
     </div>
-
+  </section>
 
   <!-- 리뷰 섹션 -->
   <section class="tab-content" id="section-review" style="display: none">
