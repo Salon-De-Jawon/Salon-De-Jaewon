@@ -43,13 +43,13 @@ public class ReservationForm {
         dto.setId(reservation.getId());
         dto.setMemberId(reservation.getMember().getId());
         dto.setServiceId(reservation.getShopService().getId());
-        dto.setCouponId(reservation.getCoupon().getId());
 
         dto.setMemberName(reservation.getMember().getName());
         dto.setServiceName(reservation.getShopService().getName());
         dto.setServicePrice(reservation.getShopService().getPrice());
 
         if(reservation.getCoupon() != null){ // 쿠폰 있을시
+            dto.setCouponId(reservation.getCoupon().getId());
             dto.setCouponName(reservation.getCoupon().getName());
             discountAmount = reservation.getDiscountAmount();
             dto.setCouponDiscount(discountAmount);
