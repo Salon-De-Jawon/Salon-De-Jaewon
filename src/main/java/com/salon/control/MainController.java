@@ -1,12 +1,14 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.dto.shop.RecommendDesignerDto;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
 import com.salon.service.WebNotificationService;
 import com.salon.service.shop.SalonService;
 import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
+import com.salon.service.user.MainCouponBannerService;
 import com.salon.service.user.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -46,22 +48,25 @@ public class MainController {
     private final SalonService salonService;
     private final CompareService compareService;
     private final WebNotificationService webNotificationService;
+    private final MainCouponBannerService mainCouponBannerService;
 
 
     @GetMapping("/")
     public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails == null) {
-            return "redirect:/login"; // 또는 redirect:/home 등 원하는 경로
-        }
-        if (userDetails != null) {
+            model.addAttribute("userAgreeLocation", false);
+            model.addAttribute("currentUserId", null);
+        } else {
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
 
             boolean isAdmin = userDetails.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
             model.addAttribute("isAdmin", isAdmin);
-        } else {
-            model.addAttribute("isAdmin", false);
+
+            // ✅ 로그인 사용자 정보 추가
+            model.addAttribute("userAgreeLocation", userDetails.getMember().isAgreeLocation());
+            model.addAttribute("currentUserId", userDetails.getMember().getId());
         }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -73,29 +78,81 @@ public class MainController {
         return "/mainpage";
     }
 
+    // 위치 정보 제공 동의
+
+    @PatchMapping("/api/member/location-consent")
+    public ResponseEntity<Void> updateLocationConsent(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails.getMember().getId();
+        memberService.updateAgreeLocation(userId); // 동의 처리
+        return ResponseEntity.ok().build();
+    }
+
 
     // 위도경도를 주소로 변환
     @GetMapping("/api/coord-to-address")
-    public ResponseEntity<?> getAddressFormCoords (@RequestParam double x, @RequestParam double y) {
+    public ResponseEntity<?> getAddressFormCoords(@RequestParam BigDecimal x, @RequestParam BigDecimal y) {
         try {
             UserLocateDto location = kakaoMapService.getUserAddress(x, y);
             return ResponseEntity.ok(location);
         } catch (RuntimeException e) {
-
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    // 메인 지도에 표시할 샵 목록 불러오기
 
+
+    // 메인 지도에 표시할 샵 목록 불러오기
     @GetMapping("/api/shops")
     @ResponseBody
     public List<ShopMapDto> getShopsForMap(@RequestParam BigDecimal lat, @RequestParam BigDecimal lon) {
         return salonService.getAllShopsForMap(lat, lon);
     }
 
+    // 배너 불러오기
+    @GetMapping("/api/main-banners")
+    @ResponseBody
+    public ResponseEntity<List<MainCouponBannerDto>> getMainPageBanners(@RequestParam String region) {
+        List<MainCouponBannerDto> banners = mainCouponBannerService.getApprovedBannersByRegion(region);
+        return ResponseEntity.ok(banners);
+    }
+
+    // 추천 샵 불러오기
+    @GetMapping("/api/recommend-shops")
+    @ResponseBody
+    public List<ShopRecommendListDto> getRecommendedShopsByRegion(
+            @RequestParam String region,
+            @RequestParam(required = false) BigDecimal lat,
+            @RequestParam(required = false) BigDecimal lon
+    ) {
+        return salonService.getRecommendedShops(region, lat, lon);
+    }
+
+    // 디자이너 추천
+    @GetMapping("/api/salon/designers/recommend")
+    @ResponseBody
+    public ResponseEntity<List<RecommendDesignerDto>> getRecommendedDesigners(
+            @RequestParam("region") String region1depth
+    ) {
+        List<RecommendDesignerDto> list = salonService.getRecommendedDesignersByRegion(region1depth);
+        return ResponseEntity.ok(list);
+    }
+
+
+
+    // 헤어샵 목록 페이지
     @GetMapping("/shopList")
-    public String shopListPage() {
+    public String shopListPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        if(userDetails != null) {
+            boolean agree = userDetails.getMember().isAgreeLocation();
+
+            model.addAttribute("userAgreeLocation", agree);
+            model.addAttribute("currentUserId", userDetails.getMember().getId());
+        } else {
+            // 비회원
+            model.addAttribute("userAgreeLocation", false);
+            model.addAttribute("currentUserId", null);
+        }
+
         return "/user/shopList";
     }
 
@@ -186,6 +243,8 @@ public class MainController {
         session.removeAttribute("authSuccess"); // 인증 정보 제거 (1회용)
         return "redirect:/login";
     }
+
+
 
 
     // js에서 보낸 아이디 찾기 요청 처리

@@ -5,6 +5,10 @@
 <head>
 
   <th:block layout:fragment="css">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="/css/user/myReview.css">
   </th:block>
 </head>
@@ -44,38 +48,40 @@
           <div class="my-page-title">내 리뷰</div>
 
           <!-- 변경부분 -->
-          <div class="my-review-area" id="reviewArea">
-            <!-- 리뷰 박스 예시 (JavaScript로 동적으로 추가될 수 있습니다) -->
-            <div class="review-box">
-              <img
-                      src="https://cdn.pixabay.com/photo/2025/04/16/06/25/duck-9536937_1280.jpg"
-                      alt="리뷰 메인 이미지 1"
-                      class="main-image"
-              />
 
-              <img
-                      src="https://cdn.pixabay.com/photo/2025/06/27/17/19/woman-9684224_1280.jpg"
-                      alt="리뷰 서브 이미지 1-1"
-              />
-              <img
-                      src="https://cdn.pixabay.com/photo/2025/05/14/16/13/girl-9599953_1280.png"
-                      alt="리뷰 서브 이미지 1-2"
-              />
-              <img
-                      src="https://cdn.pixabay.com/photo/2025/06/20/10/47/dog-9670619_1280.jpg"
-                      alt="리뷰 서브 이미지 1-3"
-              />
+
+          <div class="my-review-area" id="reviewArea">
+            <div th:if="${#lists.isEmpty(reviewList)}" class="no-review">
+              리뷰를 남기고 나의 완벽한 순간을 기록하세요
             </div>
 
-            <!-- 반복 시작 -->
+            <!-- 리뷰 리스트는 기존처럼 반복 -->
+            <div th:each="list : ${reviewList}" class="review-box"
+                 th:data-id="${list.id}"
+                 th:data-reservation-id="${list.reservationId}"
+                 th:if="${not #lists.isEmpty(list.reviewImageDtoList)}">
+              <div class="review-reply-unread" th:if="${!list.isRead}"></div>
+              <img th:each="img, iterStat : ${list.reviewImageDtoList}"
+                   th:src="@{${img.imgUrl}}"
+                   th:alt="'리뷰 이미지 ' + ${iterStat.index + 1}"
+                   th:class="${iterStat.index == 0} ? 'main-image' : ''"/>
+            </div>
 
-            <div
-                    class="review-box"
-                    data-rating="4"
-                    data-date="2025.05.25"
-                    data-hairstyle="레이어드 컷"
-            ></div>
+            <div th:each="list : ${reviewList}" class="review-box"
+                 th:if="${#lists.isEmpty(list.reviewImageDtoList)}"
+                 th:data-rating="${list.rating}"
+                 th:data-date="${list.date}"
+                 th:data-hairstyle="${list.serviceName}"
+                 th:data-reservation-id="${list.reservationId}"
+                 th:data-id="${list.id}">
+              <div class="review-reply-unread" th:if="${!list.isRead}"></div>
+              <span>리뷰 정보 이미지</span>
+            </div>
+
+            <!-- 무한스크롤 감지용 -->
+            <div id="scroll-sentinel" style="height: 1px;"></div>
           </div>
+
 
           <!-- 변경부분 끝 -->
         </div>
@@ -89,48 +95,39 @@
       <div class="modal-review-area">
         <div class="review-box-modal">
           <div class="review-header-modal">
-            <div class="review-date">2025.05.08</div>
+            <div class="review-date" id="modal-date">2025.05.08</div>
             <div class="close" onclick="closeReviewDetails()">X</div>
           </div>
           <div class="modal-slider-wrapper">
             <div class="review-img-modal-slider" data-drag-scroll>
               <div class="review-img-mbox">
-                <img src="" alt="사진/혹은디자인" />
-              </div>
-              <div class="review-img-mbox">
-                <img src="" alt="사진/혹은디자인" />
-              </div>
-              <div class="review-img-mbox">
-                <img src="" alt="사진/혹은디자인" />
-              </div>
-              <div class="review-img-mbox">
-                <img src="" alt="사진/혹은디자인" />
-              </div>
-              <div class="review-img-mbox">
-                <img src="" alt="사진/혹은디자인" />
+                <img  id="modal-main-img" src="" alt="사진/혹은디자인" />
               </div>
             </div>
           </div>
 
           <div class="review-info-box">
-            <div class="designer-name">어쩌구 디자이너</div>
-            <div class="shop-name">어쩌구저쩌구샵</div>
-            <div class="service-name">헤어명</div>
-            <div class="visit-date">2025.07.15</div>
-            <div class="rating">★★★★★ 5.0</div>
-            <div class="comment">
+            <div class="designer-name" id="modal-designer-name">어쩌구 디자이너</div>
+            <div class="shop-name" id="modal-shop-name">어쩌구저쩌구샵</div>
+            <div class="service-name" id="modal-service-name">헤어명</div>
+            <div class="visit-date" id="modal-visit-date">2025.07.15</div>
+            <div class="rating" data-rating="3.5" id="modal-rating">★★★★★ 5.0</div>
+            <div class="comment" id="modal-comment">
               미용실에 들러서 미용을 하니 마음이 머리와 함께 가벼워지는 이기분
               오 놀라워라 이것이 미용인가 꿈인가 나비인가 나비가 꽃인줄 알고
               머리에 앉았는가 아 이것은 머리가 아닌 나비이자 꽃이구나 사실은
               이 모든게 꿈이었던 오놀라워라 그래놀라 tv
             </div>
-            <div class="reply-area">
+            <div class="reply-area" id="modal-reply" hidden>
               <div class="desgioner-img">
-                <img src="" alt="디자이너이미지" />
+                <img id="modal-designer-img" alt="디자이너이미지" />
+                <div class="desginer-reply-info">
+                  <div class="reply-designer-name"  id="modal-reply-name">어쩌구 디자이너</div>
+                  <div class="reply-at" id="modal-reply-at">2025.05.04</div>
+                </div>
               </div>
 
-              <div class="reply-designer-name">어쩌구 디자이너</div>
-              <div class="reply-content">
+              <div class="reply-content" id="modal-reply-comment">
                 좋은 리뷰를 본 내 마음이 이러쿵저러쿵 콩닥콩 해피콩 라랄라
                 즐겁핑 감사감사 매우 감사 압도적인 감사를 하다못해 바다로
                 러브다이브
@@ -150,7 +147,7 @@
 
     // DOM 준비 후 실행
     document.addEventListener('DOMContentLoaded', () => {
-      autoBindDragScroll();          // data-drag-scroll 달린 요소 전체에 적용
+      autoBindDragScroll();
     });
   </script>
 
