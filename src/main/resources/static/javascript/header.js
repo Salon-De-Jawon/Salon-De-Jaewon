@@ -72,4 +72,37 @@
             });
         });
       }
+
+
+        const badgeEl   = document.getElementById("notification-badge");  // 헤더에 이미 있는 배지 span
+        const userId    = window.currentUserId || null;                    // 컨트롤러가 내려준 JS 전역
+        const initCnt   = Number(badgeEl?.dataset.count || 0);             // data-count 속성
+
+        function showBadge(cnt){
+            if(!badgeEl) return;
+            if(cnt>0){
+                badgeEl.style.display='flex';
+                badgeEl.textContent  = cnt;
+                badgeEl.dataset.count= cnt;
+            }else{
+                badgeEl.style.display='none';
+                badgeEl.dataset.count= 0;
+            }
+        }
+        showBadge(initCnt);   // 최초 표시
+
+        // WebSocket 구독으로 실시간 갱신
+        if(userId){
+            const sock  = new SockJS('/ws');
+            const stomp = Stomp.over(sock);
+            stomp.connect({}, ()=>{
+                stomp.subscribe(`/topic/notify/${userId}`, msg=>{
+                    const { unreadTotal } = JSON.parse(msg.body); // 서비스에서 넣어준 값
+                    showBadge(unreadTotal);
+                });
+            });
+        }
+
+
+
   });
