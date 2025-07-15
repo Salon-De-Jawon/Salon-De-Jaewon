@@ -41,6 +41,10 @@ public class ReservationForm {
         int ticketUsedAmount;
 
         dto.setId(reservation.getId());
+        dto.setMemberId(reservation.getMember().getId());
+        dto.setServiceId(reservation.getShopService().getId());
+        dto.setCouponId(reservation.getCoupon().getId());
+
         dto.setMemberName(reservation.getMember().getName());
         dto.setServiceName(reservation.getShopService().getName());
         dto.setServicePrice(reservation.getShopService().getPrice());
