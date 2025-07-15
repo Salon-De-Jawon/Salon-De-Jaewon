@@ -29,11 +29,11 @@
         <td th:text="${#temporals.format(banner.endDate, 'yyyy-MM-dd')}"></td>
         <td><a th:href="@{/admin/couponBanner/detail(id=${banner.id})}">상세보기</a></td>
         <td th:if="${isAdmin}">
-            <form th:action="@{/admin/couponBanner/approve}" method="post" style="display:inline;">
+            <form th:action="@{/admin/cs/couponBanner/approve}" method="post" style="display:inline;">
                 <input type="hidden" name="id" th:value="${banner.id}">
                 <button type="submit">승인</button>
             </form>
-            <form th:action="@{/admin/couponBanner/reject}" method="post" style="display:inline; margin-left:5px;">
+            <form th:action="@{/admin/cs/couponBanner/reject}" method="post" style="display:inline; margin-left:5px;">
                 <input type="hidden" name="id" th:value="${banner.id}">
                 <button type="submit">거절</button>
             </form>

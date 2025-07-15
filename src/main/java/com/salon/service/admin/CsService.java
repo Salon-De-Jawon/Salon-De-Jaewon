@@ -247,4 +247,20 @@ public class CsService {
                 .map(CsListDto::from)
                 .collect(Collectors.toList());
     }
+
+    public void bannerApprove(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.APPROVED);
+        couponBanner.setAdmin(admin);
+        couponBannerRepo.save(couponBanner);
+    }
+
+    public void bannerReject(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.REJECTED);
+        couponBanner.setAdmin(admin);
+        couponBannerRepo.save(couponBanner);
+    }
 }

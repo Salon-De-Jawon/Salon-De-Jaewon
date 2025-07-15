@@ -10,6 +10,7 @@ import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.shop.Shop;
+import com.salon.repository.MemberRepo;
 import com.salon.repository.management.DesignerRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
@@ -151,6 +152,18 @@ public class CsController {
     public String bannerList(Model model){
         List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
         model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
+        return "admin/bannerList";
+    }
+    @PostMapping("/couponBanner/approve")
+    public String bannerApprove(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member admin = userDetails.getMember();
+        csService.bannerApprove(id, admin);
+        return "admin/bannerList";
+    }
+    @PostMapping("/couponBanner/reject")
+    public String bannerReject(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member admin = userDetails.getMember();
+        csService.bannerReject(id, admin);
         return "admin/bannerList";
     }
 }

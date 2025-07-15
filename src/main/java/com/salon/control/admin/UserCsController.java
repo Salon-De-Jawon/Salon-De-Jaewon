@@ -220,7 +220,7 @@ public class UserCsController {
                                 @RequestParam("file") MultipartFile file){
         Long memberId = userDetails.getMember().getId();
         csService.applyBanner(bannerApplyDto, memberId, file);
-        return "redirect:/cs/apply";
+        return "redirect:/";
     }
     @GetMapping("/bannerList")
     public String bannerList(Model model){
