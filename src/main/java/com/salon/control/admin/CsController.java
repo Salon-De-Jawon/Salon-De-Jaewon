@@ -14,6 +14,7 @@ import com.salon.repository.management.DesignerRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
 import com.salon.repository.shop.ShopRepo;
+import com.salon.service.admin.AncService;
 import com.salon.service.admin.CsService;
 import com.salon.service.admin.DesApplyService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class CsController {
     private final ShopDesignerRepo shopDesignerRepo;
     private final DesignerRepo designerRepo;
     private final ShopRepo shopRepo;
-
+    private final AncService ancService;
     private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping("/api/bizCheck")
@@ -80,6 +81,13 @@ public class CsController {
     private final CsService csService;
 
     private final DesApplyService desApplyService;
+    @GetMapping("")
+    public String list(Model model){
+        List<AncListDto> ancListDtoList = ancService.list();
+        model.addAttribute("ancListDto", ancListDtoList);
+        return "admin/announcement";
+    }
+
     @GetMapping("/questionList")
     public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
         List<CsListDto> csListDtoList = csService.List();

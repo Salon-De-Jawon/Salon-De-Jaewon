@@ -77,9 +77,21 @@ public class UserCsController {
     }
     // 공지 관련
     @GetMapping("")
-    public String list(Model model){
-        List<AncListDto> ancListDtoList = ancService.list();
+    public String list(Model model,@AuthenticationPrincipal CustomUserDetails userDetails){
+        Member member = userDetails.getMember();
+        Role role = member.getRole();
+        List<AncListDto> ancListDtoList;
+
+        if(role == Role.ADMIN){
+            ancListDtoList = ancService.list();
+            model.addAttribute("isAdmin", true);
+        } else if(role == Role.USER){
+            ancListDtoList = ancService.findByRole(Role.USER);
+        } else {
+            ancListDtoList = ancService.findByRole(Role.DESIGNER);
+        }
         model.addAttribute("ancListDto", ancListDtoList);
+        model.addAttribute("userRole", role.name());
         return "admin/announcement";
     }
     @GetMapping("/detail")
