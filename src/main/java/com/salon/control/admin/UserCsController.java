@@ -222,4 +222,10 @@ public class UserCsController {
         csService.applyBanner(bannerApplyDto, memberId, file);
         return "redirect:/cs/apply";
     }
+    @GetMapping("/bannerList")
+    public String bannerList(Model model){
+        List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
+        model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
+        return "admin/bannerList";
+    }
 }

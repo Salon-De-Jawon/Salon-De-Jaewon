@@ -1,5 +1,6 @@
 package com.salon.dto.admin;
 
+import com.salon.entity.admin.CouponBanner;
 import com.salon.entity.management.master.Coupon;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +16,17 @@ public class CouponBannerListDto {
     private LocalDate endDate;
     private String region;
 
+    public static CouponBannerListDto from(CouponBanner couponBanner) {
+        CouponBannerListDto couponBannerListDto = new CouponBannerListDto();
+        couponBannerListDto.setId(couponBanner.getId());
+        couponBannerListDto.setShopName(couponBanner.getCoupon().getShop().getName());
+        couponBannerListDto.setStartDate(couponBanner.getStartDate());
+        couponBannerListDto.setEndDate(couponBanner.getEndDate());
+        String fullAddress = couponBanner.getCoupon().getShop().getAddress();
+        String[] addressParts = fullAddress.split(" ");
+        String region = addressParts.length >= 2 ? addressParts[0] + " " + addressParts[1] : fullAddress;
+        couponBannerListDto.setRegion(region);
+
+        return couponBannerListDto;
+    }
 }

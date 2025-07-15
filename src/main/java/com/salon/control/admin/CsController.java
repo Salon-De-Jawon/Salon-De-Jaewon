@@ -147,4 +147,10 @@ public class CsController {
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
+    @GetMapping("/bannerList")
+    public String bannerList(Model model){
+        List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
+        model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
+        return "admin/bannerList";
+    }
 }

@@ -225,6 +225,16 @@ public class CsService {
         couponBannerRepo.save(couponBanner);
     }
 
+    public List<CouponBannerListDto> bannerList() {
+        List<CouponBanner> couponBannerList = couponBannerRepo.findAll();
+        List<CouponBannerListDto> couponBannerListDtoList = new ArrayList<>();
+        for(CouponBanner couponBanner : couponBannerList){
+            CouponBannerListDto couponBannerListDto = CouponBannerListDto.from(couponBanner);
+            couponBannerListDtoList.add(couponBannerListDto);
+        }
+        return couponBannerListDtoList;
+    }
+
     public List<CsListDto> findAll() {
         return csCustomerRepo.findAll().stream()
                 .map(CsListDto::from)
