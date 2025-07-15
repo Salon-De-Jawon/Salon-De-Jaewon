@@ -80,12 +80,6 @@ public class CsController {
 
     private final DesApplyService desApplyService;
 
-    @GetMapping("/questionList")
-    public String questionList(Model model){
-        List<CsListDto> csListDtoList = csService.List();
-        model.addAttribute("csListDtoList", csListDtoList);
-        return "admin/csList";
-    }
     @GetMapping("/reply")
     public String reply(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @RequestParam Long id,

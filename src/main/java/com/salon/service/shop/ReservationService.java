@@ -81,14 +81,14 @@ public class ReservationService {
     public List<DesignerServiceCategoryDto> getDesignerServiceCategoeies(Long shopDesignerId) {
 
         // 디자이너의 서비스 구성 정보 조회
-        DesignerService desigerService = designerServiceRepo.findByShopDesignerId(shopDesignerId)
+        DesignerService designerService = designerServiceRepo.findByShopDesignerId(shopDesignerId)
                 .orElseThrow(() -> new EntityNotFoundException("선택한 디자이너의 해당하는 서비스가 없습니다"));
 
         // 담당 카테고리 추출
-        List<ServiceCategory> assignedCategories = desigerService.getAssignedCategories();
+        List<ServiceCategory> assignedCategories = designerService.getAssignedCategories();
 
         // 소속 매장 id 조회
-        Long shopId = desigerService.getShopDesigner().getShop().getId();
+        Long shopId = designerService.getShopDesigner().getShop().getId();
 
         // 해당 매장의 시술 리스트 중 디자이너가 담당하는 카테고리만 필터링
         List<ShopService> matchedServices = shopServiceRepo.findByShopIdAndCategoryIn(shopId,assignedCategories);

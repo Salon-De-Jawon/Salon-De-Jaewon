@@ -1,5 +1,6 @@
 package com.salon.dto.shop;
 
+import com.salon.dto.designer.ReviewReplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.Review;
 import com.salon.entity.management.Designer;
@@ -28,16 +29,12 @@ public class ReviewListDto {
     private int designerWorkingYears; // 시술한 디자이너 연차
 
     private List<ReviewImageDto> imageDtos = new ArrayList<>(); // 리뷰 이미지
+    private ReviewReplyDto reply; // 디자이너 답글 dto
 
     // Review(Entity) -> ReviewListDto
-    public static ReviewListDto from (Review review, ShopDesigner shopDesigner, List<ReviewImageDto> reviewImgs, int visitCount){
+    public static ReviewListDto from (Review review, ShopDesigner shopDesigner, List<ReviewImageDto> reviewImgs, int visitCount, ReviewReplyDto replyDto){
         ReviewListDto reviewListDto = new ReviewListDto();
 
-        Reservation res = review.getReservation();
-        ShopService service = res != null ? res.getShopService() : null;
-        String serviceName = service != null ? service.getName() : null;
-
-        reviewListDto.setServiceName(serviceName);
 
         reviewListDto.setId(review.getId());
         reviewListDto.setServiceName(review.getReservation().getShopService().getName());
@@ -49,8 +46,20 @@ public class ReviewListDto {
         reviewListDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());
         reviewListDto.setDesignerWorkingYears(shopDesigner.getDesigner().getWorkingYears());
 
-        String designerInfo = "By"+ shopDesigner.getDesigner().getMember().getName() + shopDesigner.getPosition();
+
+        // 시술명
+        Reservation res = review.getReservation();
+        ShopService service = res != null ? res.getShopService() : null;
+        reviewListDto.setServiceName(service != null ? service.getName() : null);
+
+        // 디자이너 정보
+        String designerInfo = "By " + shopDesigner.getDesigner().getMember().getName() + " " + shopDesigner.getPosition();
         reviewListDto.setDesignerName(designerInfo);
+        reviewListDto.setDesignerWorkingYears(shopDesigner.getDesigner().getWorkingYears());
+
+        //  디자이너 답글
+        reviewListDto.setReply(replyDto); // null이면 null로 세팅
+
 
         return reviewListDto;
     }

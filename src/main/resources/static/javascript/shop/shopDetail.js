@@ -281,6 +281,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelector(".fixed-reserve .reserve-btn")
     ?.addEventListener("click", () => {
-      location.href = "/reservation";
+      location.href = "/reservation/write";
     });
 });

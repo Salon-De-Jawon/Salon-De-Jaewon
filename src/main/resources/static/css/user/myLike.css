@@ -183,13 +183,13 @@
   display: flex;
   overflow-x: scroll;
   gap: 16px;
-  justify-content: flex-start;
+  width: max-content;
 }
 
 .shop-box {
   background-color: #f0f1f5;
   height: 100%;
-  width: 450px;
+  width: 500px;
   display: flex;
   padding: 20px;
 }
@@ -205,6 +205,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.shop-dayoff.closed     { color:#e74c3c; }
+.shop-dayoff.no-dayoff  { color:#2ecc71; }
+
+.coupon > img {
+    width: 20px;
+}
+
+/* 이미지 drag 끄기 */
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 /* 변경 끝 */

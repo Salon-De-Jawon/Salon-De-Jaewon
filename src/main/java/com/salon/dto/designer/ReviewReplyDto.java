@@ -23,12 +23,18 @@ public class ReviewReplyDto {
 
 
     // Review(Entity) -> ReviewReplyDto
-    public static ReviewReplyDto from (Review review, Designer designer){
+    public static ReviewReplyDto from (Review review){
+
+        if (review == null || review.getReservation() == null || review.getReservation().getShopDesigner() == null) {
+            return null; // 방어적 처리
+        }
+
+        Designer designer = review.getReservation().getShopDesigner().getDesigner();
+
+
         ReviewReplyDto reviewReplyDto = new ReviewReplyDto();
-
-
         reviewReplyDto.setReviewId(review.getId());
-        reviewReplyDto.setDesignerName(review.getReservation().getMember().getName());
+        reviewReplyDto.setDesignerName(designer.getMember().getName());
         reviewReplyDto.setDesignerPosition(review.getReservation().getShopDesigner().getPosition());
         reviewReplyDto.setDesignerImg(review.getReservation().getShopDesigner().getDesigner().getImgUrl());
         reviewReplyDto.setReplyComment(review.getReplyComment());

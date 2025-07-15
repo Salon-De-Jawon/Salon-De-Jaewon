@@ -28,10 +28,10 @@ public class MyTicketListDto {
         myTicketListDto.setTicketId(ticket.getId());
         myTicketListDto.setTicketInfoDto(TicketInfoDto.from(ticket, ticket.getUsedAmount()));
         myTicketListDto.setShopId(ticket.getShop().getId());
+        myTicketListDto.setShopName(ticket.getShop().getName());
 
         if (payment != null) {
             myTicketListDto.setUsedPrice(payment.getTicketUsedPrice());
-            myTicketListDto.setShopName(payment.getShopDesigner().getShop().getName());
             myTicketListDto.setReservationId(payment.getReservation().getId());
             myTicketListDto.setPayDate(payment.getPayDate());
         }
