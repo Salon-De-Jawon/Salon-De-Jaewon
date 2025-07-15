@@ -18,8 +18,8 @@
             <th>시작일</th>
             <th>종료일</th>
             <th>상세보기</th>
+            <th th:if="${isAdmin}">관리</th>
         </tr>
-    </table>
     <tbody>
     <tr th:each="banner, iterStat : ${couponBannerListDtoList}">
         <td th:text="${iterStat.count}"></td>
@@ -40,6 +40,7 @@
         </td>
     </tr>
     </tbody>
+    </table>
 </div>
 <th:block layout:fragment="script"></th:block>
 </body>
