@@ -238,7 +238,7 @@ public class ManageController {
     }
 
     // 예약 수정
-    @PutMapping("/reservations/update/{id}")
+    @PostMapping("/reservations/update/{id}")
     public String updateReservation(@PathVariable("id") Long id,
                                     @AuthenticationPrincipal CustomUserDetails userDetails,
                                     @ModelAttribute ReservationForm reservationForm,
