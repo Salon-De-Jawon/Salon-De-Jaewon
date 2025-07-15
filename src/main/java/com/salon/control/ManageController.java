@@ -6,6 +6,7 @@ import com.salon.dto.shop.ShopServiceDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Attendance;
+import com.salon.entity.shop.Reservation;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.AttendanceRepo;
 import com.salon.repository.management.master.TicketRepo;
@@ -159,9 +160,12 @@ public class ManageController {
 
     // 방문 결제 등록 페이지
     @GetMapping("/sales/new")
-    public String newSales(Model model) {
+    public String newSales(Model model,
+                           @RequestParam(value = "reservationId", required = false) Long reservationId) {
 
-        model.addAttribute("newPay", new PaymentForm());
+        PaymentForm paymentForm = manageService.getPaymentForm(reservationId);
+
+        model.addAttribute("newPay", paymentForm);
 
         return "management/paymentForm";
     }

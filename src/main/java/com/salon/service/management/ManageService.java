@@ -395,6 +395,34 @@ public class ManageService {
 
         return dtoList;
     }
+
+    // 예약 결제등록시
+    public PaymentForm getPaymentForm(Long reservationId) {
+
+        PaymentForm form = new PaymentForm();
+
+        form.setPayDate(LocalDateTime.now());
+
+        if (reservationId != null) {
+            Reservation reservation = reservationRepo.findById(reservationId).orElse(null);
+            if (reservation != null) {
+
+                form.setReservationId(reservation.getId());
+                form.setCustomerName(reservation.getMember().getName());
+                form.setCustomerTel(reservation.getMember().getTel());
+                form.setServiceName(reservation.getShopService().getName());
+                form.setDesignerId(reservation.getShopDesigner().getId());
+                form.setTotalPrice(reservation.getShopService().getPrice());
+                form.setServiceCategory(reservation.getShopService().getCategory());
+                form.setCouponDiscountPrice(reservation.getDiscountAmount());
+                form.setTicketUsedPrice(reservation.getTicketUsedAmount());
+
+            } else {
+                System.err.println("경고: 예약 ID " + reservationId + "에 해당하는 예약을 찾을 수 없습니다.");
+            }
+        }
+        return form;
+    }
     
     // 결제내역 등록
     @Transactional
