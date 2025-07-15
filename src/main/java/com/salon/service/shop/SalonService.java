@@ -20,6 +20,7 @@ import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
 
 import com.salon.service.user.ReviewService;
+import com.salon.util.DateTimeUtil;
 import com.salon.util.DistanceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -210,7 +211,7 @@ public class SalonService {
 
                 reviewService.getRecentReviewWithImageByDesigner(designerId).ifPresent(review -> {
                     dto.setReviewRating(review.getRating());
-                    dto.setCreateAt(review.getCreateAt());
+                    dto.setCreateAt(DateTimeUtil.getTimeAgo(review.getCreateAt(), false));
 
 
                     reviewService.getFirstImageByReviewId(review.getId()).ifPresent(img -> {

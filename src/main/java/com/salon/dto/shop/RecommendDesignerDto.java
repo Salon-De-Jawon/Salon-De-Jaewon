@@ -18,8 +18,9 @@ public class RecommendDesignerDto {
     private String profileImgUrl;
     private String reviewImg;
     private float reviewRating;
-    private LocalDateTime createAt;
+    private String createAt;
     private String comment;
+    private String position;
 
     public static RecommendDesignerDto from(ShopDesigner designer, float rating, int reviewCount) {
         RecommendDesignerDto dto = new RecommendDesignerDto();
@@ -29,6 +30,7 @@ public class RecommendDesignerDto {
         dto.setProfileImgUrl(designer.getDesigner().getImgUrl());
         dto.setRating(rating);
         dto.setReviewCount(reviewCount);
+        dto.setPosition(designer.getPosition());
 
         return dto;
     }

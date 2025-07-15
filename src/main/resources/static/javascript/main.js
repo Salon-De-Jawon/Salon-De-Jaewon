@@ -298,35 +298,52 @@ function renderRecommendShopSlides(shops) {
 }
 
 function renderRecommendedDesigners(list) {
-  const box   = dqs('#designer-recommend-box');
-  const bubble= dqs('.designer-bubble');
+  const box    = document.querySelector('#designer-recommend-box');
+  const bubble = document.querySelector('.designer-bubble');
   if (!box || !bubble) return;
 
-  box.innerHTML    = '';
+  box.innerHTML = '';
   bubble.innerHTML = '';
+  bubble.style.display = 'none';
 
-  list.forEach((d, idx) => {
-    box.insertAdjacentHTML('beforeend', `
-      <div class="best-designer-box">
-        <div class="designer-profile-box">
-          <img src="${d.profileImgUrl || '/images/default-profile.png'}"
-          +               class="designer-photo img-fit" alt="">
+  list.forEach((d) => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('best-designer-box');
+    wrapper.innerHTML = `
+      <div class="designer-profile-box">
+        <img src="${d.profileImgUrl || '/images/default-profile.png'}" class="designer-photo img-fit" alt="">
+      </div>
+      <div class="designer-info-box">
+        <div class="designer-name-box">
+            <div class="designer-name">${d.position} ${d.designerName}</div>
+            <a href='/designer/${d.id}' class="go-view">보러가기</a>
         </div>
-        <div class="designer-info-box">
-          <div class="designer-name">${d.designerName}</div>
-          <div class="designer-shop">${d.shopName}</div>
-          <div class="designer-specialty-area">
-            ${(d.tags || ['헤어']).map(t => `<span class="designer-specialty-tag">${t}</span>`).join('')}
-          </div>
+
+        <div class="designer-shop">${d.shopName}</div>
+        <div class="designer-specialty-area">
+          ${(d.tags || ['헤어']).map(t => `<span class="designer-specialty-tag">${t}</span>`).join('')}
         </div>
       </div>
-    `);
-    if (idx === 0) renderDesignerBubble(d);
-    box.lastElementChild.addEventListener('click', () => renderDesignerBubble(d));
+    `;
+
+    wrapper.addEventListener('click', () => {
+
+      document.querySelectorAll('.best-designer-box').forEach(el => el.classList.remove('selected'));
+
+
+      wrapper.classList.add('selected');
+
+
+      renderDesignerBubble(d);
+      bubble.style.display = 'flex';
+    });
+
+    box.appendChild(wrapper);
   });
 
   adjustImageFitAll('#designer-recommend-box img.img-fit', 1);
 }
+
 
 function renderDesignerBubble(d) {
   const bubble = dqs('.designer-bubble');
@@ -338,14 +355,32 @@ function renderDesignerBubble(d) {
       <div class="review-img">
         <img src="${review}" class="img-fit" alt="">
       </div>
-      <div class="review-info-area">
-        <div class="review-rating-box">
-          <img src="/images/pointed-star.png" alt="">
-          <div class="review-rating">${d.reviewRating?.toFixed?.(1) ?? '5.0'}</div>
-        </div>
-        <div class="review-create-at">${d.createAt ?? ''}</div>
+      <div class="reviewComment">${d.comment}</div>
+      <div class="">
+        <div class="review-info-area">
+                <div class="review-rating-box">
+                  <img src="/images/pointed-star.png" alt="">
+                  <div class="review-rating">${d.reviewRating?.toFixed?.(1) ?? '5.0'}</div>
+                </div>
+                <div class="review-create-at">${d.createAt ?? ''}</div>
+              </div>
       </div>
+
     </div>
   `;
   adjustImageFitAll('.designer-bubble img.img-fit', 4 / 3);
 }
+
+box.lastElementChild.addEventListener('click', () => {
+  const isVisible = bubble.style.display === 'flex';
+  if (isVisible) {
+    bubble.style.display = 'none';
+  } else {
+    renderDesignerBubble(d);
+    bubble.style.display = 'flex';
+  }
+});
+
+shops.forEach(s => {
+  console.log("shop:", s.shopName, "distance:", s.distance); // 디버깅용
+});
