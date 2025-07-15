@@ -9,7 +9,7 @@
 </head>
 <body>
 <div layout:fragment="main" id="main">
-  <form th:action="@{/admin/designer/request}" th:object="${applyDto}" method="post" enctype="multipart/form-data">
+  <form th:action="@{/cs/request}" th:object="${applyDto}" method="post" enctype="multipart/form-data">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <div>
       <label>성명</label>

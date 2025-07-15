@@ -53,11 +53,17 @@
 <!--스크립트에 로그인한 유저 id 넣어주는 코드-->
 <th:block th:if="${#authentication.principal instanceof T(com.salon.config.CustomUserDetails)}">
     <script th:inline="javascript">
-        window.currentMemberId = [[${#authentication.principal.member.id}]];
+        /*<![CDATA[*/
+        window.currentUserId       = [[${#authentication.principal.member.id}]];
+        window.userAgreeLocation   = [[${userAgreeLocation}]];
+        /*]]>*/
     </script>
 </th:block>
 <th:block th:unless="${#authentication.principal instanceof T(com.salon.config.CustomUserDetails)}">
-    <script>window.currentMemberId = 0;</script>
+    <script>
+        window.currentUserId     = null;
+        window.userAgreeLocation = false;
+    </script>
 </th:block>
 
 <!--웹소켓 관련 js-->

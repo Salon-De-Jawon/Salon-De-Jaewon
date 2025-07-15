@@ -56,9 +56,8 @@ public class MainController {
         if (userDetails == null) {
             model.addAttribute("userAgreeLocation", false);
             model.addAttribute("currentUserId", null);
-            model.addAttribute("unreadCnt", 0);
         } else {
-            Long memberId = userDetails.getId();
+
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
 
@@ -66,7 +65,6 @@ public class MainController {
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
             model.addAttribute("isAdmin", isAdmin);
 
-            long unread = webNotificationService.countUnreadByMemberId(memberId);
 
             // 로그인 사용자 정보 추가
             model.addAttribute("userAgreeLocation", userDetails.getMember().isAgreeLocation());
