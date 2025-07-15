@@ -1,6 +1,7 @@
 package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.Role;
 import com.salon.dto.BizStatusDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
@@ -79,7 +80,18 @@ public class CsController {
     private final CsService csService;
 
     private final DesApplyService desApplyService;
-
+    @GetMapping("/questionList")
+    public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<CsListDto> csListDtoList = csService.List();
+        Member member = userDetails.getMember();
+        if(member.getRole() == Role.ADMIN){
+            csListDtoList = csService.findAll();
+        } else {
+            csListDtoList = csService.findByMember(member);
+        }
+        model.addAttribute("csListDtoList", csListDtoList);
+        return "admin/csList";
+    }
     @GetMapping("/reply")
     public String reply(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @RequestParam Long id,
