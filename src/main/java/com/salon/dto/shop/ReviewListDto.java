@@ -27,6 +27,7 @@ public class ReviewListDto {
     private String comment; // 리뷰내용
     private String designerName; // 시술한 디자이너 이름
     private int designerWorkingYears; // 시술한 디자이너 연차
+    private String createdDateFormetted; // 리뷰 날짜
 
     private List<ReviewImageDto> imageDtos = new ArrayList<>(); // 리뷰 이미지
     private ReviewReplyDto reply; // 디자이너 답글 dto

@@ -6,7 +6,8 @@ import lombok.Setter;
 
 @Getter @Setter
 @Entity
-public class ReviewImage {
+public class
+ReviewImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_image_id")

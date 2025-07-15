@@ -24,8 +24,13 @@ import com.salon.repository.shop.SalonLikeRepo;
 import com.salon.service.shop.SalonService;
 import com.salon.service.user.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,24 +50,30 @@ public class DesignerDetailService {
 
 
     // 디자이너 상세정보 조회
-    public DesignerDetailDto getDesignerDetail(Long shopDesignerId) {
+    public DesignerDetailDto getDesignerDetail(Long shopDesignerId){
         ShopDesigner shopDesigner = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
-
         if (shopDesignerId == null) {
             throw new IllegalArgumentException("존재하지 않는 디자이너 입니다");
         }
 
-        // 디자이너 찜 갯수 조회
-        int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER,shopDesignerId);
+        int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, shopDesignerId);
+        int reivewCount = reviewRepo.countByReservation_ShopDesigner_Id(shopDesignerId);
 
-        // 디자이너 리뷰 갯수 조회
-        int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(shopDesignerId);
 
-        // dto로 변환하여 반환
-        return DesignerDetailDto.from(shopDesigner,likeCount,reviewCount);
+        // 디자이너 시술 카테고리 문자열 생성
+        DesignerService ds = designerServiceRepo.findByShopDesignerId(shopDesignerId)
+                .orElseThrow(() -> new IllegalArgumentException("디자이너의 시술 카데고리 정보가 없습니다"));
+
+        List<ServiceCategory> assignedCategories = ds.getAssignedCategories();
+        String expertiseText = assignedCategories.stream()
+                .map(ServiceCategory::getLabel)
+                .collect(Collectors.joining("   /   "));
+
+        DesignerDetailDto dto = DesignerDetailDto.from(shopDesigner, likeCount, reivewCount);
+        dto.setExpertise(expertiseText);
+
+        return dto;
     }
-
-
 
     // 디자이너 리뷰, 전문 시술 분야 , 시술 리스트 ( 홈 섹션, 리뷰 섹션)
     public DesignerHomeDto getDesignerHomeInfo (Long shopDesignerId) {
@@ -109,6 +120,18 @@ public class DesignerDetailService {
             }
             ReviewListDto dto = ReviewListDto.from(review,shopDesigner,imageDtos,visitCount,replyDto);
             dto.setMemberName(res.getMember().getName());
+
+
+            // 작성일 + 상대시간 표시
+            LocalDate createdDate = review.getCreateAt() != null ? review.getCreateAt().toLocalDate() : LocalDate.now();
+
+            String formattedDate = createdDate.format(DateTimeFormatter.ofPattern("yyyy.mm.dd"));
+            long daysAgo = ChronoUnit.DAYS.between(createdDate, LocalDate.now());
+            String daysAgoText = daysAgo == 0 ? "오늘" : daysAgo == 1 ? "1일 전" : daysAgo + "일 전";
+
+            dto.setCreatedDateFormetted(formattedDate +  " · "  + daysAgoText);
+
+
             reviewListDtos.add(dto);
         }
 
@@ -155,4 +178,6 @@ public class DesignerDetailService {
 
         return serviceMap;
     }
+
+
 }
