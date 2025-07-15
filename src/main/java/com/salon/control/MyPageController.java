@@ -83,5 +83,9 @@ public class MyPageController {
     }
 
 
+    @GetMapping("/myQuestionList")
+    public String myQuestionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+        return "/user/myQuestionList";
+    }
 }
