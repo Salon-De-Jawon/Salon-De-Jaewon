@@ -220,6 +220,6 @@ public class UserCsController {
                                 @RequestParam("file") MultipartFile file){
         Long memberId = userDetails.getMember().getId();
         csService.applyBanner(bannerApplyDto, memberId, file);
-        return "redirect:/admin/cs/apply";
+        return "redirect:/cs/apply";
     }
 }

@@ -195,8 +195,22 @@ public class CsService {
         couponBanner.setEndDate(bannerApplyDto.getEndDate());
         String originalFileName = file.getOriginalFilename();
         couponBanner.setOriginalName(originalFileName);
-        String uuidFileName = UUID.randomUUID() + ".png";
+        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        String uuidFileName = UUID.randomUUID() + extension;
         String fullPath = "C:/salon/csFile/" + uuidFileName;
+        System.out.println("file path: " + fullPath);
+
+        String directoryPath = "C:/salon/csFile/";
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                throw new RuntimeException("파일 저장 경로 생성 실패: " + directoryPath);
+            } else {
+                System.out.println("디렉토리 생성 성공: " + directoryPath);
+            }
+        }
+
         try {
             file.transferTo(new File(fullPath));
         } catch(IOException | IllegalStateException e){
