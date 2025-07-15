@@ -310,7 +310,7 @@
                                             th:onclick="|openCreateReviewModal(${res.reservationId})|">
                                         리뷰쓰기
                                     </button>
-                                    <button  th:if="${res.reviewExists}" class="review-show" href="">리뷰 보기</button>
+                                    <button  th:if="${res.reviewExists}" class="review-show" th:onclick="|location.href='@{/myPage/review(reservationId=${res.reservationId})}'|">리뷰 보기</button>
                                 </div>
                             </div>
                         </div>

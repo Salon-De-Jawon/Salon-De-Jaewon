@@ -12,31 +12,28 @@ import java.time.LocalDateTime;
 public class MemberCardListDto {
 
     private Long id; // MemberCard ID
-    private ReservationForm detailDto;
+    private Long paymentId; // 회원만 (visitor X)
+    private String serviceName;
+    private int totalPrice;
+    private LocalDateTime payDate;
     private String memo;
     private LocalDateTime createAt;
 
-    public static MemberCardListDto from(MemberCard memberCard, ReservationForm detailDto) {
+    public static MemberCardListDto from(MemberCard memberCard, Payment payment) {
 
         MemberCardListDto dto = new MemberCardListDto();
 
-        dto.setDetailDto(detailDto);
-        dto.setMemo(memberCard.getMemo());
-        dto.setCreateAt(memberCard.getCreateAt());
+        if(memberCard != null){
+            dto.setId(memberCard.getId());
+            dto.setMemo(memberCard.getMemo());
+            dto.setCreateAt(memberCard.getCreateAt());
+        }
+        dto.setPaymentId(payment.getId());
+        dto.setServiceName(payment.getServiceName());
+        dto.setTotalPrice(payment.getTotalPrice());
+        dto.setPayDate(payment.getPayDate());
 
         return dto;
     }
-
-    public MemberCard to(MemberCardListDto dto, Payment payment){
-
-        MemberCard entity = new MemberCard();
-
-        entity.setPayment(payment);
-        entity.setMemo(dto.getMemo());
-        entity.setCreateAt(LocalDateTime.now());
-
-        return entity;
-    }
-
 
 }

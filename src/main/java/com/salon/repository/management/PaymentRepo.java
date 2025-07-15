@@ -1,6 +1,8 @@
 package com.salon.repository.management;
 
+import com.salon.entity.Member;
 import com.salon.entity.management.Payment;
+import com.salon.entity.shop.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -62,4 +64,21 @@ public interface PaymentRepo extends JpaRepository<Payment, Long> {
     WHERE r.ticket.id = :ticketId
     """)
     List<Payment> findByTicketId(@Param("ticketId") Long ticketId);
+
+    // 디자이너에게 시술받은 회원 목록
+    @Query("SELECT DISTINCT p.reservation.member FROM Payment p WHERE p.shopDesigner.id = :shopDesignerId")
+    List<Member> findDistinctMembersByShopDesignerId(@Param("shopDesignerId") Long shopDesignerId);
+
+    // 디자이너의 해당 회원 결제내역
+    @Query("SELECT p FROM Payment p JOIN FETCH p.reservation r " +
+            "JOIN FETCH r.member m JOIN FETCH p.shopDesigner d " +
+            "WHERE m.id = :memberId AND d.id = :designerId AND p.reservation IS NOT NULL " +
+            "ORDER BY p.payDate DESC")
+    List<Payment> findByMemberIdAndDesignerId( @Param("memberId") Long memberId, @Param("designerId") Long designerId);
+
+    // 월간 매출 내역
+    List<Payment> findByShopDesigner_Shop_IdAndPayDateBetween(Long shopId, LocalDateTime startOfMonth, LocalDateTime endOfMonth);
+
+    // 결제 여부
+    boolean existsByReservation(Reservation reservation);
 }

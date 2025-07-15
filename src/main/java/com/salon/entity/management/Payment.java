@@ -1,6 +1,7 @@
 package com.salon.entity.management;
 
 import com.salon.constant.PaymentType;
+import com.salon.constant.ServiceCategory;
 import com.salon.entity.shop.Reservation;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
+
+    @Enumerated(EnumType.STRING)
+    private ServiceCategory serviceCategory;
 
     @Lob
     private String memo;

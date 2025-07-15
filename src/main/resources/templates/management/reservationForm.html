@@ -3,305 +3,102 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
 <head>
-  <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/management/reservationForm.css">
-  </th:block>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" href="/css/management/reservationForm.css">
+    </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
 
-  <div class="section-container">
-    <h3>예약 등록</h3>
+    <div class="section-container">
+        <h3 th:text="${reservationId} != null ? '예약 수정' : '예약 등록'">예약 등록</h3>
 
-    <form id="reservationForm" class="reservation-form"
-          th:action="@{/manage/reservations/save}" method="post"
-          th:object="${newRes}">
+        <form id="reservationForm" class="reservation-form"
+              th:action="${reservationId} != null ? @{/manage/reservations/update/{id}(id=${reservationId})} : @{/manage/reservations/save}"
+              method="post"
+              th:object="${newRes}"> <input type="hidden" name="_method" th:if="${reservationId} != null" value="put" />
+            <input type="hidden" name="id" th:if="${reservationId} != null" th:value="${reservationId}">
 
-        <!-- 고객 정보 -->
-        <div class="row input-autocomplete-wrapper">
-          <label>고객명</label>
-          <input type="text" id="memberName" th:value="*{memberName}" placeholder="고객명을 입력하세요" autocomplete="off">
-          <input type="hidden" id="memberId" th:value="*{memberId}" name="memberId">
-          <div id="memberSearchResults" class="autocomplete-results"></div>
-        </div>
 
-        <div class="row date-picker-row"
-             th:with="now=${T(java.time.LocalDateTime).now()},
+            <div class="row input-autocomplete-wrapper">
+                <label>고객명</label>
+                <input type="text" id="memberName" th:value="*{memberName}" placeholder="고객명을 입력하세요" autocomplete="off">
+                <input type="hidden" id="memberId" th:value="*{memberId}" name="memberId">
+                <div id="memberSearchResults" class="autocomplete-results"></div>
+            </div>
+
+            <div class="row date-picker-row"
+                 th:with="now=${T(java.time.LocalDateTime).now()},
                    initialDate=${newRes.reservationDate != null
                    ? newRes.reservationDate : now}">
-            <label for="reservationDate">예약 날짜</label>
-            <input type="datetime-local"
-                   id="reservationDate"
-                   name="reservationDate"
-                   th:value="${#temporals.format(initialDate, 'yyyy-MM-dd''T''HH:mm')}"
-                   th:min="${#temporals.format(now, 'yyyy-MM-dd''T''HH:mm')}" />
-        </div>
+                <label for="reservationDate">예약 날짜</label>
+                <input type="datetime-local"
+                       id="reservationDate"
+                       name="reservationDate"
+                       th:value="${#temporals.format(initialDate, 'yyyy-MM-dd''T''HH:mm')}"
+                       th:min="${#temporals.format(now, 'yyyy-MM-dd''T''HH:mm')}" />
+            </div>
 
+            <div class="row input-autocomplete-wrapper"> <label>시술명</label>
+                <input type="text" id="serviceName" th:value="*{serviceName}" name="serviceName" placeholder="시술명을 입력하세요" autocomplete="off">
+                <input type="hidden" id="serviceId" th:value="*{serviceId}" name="serviceId">
+                <div id="serviceSearchResults" class="autocomplete-results"></div> </div>
 
+            <div class="row">
+                <label>시술 금액</label>
+                <input type="number" id="servicePrice" th:value="*{servicePrice}" name="servicePrice">
+            </div>
 
+            <div class="row">
+                <label>쿠폰</label>
+                <select id="couponSelect" name="couponId">
+                    <option value="" data-discount-type="" data-discount-value="0" data-minimum-amount="0">선택 안 함</option>
+                </select>
+                <input type="hidden" th:value="*{couponDiscount}" id="couponDiscount" name="couponDiscount">
+            </div>
 
+            <div class="row">
+                <label><input type="checkbox" id="useTicket" name="ticketIsUsed"
+                              th:checked="*{ticketIsUsed} ? 'checked' : null"> 정액권 사용</label>
+            </div>
 
+            <div class="row" id="ticketAmountRow" th:style="*{ticketIsUsed} ? '' : 'display:none'">
+                <label>정액권 사용 금액</label>
+                <input type="number" id="ticketAmount" th:value="*{ticketUsedAmount}" name="ticketUsedAmount" min="0">
+            </div>
 
-        <!-- 시술 정보 -->
-        <div class="row">
-          <label>시술명</label>
-          <input type="text" id="serviceName" th:value="*{serviceName}" name="serviceName" placeholder="시술명을 입력하세요">
-          <input type="hidden" id="serviceId" th:value="*{serviceId}" name="serviceId">
-        </div>
+            <div class="row final-price">
+                <label>최종 결제 금액</label>
+                <input type="number" id="finalPrice" th:value="*{finalPrice}" name="finalPrice" readonly>
+            </div>
 
-        <div class="row">
-          <label>시술 금액</label>
-          <input type="number" id="servicePrice" th:value="*{servicePrice}" name="servicePrice">
-        </div>
+            <div class="row">
+                <label>예약 상태</label>
+                <select id="status" name="status">
+                    <option th:value="RESERVED" th:selected="*{status} == 'RESERVED'">예약완료</option>
+                    <option th:value="VISITED" th:selected="*{status} == 'VISITED'">방문완료</option>
+                    <option th:value="CANCELLED" th:selected="*{status} == 'CANCELLED'">취소</option>
+                    <option th:value="NOSHOW" th:selected="*{status} == 'NOSHOW'">노쇼</option>
+                    <option th:value="COMPLETED" th:selected="*{status} == 'COMPLETED'">시술완료</option>
+                </select>
+            </div>
 
-        <!-- 쿠폰 -->
-        <div class="row">
-          <label>쿠폰</label>
-          <select id="couponSelect" name="couponId">
-              <option value="" data-discount-type="" data-discount-value="0" data-minimum-amount="0">선택 안 함</option>
-            <!-- JS로 동적으로 추가 -->
-          </select>
-          <input type="hidden" th:value="*{couponDiscount}" id="couponDiscount" name="couponDiscount">
-        </div>
+            <div class="row">
+                <label for="comment">메모</label>
+                <textarea id="comment" name="comment" th:text="*{comment}" rows="3" placeholder="예약 관련 메모를 입력하세요."></textarea>
+            </div>
 
-        <!-- 정액권 -->
-        <div class="row">
-          <label><input type="checkbox" id="useTicket" name="ticketIsUsed"
-                        th:checked="*{ticketIsUsed} ? 'checked' : null"> 정액권 사용</label>
-        </div>
+            <div class="row">
+                <button type="submit" th:text="${reservationId} != null ? '수정' : '등록'"></button>
+            </div>
 
-        <div class="row" id="ticketAmountRow" th:style="*{ticketIsUsed} ? '' : 'display:none'">
-          <label>정액권 사용 금액</label>
-          <input type="number" id="ticketAmount" th:value="*{ticketUsedAmount}" name="ticketUsedAmount" min="0">
-        </div>
-
-        <!-- 최종 금액 -->
-        <div class="row final-price">
-          <label>최종 결제 금액</label>
-          <input type="number" id="finalPrice" th:value="*{finalPrice}" name="finalPrice" readonly>
-        </div>
-
-        <!-- 상태 -->
-        <div class="row">
-          <label>예약 상태</label>
-          <select id="status" name="status">
-            <option th:value="RESERVED" th:selected="*{status} == 'RESERVED'">예약완료</option>
-            <option th:value="VISITED" th:selected="*{status} == 'VISITED'">방문완료</option>
-            <option th:value="CANCELLED" th:selected="*{status} == 'CANCELLED'">취소</option>
-            <option th:value="NOSHOW" th:selected="*{status} == 'NOSHOW'">노쇼</option>
-          </select>
-        </div>
-
-        <div class="row">
-          <button type="submit">등록</button>
-        </div>
-
-      </form>
-  </div>
+        </form>
+    </div>
 
 </div>
 
 <th:block layout:fragment="script">
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const memberNameInput = document.getElementById("memberName");
-      const memberIdInput = document.getElementById("memberId");
-      const resultDiv = document.getElementById("memberSearchResults");
-
-      memberNameInput.addEventListener("input", async function () {
-        const keyword = this.value.trim();
-        if (keyword.length < 2) {
-          resultDiv.innerHTML = '';
-          return;
-        }
-
-        try {
-          const res = await fetch(`/manage/members/search?keyword=${encodeURIComponent(keyword)}`);
-          const members = await res.json();
-
-          resultDiv.innerHTML = '';
-          if (members.length === 0) {
-            const none = document.createElement("div");
-            none.classList.add("autocomplete-item");
-            none.textContent = "일치하는 회원이 없습니다.";
-            resultDiv.appendChild(none);
-            return;
-          }
-
-          members.forEach(member => {
-            const div = document.createElement("div");
-            div.classList.add("autocomplete-item");
-            div.textContent = `${member.name} (${member.tel})`;
-            div.dataset.id = member.id;
-            div.dataset.name = member.name;
-            resultDiv.appendChild(div);
-          });
-        } catch (e) {
-          console.error("회원 검색 오류:", e);
-        }
-      });
-
-      resultDiv.addEventListener("click", async function (e) {
-        const target = e.target;
-        if (!target.classList.contains("autocomplete-item")) return;
-
-        const memberId = target.dataset.id;
-        const memberName = target.dataset.name;
-
-        memberIdInput.value = memberId;
-        memberNameInput.value = memberName;
-        resultDiv.innerHTML = '';
-
-        try {
-          const res = await fetch(`/manage/members/${memberId}/coupons`);
-          const data = await res.json();
-
-          // 쿠폰 셋팅
-          const couponSelect = document.getElementById("couponSelect");
-          couponSelect.innerHTML = `<option value="" data-discount-type="" data-discount-value="0" data-minimum-amount="0">선택 안 함</option>`;
-          data.coupons.forEach(coupon => {
-            const option = document.createElement("option");
-            option.value = coupon.memberCouponId ?? "";
-            option.dataset.discountType = coupon.discountType;
-            option.dataset.discountValue = coupon.discountValue;
-            option.dataset.minimumAmount = coupon.minimumAmount;
-            option.textContent = `${coupon.name} (${coupon.discountType === 'PERCENT' ? coupon.discountValue + '%' : coupon.discountValue.toLocaleString() + '원'})`;
-            couponSelect.appendChild(option);
-          });
-
-          // 정액권 셋팅
-          const prepaid = data.ticketBalance || 0;
-          const ticketAmountInput = document.getElementById("ticketAmount");
-          ticketAmountInput.value = 0;  // 초기값 0으로 두고
-          ticketAmountInput.setAttribute("data-max", prepaid);
-
-          // 정액권 입력 칸 숨김 처리 (체크박스 상태 반영)
-          const useTicketCheckbox = document.getElementById("useTicket");
-          document.getElementById("ticketAmountRow").style.display = useTicketCheckbox.checked ? "block" : "none";
-
-          calculateFinalPrice();
-
-        } catch (e) {
-          console.error("쿠폰/정액권 조회 오류:", e);
-        }
-      });
-
-      // 쿠폰 변경 시 처리
-      document.getElementById("couponSelect").addEventListener("change", function () {
-        const selected = this.options[this.selectedIndex];
-        const servicePrice = parseInt(document.getElementById("servicePrice").value || 0);
-        const minAmount = parseInt(selected.dataset.minimumAmount || 0);
-
-        if (servicePrice < minAmount) {
-          alert("이 쿠폰은 최소 " + minAmount.toLocaleString() + "원 이상 시술 금액에서만 사용 가능합니다.");
-          this.value = "none";
-          document.getElementById("couponDiscount").value = 0;
-          calculateFinalPrice();
-          return;
-        }
-
-        const discountType = selected.dataset.discountType;
-        const discountValue = parseInt(selected.dataset.discountValue || 0);
-        const discount = discountType === 'PERCENT'
-          ? Math.floor(servicePrice * (discountValue / 100))
-          : discountValue;
-
-        document.getElementById("couponDiscount").value = discount;
-        calculateFinalPrice();
-      });
-
-      // 시술 금액 입력 시 쿠폰 할인 재계산 + 정액권 계산
-      document.getElementById("servicePrice").addEventListener("input", function () {
-        const couponSelect = document.getElementById("couponSelect");
-        const selected = couponSelect.options[couponSelect.selectedIndex];
-        const minAmount = parseInt(selected.dataset.minimumAmount || 0);
-        const servicePrice = parseInt(this.value || 0);
-
-        if (selected.value !== "none") {
-          if (servicePrice < minAmount) {
-            alert("이 쿠폰은 최소 " + minAmount.toLocaleString() + "원 이상 시술 금액에서만 사용 가능합니다.");
-            couponSelect.value = "none";
-            document.getElementById("couponDiscount").value = 0;
-            calculateFinalPrice();
-            return;
-          }
-
-          const discountType = selected.dataset.discountType;
-          const discountValue = parseInt(selected.dataset.discountValue || 0);
-          const discount = discountType === 'PERCENT'
-            ? Math.floor(servicePrice * (discountValue / 100))
-            : discountValue;
-
-          document.getElementById("couponDiscount").value = discount;
-        } else {
-          document.getElementById("couponDiscount").value = 0;
-        }
-
-        calculateFinalPrice();
-      });
-
-      // 정액권 사용 체크박스 토글
-      document.getElementById("useTicket").addEventListener("change", function () {
-        const ticketAmountInput = document.getElementById("ticketAmount");
-        const servicePrice = parseInt(document.getElementById("servicePrice").value || 0);
-        const couponDiscount = parseInt(document.getElementById("couponDiscount").value || 0);
-        const ticketBalance = parseInt(ticketAmountInput.getAttribute("data-max") || 0);
-
-        const maxTicketUse = servicePrice - couponDiscount;
-        const maxUse = Math.min(maxTicketUse, ticketBalance);
-
-        if (this.checked) {
-          document.getElementById("ticketAmountRow").style.display = "block";
-          ticketAmountInput.value = maxUse > 0 ? maxUse : 0;
-        } else {
-          document.getElementById("ticketAmountRow").style.display = "none";
-          ticketAmountInput.value = 0;
-        }
-
-        calculateFinalPrice();
-      });
-
-      // 정액권 사용 금액 직접 입력 시
-      document.getElementById("ticketAmount").addEventListener("input", function () {
-        const max = parseInt(this.getAttribute("data-max") || 0);
-        let val = parseInt(this.value || 0);
-        if (val > max) {
-          val = max;
-          this.value = max;
-        }
-        if (val < 0) {
-          this.value = 0;
-        }
-        calculateFinalPrice();
-      });
-
-      // 최종 결제금액 계산 함수
-      function calculateFinalPrice() {
-        const servicePrice = parseInt(document.getElementById("servicePrice").value || 0);
-        const couponDiscount = parseInt(document.getElementById("couponDiscount").value || 0);
-        const ticketUsed = document.getElementById("useTicket").checked;
-        const ticketAmountInput = document.getElementById("ticketAmount");
-        const ticketBalance = parseInt(ticketAmountInput.getAttribute("data-max") || 0);
-
-        // 최대 사용 가능한 정액권 금액 = 시술금액 - 쿠폰할인금액
-        const maxTicketUse = servicePrice - couponDiscount;
-        const maxUse = Math.min(maxTicketUse, ticketBalance);
-
-        if (ticketUsed) {
-          // 체크된 경우에는 ticketAmount 값을 자동으로 maxUse로 세팅
-          ticketAmountInput.value = maxUse > 0 ? maxUse : 0;
-        } else {
-          ticketAmountInput.value = 0;
-        }
-
-        const ticketAmount = ticketUsed ? parseInt(ticketAmountInput.value || 0) : 0;
-        const finalPrice = servicePrice - couponDiscount - ticketAmount;
-        document.getElementById("finalPrice").value = finalPrice < 0 ? 0 : finalPrice;
-      }
-
-    });
-
-  </script>
+    <script th:src="@{/javascript/management/reservationForm.js}"></script>
 </th:block>
 
 </body>

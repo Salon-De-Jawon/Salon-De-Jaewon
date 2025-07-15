@@ -17,4 +17,12 @@ public class GlobalModelAttributeAdvice {
         }
         return false;
     }
+
+    @ModelAttribute("userRole")
+    public String populateUserRole(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null || userDetails.getMember() == null) {
+            return null;
+        }
+        return userDetails.getMember().getRole().name(); // Enum → String
+    }
 }

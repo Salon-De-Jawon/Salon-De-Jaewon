@@ -5,32 +5,101 @@
 <head>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <th:block layout:fragment="css"></th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
     <div class="container">
         <div class="main-wrap">
-            <div class="location-area">
-                <div class="search-area">
-                    <div class="shop-search-box">
-                        <div class="search-icon">
-                            <img src="/images/search.png" alt="돋보기" />
+
+            <!--  검색 영역   -->
+            <div class="top-bar">
+                <div class="header-content">
+                    <div class="initial-display active">
+                        <div class="shop-search-box" id="initialShopSearchBox">
+                            <div class="search-icon">
+                                <img src="/images/search.png" alt="돋보기" />
+                            </div>
+                            <input
+                                    type="text"
+                                    class="shop-search-input"
+                                    placeholder="미용실 검색"
+                                    readonly
+                            />
+                            <ul class="shop-suggestion-list" style="display: none;"></ul>
+                        </div>
+
+                        <div class="location-search-area" id="initialLocationSearchArea">
+                            <div class="location-icon">
+                                <img src="/images/location.png" alt="위치아이콘" />
+                            </div>
+                            <div class="location-now" id="user-region">대전 광역시청</div>
                         </div>
                     </div>
 
-                    <div class="location-search-area">
-                        <div class="location-icon">
-                            <img src="/images/location.png" alt="위치아이콘" />
+                    <div
+                            class="shop-search-expanded-area hidden"
+                            id="expandedShopSearchArea"
+                    >
+                        <div class="expanded-search-box-centered">
+                            <div class="search-icon">
+                                <img src="/images/search.png" alt="돋보기" />
+                            </div>
+                            <input
+                                    type="text"
+                                    class="shop-search-input-expanded"
+                                    placeholder="검색어를 입력하세요"
+                                    autofocus
+                            />
                         </div>
-                        <div class="location-now"><span id="user-region">대전시</span></div>
+                        <div class="shop-search-options">
+                            <button class="close-search-mode-button">닫기</button>
+                        </div>
                     </div>
+
+                    <!-- 검색창 시작 -->
+                    <div
+                            class="address-input-area hidden"
+                            id="expandedAddressInputArea"
+                    >
+                        <div class="location-now-centered">
+                            <div class="location-icon">
+                                <img src="/images/location.png" alt="위치아이콘" />
+                            </div>
+                            <div class="location-now-text">현재 위치 선택</div>
+                        </div>
+                        <div class="address-search-box" style="position: relative">
+                            <input
+                                    type="text"
+                                    class="address-search-input"
+                                    placeholder="주소를 검색하거나 입력하세요"
+                            />
+                            <ul class="address-suggestion-list" style="display: none;"></ul>
+                        </div>
+                        <div class="address-manual-input">
+                            <button class="close-location-mode-button">닫기</button>
+                        </div>
+                    </div>
+
+                    <!-- 검색창 -->
                 </div>
             </div>
 
+            <!-- 메인 -->
+
             <div class="main-content-area">
-                <div class="main-map"><div id="map"></div></div>
-<!--                <div class="split-box" onclick="openSplit()"></div>-->
+                <div
+                        class="split-overlay"
+                        data-img="/images/background3x.png"
+                ></div>
+                <div class="main-map"><div id="map" style="background: red;"></div></div>
+                <img
+                        class="sizer"
+                        src="/images/background3x.png"
+                        alt="더미 이미지"
+                />
             </div>
 
 
@@ -73,139 +142,6 @@
                             </div>
                         </div>
 
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0002미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0003미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0004미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0005미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0006미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0007미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 슬라이드 항목 -->
-                        <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0008미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- 총 8개 슬라이드 생성 -->
                     </div>
                 </div>
@@ -218,10 +154,10 @@
                 </div>
 
                 <div class="best-designer-container">
-                    <div class="best-designer-list-box">
+                    <div class="best-designer-list-box" id="designer-recommend-box">
                         <div class="best-designer-box">
                             <div class="designer-profile-box">
-                                <img src="" alt="디자이너프로필" />
+                                <img src="" class="designer-photo" alt="디자이너프로필" />
                             </div>
                             <div class="designer-info-box">
                                 <div class="designer-name">000 원장</div>
@@ -255,14 +191,59 @@
         </div>
     </div>
 
+
+    <!-- 위치 동의 모달 -->
+    <div id="location-agree-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <p class="modal-message">
+                이 기능을 사용하려면<br><strong>위치 정보 제공 동의</strong>가 필요합니다.<br>
+                동의하시겠습니까?
+            </p>
+            <div class="modal-actions">
+                <button id="location-agree-accept" class="btn-confirm" type="button">동의</button>
+                <button id="location-agree-cancel" class="btn-cancel" type="button">취소</button>
+            </div>
+        </div>
+    </div>
+
 <!--  fragment end  -->
 </div>
 
 <th:block layout:fragment="script">
-
-    <script th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey}}"></script>
-    <script src="/javascript/main.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script th:inline="javascript">
+        window.currentUserId = [[${#authorization.expression('isAuthenticated()') ? #authentication.principal.id : 'null'}]];
+        if (window.currentUserId === 'null') window.currentUserId = null;
+        window.userAgreeLocation = [[${userAgreeLocation}]];
+
+
+          // 배너 스와이퍼 코드
+          window.adBannerSwiper = new Swiper(".ad-banner-swiper", {
+            slidesPerView: 1.3,
+            spaceBetween: 30,
+            centeredSlides: true,
+            loop: true,
+            autoplay: { delay: 8000, disableOnInteraction: false },
+          });
+
+          new Swiper(".shopSwiper", {
+            loop: true,
+            slidesPerView: "auto",
+            centeredSlides: true,
+            spaceBetween: 16,
+            grabCursor: true,
+          });
+    </script>
+
+    <!--  주소 관련 기능 주입  -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!--  지도 관련  -->
+    <script th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapsKey}}"></script>
+
+
+    <script type="module" src="/javascript/main.js"></script>
 </th:block>
 </body>
 </html>

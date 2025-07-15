@@ -26,6 +26,17 @@
   position: relative;
 }
 
+.reservation-form .row textarea{
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+  font-family: var(--font-noto-sans);
+}
+
 .row.date-picker-row input[type="datetime-local"] {
   padding: 8px 12px;
   font-size: 16px;
