@@ -63,7 +63,14 @@
                 </thead>
                 <tbody>
                 <tr th:each="designer : ${dto.designerList}">
-                    <td><img th:src="${designer.imgUrl}" alt="디자이너 사진" class="designer-img"></td>
+                    <td><img th:if="${designer.imgUrl != null and designer.imgUrl != ''}"
+                         th:src="${designer.imgUrl}"
+                         alt="디자이너 사진"
+                         class="designer-img">
+
+                    <img th:unless="${designer.imgUrl != null and designer.imgUrl != ''}"
+                         th:src="@{/images/default_profile.jpg}" alt="기본 디자이너 사진"
+                         class="designer-img"></td>
                     <td th:text="${designer.name}">김디자</td>
                     <td th:text="${designer.position}">수석</td>
                     <td th:text="${designer.workingYears} + '년차'">3년차</td>
