@@ -1,6 +1,7 @@
 package com.salon.dto.management;
 
 import com.salon.constant.PaymentType;
+import com.salon.constant.ServiceCategory;
 import com.salon.entity.management.Payment;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Reservation;
@@ -28,6 +29,7 @@ public class PaymentForm {
     private int finalPrice;
 
     private PaymentType paymentType;
+    private ServiceCategory serviceCategory;
     private String memo;
 
     public static PaymentForm from(Payment payment){
@@ -52,6 +54,7 @@ public class PaymentForm {
         form.setTicketUsedPrice(payment.getTicketUsedPrice());
         form.setFinalPrice(payment.getFinalPrice());
         form.setPaymentType(payment.getPaymentType());
+        form.setServiceCategory(payment.getServiceCategory());
         form.setMemo(payment.getMemo());
 
         return form;
@@ -75,6 +78,7 @@ public class PaymentForm {
         payment.setTicketUsedPrice(this.ticketUsedPrice);
         payment.setFinalPrice(this.finalPrice);
         payment.setPaymentType(this.paymentType);
+        payment.setServiceCategory(this.serviceCategory);
         payment.setMemo(this.memo);
         payment.setCreatedAt(LocalDateTime.now());
 

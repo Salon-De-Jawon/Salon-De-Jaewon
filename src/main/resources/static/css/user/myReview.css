@@ -1,3 +1,24 @@
+/* 이미지 드래그 이벤트 막기 */
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: auto; /* 드래그만 막고 클릭 이벤트는 허용 */
+}
+
+::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리 */
+}
+html, body {
+  -ms-overflow-style: none;  /* IE, Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.dragging {
+  pointer-events: none;
+  cursor: grabbing;
+}
+
 .my-page {
   display: flex;
   justify-content: center;
@@ -79,7 +100,7 @@
   height: 750px;
   border-radius: 8px;
   border: 1px solid #eee;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .my-page-title {
@@ -113,6 +134,18 @@
   height: auto; /* 💡 고정 height 제거 */
 }
 
+
+.review-reply-unread {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 15px;
+  height: 15px;
+  background-color: #007bff;
+  border-radius: 50%;
+  z-index: 10;
+}
+
 .review-box:hover {
   transform: scale(1.07); /* 전체적으로 커지는 느낌 */
   z-index: 2; /* 겹칠 경우 위로 */
@@ -127,6 +160,7 @@
   object-fit: cover;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
+  pointer-events: auto;
 }
 
 .review-box img.active {
@@ -195,7 +229,6 @@
 
 .review-img-modal-slider {
   height: 200px;
-  border: 1px solid;
   display: flex;
   overflow-x: scroll;
   gap: 10px;
@@ -209,7 +242,6 @@
 .review-img-mbox {
   flex: 0 0 auto;
   width: 150px;
-  border: 1px solid;
 }
 
 .review-header-modal .close {
@@ -245,20 +277,27 @@
   font-weight: 600;
   color: #333;
 }
+
 .rating {
   color: #ffb400;
 }
 
 /* 댓글(답글) */
 .reply-area {
-  display: flex;
+  display: none;
   gap: 12px;
   margin-top: 30px;
   padding: 15px;
   background: #f8f9fa;
   border-radius: 8px;
 }
+
+.reply-area.show {
+  display: flex;
+}
+
 .reply-area img {
+
   width: 55px;
   height: 55px;
   border-radius: 50%;
@@ -275,10 +314,42 @@
   line-height: 1.4;
 }
 
+
+/* 가로 세로에 맞게 이미지 조정 코드 */
+.review-img-mbox {
+  flex: 0 0 auto;
+  width: 150px;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+
+.review-img-mbox > img {
+  position: absolute;
+  object-fit: contain;
+}
+
+/* 가로가 짧은 이미지 (세로가 길다) */
+.review-img-mbox > img.landscape {
+  width: 100%;
+  height: auto;
+}
+
+/* 세로가 짧은 이미지 (가로가 길다) */
+.review-img-mbox > img.portrait {
+  height: 100%;
+  width: auto;
+}
+
+/* 가로 세로에 맞게 이미지 조정 코드 */
+
 /* 스크롤관련 */
 
 [data-drag-scroll] {
-  cursor: grab;
   user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -353,6 +424,21 @@
     padding-bottom: 10px;
   }
 }
+
+/* 리뷰 보기로 포커스된 리뷰박스 */
+
+
+.review-box.highlight {
+  outline: 3px solid #007bff;
+  animation: flash 1s ease-in-out 2;
+  z-index: 5;
+}
+@keyframes flash {
+  0%, 100% { box-shadow: 0 0 0 transparent; }
+  50% { box-shadow: 0 0 12px #007bff; }
+}
+
+
 
 /* 💻 769px ~ 992px: 작은 데스크탑 - 3열 유지 */
 @media (max-width: 992px) {

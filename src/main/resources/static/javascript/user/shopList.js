@@ -1,5 +1,156 @@
+import { initAddressSearchToggle } from '/javascript/user/addressSearchUtil.js ';
+import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
+
+
+
 document.addEventListener("DOMContentLoaded", function(){
     console.log("안녕 헤어샵 페이지 나야 js");
+
+
+    const currentUserId = window.currentUserId ?? null;
+    const isGuest       = !currentUserId;
+
+    let agreeLocation = false;
+    if (!isGuest) {
+      const raw = window.userAgreeLocation;        // 0/1, "0"/"1", true/false
+      agreeLocation =
+            raw === true  || raw === "true" ||
+            raw === 1     || raw === "1";
+    }
+
+    const guestAgreed = localStorage.getItem("guestLocationConsent") === "true";
+
+
+    const needLocationConsent = () => (isGuest ? !guestAgreed : !agreeLocation);
+
+
+    // 위치 동의 모달 요소
+    const locationModal = document.querySelector("#location-agree-modal");
+    const confirmBtn = document.querySelector("#location-agree-accept");
+    const cancelBtn = document.querySelector("#location-agree-cancel");
+
+    // 현재 위치 선택 클릭 시 처리
+
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.location-now-text');
+        if (!btn) return;
+
+        if (needLocationConsent()) {
+          locationModal.classList.remove('hidden');
+          locationModal.style.display = 'flex';
+        } else {
+       detectAndConvertLocation(applyDetectedLocation);
+        }
+    });
+
+
+    // 모달 확인 → 동의 처리 및 위치 감지
+    confirmBtn?.addEventListener('click', () => {
+        locationModal.style.display = 'none';
+
+        if (isGuest) {
+          /* 비회원: 로컬스토리지에만 기록 */
+          localStorage.setItem('guestLocationConsent', 'true');
+        } else {
+          /* 회원: 서버 PATCH → DB flag 1 */
+          const csrfToken  = document.querySelector('meta[name="_csrf"]')?.content;
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+          fetch('/api/member/location-consent', {
+            method : 'PATCH',
+            headers: { 'Content-Type':'application/json', [csrfHeader]: csrfToken }
+          })
+            .then(r => { if (!r.ok) throw new Error();  agreeLocation = true; window.userAgreeLocation = true; })
+            .catch(() => { alert('동의 처리 실패'); return; });
+        }
+
+        detectAndConvertLocation(applyDetectedLocation);
+    });
+
+    cancelBtn?.addEventListener("click", () => {
+      locationModal.style.display = "none";
+    });
+
+    // 위치 감지 및 주소 변환 → 콜백으로 결과 전달
+    function detectAndConvertLocation(callback) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.userAddress) {
+                callback({
+                  lat,
+                  lon,
+                  userAddress: data.userAddress,
+                  region1depth: data.region1depth,
+                  region2depth: data.region2depth
+                });
+              } else {
+                alert("주소 정보를 불러올 수 없습니다.");
+              }
+            })
+            .catch(err => {
+              alert("주소 변환 실패");
+              console.error(err);
+            });
+        },
+        err => {
+          alert("위치 정보 접근이 거부되었습니다.");
+          console.error(err);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+
+    // 위치 저장 및 샵 리스트 초기화
+    function applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth }) {
+      document.getElementById("user-region").textContent = `${region1depth} ${region2depth}`;
+      region = region1depth;
+      userLat = lat;
+      userLon = lon;
+      page = 0;
+      endOfList = false;
+      allShops = [];
+
+      setStoredLocation(currentUserId, {
+        userAddress,
+        userLatitude: lat,
+        userLongitude: lon,
+        region1depth,
+        region2depth,
+      });
+
+      document.querySelector("#shop-list").innerHTML = "";
+      getShopList();
+
+      document.querySelector(".initial-display")?.classList.remove("hidden");
+      document.querySelector(".initial-display")?.classList.add("active");
+      document.getElementById("expandedShopSearchArea")?.classList.add("hidden");
+      document.getElementById("expandedAddressInputArea")?.classList.add("hidden");
+    }
+
+
+    // 주소 검색창으로 수동 저장
+    initAddressSearchToggle({
+      onSelectAddress: ({ userAddress, userLatitude, userLongitude, region1depth, region2depth }) => {
+        console.log("주소 선택됨: ", userAddress, userLatitude, userLongitude, region1depth, region2depth);
+
+        applyDetectedLocation({
+          lat: userLatitude,
+          lon: userLongitude,
+          userAddress,
+          region1depth,
+          region2depth
+        });
+      }
+    });
+
+
 
     let allShops = [];
     let page = 0;
@@ -26,7 +177,18 @@ document.addEventListener("DOMContentLoaded", function(){
 
     loadSelectedShopsFromSession();
 
-    navigator.geolocation.getCurrentPosition(success, error);
+    //로컬스트리지에 저장 (선택한 지역)
+    const storedLocation = getStoredLocation(currentUserId);
+
+    region = storedLocation?.region1depth || "";
+    userLat = storedLocation?.userLatitude || null;
+    userLon = storedLocation?.userLongitude || null;
+
+    if (storedLocation && region && userLat !== null && userLon !== null) {
+      document.getElementById("user-region").textContent = `${storedLocation.region1depth} ${storedLocation.region2depth}`;
+      getShopList();
+    }
+
 
     function success(position) {
         userLat = position.coords.latitude;
@@ -76,6 +238,9 @@ document.addEventListener("DOMContentLoaded", function(){
             .catch(err => console.error("샵 리스트 불러오기 실패: ", err))
             .finally(() => isLoading = false);
     }
+
+
+
 
     function renderShopList(shopList, append = false) {
         const container = document.querySelector("#shop-list");
@@ -216,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     const compareBtn = document.getElementById("compare-btn");
+
     if (compareBtn) {
         compareBtn.addEventListener("click", () => {
             if (selectedShops.length < 2) {
@@ -223,15 +389,15 @@ document.addEventListener("DOMContentLoaded", function(){
                 return;
             }
 
-            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
             // 서버 세션에 선택된 샵 ID 목록 저장
             fetch("/api/saveSelectedShops", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    [csrfHeader]: csrfToken
+                    [csrfHeader]: csrfToken,
                 },
                 body: JSON.stringify(selectedShops)
             })
@@ -248,4 +414,7 @@ document.addEventListener("DOMContentLoaded", function(){
             });
         });
     }
+
+
+    /////////////////////////////////////////////////////////////////////
 });

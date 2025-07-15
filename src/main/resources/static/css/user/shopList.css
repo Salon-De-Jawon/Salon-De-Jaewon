@@ -21,67 +21,326 @@
 }
 
 /* 상단 검색 영역 (Top Bar) */
+
+/* 상단 검색 영역 (Top Bar) - 기존 스타일 유지 및 추가 */
 .top-bar {
   padding: 20px;
   background-color: #fff;
   border-bottom: 1px solid #eee;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* 내부 header-content를 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  min-height: 80px; /* 전환될 콘텐츠를 수용할 최소 높이 확보 */
+  box-sizing: border-box; /* 패딩 포함 계산 */
 }
 
-.location-area {
-  width: 100%; /* 부모 너비에 맞춤 */
-  max-width: 1200px; /* 이미지 기준 내부 컨텐츠 너비 (조정 가능) */
+/* 새로 추가된 header-content 컨테이너 */
+.header-content {
+  width: 100%;
+  max-width: 1200px; /* location-area와 동일한 최대 너비 사용 */
+  position: relative; /* 자식 absolute 요소들의 기준점 */
+  min-height: 48px; /* 내부 검색창/위치창의 높이와 유사하게 설정 */
 }
 
-.search-area {
+.initial-display,
+.shop-search-expanded-area,
+.address-input-area {
+  position: static; /* header-content를 기준으로 위치 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 1; /* 기본적으로 보임 */
+  visibility: visible; /* 기본적으로 보임 */
+  height: auto; /* 콘텐츠 높이에 따라 조절 */
+  padding: 0; /* 기본 패딩 없음 (각 모드에서 필요에 따라 추가) */
+  box-sizing: border-box;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out,
+    height 0.3s ease-out, padding 0.3s ease-out; /* 부드러운 전환 효과 */
+}
+
+/* 숨겨진 상태에 대한 클래스 */
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  height: 0; /* 높이를 0으로 만들어 공간 차지 안 함 */
+  overflow: hidden; /* 내용이 넘치지 않도록 */
+  padding: 0 !important; /* hidden 상태에서는 패딩도 제거 */
+  pointer-events: none; /* 숨겨진 요소에 대한 마우스 이벤트 비활성화 */
+}
+
+/* 초기 상태 (미용실 검색 + 현재 위치 표시) */
+.initial-display {
+  display: flex; /* 자식 요소들을 가로로 배치 */
+  justify-content: space-between; /* 양 끝으로 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  gap: 50px; /* 기존 search-area의 gap 유지 */
+}
+
+/* 기존 shop-search-box 스타일 유지 및 readonly cursor 추가 */
+.initial-display .shop-search-box {
+  flex-grow: 1;
+  height: 48px;
+  border: 1px solid #007bff;
+  border-radius: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 20px; /* 검색창과 위치 정보 사이 간격 */
+  padding: 0 20px;
+  cursor: pointer; /* 클릭 가능함을 시각적으로 나타냄 */
+  background-color: #f5f5f5; /* 기본 배경색 */
+  /* 기존 ::after는 input을 사용하기 때문에 제거하거나 input placeholder로 대체 */
 }
 
-.shop-search-box {
-  flex-grow: 1; /* 남은 공간을 모두 차지 */
-  height: 48px; /* 이미지에 맞춰 높이 조정 */
-  border: 1px solid #007bff; /* 이미지에 보이는 파란색 테두리 */
-  border-radius: 24px; /* 높이의 절반으로 원형 */
-  display: flex;
-  align-items: center;
-  padding: 0 20px; /* 내부 패딩 */
-}
-
-.search-icon img {
-  width: 24px; /* 아이콘 크기 조정 */
+/* 기존 search-icon img 스타일 유지 */
+.initial-display .search-icon img {
+  width: 24px;
   height: 24px;
   opacity: 0.8;
-  margin-right: 10px; /* 돋보기와 텍스트 간격 */
+  margin-right: 10px;
 }
 
-/* 실제 검색 input이 없어서 placeholder처럼만 보입니다. input을 추가하면 좋습니다. */
-.shop-search-box::after {
-  content: "미용실 검색"; /* Placeholder 텍스트 */
-  color: #999;
+/* 미용실 검색 인풋 필드 스타일 (초기 상태용) */
+.initial-display .shop-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
   font-size: 1.1em;
+  color: #555; /* 텍스트 색상 */
+  cursor: pointer; /* readonly 상태에서도 클릭 가능하도록 */
+  padding: 0; /* 기본 input 패딩 제거 */
 }
 
-.location-search-area {
+/* 기존 location-search-area 스타일 유지 */
+.initial-display .location-search-area {
   display: flex;
   align-items: center;
   gap: 8px;
-  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
+  white-space: nowrap;
+  cursor: pointer; /* 클릭 가능함을 시각적으로 나타냄 */
+  padding: 5px 10px; /* 클릭 영역 확보 */
+  border-radius: 15px; /* 시각적 효과 */
+  background-color: #e0f2f7; /* 배경색 */
 }
 
-.location-icon img {
-  width: 24px; /* 아이콘 크기 조정 */
+/* 기존 location-icon img 스타일 유지 */
+.initial-display .location-icon img {
+  width: 24px;
   height: 24px;
   opacity: 0.8;
 }
 
-.location-now {
+/* 기존 location-now 스타일 유지 */
+.initial-display .location-now {
   font-size: 1.1em;
   font-weight: bold;
   color: #333;
+}
+
+/* ----------------------------------------------------- */
+/* 미용실 검색 확장 영역 (shop-search-expanded-area) - 새로 추가 */
+/* ----------------------------------------------------- */
+.shop-search-expanded-area {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+  padding: 15px 20px; /* 활성화 시 패딩 추가 */
+  justify-content: flex-start; /* 콘텐츠를 상단부터 배치 */
+  /* background-color: #fff; */ /* 필요하다면 배경색 지정 */
+  /* border-bottom: 1px solid #eee; */ /* 필요하다면 하단 테두리 */
+}
+
+.expanded-search-box-centered {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* 검색 인풋의 최대 너비 설정 (조정 가능) */
+  height: 48px; /* 초기 검색 인풋과 높이 통일 */
+  border: 1px solid #007bff;
+  border-radius: 24px;
+  padding: 0 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* 아래 옵션들과의 간격 */
+}
+
+.shop-search-input-expanded {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 1.1em;
+  color: #333;
+  padding: 0; /* 자체 패딩 제거 */
+}
+
+.shop-search-expanded-area .search-icon img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.8;
+  margin-right: 10px;
+}
+
+.shop-search-options {
+  width: 100%;
+  max-width: 600px; /* 검색 인풋과 동일한 너비 */
+  display: flex;
+  justify-content: flex-end; /* 닫기 버튼을 오른쪽으로 */
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px; /* 좌우 여백 */
+}
+.shop-suggestion-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  border: 1px solid #ccc;
+  background: white;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.shop-suggestion-list li {
+  padding: 10px 16px;
+  font-size: 1em;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.shop-suggestion-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.close-search-mode-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 0.95em;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.close-search-mode-button:hover {
+  background-color: #d0d0d0;
+}
+
+/* ----------------------------------------------------- */
+/* 위치 입력 확장 영역 (address-input-area) - 새로 추가 및 기존 조정 */
+/* ----------------------------------------------------- */
+.address-input-area {
+  display: flex;
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+  padding: 15px 20px; /* 활성화 시 패딩 추가 */
+  justify-content: flex-start; /* 콘텐츠를 상단부터 배치 */
+  /* background-color: #fff; */ /* 필요하다면 배경색 지정 */
+  /* border-bottom: 1px solid #eee; */ /* 필요하다면 하단 테두리 */
+}
+
+.location-now-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 내부 아이콘과 텍스트 중앙 정렬 */
+  font-size: 1.2em; /* 좀 더 크게 */
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 20px; /* 검색창과의 간격 */
+  width: 100%; /* 부모 너비에 맞춤 */
+}
+
+.location-now-centered .location-icon img {
+  width: 28px; /* 아이콘 크기 키우기 */
+  height: 28px;
+  margin-right: 10px;
+}
+
+.address-search-box {
+  display: flex;
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* 검색 인풋과 유사한 너비 */
+  height: 48px; /* 높이 통일 */
+  border: 1px solid #007bff; /* 파란색 테두리로 강조 */
+  border-radius: 24px; /* 둥근 모서리 */
+  padding: 5px; /* 내부 요소와의 간격 */
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* 아래 버튼과의 간격 */
+}
+
+.address-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex-grow: 1; /* 남은 공간 채우기 */
+  padding: 0 15px; /* 내부 패딩 */
+  font-size: 1.1em;
+  border-radius: 20px 0 0 20px; /* 왼쪽만 둥글게 (버튼과 연결) */
+  color: #333;
+}
+
+.address-suggestion-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  border: 1px solid #ccc;
+  background: white;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+}
+
+.address-suggestion-list li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.address-suggestion-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.address-search-button:hover {
+  background-color: #0056b3;
+}
+
+.address-manual-input {
+  /* 이전에 shop-search-options와 유사한 역할 */
+  width: 100%;
+  max-width: 600px; /* 검색창과 동일한 너비 */
+  display: flex;
+  justify-content: flex-end; /* 닫기 버튼 오른쪽 정렬 */
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.close-location-mode-button {
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 0.95em;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.close-location-mode-button:hover {
+  background-color: #d0d0d0;
 }
 
 /* 필터 + 가격비교 선택 (Filter + Compare Section) */
@@ -344,8 +603,68 @@
 }
 
 
+/* 위치 동의 모달 */
 
-/* 추가적으로 미디어 쿼리를 사용하면 뷰포트 크기에 따라 레이아웃을 반응형으로 만들 수 있습니다. */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  z-index: 10000;
+  text-align: center;
+}
+
+.modal-message {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.modal-actions button {
+  margin: 0 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-confirm {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.btn-cancel {
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+}
+
+
 @media (max-width: 1280px) {
   .container {
     width: 95%; /* 작은 화면에서는 너비를 유동적으로 */

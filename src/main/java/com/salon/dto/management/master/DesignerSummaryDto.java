@@ -13,7 +13,7 @@ public class DesignerSummaryDto {
     private String imgUrl;
     private String position;
     private int workingYears;
-    private int todayReservationCount;
+    private int todayReservationCount;   // 당일 예약 수
 
     private String scheduledWorkTime;    // ex) "09:30~18:30"
 

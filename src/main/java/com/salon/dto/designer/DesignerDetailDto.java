@@ -13,7 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class DesignerDetailDto {
-    
+
+    private Long shopId; // 소속 미용실
     private String shopName; // 미용실 이름
     private Long designerId; // 디자이너 아이디
     private String originalName; // 이미지 원본 이름
@@ -31,13 +32,14 @@ public class DesignerDetailDto {
 
 
     private MultipartFile designerProfile;
-
+    private List<ReviewListDto> reviewList;
 
 
     // ShopDesigner(Entity) -> DesignerDetailDto
-    public static DesignerDetailDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount, List<ReviewListDto> reviewListDtos){
+    public static DesignerDetailDto from (ShopDesigner shopDesigner, int likeCount, int reviewCount){
         DesignerDetailDto designerDetailDto = new DesignerDetailDto();
 
+        designerDetailDto.setShopId(shopDesigner.getShop().getId());
         designerDetailDto.setDesignerId(shopDesigner.getId());
         designerDetailDto.setShopName(shopDesigner.getShop().getName());
         designerDetailDto.setDesignerName(shopDesigner.getDesigner().getMember().getName());

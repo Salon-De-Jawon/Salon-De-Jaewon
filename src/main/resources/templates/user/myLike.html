@@ -51,22 +51,26 @@
 
               <div class="scroll-wrapper">
                 <div class="designer-list">
-                  <!-- 쿠폰 박스 -->
-                  <div class="designer-box">
+                  <!-- 디자이너 박스 -->
+                  <div class="designer-box" th:each="designer : ${myLikeDesigner}">
                     <div class="designer-img">
-                      <img src="" alt="디자이너 이미지" />
+                      <img th:src="${designer.imgUrl}" alt="디자이너 이미지" draggable="false"/>
                     </div>
-                    <div class="designer-name">누구누구 수석 디자이너</div>
+                    <div class="designer-name" th:text="${designer.position} + ' ' + ${designer.designerName}">누구누구 수석 디자이너</div>
                     <div class="btn-area">
-                      <button>예약</button>
-                      <button>상세</button>
+                      <a href="">
+                        <button type="button">예약</button>
+                      </a>
+                      <a href="">
+                        <button type="button">상세</button>
+                      </a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 정액권영역 -->
+            <!-- 헤어샵 라이크 영역 -->
             <div class="like-shop-area">
               <div class="content-area-header">
                 <div>♥</div>
@@ -74,19 +78,40 @@
               </div>
               <div class="scroll-wrapper">
                 <div class="shop-list">
-                  <div class="shop-box">
+                  <div class="shop-box" th:each="shop : ${myLikeShop}">
                     <div class="shop-img">
-                      <img src="" alt="헤어샵이미지" />
+                      <img th:src="${shop.imgUrl}" alt="헤어샵이미지" draggable="false"/>
                     </div>
                     <div class="shop-info">
                       <div class="shop-info-details">
-                        <div class="shop-name">떡잎마을미용실</div>
-                        <div class="shop-address">대전 떡잎마을</div>
-                        <div class="shop-dayoff">매주 화요일 휴무</div>
+                        <div class="shop-name" th:text="${shop.shopName}">떡잎마을미용실</div>
+                        <div class="shop-address" th:text="${shop.address}">대전 떡잎마을</div>
+
+                        <!-- 휴일 있을때 -->
+                        <div class="shop-dayoff closed"
+                             th:if="${shop.dayOffShowDto.dayOff != 0}"
+                             th:text="${shop.dayOffShowDto.dayOffText}">매주 화요일</div>
+                        <!-- 휴일 없을때 -->
+                        <div class="shop-dayoff no-dayoff" th:if="${shop.dayOffShowDto.dayOff == 0}">연중무휴</div>
+
+                        <!-- 평점 -->
+                        <span th:if="${shop.rating != null}"
+                              th:text="${#strings.repeat('★', T(java.lang.Math).round(shop.rating)) +
+                                      #strings.repeat('☆', 5 - T(java.lang.Math).round(shop.rating)) +
+                                      ' ' + #numbers.formatDecimal(shop.rating, 1, 1)}">
+</span>
+                        <span th:if="${shop.rating == null}">평점 없음</span>
+
+                        <div class="coupon" th:if="${shop.hasCoupon}">
+                          <img src="/images/coupon.png" alt="쿠폰">
+                        </div>
+
                       </div>
                       <div class="btn-area">
                         <button>예약</button>
-                        <button>상세</button>
+                        <a th:href="@{/shop/{id}(id=${shop.shopId})}">
+                          <button>상세</button>
+                        </a>
                       </div>
                     </div>
                   </div>
