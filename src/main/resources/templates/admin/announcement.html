@@ -41,9 +41,11 @@
         </tr>
         </tbody>
     </table>
-    <a href="/admin/anc/create" id="button">
-        <button>공지 작성</button>
-    </a>
+    <div th:if="${isAdmin}">
+        <a href="/admin/anc/create" id="button">
+            <button>공지 작성</button>
+        </a>
+    </div>
 </div>
 <th:block layout:fragment="script">
     <script>
