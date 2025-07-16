@@ -15,6 +15,17 @@ public class CsListDto {
     private Long id;
     private String questionText;
     private CsCategory csCategory;
+    public String getCategoryLabel(){
+        return csCategory != null ? csCategory.getLabel() : "";
+    }
+
+    public CsCategory getCategory(){
+        return csCategory;
+    }
+
+    public void setCsCategory(CsCategory csCategory){
+        this.csCategory = csCategory;
+    }
     private LocalDateTime questionAt;
     private CsStatus csStatus;
 

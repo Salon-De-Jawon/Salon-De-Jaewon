@@ -12,7 +12,7 @@
   <div class="modal-overlay" id="ownerApplyModel">
     <div class="modal">
       <h2>원장 디자이너 권한 신청</h2>
-      <form th:action="@{/admin/cs/shopApply}" th:object="${applyDto}" id="ownerApplyForm" method="post">
+      <form th:action="@{/cs/shopApply}" th:object="${applyDto}" id="ownerApplyForm" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <label for="applyNumber">사업자등록번호</label>
         <input type="text" id="applyNumber" th:field="*{applyNumber}" placeholder="숫자만 입력" required>
