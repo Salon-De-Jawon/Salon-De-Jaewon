@@ -37,15 +37,18 @@ button:hover {
 }
 table {
   width: 100%;
-  margin-top: 20px;
-  background: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 th,
 td {
-  padding: 12px 10px;
-  border: none;
-  text-align: left;
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid #e2e7e4;
+  font-size: 15px;
 }
 th {
   background-color: #f2f2f2;
@@ -53,7 +56,7 @@ th {
   font-weight: 600;
 }
 tr:hover {
-  background-color: #f5f8ff;
+  background-color: #f2f5ff;
 }
 #button{
   display: block;

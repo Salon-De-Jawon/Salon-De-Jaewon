@@ -14,26 +14,25 @@ h2{
     font-weight: bold;
     color: #566A8E;
     margin-bottom: 20px;
+    text-align: center;
 }
 table{
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #dcdcdc;
-    background-color: #E2E7E4;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
 thead{
     background-color: #8C9ED9;
-    color: #ffffff;
-}
-th{
-    white-space: nowrap;
+    color: white;
 }
 th, td{
     padding: 14px 16px;
-    border: 1px solid #ccc;
     text-align: center;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #e2e7e4;
     font-size: 15px;
 }
 .list:hover {

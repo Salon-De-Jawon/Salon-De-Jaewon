@@ -18,6 +18,7 @@ h2{
 }
 table{
       width: 100%;
+      border-collapse: collapse;
       background-color: #ffffff;
       border-radius: 12px;
       overflow: hidden;
@@ -28,18 +29,20 @@ thead{
     color: white;
 }
 table th, table td{
-    background-color: #ffffff;
-    color: #000000;
     padding: 14px 16px;
     text-align: center;
+    border-bottom: 1px solid #e2e7e4;
     font-size: 15px;
 }
-table, th, td {
-  border: none !important;
+thead th {
+  border-bottom: 2px solid #8C9ED9;
+  border-left: none;
+  border-right: none;
 }
-
-table {
-  border-collapse: collapse; /* 이거 유지 */
+tbody td {
+  border-bottom: 2px solid #8C9ED9;
+  border-left: none;
+  border-right: none;
 }
 table th {
     font-weight: 600;
@@ -54,4 +57,17 @@ td[colspan]{
 }
 #button {
     gap:10px;
+}
+/* ✅ 승인 버튼 (Primary) */
+form[action*="approve"] button {
+  background-color: #D63384;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+/* ✅ 거절 버튼 (Secondary) */
+form[action*="reject"] button {
+  background-color: transparent;
+  color: #444;
+  border: 1px solid #bbb;
 }
