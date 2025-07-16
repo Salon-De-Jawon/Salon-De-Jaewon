@@ -212,6 +212,7 @@ public class SalonService {
                 reviewService.getRecentReviewWithImageByDesigner(designerId).ifPresent(review -> {
                     dto.setReviewRating(review.getRating());
                     dto.setCreateAt(DateTimeUtil.getTimeAgo(review.getCreateAt(), false));
+                    dto.setComment(review.getComment());
 
 
                     reviewService.getFirstImageByReviewId(review.getId()).ifPresent(img -> {

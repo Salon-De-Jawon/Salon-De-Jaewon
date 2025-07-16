@@ -270,6 +270,17 @@ function renderRecommendShopSlides(shops) {
   const wrapper = dqs('.shopSwiper .shop-slider');
   if (!wrapper) return;
   wrapper.innerHTML = '';
+
+    if (shops.length === 0) {
+      wrapper.insertAdjacentHTML('beforeend', `
+        <div class="empty-message">
+          이 지역에 등록된 샵이 없습니다 🥲
+        </div>
+      `);
+      // 스와이퍼가 없으면 update 필요 X
+      return;
+    }
+
   shops.forEach(s => {
     wrapper.insertAdjacentHTML('beforeend', `
       <div class="swiper-slide">
@@ -306,6 +317,11 @@ function renderRecommendedDesigners(list) {
   bubble.innerHTML = '';
   bubble.style.display = 'none';
 
+    if (list.length === 0) {
+      box.insertAdjacentHTML('beforeend', `<div class="empty-message">이 지역에 등록된 디자이너가 없습니다 🥲</div>`);
+      return;
+    }
+
   list.forEach((d) => {
     const wrapper = document.createElement('div');
     wrapper.classList.add('best-designer-box');
@@ -335,7 +351,7 @@ function renderRecommendedDesigners(list) {
 
 
       renderDesignerBubble(d);
-      bubble.style.display = 'flex';
+//      bubble.style.display = 'flex';
     });
 
     box.appendChild(wrapper);
@@ -348,6 +364,17 @@ function renderRecommendedDesigners(list) {
 function renderDesignerBubble(d) {
   const bubble = dqs('.designer-bubble');
   if (!bubble) return;
+
+  console.log('디자이너 리뷰 확인:', d.reviewImgList, d.comment);
+
+    const hasReview = (d.reviewImgList?.length ?? 0) > 0 || !!d.comment;
+    if (!hasReview) {
+      bubble.style.display = 'none';
+      bubble.innerHTML = '';
+      return;
+    }
+
+
   const review = d.reviewImgList?.[0]?.imgUrl || '/images/default.png';
   bubble.innerHTML = `
     <div class="bubble-tall"></div>
@@ -368,6 +395,9 @@ function renderDesignerBubble(d) {
 
     </div>
   `;
+
+
+  bubble.style.display = 'flex';
   adjustImageFitAll('.designer-bubble img.img-fit', 4 / 3);
 }
 

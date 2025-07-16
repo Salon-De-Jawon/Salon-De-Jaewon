@@ -22,6 +22,7 @@ public class RecommendDesignerDto {
     private String comment;
     private String position;
 
+
     public static RecommendDesignerDto from(ShopDesigner designer, float rating, int reviewCount) {
         RecommendDesignerDto dto = new RecommendDesignerDto();
         dto.setDesignerId(designer.getDesigner().getId());
