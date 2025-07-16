@@ -29,7 +29,7 @@
       <td th:text="${designerApply.applyNumber}"></td>
       <td th:text="${designerApply.issuedDate}"></td>
       <td th:text="${#temporals.format(designerApply.createAt, 'yyyy-MM-dd')}"></td>
-      <td th:text="${designerApply.status}"></td>
+      <td th:text="${designerApply.StatusLabel}"></td>
       <td>
         <div id="button" th:if="${designerApply.status.name() == 'WAITING'}">
           <form th:action="@{'/admin/designer/approve/' + ${designerApply.id}}" method="post" style="display:inline;" onsubmit="return validateApproveReject(this)">

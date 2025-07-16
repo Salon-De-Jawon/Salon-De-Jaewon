@@ -185,7 +185,7 @@ public class CsService {
         Member member = memberRepo.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("신청자 회원 정보를 찾을 수 없습니다."));
 
-       /* UploadedFileDto image = fileService.upload(file, UploadType.CUSTOMER_SERVICE);*/
+       UploadedFileDto image = fileService.upload(file, UploadType.BANNER);
 
 
 
@@ -193,22 +193,53 @@ public class CsService {
         couponBanner.setCoupon(coupon);
         couponBanner.setStartDate(bannerApplyDto.getStartDate());
         couponBanner.setEndDate(bannerApplyDto.getEndDate());
-        String originalFileName = file.getOriginalFilename();
-        couponBanner.setOriginalName(originalFileName);
-        String uuidFileName = UUID.randomUUID() + ".png";
-        String fullPath = "C:/salon/csFile/" + uuidFileName;
-        try {
-            file.transferTo(new File(fullPath));
-        } catch(IOException | IllegalStateException e){
-            throw new RuntimeException("파일 저장 실패" + e.getMessage(), e);
-        }
-        String imgUrl = "/csFile/" + uuidFileName;
-        couponBanner.setImgName(uuidFileName);
-        couponBanner.setImgUrl(imgUrl);
+        couponBanner.setOriginalName(image.getOriginalFileName());
+        couponBanner.setImgName(image.getFileName());
+        couponBanner.setImgUrl(image.getFileUrl());
+
         couponBanner.setCreatedAt(LocalDateTime.now());
         couponBanner.setStatus(ApplyStatus.WAITING);
 
         couponBannerRepo.save(couponBanner);
+
+
+//        String originalFileName = file.getOriginalFilename();
+//        couponBanner.setOriginalName(originalFileName);
+//        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+//        String uuidFileName = UUID.randomUUID() + extension;
+//        String fullPath = "C:/salon/cs-file/" + uuidFileName;
+//        System.out.println("file path: " + fullPath);
+//
+//        String directoryPath = "C:/salon/csFile/";
+//        File directory = new File(directoryPath);
+//        if (!directory.exists()) {
+//            boolean created = directory.mkdirs();
+//            if (!created) {
+//                throw new RuntimeException("파일 저장 경로 생성 실패: " + directoryPath);
+//            } else {
+//                System.out.println("디렉토리 생성 성공: " + directoryPath);
+//            }
+//        }
+
+//        try {
+//            file.transferTo(new File(fullPath));
+//        } catch(IOException | IllegalStateException e){
+//            throw new RuntimeException("파일 저장 실패" + e.getMessage(), e);
+//        }
+//        String imgUrl = "/csFile/" + uuidFileName;
+//        couponBanner.setImgName(uuidFileName);
+//        couponBanner.setImgUrl(imgUrl);
+
+    }
+
+    public List<CouponBannerListDto> bannerList() {
+        List<CouponBanner> couponBannerList = couponBannerRepo.findAll();
+        List<CouponBannerListDto> couponBannerListDtoList = new ArrayList<>();
+        for(CouponBanner couponBanner : couponBannerList){
+            CouponBannerListDto couponBannerListDto = CouponBannerListDto.from(couponBanner);
+            couponBannerListDtoList.add(couponBannerListDto);
+        }
+        return couponBannerListDtoList;
     }
 
     public List<CsListDto> findAll() {
@@ -222,5 +253,27 @@ public class CsService {
         return csCustomerList.stream()
                 .map(CsListDto::from)
                 .collect(Collectors.toList());
+    }
+
+    public CouponBannerDetailDto bannerDetail(Long id) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        CouponBannerDetailDto couponBannerDetailDto = CouponBannerDetailDto.from(couponBanner);
+        return couponBannerDetailDto;
+    }
+
+    public void bannerApprove(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.APPROVED);
+        couponBanner.setAdmin(admin);
+        couponBannerRepo.save(couponBanner);
+    }
+
+    public void bannerReject(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.REJECTED);
+        couponBanner.setAdmin(admin);
+        couponBannerRepo.save(couponBanner);
     }
 }
