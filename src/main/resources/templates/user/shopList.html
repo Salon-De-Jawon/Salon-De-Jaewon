@@ -132,7 +132,8 @@
               </div>
               <div class="shop-info-content">
                 <p class="shop-rating">
-                  ★★★★★ <span class="rating-count" th:text="${shop.rating + ' (' + shop.reviewCount + ')'}">5.0 (1,555)</span>
+                  <span class="rating-stars"  th:attr="data-rating=${shop.rating}"></span>
+                  <span class="rating-count" th:text="' ' + ${shop.rating + ' (' + shop.reviewCount + ')'}">5.0 (1,555)</span>
                 </p>
                 <p class="shop-address" th:text="${'주소' + shop.address}">
                   주소 대전광역시 대덕구 신짱구미용실

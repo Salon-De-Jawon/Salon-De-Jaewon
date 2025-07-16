@@ -210,16 +210,40 @@ user-navbar li a:visited {
 }
 
 
-.badge {
-  background: red;
-  color: white;
-  font-size: 10px;
-  border-radius: 50%;
-  padding: 2px 5px;
-  position: absolute;
-  top: -5px;
-  right: -10px;
+/* hamburger 아이콘 */
+#loginHamburger{
+    position: relative;          /* 배지의 기준점 */
+    font-size: 30px;             /* ☰ 크기 */
+    line-height: 1;
+    cursor: pointer;
 }
+
+/* 빨간 동그란 배지 */
+#notification-badge{
+    position: absolute;
+    top: -6px;                   /* ☰ 의 우상단에 살짝 겹치도록 */
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: #e83a3a;         /* 빨간색 */
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    z-index: 5;
+}
+
+/* 배지 안 숫자 ‑ 줄 바꿈 방지 */
+#notification-badge span{
+    line-height: 1;
+    white-space: nowrap;
+}
+
 
 /* Sidebar styles */
 .sidebar {
@@ -259,8 +283,24 @@ user-navbar li a:visited {
   margin-top: 20px;
   background: #eee;
   padding: 10px;
+  z-index: 1000;
   text-align: center;
   font-size: 14px;
+  cursor:pointer;
+}
+
+
+.sidebar-alert .alert-content,
+.sidebar-alert .alert-date{
+  display:block;           /* inline → block  */
+  line-height:1.4;         /* 살짝 여유 */
+}
+
+/* 날짜(두 번째 줄)를 살짝 연하게 */
+.sidebar-alert .alert-date{
+  font-size:.85rem;
+  color:#666;
+  margin-top:.2rem;
 }
 
 .sidebar-close > img {

@@ -37,7 +37,7 @@
               ></a>
           </li>
         </ul>
-        <div class="bottom-line"></div>
+        <div class="bottom-line" style="display: none;"></div>
       </div>
 
       <!-- 비로그인 사용자 로그인 -->
@@ -60,27 +60,11 @@
                th:text="${#authentication.name}"
           ><span class="name-plus">님</span></div>
           <div class="hamburger" id="loginHamburger">☰
-            <div id="notification-icon" style="position: relative; margin-left: 10px; cursor: pointer;">
-            <span id="notification-badge" style="
-                  position: absolute;
-                  top: -45px;
-                  right: -20px;
-                  background: red;
-                  color: white;
-                  border-radius: 50%;
-                  font-size: 11px;
-                  padding: 6px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 20px;
-                  height: 20px;
-                  font-weight: bolder;
-                  display:none;
-                  padding-bottom: 8px;
-
-            ">0</span>
-            </div>
+              <span id="notification-badge"
+                  th:attr="data-count=${unreadCnt}"
+                  th:style="${unreadCnt == 0} ? 'display:none' : ''">
+                  <span th:text="${unreadCnt}">0</span>
+              </span>
           </div>
 
 
@@ -114,6 +98,11 @@
 
           <div id="sidebar-alert-container" class="sidebar-alert-container">
             <!-- 알림 아이템이 여기에 동적으로 추가됨 -->
+            <div th:each="n : ${unreadTop3}" class="sidebar-alert"
+                 th:attr="data-target=${n.webTarget}, data-id=${n.targetId}">
+              <span class="alert-content" th:text="${n.message}">알림 내용</span>
+              <span class="alert-date"    th:text="${n.createAt}">방금 전</span>
+            </div>
           </div>
 
           <div class="sidebar-close">
