@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".designer-card").forEach((card) => {
     card.addEventListener("click", () => {
-      location.href = "/designer/detail";
+    const shopDesignerId = item.dataset.id;
+      location.href = "/designerProfile/${shopDesignerId}";
     });
   });
   document.querySelectorAll(".designer-card .btn-reserve").forEach((btn) => {
@@ -115,70 +116,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const reviewCards = document.querySelectorAll(".review-section .review-card");
-  const reviewMore = document.querySelector(".review-section .btn-more");
-  if (reviewCards.length > 3) {
-    reviewCards.forEach((card, i) => {
-      if (i >= 3) card.style.display = "none";
-    });
-    let showAll = false;
-    reviewMore.addEventListener("click", () => {
-      showAll = !showAll;
-      reviewCards.forEach((card, i) => {
-        if (i >= 3) card.style.display = showAll ? "block" : "none";
-      });
-      reviewMore.innerText = showAll ? "접기" : "리뷰 더보기";
-    });
-  }
 
-  /**
-   * 5. 메뉴 탭: 시술 카테고리 필터
-   */
-  const categoryBtns = document.querySelectorAll(".category-btn");
-  categoryBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document
-        .querySelectorAll(".category-btn")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+// 시술 카테고리 필터링 기능
+const categoryButtons = document.querySelectorAll(".category-btn");
+const categorySections = document.querySelectorAll(".category-section");
 
-      document.querySelectorAll(".category-section").forEach((sec) => {
-        sec.style.display =
-          btn.dataset.category === "all" || sec.id === btn.dataset.category
-            ? "block"
-            : "none";
-      });
+categoryButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const selected = button.dataset.category;
+
+    // 버튼 활성화 처리
+    categoryButtons.forEach((btn) => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    // 카테고리별 시술 리스트 토글
+    categorySections.forEach((section) => {
+      const sectionCat = section.dataset.category;
+      section.style.display =
+        selected === "all" || sectionCat === selected ? "block" : "none";
     });
   });
+});
 
-  document.querySelectorAll(".category-section").forEach((section) => {
-    const items = section.querySelectorAll(".service-item");
-    const moreBtn = section.querySelector(".more-btn");
-    if (items.length > 3 && moreBtn) {
-      items.forEach((item, i) => {
-        if (i >= 3) item.style.display = "none";
-      });
-      let expanded = false;
-      moreBtn.addEventListener("click", () => {
-        expanded = !expanded;
-        items.forEach((item, i) => {
-          if (i >= 3) item.style.display = expanded ? "flex" : "none";
-        });
-        moreBtn.innerHTML = expanded
-          ? '접기 <i class="chevron fa-solid fa-chevron-up"></i>'
-          : '더보기 <i class="chevron fa-solid fa-chevron-down"></i>';
-      });
-    }
-  });
 
   /**
    * 6. 디자이너 탭
    */
-  document.querySelectorAll(".designer-item").forEach((item) => {
-    item.addEventListener("click", () => {
-      location.href = "/designer/detail";
-    });
-  });
+  ddocument.querySelectorAll(".designer-card").forEach((card) => {
+     card.addEventListener("click", () => {
+       const shopDesignerId = card.dataset.id;
+       location.href = `/designerProfile/${shopDesignerId}`;
+     });
+   });
+
+
   document.querySelectorAll(".btn-book").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -283,4 +254,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ?.addEventListener("click", () => {
       location.href = "/reservation/write";
     });
+});
+
+
+// 디자이너 클릭시 해당 디자이너 상세페이지로 이동
+document.querySelectorAll(".designer-item").forEach((item) => {
+  item.addEventListener("click", () => {
+    const designerId = item.dataset.id;
+    if (designerId) {
+      window.location.href = `/designerProfile/${designerId}`;
+    }
+  });
 });

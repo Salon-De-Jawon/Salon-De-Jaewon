@@ -1,8 +1,20 @@
-body {
+/* 전체 레이아웃 컨테이너 */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #000000;
+}
+
+/* 혹시 모를 튀어나감 방지 */
+body, html {
+  overflow-x: hidden;
+}
+
+/* 각 section에도 패딩 주기 */
+.tab-content {
+  padding: 24px 0;
 }
 
 
@@ -43,6 +55,7 @@ body {
   padding-top: 16px;
   padding-bottom: 16px;
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
+
 }
 
 /* 공통 버튼 및 아이콘 영역 스타일 */
@@ -71,10 +84,11 @@ body {
   color: #8c9ed9;
   transition: color 0.3s ease;
   margin-right: 4px;
+  font-size: 16px;
 }
 .shop-btn .text small {
   margin-left: 12px;
-  font-size: 12px;
+  font-size: 14px;
   color: #333;
 }
 
@@ -162,7 +176,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: normal;
   color: #666;
 }
@@ -170,14 +184,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  font-size: 16px;
 }
 .shop-icon .icon {
-  font-size: 18px;
+  font-size: 16px;
   color: #544a8e;
 }
 .shop-icon .text small {
-  font-size: 12px;
+  font-size: 14px;
   color: #544a8e;
+
 }
 
 /* 미용실 이름 및 평점 */
@@ -209,7 +225,7 @@ body {
 }
 /* 매장 운영시간 */
 .shop-info-box h3 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: blod;
   margin-bottom: 10px;
   color: #333;
@@ -221,8 +237,8 @@ body {
 }
 
 /* 이용 전 안내  */
-.shop-info-box .notice strong {
-  font-size: 20px;
+.shop-info-box .shop-description strong {
+  font-size: 22px;
   font-weight: 700;
   color: #333;
 }
@@ -230,13 +246,22 @@ body {
 .shop-info-box .red {
   color: #d34b57;
   font-weight: bold;
+  font-size:15px;
 }
 
-.notice ul {
+.shop-info-box span{
   list-style-type: none;
   margin: 0;
   padding-left: 20px;
-  font-size: 13px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.shop-description p {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
@@ -507,34 +532,73 @@ body {
   background-color: #6f82c2;
 }
 
-/* 시술 스타일 사진 그리드 */
-.style-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  max-width: 960px;
-  width: 100%;
-  margin: 0 auto;
-  justify-items: center;
+.service-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* 개별 스타일 사진 크기 축소 */
-.style-photo {
-  width: 100%;
-  max-width: 150px;
-  aspect-ratio: 1 / 1;
-  background-color: #ddd;
-  border-radius: 10px;
-  position: relative;
+.service-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background-color: #fff;
+  transition: box-shadow 0.2s;
 }
 
-/* 마지막 썸네일: 블러 처리 */
-.style-photo.last-photo {
-  filter: blur(3px);
-  position: relative;
-  overflow: hidden;
-  border: none;
-  outline: none;
+.service-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.service-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.service-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.service-price {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.discount {
+  color: #e55;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.sale-price {
+  font-weight: 500;
+  color: #333;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #aaa;
+  margin-left: 8px;
+}
+
+.service-extra {
+  font-size: 0.85rem;
+  color: #888;
 }
 
 /* + 아이콘: 블러 영향 없이 선명하게, 라인 제거 */
@@ -941,88 +1005,92 @@ body {
 .designer-list-view {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 12px;
+  justify-content: center;
+  box-sizing: border-box;
 }
 .designer-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 16px 24px;
+  background: #fff;
   border: 1px solid #ddd;
   border-radius: 12px;
-  padding: 16px;
-  background-color: #fff;
+  min-height: 120px;
+  gap: 16px;
+  position: relative;
 }
 
-/* 디자이너 이미지 */
-.designer-thumb img {
-  width: 72px;
-  height: 72px;
+.designer-item img {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
+/* 디자이너 정보 */
 .designer-detail {
   flex: 1;
-  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+/* 이름 + 직급 */
 .designer-label {
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #333;
-  margin-bottom: 0;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
-.designer-label strong,
-.designer-label .designer-role {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
+.designer-label span {
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.designer-tags,
-.designer-exp {
+/* 소개글 */
+.designer-card {
   font-size: 14px;
-  color: #555;
-  margin-bottom: 2px;
+  color: #888;
+  margin-bottom: 8px;
 }
 
-.de-detail {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #666;
-  margin: 4px 0;
-}
-.designer-speciality,
-.designer-career {
-  font-size: 14px;
-  color: #666;
-}
-
+/* 상태바 (좋아요, 리뷰 수) */
 .designer-status {
   display: flex;
   gap: 12px;
-  font-size: 13px;
-  color: #888;
-  margin-top: 20px;
-}
-.designer-status i {
-  margin-right: 4px;
-  color: #999;
+  font-size: 14px;
+  color: #555;
+  align-items: center;
 }
 
-/* 예약하기 버튼 */
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 예약 버튼 우측 중앙 */
+.designer-book {
+  display: flex;
+  align-items: center;
+}
+
 .btn-book {
   background-color: transparent;
   border: 1px solid #8c9ed9;
   color: #8c9ed9;
   padding: 5px 12px;
-  font-size: 12px;
+  font-size: 13px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
@@ -1030,6 +1098,7 @@ body {
   gap: 4px;
   transition: all 0.3s ease;
 }
+
 .btn-book i {
   color: #8c9ed9;
 }

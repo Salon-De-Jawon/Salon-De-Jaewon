@@ -38,7 +38,7 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
     Optional<Review> findByReservationId(Long id);
 
     // 해당 유저가 작성한 리뷰 전부 불러오기
-    List<Review> findByReservation_Member_id(Long memberId);
+    List<Review> findByReservation_ShopDesigner_Designer_Id(Long designerId);
 
     // 페이지 에이블 추가
     Page<Review> findByReservation_Member_Id(Long memberId, Pageable pageable);
@@ -61,6 +61,10 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
 
     // 디자이너 리뷰 목록
     List<Review> findByReservation_shopDesignerId( Long shopDesignerId );
+
+    // 예약 id로 리뷰 리스트 찾기
+    List<Review> findByReservationIdIn(List<Long> reservationIds);
+
 
 
 }

@@ -2,6 +2,7 @@ package com.salon.service.shop;
 
 
 
+import com.google.type.Decimal;
 import com.salon.constant.LikeType;
 import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerListDto;
@@ -12,12 +13,14 @@ import com.salon.dto.shop.ReviewImageDto;
 import com.salon.dto.shop.ReviewListDto;
 import com.salon.dto.shop.ShopDetailDto;
 import com.salon.dto.shop.ShopServiceSectionDto;
+import com.salon.entity.Member;
 import com.salon.entity.Review;
 import com.salon.entity.ReviewImage;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.DesignerService;
 import com.salon.entity.management.master.ShopService;
+import com.salon.entity.shop.Reservation;
 import com.salon.entity.shop.Shop;
 import com.salon.entity.shop.ShopImage;
 import com.salon.repository.ReviewImageRepo;
@@ -49,7 +52,7 @@ public class ShopDetailService {
     private final ReviewRepo reviewRepo;
     private final ReviewImageRepo reviewImageRepo;
     private final SalonLikeRepo salonLikeRepo;
-    private final ReservationRepo reservaitonRepo;
+    private final ReservationRepo reservationRepo;
     private  final DesignerServiceRepo designerServiceRepo;
 
 
@@ -68,7 +71,8 @@ public class ShopDetailService {
         int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP,shopId);
 
         // 미용실 평균 평점 조회
-        float avgRating = reviewRepo.averageRatingByShopId(shopId);
+        float floatRating = reviewRepo.averageRatingByShopId(shopId);
+        float avgRating = Math.round(floatRating * 10f) / 10f;
 
 
         // Shop Entity -> ShopDetailDto로 변환
@@ -106,85 +110,23 @@ public class ShopDetailService {
         // 각 디자이너에 대한 dto 변환
         return shopDesigners.stream()
                 .map(sd -> {
-                    Long designerId = sd.getDesigner().getId();
-                    DesignerService service = designerServiceRepo.findByShopDesignerId(designerId).orElse(null);
 
+                    DesignerService service = designerServiceRepo.findByShopDesignerId(sd.getId()).orElse(null);
+
+                    Long designerId = sd.getDesigner().getMember().getId();
                     // 찜 갯수
                     int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.DESIGNER, designerId);
+
                     // 리뷰 갯수
-                    int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(designerId);
+
+                    int reviewCount = reviewRepo.countByReservation_ShopDesigner_Id(sd.getId());
 
                     return DesignerListDto.from(sd, likeCount, reviewCount, service);
                 }).collect(Collectors.toList());
     }
 
 
-    // 특정 미용실에 대한 리뷰 전체 목록 (썸네일 + 디자이너 답글 포함) -> 홈 섹션
-    public List<ReviewListDto> getShopReviews (Long shopId) {
 
-        // 샵에 등록된 전체 리뷰 조회
-        List<Review> reviews = reviewRepo.findAll().stream()
-                .filter(r -> r.getReservation() != null) // 아직 가져올 수 있는 데이터가 없으므로 임시방편!
-                .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
-                .collect(Collectors.toList());
-
-        List<ReviewListDto> reviewListDtos = new ArrayList<>();
-
-        for (Review review : reviews) {
-
-            // 리뷰 이미지 리스트 가져오기
-            List<ReviewImage> reviewImages = reviewImageRepo.findAll().stream()
-                    .filter(img -> img.getReview().getId().equals(review.getId()))
-                    .limit(8)
-                    .collect(Collectors.toList());
-
-            List<ReviewImageDto> imageDtos = reviewImages.isEmpty() ? null :
-                    reviewImages.stream().map(ReviewImageDto::from).toList();
-
-            // 디자이너 정보 가져오기
-           ShopDesigner shopDesigner = review.getReservation().getShopDesigner();
-
-
-            // 디자이너 답글
-            ReviewReplyDto replyDto = ReviewReplyDto.from(review);
-
-            // 리뷰 작성자가 몇번째 방문인지 계산(방문횟수)
-            int visitCount = (int) reviews.stream()
-                    .filter(r -> r.getReservation().getMember().getId()
-                    .equals(review.getReservation().getMember().getId()))
-                    .count();
-
-            ReviewListDto reviewListDto = ReviewListDto.from(review,shopDesigner,imageDtos,visitCount,replyDto);
-            reviewListDtos.add(reviewListDto);
-        }
-        return reviewListDtos;
-    }
-
-    // 디자이너 답글 dto 반환 메서드
-    public List<Map<String, Object>> getReviewReplySummaries(Long shopId){
-        List<Review> reviews = reviewRepo.findAll().stream()
-                .filter(r -> r.getReservation() != null)
-                .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
-                .filter(r -> r.getReplyComment() != null && !r.getReplyComment().isBlank())
-                .collect(Collectors.toList());
-
-        return reviews.stream()
-                .map(r -> {
-                    ShopDesigner shopDesigner = r.getReservation().getShopDesigner();
-                    Designer designer = shopDesigner.getDesigner();
-
-                    Map<String, Object> replyInfo = new HashMap<>();
-                    replyInfo.put("reviewId", r.getId());
-                    replyInfo.put("designerName", designer.getMember().getName());
-                    replyInfo.put("designerPosition", shopDesigner.getPosition());
-                    replyInfo.put("designerImg", designer.getImgUrl());
-                    replyInfo.put("replyComment", r.getReplyComment());
-                    replyInfo.put("replyAt", r.getReplyAt());
-
-                    return replyInfo;
-                }).toList();
-
-    }
     // 카테고리별 시술 리스트  -> 시술목록 섹션
     public ShopServiceSectionDto getShopServiceSections(Long shopId) {
         ShopServiceSectionDto serviceSectionDto = new ShopServiceSectionDto();
@@ -266,72 +208,95 @@ public class ShopDetailService {
     }
 
 
-    // 리뷰 리스트 -> 리뷰 섹션
-    public List<ReviewListDto> getFilteredReviews (Long shopId, ServiceCategory category, String sortType){
 
-        // 모든 리뷰 불러오기
-        List<Review> allReviews = reviewRepo.findAll().stream()
-                .filter(r -> r.getReservation() != null) // 아직 가져올 데이터가 없으므로 임시방편!
-                .filter(r -> r.getReservation().getShopService() != null)
-                .filter(r -> r.getReservation().getShopDesigner().getShop().getId().equals(shopId))
-                .collect(Collectors.toList());
+    // 해당 미용실에 소속되어 있는 디자이너들의 리뷰 리스트
+    public List<ReviewListDto> getFilteredReviews(Long shopId, Long designerId ,ServiceCategory category, String sortType) {
 
-        // 카테고리 필터링
+        // 1. 미용실의 shopid 추출
+        Shop shop = shopRepo.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 미용실이 존재하지 않습니다: " + shopId));
+
+
+        // 미용실에 소속된 디자이너 id 추출
+        List<ShopDesigner> shopDesignerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
+        System.out.println("디자이너 id : " + shopDesignerList);
+
+
+        //  디자이너들의 예약 정보 조회
+        List<Long> shopDesignerIds = new ArrayList<>();
+
+        for(ShopDesigner designer : shopDesignerList) {
+            Long shopDesignerId = designer.getId();
+
+            shopDesignerIds.add(shopDesignerId);
+        }
+
+        List<Reservation> reservations = reservationRepo.findAllByShopDesignerIdIn(shopDesignerIds);
+        if (reservations.isEmpty()) return Collections.emptyList();
+
+        // 예약 ID 리스트 추출
+        List<Long> reservationIds = reservations.stream()
+                .map(Reservation::getId)
+                .toList();
+
+        System.out.println("예약 id : " + reservationIds);
+        //  리뷰 조회
+        List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_Designer_Id(designerId);
+
+        System.out.println("리뷰 : " + reviews );
+
+        //  카테고리 필터링
         if (category != null) {
-            allReviews = allReviews.stream()
-                    .filter(r -> r.getReservation().getShopService().getCategory().equals(category))
+            reviews = reviews.stream()
+                    .filter(r -> {
+                        ShopService service = r.getReservation().getShopService();
+                        return service != null && service.getCategory() == category;
+                    })
                     .collect(Collectors.toList());
         }
 
-
-
-        // 정렬 조건 적용
+        //  정렬 조건 적용
         Comparator<Review> comparator = switch (sortType) {
             case "rating_high" -> Comparator.comparingInt(Review::getRating).reversed();
             case "rating_low" -> Comparator.comparingInt(Review::getRating);
             default -> Comparator.comparing(Review::getCreateAt).reversed();
         };
-        allReviews.sort(comparator);
-
-        // dto 반환 리스트
-        List<ReviewListDto> reviewLists = new ArrayList<>();
-
-        for (Review review : allReviews){
-            Long memberId = review.getReservation().getMember().getId();
-
-            // 리뷰 이미지 최대 8장
-            List<ReviewImageDto> reviewImgs = reviewImageRepo.findAll().stream()
-                    .filter(img -> img.getReview().getId().equals(review.getId()))
-                    .limit(8)
-                    .map(ReviewImageDto::from)
-                    .toList();
+        reviews.sort(comparator);
 
 
+        //  리뷰 → DTO 변환
+        List<ReviewListDto> result = new ArrayList<>();
 
+        for (Review review : reviews) {
+            Reservation reservation = review.getReservation();
+            if (reservation == null) continue;
 
-            // 작성자의 방문 횟수 계산 (같은 샵, 같은 유저 기준)
-            int visitCount = (int) allReviews.stream()
-                    .filter(r -> r.getReservation().getMember().getId().equals(memberId))
+            Member member = reservation.getMember();
+            if (member == null) continue;
+            ShopDesigner shopDesigner = reservation.getShopDesigner();
+
+            // 방문 횟수 (같은 미용실 + 같은 회원 기준)
+            int visitCount = (int) reservations.stream()
+                    .filter(r -> r.getMember().getId().equals(member.getId()))
                     .count();
 
-            // 디자이너 정보
-            ShopDesigner shopDesigner = review.getReservation().getShopDesigner();
+            // 리뷰 이미지 최대 8장
+            List<ReviewImageDto> imageDtos = reviewImageRepo.findAllByReview_Id(review.getId()).stream()
+                    .limit(8)
+                    .map(ReviewImageDto:: from)
+                    .toList();
 
-            // 디자이너 답글
+            // 디자이너 답글 DTO
             ReviewReplyDto replyDto = ReviewReplyDto.from(review);
 
-
-            // 💡 안전하게 빈 리스트로 초기화
-            List<ReviewImageDto> safeImgs = reviewImgs != null ? reviewImgs : new ArrayList<>();
-
-
-            // dto 변환 후 추가
-            ReviewListDto dto = ReviewListDto.from(review,shopDesigner,reviewImgs, visitCount,replyDto);
-            reviewLists.add(dto);
-
+            // DTO 변환 및 추가
+            ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, visitCount, replyDto);
+            result.add(dto);
         }
-        return reviewLists;
+
+        return result;
     }
+
 
 
 }

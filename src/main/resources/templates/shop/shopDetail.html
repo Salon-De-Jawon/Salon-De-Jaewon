@@ -9,6 +9,7 @@
 </head>
 <body>
 <div layout:fragment="main" id="main">
+  <div class="container">
   <section class="shop-top">
     <div class="shop-main">
       <!-- 미용실 이미지 -->
@@ -98,7 +99,9 @@
       <h3>✔ 매장 운영시간 ✔</h3>
       <p>
         <span class="red" th:text="|휴무일 : ${shop?.dayOffText ?: '정보 없음'}|">휴무일 안내</span><br/>
-        ⏰ 평일운영 10:00~20:00 <br/> ⏰ 주말운영 10:00~20:00
+        <span th:text="|운영시간 : ${#temporals.format(shop.openTime, 'HH:mm')} ~ ${#temporals.format(shop.closeTime, 'HH:mm')}|">
+                 매장 운영시간 : 10:00 ~ 20:00
+        </span>
       </p>
       <div class="shop-description">
         <p><strong>✔ 매장 소개 ✔</strong></p>
@@ -178,40 +181,35 @@
 
     <!-- 리뷰 목록 -->
     <section class="review-section" th:if="${reviewList != null and !reviewList.isEmpty()}">
-      <h3>리뷰 <span th:text="${reviewList?.size() ?: 0}">0</span></h3>
-      <article class="review-card" th:each="review : ${reviewList}">
+      <h3>리뷰 <span th:text="${#lists.size(reviewList)}">0</span></h3>
+      <article class="review-card" th:each="review : ${reviewLists}">
         <h4>
-          <div th:if="${review?.serviceName != null}">
+          <div th:if="${review.serviceName != null}">
             <span th:text="${review.serviceName}">시술명</span>
           </div>
-          <span th:if="${review?.designerName != null}">by <span th:text="${review.designerName}">장두목</span> 디자이너</span>
+          <span th:if="${review.designerName != null}">
+        by <span th:text="${review.designerName}">디자이너명</span> 디자이너
+      </span>
         </h4>
 
-        <div th:if="${review?.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb">
-          <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
-          <img src="" alt="더보기 이미지" />
-          <span class="r-plus">+ 더보기</span>
-        </div>
-
-        <div class="review-images" th:if="${review?.imageDtos != null}">
+        <div th:if="${review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="review-images">
           <div class="r-thumb">
-            <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
+            <img th:src="${review.imageDtos[0].imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
             <img src="" alt="더보기 이미지" />
             <span class="r-plus">+ 더보기</span>
           </div>
         </div>
-
-        <p class="review-text" th:text="${review?.content ?: '리뷰 내용 없음'}">
-          디자이너님이 진짜 산적 두목같이 생기셔서 의심했는데...
-        </p>
+        <span th:text="${review != null and review.content != null ? review.content : '리뷰 내용 없음'}">리뷰</span>
 
         <div class="review-meta">
-          ★★★★★ <span th:text="${review?.rating != null ? #numbers.formatDecimal(review.rating, 1, 1) : '0.0'}">5.0</span> ·
-          <span th:text="${review?.memberMaskedName ?: '익명'}">누*지</span> ·
-          <span th:text="${review?.daysAgo != null ? review.daysAgo + '일 전' : '날짜 정보 없음'}">21일 전</span> ·
-          <span th:text="${review?.visitCount != null ? review.visitCount + '번째 방문' : '방문 정보 없음'}">4번째 방문</span>
+          ★★★★★
+          <span th:text="${review.rating != null ? #numbers.formatDecimal(review.rating, 1, 1) : '0.0'}">5.0</span> ·
+          <span th:text="${review.memberMaskedName ?: '익명'}">익명</span> ·
+          <span th:text="${review.daysAgo != null ? review.daysAgo + '일 전' : '날짜 정보 없음'}">X일 전</span> ·
+          <span th:text="${review.visitCount != null ? review.visitCount + '번째 방문' : '방문 정보 없음'}">X번째 방문</span>
         </div>
       </article>
+
       <div class="review-more">
         <button class="btn-more">리뷰 더보기</button>
       </div>
@@ -250,30 +248,41 @@
 
     <!-- 시술 리스트 -->
     <div class="container">
-      <!-- 카테고리 반복 렌더링 -->
-      <div th:each="category : ${T(com.salon.constant.ServiceCategory).values()}" class="category-section" th:id="${category.name().toLowerCase()}">
-        <h3 th:text="${category.label}">카테고리명</h3>
-        <ul th:if="${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CUT] != null}"
-            th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).CUT]}">
+      <!-- 카테고리 반복 -->
+      <div th:each="category : ${T(com.salon.constant.ServiceCategory).values()}"
+           class="category-section"
+           th:id="${category.name().toLowerCase()}">
 
-        <li class="service-item no-image"
-              th:each="svc : ${serviceSection.categoryMap[category]}">
-            <strong class="service-name" th:text="${svc != null and svc.name != null ? svc.name : '시술명 없음'}">시술명</strong>
+        <h3 th:text="${category.label}">카테고리명</h3>
+
+        <ul class="service-list">
+          <li class="service-card" th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).valueOf(category.name())]}">
+
+          <div class="service-content">
+            <strong class="service-name"
+                    th:text="${svc?.name ?: '시술명 없음'}">시술명</strong>
+
+
             <div class="service-price">
-            <span class="original"
-                  th:text="${svc != null and svc.price != null ? #numbers.formatInteger(svc.price, 3, 'COMMA') + '원' : '가격 미정'}">
-              가격
-            </span>
+        <span class="original"
+              th:text="${svc?.price != null ? #numbers.formatInteger(svc.price, 3, 'COMMA') + '원' : '가격 미정'}">
+          가격
+        </span>
+
             </div>
             <div class="service-extra">커트 포함</div>
+            </div>
           </li>
         </ul>
+
+        <!-- 더보기 버튼 -->
         <div class="service-more">
           <button class="more-btn">
             <span class="label">더보기</span>
             <i class="chevron fa-solid fa-chevron-down"></i>
           </button>
         </div>
+
       </div>
 
       <!-- 추천 시술 별도 렌더링 -->
@@ -306,7 +315,7 @@
   <section class="tab-content" id="section-designer" style="display: none">
     <div class="container">
       <ul class="designer-list-view" th:if="${designerLists != null and !designerLists.isEmpty()}">
-        <li class="designer-item" th:each="designer : ${designerLists}">
+        <li class="designer-item" th:each="designer : ${designerLists}" th:attr="data-id=${designer.id}">
 
           <!-- 디자이너 프로필 사진 -->
           <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}" alt="디자이너 프로필"/>
@@ -314,7 +323,7 @@
           <!-- 디자이너 정보 -->
           <div class="designer-detail">
             <p class="designer-label">
-              <span th:text="${designer != null and designer.name != null ? designer.name : '이름 없음'}">이름</span>
+              <span th:text="${designer != null and designer.name != null ? designer.name : '이름 없음'}">디자이너 이름</span>
               <span th:text="${designer != null and designer.position != null ? designer.position : '디자이너'}">직급</span>
             </p>
 
@@ -353,7 +362,7 @@
       <!-- 디자이너가 없을 경우 -->
       <p th:if="${designerLists == null or designerLists.isEmpty()}">등록된 디자이너가 없습니다.</p>
     </div>
-
+  </section>
 
   <!-- 리뷰 섹션 -->
   <section class="tab-content" id="section-review" style="display: none">
@@ -384,7 +393,7 @@
         <!-- 리뷰 썸네일 -->
         <div class="r-thumbnails">
           <th:block th:if="${reviewList != null and !reviewList.isEmpty()}">
-            <th:block th:each="review : ${reviewList}">
+            <th:block th:each="review : ${reviewLists}">
               <div th:if="${review != null and review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb" th:remove="tag">
                 <img th:src="${review.imageDtos[0].imgUrl != null ? review.imageDtos[0].imgUrl : '/images/default.png'}" alt="리뷰 이미지" />
                 <img src="/images/blank.png" alt="더보기 이미지" />
@@ -442,7 +451,7 @@
       </div>
     </div>
   </section>
-
+  </div>
 </div>
 
 

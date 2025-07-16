@@ -1,5 +1,6 @@
 package com.salon.repository.shop;
 
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.shop.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface ReservationRepo extends JpaRepository<Reservation, Long> {
 
@@ -59,4 +59,7 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
             "WHERE sd.shop.id = :shopId AND DATE(r.reservationDate) = CURRENT_DATE " +
             "ORDER BY r.reservationDate")
     List<Reservation> findTodayResByShopId(@Param("shopId") Long shopId);
+
+
+    List<Reservation> findAllByShopDesignerIdIn(List<Long> shopDesignerIds);
 }

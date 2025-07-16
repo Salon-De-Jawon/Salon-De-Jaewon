@@ -29,7 +29,11 @@ public class DesignerDetailDto {
     private int likeCount; // 디자이너별 찜 갯수
     private int reviewCount; // 디자이너별 리뷰 갯수
     private int rating; // 디자이너 평점
+    private String expertise; // 디자이너 전문 시술 분야 (예 :" 커트 / 펌 / 염색 ")
+    private String description; // 디자이너 소개
 
+
+    private int careerYears; // 디자이너 연차 계산
 
     private MultipartFile designerProfile;
     private List<ReviewListDto> reviewList;
@@ -49,6 +53,7 @@ public class DesignerDetailDto {
         designerDetailDto.setScheduleEndTime(shopDesigner.getScheduledEndTime());
         designerDetailDto.setLikeCount(likeCount);
         designerDetailDto.setReviewCount(reviewCount);
+        designerDetailDto.setDescription(shopDesigner.getDescription());
 
         return designerDetailDto;
     }

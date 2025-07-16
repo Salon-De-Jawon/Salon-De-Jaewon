@@ -34,7 +34,7 @@ public class ShopController {
 
     // 미용실 상세 페이지
     @GetMapping("/{shopId}")
-    public String getShopDetail(@PathVariable("shopId") Long shopId,@RequestParam(required = false) Long memberId,@RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
+    public String getShopDetail(@PathVariable("shopId") Long shopId,@RequestParam(required = false) Long memberId,@RequestParam(required = false) Long designerId,@RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
 
         // 홈섹션 (상세페이지에서 기본적으로 보이는 정보들)
 
@@ -50,9 +50,10 @@ public class ShopController {
         List<DesignerListDto> designerLists = shopDetailService.getDesignersByShopId(shopId);
         model.addAttribute("designerLists", designerLists);
 
-        // 리뷰 리스트
-        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId, category, sort);
-        model.addAttribute("reviewList", reviewLists != null ? reviewLists : new ArrayList<>());
+        // 리뷰 목록
+        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId,designerId,category,sort);
+        model.addAttribute("reviewList", reviewLists);
+
 
         // 시술 섹션 (시술 카테고리별 시술 목록 출력)
         ShopServiceSectionDto serviceSection = shopDetailService.getShopServiceSections(shopId);
@@ -63,13 +64,15 @@ public class ShopController {
         model.addAttribute("designerListsSection", designerListsSection);
 
 
-        // 리뷰 섹션 ( 리뷰 메뉴 클릭시 출력)
-        List<ReviewListDto> reviewListsSection = shopDetailService.getFilteredReviews(shopId,category,sort);
-        model.addAttribute("reviewListsSection", reviewListsSection);
-
-
         // 부가적으로 필요한 모델 바인딩
+
+        // category가 null이면 Map에서 첫 번째 key를 기본값으로 사용
+        if (category == null && !serviceSection.getCategoryMap().isEmpty()) {
+            category = serviceSection.getCategoryMap().keySet().iterator().next();
+        }
         model.addAttribute("selectCategory", category);
+
+
         model.addAttribute("selectedSort", sort);
 
 
