@@ -142,7 +142,7 @@ categoryButtons.forEach((button) => {
   /**
    * 6. 디자이너 탭
    */
-  ddocument.querySelectorAll(".designer-card").forEach((card) => {
+  document.querySelectorAll(".designer-card").forEach((card) => {
      card.addEventListener("click", () => {
        const shopDesignerId = card.dataset.id;
        location.href = `/designerProfile/${shopDesignerId}`;

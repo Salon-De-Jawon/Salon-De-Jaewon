@@ -438,11 +438,9 @@
               ★★★★☆ 4.0
             </div>
 
-            <div class="review-images">
-              <div class="photo" th:each="imageDto : ${review.imageDtos}"
-                   th:if="${imageDto != null && imageDto.imgUrl != null}">
-                <img th:src="${imageDto.imgUrl}">
-              </div>
+            <div class="review-images"th:each="imageDto : ${review.imageDtos}"
+                 th:if="${imageDto != null && imageDto.imgUrl != null}">
+                <img th:src="${imageDto.imgUrl}" class="photo">
             </div>
 
             <div class="r-content">

@@ -232,7 +232,7 @@ public class ShopDetailService {
             Long shopDesignerId = designer.getId();
 
             //shopDesignerIds.add(shopDesignerId);
-            List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_Id(shopDesignerId);
+            List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_IdOrderByCreateAtDesc(shopDesignerId);
 
             System.out.println("리뷰 : " + reviews.size() );
 
