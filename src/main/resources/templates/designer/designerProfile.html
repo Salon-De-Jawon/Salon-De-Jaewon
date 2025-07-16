@@ -81,18 +81,18 @@
             <h3 th:text="|${detail?.designerName ?: '디자이너'}의 시술 미리보기|">시술 미리보기</h3>
             <ul class="service-list">
                 <span th:text="${detail != null and detail.expertise != null ? detail.expertise : '전문분야 없음'}">전문분야</span>
+                    <li>
                     <div class="service-img">
                         <img th:src="${service?.imgUrl ?: '/images/placeholder.png'}" alt="시술사진" />
                     </div>
                     <div class="service-info">
                         <strong class="service-name" th:text="${service?.name ?: '이름 없음'}">시술명</strong>
                         <div class="service-price">
-                            <span class="discount" th:if="${service?.discountPercent > 0}" th:text="|${service.discountPercent}%|">할인율</span>
                             <span class="original" th:text="|${#numbers.formatInteger(service?.price, 3, 'COMMA')}원|">정가</span>
-                            <span class="final" th:if="${service?.discountPercent > 0}" th:text="|${#numbers.formatInteger(service?.finalPrice, 3, 'COMMA')}원|">할인가</span>
                         </div>
-                        <div class="service-extra" th:text="${service?.extraInfo ?: ''}">추가정보</div>
+                        <div class="service-extra" th:text="${service?.description ?: ''}">추가정보</div>
                     </div>
+                </li>
             </ul>
         </div>
     </section>
@@ -164,15 +164,18 @@
             <th:block th:if="${serviceMap != null}">
                 <th:block th:each="entry : ${serviceMap}">
                     <h3 th:text="${entry.key == 'RECOMMENED' ? '추천 시술' : entry.key.label}">카테고리명</h3>
-                    <ul>
+                    <ul class="service-list">
                         <li th:each="service : ${entry.value}">
-                            <span th:text="${service?.name ?: '이름 없음'}">시술명</span>
-                            <span th:if="${service != null and service.discountPercent > 0}">
-                                <span th:text="|${service.discountPercent}%|">할인율</span>
-                                <span class="original" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">정가</span>
-                                <span class="final" th:text="|${#numbers.formatInteger(service.finalPrice, 3, 'COMMA')}원|">할인가</span>
-                            </span>
-                            <span th:if="${service?.discountPercent == 0}" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">정가</span>
+                            <div class="service-img">
+                                <img th:src="${service.imgUrl ?: '/images/placeholder.png'}" alt="시술사진" />
+                            </div>
+                            <div class="service-info">
+                                <strong class="service-name" th:text="${service.name ?: '이름 없음'}">시술명</strong>
+                                <div class="service-price">
+                                    <span class="original" th:text="|${#numbers.formatInteger(service.price, 3, 'COMMA')}원|">정가</span>
+                                </div>
+                                <div class="service-extra" th:text="${service?.description ?: ''}">추가정보</div>
+                            </div>
                         </li>
                     </ul>
                 </th:block>
@@ -180,8 +183,7 @@
         </div>
     </section>
 
-</div> <!-- /#main -->
-
+</div>
 <!-- JS -->
 <th:block layout:fragment="script">
     <script th:src="@{/javascript/designer/designerProfile.js}" defer></script>

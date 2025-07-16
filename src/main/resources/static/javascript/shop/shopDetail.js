@@ -255,3 +255,14 @@ categoryButtons.forEach((button) => {
       location.href = "/reservation/write";
     });
 });
+
+
+// 디자이너 클릭시 해당 디자이너 상세페이지로 이동
+document.querySelectorAll(".designer-item").forEach((item) => {
+  item.addEventListener("click", () => {
+    const designerId = item.dataset.id;
+    if (designerId) {
+      window.location.href = `/designerProfile/${designerId}`;
+    }
+  });
+});

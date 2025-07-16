@@ -4,12 +4,15 @@ package com.salon.control;
 import com.salon.dto.designer.DesignerDetailDto;
 import com.salon.dto.designer.DesignerHomeDto;
 import com.salon.service.designer.DesignerDetailService;
+import com.salon.service.user.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class DesignerController {
 
 
     @GetMapping("/{shopDesignerId}")
-    public String showDesignerDetail (@PathVariable("shopDesignerId") Long shopDesignerId, Model model ){
+    public String showDesignerDetail (@PathVariable("shopDesignerId") Long shopDesignerId,Model model ){
 
 
         // 디자이너 기본 정보 (상단 프로필 영역)
@@ -36,15 +39,12 @@ public class DesignerController {
 
 
 
-
-
         model.addAttribute("detail", detailDto);
         model.addAttribute("home", homeDto);
         model.addAttribute("serviceMap", serviceMap);
 
 
         return "designer/designerProfile";
-
     }
 
 
