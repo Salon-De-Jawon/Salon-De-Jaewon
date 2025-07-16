@@ -1,250 +1,161 @@
-// 고객 요청사항 저장 버튼 toggle
-document.addEventListener("DOMContentLoaded", function () {
-  const commentField = document.getElementById("customerComment");
-  const saveBtn = document.getElementById("commentSaveBtn");
-
-  if (commentField && saveBtn) {
-    saveBtn.addEventListener("click", function () {
-      const isEditable = !commentField.readOnly;
-
-      if (isEditable) {
-        commentField.readOnly = true;
-        commentField.style.backgroundColor = "#f5f5f5";
-        commentField.style.cursor = "default";
-        saveBtn.textContent = "수정";
-      } else {
-        commentField.readOnly = false;
-        commentField.style.backgroundColor = "#fff";
-        commentField.style.cursor = "text";
-        commentField.focus();
-        saveBtn.textContent = "저장";
-      }
-    });
-  }
-});
-
-//  쿠폰 렌더링 & 선택
-
-const coupons = [
-  {
-    id: "coupon1",
-    title: "생일 쿠폰",
-    description: "생일 축하 특별 할인",
-    discountType: "percent",
-    value: 10,
-    minAmount: 20000,
-    expire: "2025-07-18",
-    issuedAt: "2025-06-01",
-    salonId: "salon001",
-    userOwns: true,
-    usable: true,
-  },
-  {
-    id: "coupon2",
-    title: "첫 방문 쿠폰",
-    description: "첫 방문 고객을 위한 특별 혜택",
-    discountType: "amount",
-    value: 5000,
-    minAmount: 15000,
-    expire: "2025-07-18",
-    issuedAt: "2025-06-15",
-    salonId: "salon001",
-    userOwns: true,
-    usable: true,
-  },
-];
-
-let selectedCouponId = null;
-let selectedTicketId = null;
-const originalPrice = 58000;
-const appliedDiscount = { coupon: 0, ticket: 0 };
-
-function loadCoupons(sortBy = "issuedAt") {
-  const couponList = document.querySelector(".coupon-list");
-  couponList.innerHTML = "";
-
-  const today = new Date();
-  const salonId = "salon001";
-
-  let validCoupons = coupons.filter(
-    (c) =>
-      c.userOwns &&
-      c.salonId === salonId &&
-      new Date(c.expire) >= today &&
-      c.usable
-  );
-
-  if (sortBy === "percent") {
-    validCoupons.sort((a, b) => {
-      return (b.discountType === "percent" ? b.value : 0) - (a.discountType === "percent" ? a.value : 0);
-    });
-  } else if (sortBy === "amount") {
-    validCoupons.sort((a, b) => {
-      return (b.discountType === "amount" ? b.value : 0) - (a.discountType === "amount" ? a.value : 0);
-    });
-  } else if (sortBy === "expire") {
-    validCoupons.sort((a, b) => new Date(a.expire) - new Date(b.expire));
-  } else {
-    validCoupons.sort((a, b) => new Date(b.issuedAt) - new Date(a.issuedAt));
-  }
-
-  document.querySelector(".couponSelect span").textContent = `${validCoupons.length}개`;
-
-  if (validCoupons.length === 0) {
-    couponList.innerHTML = `<p style="font-size:12px; color:#888;">사용 가능한 쿠폰이 없습니다.</p>`;
-    return;
-  }
-
-  validCoupons.forEach((coupon) => {
-    const div = document.createElement("div");
-    div.className = "coupon-item";
-    div.innerHTML = `
-      <div class="coupon-left">
-        <div class="coupon-amount">
-          ${coupon.discountType === "percent" ? `${coupon.value}% 할인` : `${coupon.value.toLocaleString()}원 할인`}
-        </div>
-        <div class="coupon-title">${coupon.title}</div>
-        <div class="coupon-desc">${coupon.description}</div>
-        <div class="coupon-min">${coupon.minAmount.toLocaleString()}원 이상 사용 가능</div>
-        <div class="coupon-exp">사용 기한: ${coupon.expire}</div>
-      </div>
-      <button type="button" onclick="applyCoupon('${coupon.id}')">사용하기</button>
-    `;
-    couponList.appendChild(div);
-  });
-}
-
-function applyCoupon(couponId) {
-  const allCoupons = document.querySelectorAll(".coupon-item");
-  const discountDisplay = document.getElementById("applied-discount");
-  const hiddenInput = document.getElementById("selectedCouponId");
-
-  if (selectedCouponId === couponId) {
-    selectedCouponId = null;
-    appliedDiscount.coupon = 0;
-    if (hiddenInput) hiddenInput.value = "";
-
-    allCoupons.forEach((item) => {
-      const btn = item.querySelector("button");
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.style.pointerEvents = "auto";
-    });
-
-    if (discountDisplay) discountDisplay.textContent = "총 원 할인";
-    updateFinalPrice();
-    return;
-  }
-
-  selectedCouponId = couponId;
-  if (hiddenInput) hiddenInput.value = couponId;
-
-  allCoupons.forEach((item) => {
-    const btn = item.querySelector("button");
-    if (btn.getAttribute("onclick").includes(couponId)) {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-    } else {
-      btn.disabled = true;
-      btn.style.opacity = "0.4";
-      btn.style.pointerEvents = "none";
-    }
-  });
-
-  const coupon = coupons.find((c) => c.id === couponId);
-  let couponDiscount = 0;
-  let displayText = "";
-
-  if (coupon) {
-    if (coupon.discountType === "percent") {
-      couponDiscount = Math.floor(originalPrice * (coupon.value / 100));
-      displayText = `${coupon.value}%`;
-    } else {
-      couponDiscount = coupon.value;
-      displayText = `${coupon.value.toLocaleString()}원`;
-    }
-
-    appliedDiscount.coupon = couponDiscount;
-    if (discountDisplay) discountDisplay.textContent = `총 ${displayText} 할인`;
-  }
-
-  updateFinalPrice();
-}
-
-function setupCouponFilters() {
-  const buttons = document.querySelectorAll(".filter-options button");
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      loadCoupons(btn.dataset.sort);
-    });
-  });
-}
-
-//  정액권 선택
-
-function applyTicket(ticketId) {
-  const allButtons = document.querySelectorAll(".ticket-item button");
-  const ticketButton = [...allButtons].find((btn) => btn.getAttribute("onclick").includes(ticketId));
-  const ticketItem = ticketButton.closest(".ticket-item");
-  const ticketPriceDisplay = document.getElementById("ticket-price");
-  const hiddenInput = document.getElementById("selectedTicketId");
-
-  const amountText = ticketItem.querySelector(".ticket-amount").textContent;
-  const discountAmount = parseInt(amountText.replace(/[^0-9]/g, ""), 10);
-
-  if (selectedTicketId === ticketId) {
-    selectedTicketId = null;
-    appliedDiscount.ticket = 0;
-    if (hiddenInput) hiddenInput.value = "";
-
-    allButtons.forEach((btn) => {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.style.pointerEvents = "auto";
-    });
-
-    if (ticketPriceDisplay)
-      ticketPriceDisplay.textContent = "정액권 적용 금액: 원";
-  } else {
-    selectedTicketId = ticketId;
-    appliedDiscount.ticket = discountAmount;
-    if (hiddenInput) hiddenInput.value = ticketId;
-
-    allButtons.forEach((btn) => {
-      if (btn === ticketButton) {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-      } else {
-        btn.disabled = true;
-        btn.style.opacity = "0.4";
-        btn.style.pointerEvents = "none";
-      }
-    });
-
-    if (ticketPriceDisplay)
-      ticketPriceDisplay.textContent = `정액권 적용 금액: ${discountAmount.toLocaleString()}원`;
-  }
-
-  updateFinalPrice();
-}
-
-function updateFinalPrice() {
-  const final = Math.max(0, originalPrice - appliedDiscount.coupon - appliedDiscount.ticket);
-  const display = document.getElementById("total-price");
-  if (display)
-    display.textContent = `총 결제 금액: ${final.toLocaleString()}원`;
-}
-
-// 예약 완료 버튼 → 예약 기록 이동
 document.addEventListener("DOMContentLoaded", () => {
-  loadCoupons();
-  setupCouponFilters();
+    const originalTotalAmountSpan = document.getElementById("original-total-amount");
+    const discountedAmountSpan = document.getElementById("discounted-amount");
+    const ticketAppliedAmountSpan = document.getElementById("ticket-applied-amount");
+    const finalPaymentAmountSpan = document.getElementById("final-payment-amount");
+    const appliedDiscountSpan = document.getElementById("applied-discount");
+    const ticketUsedAmountSpan = document.getElementById("ticket-used-amount");
 
-  const reserveBtn = document.querySelector("#finalReservation button");
-  if (reserveBtn) {
-    reserveBtn.addEventListener("click", () => {
-      alert("예약이 완료되었습니다!");
-      window.location.href = "/reservation-history.html";
+    const customerCommentTextarea = document.getElementById("customerComment");
+    const commentApplyBtn = document.getElementById("commentApplyBtn");
+    const hiddenRequestMemo = document.getElementById("hiddenRequestMemo");
+
+    const couponApplyBtns = document.querySelectorAll(".btn-coupon-apply");
+    const btnCouponCancel = document.getElementById("btn-coupon-cancel");
+    const selectedCouponIdInput = document.getElementById("selectedCouponId");
+
+    const ticketApplyBtns = document.querySelectorAll(".btn-ticket-apply");
+    const btnTicketCancel = document.getElementById("btn-ticket-cancel");
+    const selectedTicketIdInput = document.getElementById("selectedTicketId");
+
+    // 초기 시술 금액을 숫자로 파싱하여 저장
+    let originalTotalAmount = parseFloat(originalTotalAmountSpan.textContent || '0');
+    let currentDiscountAmount = 0;
+    let currentTicketUsedAmount = 0;
+
+    // --- 초기 설정 ---
+    // hiddenRequestMemo에 textarea의 초기값 설정 (Thymeleaf로 받아온 값)
+    hiddenRequestMemo.value = customerCommentTextarea.value;
+    updateFinalAmount(); // 초기 최종 결제 금액 업데이트 (이미 서버에서 계산된 값 표시)
+
+
+    // --- 1. 고객 요청사항 처리 ---
+    commentApplyBtn.addEventListener("click", () => {
+        hiddenRequestMemo.value = customerCommentTextarea.value;
+        alert("요청사항이 적용되었습니다.");
     });
-  }
+
+    // --- 2. 쿠폰 처리 ---
+    couponApplyBtns.forEach(button => {
+        button.addEventListener("click", () => {
+            // 다른 쿠폰 비활성화 및 현재 쿠폰만 활성화
+            couponApplyBtns.forEach(btn => btn.disabled = false);
+            button.disabled = true;
+
+            // 정액권 선택 해제 (쿠폰과 정액권은 동시에 사용하지 않는다고 가정)
+            resetTicketSelection();
+
+            const couponId = button.dataset.couponId;
+            const discountAmount = parseFloat(button.dataset.discountAmount || '0');
+            const discountRate = parseFloat(button.dataset.discountRate || '0');
+            const minOrderAmount = parseFloat(button.dataset.minAmount || '0');
+
+            // 최소 주문 금액 체크
+            if (originalTotalAmount < minOrderAmount) {
+                alert(`이 쿠폰은 ${new Intl.NumberFormat('ko-KR').format(minOrderAmount)}원 이상 결제 시 사용 가능합니다.`);
+                button.disabled = false; // 다시 활성화
+                resetCouponSelection(); // 쿠폰 선택 초기화
+                return;
+            }
+
+            // 할인 금액 계산
+            if (discountRate > 0) {
+                currentDiscountAmount = originalTotalAmount * (discountRate / 100);
+            } else {
+                currentDiscountAmount = discountAmount;
+            }
+            // 최종 할인 금액은 총 시술 금액을 넘지 않도록
+            currentDiscountAmount = Math.min(currentDiscountAmount, originalTotalAmount);
+
+
+            selectedCouponIdInput.value = couponId;
+            appliedDiscountSpan.textContent = `총 ${new Intl.NumberFormat('ko-KR').format(currentDiscountAmount)}원 할인`;
+            btnCouponCancel.style.display = "inline-block"; // 취소 버튼 보이기
+
+            updateFinalAmount();
+        });
+    });
+
+    btnCouponCancel.addEventListener("click", () => {
+        resetCouponSelection();
+        updateFinalAmount();
+    });
+
+    function resetCouponSelection() {
+        couponApplyBtns.forEach(btn => btn.disabled = false);
+        selectedCouponIdInput.value = "";
+        currentDiscountAmount = 0;
+        appliedDiscountSpan.textContent = "총 0원 할인";
+        btnCouponCancel.style.display = "none";
+    }
+
+    // --- 3. 정액권 처리 ---
+    ticketApplyBtns.forEach(button => {
+        button.addEventListener("click", () => {
+            // 다른 정액권 비활성화 및 현재 정액권만 활성화
+            ticketApplyBtns.forEach(btn => btn.disabled = false);
+            button.disabled = true;
+
+            // 쿠폰 선택 해제 (쿠폰과 정액권은 동시에 사용하지 않는다고 가정)
+            resetCouponSelection();
+
+            const ticketId = button.dataset.ticketId;
+            const remainingAmount = parseFloat(button.dataset.remainingAmount || '0');
+
+            // 정액권 사용 금액은 최종 결제 금액 또는 잔액 중 적은 값
+            // 이때 finalPaymentAmount는 쿠폰 적용 전 금액으로 생각 (복잡성 줄이기 위함)
+            // 즉, originalTotalAmount - currentDiscountAmount가 현재 시점에서 정액권으로 결제될 금액
+            let amountToPayWithTicket = Math.max(0, originalTotalAmount - currentDiscountAmount); // 이미 적용된 쿠폰 할인이 있다면 적용 후 금액
+
+            currentTicketUsedAmount = Math.min(remainingAmount, amountToPayWithTicket);
+            
+            selectedTicketIdInput.value = ticketId;
+            ticketUsedAmountSpan.textContent = new Intl.NumberFormat('ko-KR').format(currentTicketUsedAmount);
+            btnTicketCancel.style.display = "inline-block";
+
+            updateFinalAmount();
+        });
+    });
+
+    btnTicketCancel.addEventListener("click", () => {
+        resetTicketSelection();
+        updateFinalAmount();
+    });
+
+    function resetTicketSelection() {
+        ticketApplyBtns.forEach(btn => btn.disabled = false);
+        selectedTicketIdInput.value = "";
+        currentTicketUsedAmount = 0;
+        ticketUsedAmountSpan.textContent = "0";
+        btnTicketCancel.style.display = "none";
+    }
+
+    // --- 4. 최종 금액 업데이트 함수 ---
+    function updateFinalAmount() {
+        let finalAmount = originalTotalAmount;
+
+        // 1. 쿠폰 할인 적용
+        finalAmount -= currentDiscountAmount;
+        discountedAmountSpan.textContent = new Intl.NumberFormat('ko-KR').format(currentDiscountAmount);
+
+        // 2. 정액권 적용
+        // 정액권은 할인 후 금액에서 차감 (만약 쿠폰과 정액권 동시 사용 가능하다면)
+        // 현재는 동시 사용 불가이므로, 정액권이 선택되면 할인 금액은 0
+        if (currentTicketUsedAmount > 0) {
+            finalAmount = originalTotalAmount - currentTicketUsedAmount;
+            discountedAmountSpan.textContent = new Intl.NumberFormat('ko-KR').format(0); // 정액권 사용 시 할인 금액 0으로 표시
+        }
+        ticketAppliedAmountSpan.textContent = new Intl.NumberFormat('ko-KR').format(currentTicketUsedAmount);
+
+        // 최종 금액이 0원 미만이 되지 않도록
+        finalAmount = Math.max(0, finalAmount);
+        
+        finalPaymentAmountSpan.textContent = new Intl.NumberFormat('ko-KR').format(finalAmount);
+    }
+
+    // 초기 로드 시 총 시술 금액이 있다면 parse하여 변수에 저장
+    if (originalTotalAmountSpan.textContent) {
+        originalTotalAmount = parseFloat(originalTotalAmountSpan.textContent);
+        updateFinalAmount(); // 초기 로드 시 한 번 계산하여 최종 금액 표시
+    }
 });

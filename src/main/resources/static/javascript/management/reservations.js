@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reservationStatus === 'COMPLETED' && !isPaid) {
                 const confirmPayment = confirm('완료된 예약이지만, 아직 결제가 진행되지 않았습니다.\n결제 등록 페이지로 이동하시겠습니까?\n(취소 시 예약 수정 페이지로 이동합니다.)');
                 if (confirmPayment) {
-                    window.location.href = `/manage/payments/new?reservationId=${reservationId}`;
+                    window.location.href = `/manage/sales/new?reservationId=${reservationId}`;
                 } else {
                     // 사용자가 '취소'를 누르면 예약 수정 페이지로 이동
                     window.location.href = `/manage/reservations/edit/${reservationId}`;
