@@ -7,6 +7,7 @@ import com.salon.dto.BizStatusDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.entity.admin.CsCustomer;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
@@ -34,6 +35,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.nio.file.WatchEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ public class CsController {
     private final RestTemplate restTemplate = new RestTemplate();
     private final WebNotificationService webNotificationService;
     private final MemberRepo memberRepo;
+
 
     @GetMapping("/api/bizCheck")
     public ResponseEntity<?> check(@RequestParam String bizNo) {
@@ -137,11 +140,10 @@ public class CsController {
         CsCreateDto csCreateDto = csService.create(id);
         CsListDto csListDto = csService.list(id);
         csDetailDto.setLoginId(userDetails.getUsername());
-        csService.replySave(csDetailDto, csCreateDto, csListDto);
 
-        Member member = memberRepo.findByLoginId(csDetailDto.getLoginId());
 
-        Long receiverId = member.getId();
+        // 웹 알림 관련
+        Long receiverId = csService.replySave(csDetailDto, csCreateDto, csListDto);
 
         webNotificationService.notify(
                 receiverId,
@@ -167,14 +169,31 @@ public class CsController {
     @PostMapping("/approve/{id}")
     public String approveShop(@PathVariable Long id,
                               @AuthenticationPrincipal CustomUserDetails userDetails){
-        csService.approveShop(id, userDetails.getMember());
+        Long receiverId = csService.approveShop(id, userDetails.getMember());
+
+        webNotificationService.notify(
+                receiverId,
+                "미용실 신청이 승인되었습니다.",
+                WebTarget.SHOPAPPLY,
+                id
+        );
+
+
         return "redirect:/admin/cs/shopList";
     }
 
     @PostMapping("/reject/{id}")
     public String rejectShop(@PathVariable Long id,
                              @AuthenticationPrincipal CustomUserDetails userDetails){
-        csService.rejectShop(id, userDetails.getMember());
+        Long receiverId = csService.rejectShop(id, userDetails.getMember());
+
+        webNotificationService.notify(
+                receiverId,
+                "미용실 신청이 거절되었습니다.",
+                WebTarget.SHOPAPPLY,
+                id
+        );
+
         return "redirect:/admin/cs/shopList";
     }
 
@@ -195,14 +214,31 @@ public class CsController {
     @PostMapping("/couponBanner/approve")
     public String bannerApprove(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
-        csService.bannerApprove(id, admin);
+        Long receiverId = csService.bannerApprove(id, admin);
+
+
+
+        webNotificationService.notify(
+                receiverId,
+                "쿠폰 배너 신청이 승낙되었습니다",
+                WebTarget.BANNER,
+                id
+        );
         return "redirect:/admin/cs/bannerList";
     }
 
     @PostMapping("/couponBanner/reject")
     public String bannerReject(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
-        csService.bannerReject(id, admin);
+        Long receiverId = csService.bannerReject(id, admin);
+
+        webNotificationService.notify(
+                receiverId,
+                "쿠폰 배너 신청이 거절되었습니다",
+                WebTarget.BANNER,
+                id
+        );
+
         return "redirect:/admin/cs/bannerList";
     }
 
