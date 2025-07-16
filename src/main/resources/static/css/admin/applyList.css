@@ -63,6 +63,7 @@ form[action*="approve"] button {
   background-color: #D63384;
   color: #fff;
   border: 1px solid #fff;
+  padding: 8px 16px;
 }
 
 /* ✅ 거절 버튼 (Secondary) */
@@ -70,4 +71,5 @@ form[action*="reject"] button {
   background-color: transparent;
   color: #444;
   border: 1px solid #bbb;
+  padding: 8px 16px;
 }
