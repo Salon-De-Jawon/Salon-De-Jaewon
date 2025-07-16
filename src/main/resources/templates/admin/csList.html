@@ -27,7 +27,7 @@
             <td><a th:href="@{/admin/cs/reply(id=${csList.id})}" th:text="${csList.questionText}"></a></td>
             <td th:text="${csList.loginId}"></td>
             <!--<th th:text="${#temporals.format(csList.questionAt, 'yyyy-MM-dd')}"></th>-->
-            <td th:text="${csList.csStatus}"></td>
+            <td th:text="${csList.statusLabel}"></td>
         </tr>
         </tbody>
     </table>

@@ -115,7 +115,12 @@ thead {
 th, td {
     padding: 14px;
     border-bottom: 1px solid #ddd;
+}
+th{
+    white-space: nowrap;
+    word-break: keep-all;
     text-align: center;
+    vertical-align: middle;
 }
 
 tr.list:hover {

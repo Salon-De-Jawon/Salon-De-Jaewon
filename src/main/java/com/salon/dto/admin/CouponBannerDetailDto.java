@@ -20,10 +20,13 @@ public class CouponBannerDetailDto {
     private LocalDate endDate;
     private String region;
 
-    public static CouponBannerDetailDto from(CouponBanner couponBanner, CouponBannerListDto couponBannerListDto) {
+    public static CouponBannerDetailDto from(CouponBanner couponBanner) {
         CouponBannerDetailDto couponBannerDetailDto = new CouponBannerDetailDto();
-        couponBannerDetailDto.setId(couponBannerListDto.getId());
-        couponBannerDetailDto.setAdminName(couponBanner.getAdmin().getName());
+        couponBannerDetailDto.setId(couponBanner.getId());
+
+        if(couponBanner.getAdmin() != null){
+            couponBannerDetailDto.setAdminName(couponBanner.getAdmin().getName());
+        }
         couponBannerDetailDto.setImgUrl(couponBanner.getImgUrl());
         couponBannerDetailDto.setRegisterDate(couponBanner.getRegisterDate());
 

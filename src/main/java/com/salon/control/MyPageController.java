@@ -151,7 +151,7 @@ public class MyPageController {
             csListDtoList = csService.findByMember(member);
         }
         model.addAttribute("csListDtoList", csListDtoList);
-        return "/user/myQuestionList";
+        return "user/myQuestionList";
     }
 
 }

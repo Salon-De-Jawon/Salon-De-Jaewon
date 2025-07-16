@@ -19,6 +19,18 @@ public class CouponBannerListDto {
     private String region;
     private ApplyStatus status;
 
+    public String getStatusLabel(){
+        return status != null ? status.getLabel() : "";
+    }
+
+    public ApplyStatus getStatus(){
+        return status;
+    }
+
+    public void setStatus(ApplyStatus status){
+        this.status = status;
+    }
+
     public static CouponBannerListDto from(CouponBanner couponBanner) {
         CouponBannerListDto couponBannerListDto = new CouponBannerListDto();
         couponBannerListDto.setId(couponBanner.getId());
