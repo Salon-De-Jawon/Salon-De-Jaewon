@@ -135,10 +135,10 @@ body, html {
 #share-modal .modal-content {
   background-color: #fff;
   border-radius: 12px;
-  padding: 24px 28px;
+  padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 400px;
+  width: 500px;
+  max-width: 600px;
   text-align: center;
 }
 #share-modal .modal-content p {
@@ -430,28 +430,38 @@ body, html {
 .designer-card {
   width: 200px;
   padding: 16px;
-  border: 1px solid #ddd;
+  border: 1px solid #e6e6e6;
   border-radius: 12px;
-  background-color: #fff;
+  background-color: #f7f7f7;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  box-shadow: inset 0 0 0.5px rgba(0,0,0,0.03);
 }
 
-.designer-item img {
-  width: 80px;
-  height: 80px;
+.designer-img {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ddd;
+  background-color: #f8f8f8;
+  margin-bottom: 12px;
+}
+
+/* 이미지 안쪽 */
+.designer-img img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid #ccc;
-  margin-right: 16px;
+  display: block;
 }
 
 /* 디자이너 정보  */
 .designer-info strong {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #333;
   margin-bottom: 6px;
@@ -472,8 +482,15 @@ body, html {
   display: flex;
   gap: 10px;
   margin-bottom: 12px;
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
+}
+
+.designer-summary {
+   display: block;
+   margin-top: 8px;
+   font-size: 14px;
+   color: #888;
 }
 
 /* 예약 버튼 */

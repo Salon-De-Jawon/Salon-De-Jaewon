@@ -71,7 +71,7 @@
             <line x1="12" y1="2" x2="12" y2="15"/>
           </svg>
         </span>
-          <div class="text"><strong>공유하기</strong></div>
+        <div class="text"><strong>공유하기</strong></div>
         </button>
         <div id="share-modal" style="display: none">
           <div class="modal-content">
@@ -158,11 +158,12 @@
       <h3>디자이너</h3>
       <div class="designer-list">
         <div class="designer-card" th:each="designer : ${designerLists}">
-          <div class="designer-profile"
-               th:style="'background-image:url(' + (designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png') + ')'">
+          <!-- 디자이너 프로필 사진 -->
+          <div class="designer-img">
+          <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.png'}" alt="디자이너 프로필"/>
           </div>
-          <div class="designer-info">
             <p>
+          <div class="designer-info">
               <strong th:text="${designer?.name ?: '이름 없음'}">나미리 원장디자이너</strong>
               <span class="designer-summary" th:text="${designer?.profileSummary ?: '요약 정보 없음'}">펌, 클리닉 전문 (11년차)</span>
             </p>

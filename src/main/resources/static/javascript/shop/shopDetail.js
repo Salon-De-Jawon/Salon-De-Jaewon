@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".shop-btn .lucide-share")
     ?.closest("button")
     .addEventListener("click", () => {
-      document.getElementById("share-modal").style.display = "block";
+      document.getElementById("share-modal").style.display = "flex";
     });
 
   //  공유 모달 내 복사 버튼
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".designer-card .btn-reserve").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      location.href = "/reservation";
+      location.href = `/reservation/write`;
     });
   });
 
@@ -153,7 +153,7 @@ categoryButtons.forEach((button) => {
   document.querySelectorAll(".btn-book").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      location.href = "/reservation";
+      location.href = "/reservation/write";
     });
   });
 
@@ -252,7 +252,7 @@ categoryButtons.forEach((button) => {
   document
     .querySelector(".fixed-reserve .reserve-btn")
     ?.addEventListener("click", () => {
-      location.href = "/reservation/write";
+      location.href = `/reservation/write`;
     });
 });
 
