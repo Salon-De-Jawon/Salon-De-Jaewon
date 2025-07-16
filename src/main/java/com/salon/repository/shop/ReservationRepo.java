@@ -60,6 +60,6 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
             "ORDER BY r.reservationDate")
     List<Reservation> findTodayResByShopId(@Param("shopId") Long shopId);
 
-
     List<Reservation> findAllByShopDesignerIdIn(List<Long> shopDesignerIds);
+
 }

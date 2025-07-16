@@ -727,20 +727,6 @@ body, html {
   border-radius: 6px;
   position: relative;
 }
-.review-images .photo:last-child {
-  filter: blur(2px);
-  position: relative;
-}
-.review-images .photo:last-child::after {
-  content: "+";
-  font-size: 24px;
-  color: white;
-  font-weight: bold;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 
 /* 평점 정보 */
 .review-meta {

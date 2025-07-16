@@ -34,7 +34,7 @@ public class ShopController {
 
     // 미용실 상세 페이지
     @GetMapping("/{shopId}")
-    public String getShopDetail(@PathVariable("shopId") Long shopId,@RequestParam(required = false) Long memberId,@RequestParam(required = false) Long designerId,@RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
+    public String getShopDetail(@PathVariable("shopId") Long shopId,@RequestParam(required = false)ServiceCategory category,@RequestParam(required = false, defaultValue = "lastest") String sort,Model model){
 
         // 홈섹션 (상세페이지에서 기본적으로 보이는 정보들)
 
@@ -51,7 +51,8 @@ public class ShopController {
         model.addAttribute("designerLists", designerLists);
 
         // 리뷰 목록
-        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(shopId,designerId,category,sort);
+        List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(designerLists,category,sort);
+        System.out.println(reviewLists.get(0).getComment());
         model.addAttribute("reviewList", reviewLists);
 
 
@@ -60,7 +61,7 @@ public class ShopController {
         model.addAttribute("serviceSection", serviceSection);
 
         // 디자이너 섹션 (디자이너 메뉴 클릭시 출력)
-        List<DesignerListDto> designerListsSection = shopDetailService.getDesignersByShop(shopId,memberId);
+        List<DesignerListDto> designerListsSection = shopDetailService.getDesignersByShop(shopId);
         model.addAttribute("designerListsSection", designerListsSection);
 
 

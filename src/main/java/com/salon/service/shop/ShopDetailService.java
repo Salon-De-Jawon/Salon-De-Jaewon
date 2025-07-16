@@ -158,7 +158,7 @@ public class ShopDetailService {
     }
 
     // 특정 샵에 소속되어 있는 디자이너 리스트 -> 디자이너 섹션
-    public List<DesignerListDto> getDesignersByShop(Long shopId, Long memberId) {
+    public List<DesignerListDto> getDesignersByShop(Long shopId) {
         List<ShopDesigner> shopDesigners = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
 
         List<DesignerListDto> designerListDtos = new ArrayList<>();
@@ -210,88 +210,68 @@ public class ShopDetailService {
 
 
     // 해당 미용실에 소속되어 있는 디자이너들의 리뷰 리스트
-    public List<ReviewListDto> getFilteredReviews(Long shopId, Long designerId ,ServiceCategory category, String sortType) {
+    public List<ReviewListDto> getFilteredReviews(List<DesignerListDto> designerLists ,ServiceCategory category, String sortType) {
 
-        // 1. 미용실의 shopid 추출
-        Shop shop = shopRepo.findById(shopId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 미용실이 존재하지 않습니다: " + shopId));
+//        // 1. 미용실의 shopid 추출
+//        Shop shop = shopRepo.findById(shopId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 미용실이 존재하지 않습니다: " + shopId));
+//
+//
+//        // 미용실에 소속된 디자이너 id 추출
+//        List<ShopDesigner> shopDesignerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
+//        System.out.println("디자이너 id : " + shopDesignerList);
 
-
-        // 미용실에 소속된 디자이너 id 추출
-        List<ShopDesigner> shopDesignerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
-        System.out.println("디자이너 id : " + shopDesignerList);
+        //  리뷰 → DTO 변환
+        List<ReviewListDto> result = new ArrayList<>();
 
 
         //  디자이너들의 예약 정보 조회
         List<Long> shopDesignerIds = new ArrayList<>();
 
-        for(ShopDesigner designer : shopDesignerList) {
+        for(DesignerListDto designer : designerLists) {
             Long shopDesignerId = designer.getId();
 
-            shopDesignerIds.add(shopDesignerId);
-        }
+            //shopDesignerIds.add(shopDesignerId);
+            List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_IdOrderByCreateAtDesc(shopDesignerId);
 
-        List<Reservation> reservations = reservationRepo.findAllByShopDesignerIdIn(shopDesignerIds);
-        if (reservations.isEmpty()) return Collections.emptyList();
-
-        // 예약 ID 리스트 추출
-        List<Long> reservationIds = reservations.stream()
-                .map(Reservation::getId)
-                .toList();
-
-        System.out.println("예약 id : " + reservationIds);
-        //  리뷰 조회
-        List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_Designer_Id(designerId);
-
-        System.out.println("리뷰 : " + reviews );
-
-        //  카테고리 필터링
-        if (category != null) {
-            reviews = reviews.stream()
-                    .filter(r -> {
-                        ShopService service = r.getReservation().getShopService();
-                        return service != null && service.getCategory() == category;
-                    })
-                    .collect(Collectors.toList());
-        }
-
-        //  정렬 조건 적용
-        Comparator<Review> comparator = switch (sortType) {
-            case "rating_high" -> Comparator.comparingInt(Review::getRating).reversed();
-            case "rating_low" -> Comparator.comparingInt(Review::getRating);
-            default -> Comparator.comparing(Review::getCreateAt).reversed();
-        };
-        reviews.sort(comparator);
+            System.out.println("리뷰 : " + reviews.size() );
 
 
-        //  리뷰 → DTO 변환
-        List<ReviewListDto> result = new ArrayList<>();
+            //  카테고리 필터링
+            if (category != null) {
+                reviews = reviews.stream()
+                        .filter(r -> {
+                            ShopService service = r.getReservation().getShopService();
+                            return service != null && service.getCategory() == category;
+                        })
+                        .collect(Collectors.toList());
+            }
+            for (Review review : reviews) {
+                Reservation reservation = review.getReservation();
+                if (reservation == null) continue;
 
-        for (Review review : reviews) {
-            Reservation reservation = review.getReservation();
-            if (reservation == null) continue;
+                Member member = reservation.getMember();
+                if (member == null) continue;
+                ShopDesigner shopDesigner = reservation.getShopDesigner();
 
-            Member member = reservation.getMember();
-            if (member == null) continue;
-            ShopDesigner shopDesigner = reservation.getShopDesigner();
+                // 방문 횟수 (같은 미용실 + 같은 회원 기준)
+//                int visitCount = (int) reservations.stream()
+//                        .filter(r -> r.getMember().getId().equals(member.getId()))
+//                        .count();
 
-            // 방문 횟수 (같은 미용실 + 같은 회원 기준)
-            int visitCount = (int) reservations.stream()
-                    .filter(r -> r.getMember().getId().equals(member.getId()))
-                    .count();
+                // 리뷰 이미지 최대 8장
+                List<ReviewImageDto> imageDtos = reviewImageRepo.findAllByReview_Id(review.getId()).stream()
+                        .limit(8)
+                        .map(ReviewImageDto:: from)
+                        .toList();
 
-            // 리뷰 이미지 최대 8장
-            List<ReviewImageDto> imageDtos = reviewImageRepo.findAllByReview_Id(review.getId()).stream()
-                    .limit(8)
-                    .map(ReviewImageDto:: from)
-                    .toList();
+                // 디자이너 답글 DTO
+                ReviewReplyDto replyDto = ReviewReplyDto.from(review);
 
-            // 디자이너 답글 DTO
-            ReviewReplyDto replyDto = ReviewReplyDto.from(review);
-
-            // DTO 변환 및 추가
-            ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, visitCount, replyDto);
-            result.add(dto);
+                // DTO 변환 및 추가
+                ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, 1, replyDto);
+                result.add(dto);
+            }
         }
 
         return result;
