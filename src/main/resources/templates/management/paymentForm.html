@@ -12,9 +12,12 @@
   <div id="payment-page">
     <h2>💳 매출 등록</h2>
     <form id="payment-form" th:action="@{/manage/sales/new}" th:object="${newPay}" method="post">
+      <input type="hidden" th:field="*{reservationId}">
+
       <div class="form-row">
         <label for="customerName">고객 이름</label>
-        <input type="text" id="customerName" th:field="*{customerName}" required>
+        <input type="text" id="customerName" th:field="*{customerName}" required
+               th:attr="readonly=${newPay.reservationId != null ? 'readonly' : null}">
       </div>
       <div class="form-row">
         <label for="customerTel">고객 연락처</label>
@@ -26,7 +29,8 @@
       </div>
       <div class="form-row">
         <label for="payDate">결제일</label>
-        <input type="datetime-local" id="payDate" th:field="*{payDate}">
+        <input type="datetime-local" id="payDate" name="payDate"
+               th:value="${newPay.payDate != null ? #temporals.format(newPay.payDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
       </div>
       <div class="form-row">
         <label for="totalPrice">총 금액</label>

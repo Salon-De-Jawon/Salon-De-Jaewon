@@ -19,9 +19,8 @@
 
     <div class="service-list" id="serviceList">
       <div class="service-item" th:each="service : ${serviceList}">
-        <div class="service-img-preview">
-          <img th:if="${service.imgUrl}" th:src="${service.imgUrl}" alt="시술 이미지" class="service-photo" />
-          <img th:unless="${service.imgUrl}" src="/images/default_service.png" alt="기본 이미지" class="service-photo" />
+        <div class="service-img-preview" th:if="${service.imgUrl}">
+          <img th:src="${service.imgUrl}" alt="시술 이미지" class="service-photo" />
         </div>
         <div class="service-info">
           <p class="service-title" th:text="${service.name}">컷</p>

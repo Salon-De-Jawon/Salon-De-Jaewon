@@ -42,6 +42,7 @@ public class PaymentForm {
             form.setCustomerName(payment.getReservation().getMember().getName());
             form.setCustomerTel(payment.getReservation().getMember().getTel());
             form.setServiceName(payment.getReservation().getShopService().getName());
+            form.setDesignerId(payment.getShopDesigner().getId());
         } else {
             form.setDesignerId(payment.getShopDesigner().getId());
             form.setCustomerName(payment.getVisitorName());
