@@ -3,7 +3,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
 <head>
-    <th:block layout:fragment="css"></th:block>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" href="/css/admin/bannerDetail.css">
+    </th:block>
 </head>
 <body>
 <div layout:fragment="main" id="main">
@@ -26,12 +28,13 @@
         <span th:text="${couponBannerDetailDto.shopName}"></span>
     </div>
     <div class="info">
+        <label>이벤트 기간:</label>
         <span th:text="${couponBannerDetailDto.startDate}"></span>
         ~
-        <span th:text="${couponBannerDetailDto.region}"></span>
+        <span th:text="${couponBannerDetailDto.endDate}"></span>
     </div>
     <div class="info">
-        <lable>지역:</lable>
+        <label>지역:</label>
         <span th:text="${couponBannerDetailDto.region}"></span>
     </div>
     <a class="back-link" href="/admin/cs/bannerList">목록으로 돌아가기</a>
