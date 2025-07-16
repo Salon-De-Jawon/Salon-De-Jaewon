@@ -1,6 +1,7 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.ServiceCategory;
 import com.salon.dto.shop.RecommendDesignerDto;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
@@ -57,6 +58,7 @@ public class MainController {
             model.addAttribute("userAgreeLocation", false);
             model.addAttribute("currentUserId", null);
         } else {
+
             String name = userDetails.getMember().getName();
             model.addAttribute("name", name);
 
@@ -64,7 +66,8 @@ public class MainController {
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
             model.addAttribute("isAdmin", isAdmin);
 
-            // ✅ 로그인 사용자 정보 추가
+
+            // 로그인 사용자 정보 추가
             model.addAttribute("userAgreeLocation", userDetails.getMember().isAgreeLocation());
             model.addAttribute("currentUserId", userDetails.getMember().getId());
         }
@@ -208,6 +211,7 @@ public class MainController {
 
         List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
         model.addAttribute("compareResults", compareResults);
+        model.addAttribute("serviceCategories", ServiceCategory.values());
 
         return "/user/compare";
     }

@@ -195,10 +195,18 @@
 }
 
 .service-list {
-  flex-grow: 1; /* 서비스 목록이 가능한 공간을 모두 차지하도록 */
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* 각 서비스 박스 간의 간격 */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 300px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 10px;
+}
+
+.service-list::-webkit-scrollbar {
+    display: none;
 }
 
 .service-box {
@@ -215,13 +223,17 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.service-img {
-  width: 50px; /* 서비스 아이콘/이미지 크기 */
-  height: 50px;
-  background-color: #e0e0e0; /* 서비스 이미지 플레이스홀더 */
-  border-radius: 4px;
-  margin-right: 10px;
-  flex-shrink: 0; /* 크기 줄어들지 않게 */
+.service-img-box {
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .service-info {
@@ -254,6 +266,18 @@
   color: #999;
   text-decoration: line-through; /* 원가에 취소선 */
   white-space: nowrap; /* 가격이 줄바꿈되지 않도록 */
+}
+
+img.portrait {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+
+img.landscape {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 /* 반응형 디자인을 위한 미디어 쿼리 */
