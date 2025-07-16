@@ -68,20 +68,14 @@
 
                     <div class="service-list">
                         <div class="service-cate-box"
-
-                            th:each="category : ${serviceCategories}">
+                             th:each="category : ${serviceCategories}"
+                             th:if="${!#lists.isEmpty(compareResult.categorizedServices.get(category))}">
                             <div class="service-cate-title" th:text="${category.label}">
                                 커트
                             </div>
 
-                            <!--  시술이 없는 경우  -->
-
-                            <div th:if="${#lists.isEmpty(compareResult.categorizedServices.get(category))}" class="no-service">
-                                시술이 없습니다.
-                            </div>
 
                             <div class="service-box"
-                                 th:if="${!#lists.isEmpty(compareResult.categorizedServices.get(category))}"
                                  th:each="service : ${compareResult.categorizedServices.get(category)}"
                             >
                                 <div class="service-img-box">

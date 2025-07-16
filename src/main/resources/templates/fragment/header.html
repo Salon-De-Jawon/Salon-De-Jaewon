@@ -26,13 +26,7 @@
           </li>
           <li>
             <a href="/compare"  id="compare-header-link"
-            >가격비교
-              <div class="select-line"></div
-              ></a>
-          </li>
-          <li>
-            <a href=""
-            >예약하기
+            >한 눈에 보기
               <div class="select-line"></div
               ></a>
           </li>
@@ -81,9 +75,8 @@
                  th:text="${#authentication.name}"
             ></div>
             <div>
-              <a href="">회원정보 수정</a>
               <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button type="submit">로그아웃</button>
+                <button type="submit" class="logout-btn">로그아웃</button>
               </form>
             </div>
           </div>
