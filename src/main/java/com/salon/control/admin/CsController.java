@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,7 @@ public class CsController {
     @GetMapping("/api/bizCheck")
     public ResponseEntity<?> check(@RequestParam String bizNo) {
         System.out.println("bizNo: " + bizNo);
+        System.out.println("✅ encodedKey: " + encodedKey);
         // 요청 JSON 구성
         Map<String, Object> body = new HashMap<>();
         body.put("b_no", List.of(bizNo));
@@ -61,11 +64,14 @@ public class CsController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        String url = "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + encodedKey;
+        URI uri = UriComponentsBuilder.fromHttpUrl("https://api.odcloud.kr/api/nts-businessman/v1/status")
+                .queryParam("serviceKey", encodedKey)
+                .build(true)  // encodedKey가 이미 인코딩되어 있음
+                .toUri();
 
         try {
             ResponseEntity<BizStatusDto> response = restTemplate.exchange(
-                    url,
+                    uri,
                     HttpMethod.POST,
                     entity,
                     BizStatusDto.class
@@ -73,6 +79,7 @@ public class CsController {
             System.out.println("API 응답: " + response.getBody());
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("API 오류: " + e.getMessage());
         }
