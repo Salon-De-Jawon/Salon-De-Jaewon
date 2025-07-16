@@ -1,6 +1,7 @@
 package com.salon.control;
 
 
+import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.MemberCouponDto;
 import com.salon.dto.shop.*;
@@ -19,7 +20,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +31,7 @@ import java.util.List;
 public class ReservationController {
 
 
-    private final ReservationService reservationServcie;
+    private final ReservationService reservationService;
     private final ShopDesignerRepo shopDesignerRepo;
     private final MemberRepo memberRepo;
 
@@ -48,50 +52,80 @@ public class ReservationController {
         model.addAttribute("shopId", shopId);
         model.addAttribute("selectedDesignerId", shopDesignerId);
 
-        if (shopDesignerId == null){
-            // 디자이너 선택이 안 된 상태일때 - 디자이너 리스트만 보여주기
-            List<DesignerListDto> designerList = reservationServcie.getDesignerList(shopId);
-             model.addAttribute("designerList", designerList);
+        // 디자이너 목록
+        List<DesignerListDto> designerList = reservationService.getDesignerList(shopId);
+        model.addAttribute("designerList", designerList);
 
-        }else {
-            // 디자이너가 선택된 경우
+        List<DesignerServiceCategoryDto> serviceCategories = new ArrayList<>();
+        if(shopDesignerId == null){ // 디자이너 선택안될땐 시술 다 보여주기
+            serviceCategories = reservationService.getAllServiceCategories(shopId);
+        } else{ // 디자이너 선택시 해당 디자이너의 시술 목록만
             ShopDesigner shopDesigner = shopDesignerRepo.findByIdAndIsActiveTrue(shopDesignerId);
-            if (shopDesignerId == null){
-                throw new IllegalArgumentException("존재하지 않거나 비활성화된 디자이너 입니다 ID : " + shopDesignerId);
-            }
-            model.addAttribute("designer",shopDesigner);
+            model.addAttribute("designer", shopDesigner);
+            serviceCategories = reservationService.getDesignerServiceCategories(shopDesignerId);
+        }
+        model.addAttribute("serviceCategories", serviceCategories);
 
-            List<DesignerServiceCategoryDto> serviceCategories  = reservationServcie.getDesignerServiceCategoeies(shopDesignerId);
-            model.addAttribute("serviceCategories", serviceCategories);
+        // 시술 가능한 목록 빼오기
+        Set<ServiceCategory> allCategories = new HashSet<>();
+        for (DesignerServiceCategoryDto dto : serviceCategories) {
+            allCategories.add(dto.getCategory());
+        }
+        model.addAttribute("assignedCategories", allCategories);
 
-            AvailableTimeSlotDto timeSlotDto = reservationServcie.getAvailableTimeSlots(shopDesignerId,date);
+        if (shopDesignerId != null && date != null) {
+            AvailableTimeSlotDto timeSlotDto = reservationService.getAvailableTimeSlots(shopDesignerId, date);
             model.addAttribute("availableTimeSlot", timeSlotDto);
         }
 
         return "shop/reservationSelect";
     }
 
-    // 예약 작성 Post -> 예약 확인 페이지로
-    @PostMapping("/confirm")
-    public String confirmReservaiton(@ModelAttribute ReservationRequestDto requestDto, Principal principal, Model model){
-
-        // 예약자 정보 조회
-        String loginId = principal.getName();
-        Member member = memberRepo.findByLoginId(loginId);
-
-
-        // 예약확인용 dto 구성
-        ReservationCheckDto checkDto = reservationServcie.bulidReservationCheck(requestDto);
-
-        model.addAttribute("memeber",member); // 예약자 정보
-        model.addAttribute("checkDto", checkDto); // 예약 확인 화면에 보여줄 dto
-        model.addAttribute("requestDto", requestDto); // 이후 저장시 그대로 넘길 원본 dto
-
-        return "shop/reCheckCoupon";
+    // 디자이너 ID로 시술 목록을 가져오는 API (AJAX 요청용)
+    @GetMapping("/designers/{designerId}/services") // URL 경로에 designerId 포함
+    @ResponseBody
+    public List<DesignerServiceCategoryDto> getDesignerServicesByPath(@PathVariable Long designerId) {
+        return reservationService.getDesignerServiceCategories(designerId);
     }
 
+
+    // 매장 전체 시술 목록을 가져오는 API (AJAX 요청용)
+    @GetMapping("/shop-services")
+    @ResponseBody // JSON 형태로 데이터를 반환
+    public List<DesignerServiceCategoryDto> getShopServices(@RequestParam Long shopId) {
+        return reservationService.getAllServiceCategories(shopId);
+    }
+
+    // 날짜 시간 출력
+    @GetMapping("/designers/{designerId}/available-times") // URL 경로에 designerId 포함
+    @ResponseBody
+    public AvailableTimeSlotDto getAvailableTimesByPath(
+            @PathVariable Long designerId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return reservationService.getAvailableTimeSlots(designerId, date);
+    }
+
+//    // 예약 작성 Post -> 예약 확인 페이지로
+//    @PostMapping("/confirm")
+//    public String confirmReservation(@ModelAttribute ReservationRequestDto requestDto, Principal principal, Model model){
+//
+//        // 예약자 정보 조회
+//        String loginId = principal.getName();
+//        Member member = memberRepo.findByLoginId(loginId);
+//
+//
+//        // 예약확인용 dto 구성
+//        ReservationCheckDto checkDto = reservationService.bulidReservationCheck(requestDto);
+//
+//        model.addAttribute("member",member); // 예약자 정보
+//        model.addAttribute("checkDto", checkDto); // 예약 확인 화면에 보여줄 dto
+//        model.addAttribute("requestDto", requestDto); // 이후 저장시 그대로 넘길 원본 dto
+//
+//        return "shop/reCheckCoupon";
+//    }
+
     // 예약 확인 페이지 Get
-    @GetMapping("/confirm")
+    @PostMapping("/confirm")
     public String confirmReservationPage(@ModelAttribute ReservationRequestDto requestDto,Principal principal ,Model model){
 
         // 예약자 정보 조회
@@ -101,15 +135,15 @@ public class ReservationController {
 
 
         // 예약 정보 요약 (디자이너, 시술, 날짜 등)
-        ReservationPreviewDto preview = reservationServcie.getReservationPreview(requestDto.getMemberId(),requestDto.getShopDesignerId(),
+        ReservationPreviewDto preview = reservationService.getReservationPreview(requestDto.getMemberId(),requestDto.getShopDesignerId(),
                 requestDto.getShopServiceId(),requestDto.getDateTime().toLocalDate(), requestDto.getDateTime().toLocalTime());
 
         // 확인용 금액 정보 dto 생성
-        ReservationCheckDto checkDto = reservationServcie.bulidReservationCheck(requestDto);
+        ReservationCheckDto checkDto = reservationService.bulidReservationCheck(requestDto);
 
 
         // 사용가능한 쿠폰 / 티켓
-        MemberCouponDto couponAndTicket = reservationServcie.getAvailableCouponAndTicket(requestDto.getMemberId(),
+        MemberCouponDto couponAndTicket = reservationService.getAvailableCouponAndTicket(requestDto.getMemberId(),
                 preview.getSelectedDesigner().getShopId());
 
         model.addAttribute("preview",preview);
@@ -131,7 +165,7 @@ public class ReservationController {
         model.addAttribute("memeber",member); // 예약자 정보
 
 
-        reservationServcie.saveReservation(requestDto);
+        reservationService.saveReservation(requestDto);
 
 
         redirect.addFlashAttribute("message", "예약이 성공적으로 완료 되었습니다");

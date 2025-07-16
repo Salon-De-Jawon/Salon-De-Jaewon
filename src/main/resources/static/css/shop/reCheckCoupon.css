@@ -18,7 +18,7 @@
   font-size: 14px;
   color: #000000;
 }
-.info-box button {
+.info-box a {
   margin-top: 16px;
   background: none;
   border: none;
@@ -29,7 +29,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-.info-box button:hover {
+.info-box a:hover {
   background: none;
   border: none;
   color: #42516d;

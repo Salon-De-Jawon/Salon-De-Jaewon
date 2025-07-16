@@ -16,7 +16,7 @@
         <form id="reservationForm" class="reservation-form"
               th:action="${reservationId} != null ? @{/manage/reservations/update/{id}(id=${reservationId})} : @{/manage/reservations/save}"
               method="post"
-              th:object="${newRes}"> <input type="hidden" name="_method" th:if="${reservationId} != null" value="put" />
+              th:object="${newRes}">
             <input type="hidden" name="id" th:if="${reservationId} != null" th:value="${reservationId}">
 
 
