@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.*;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
@@ -49,6 +51,7 @@ public class UserCsController {
     @GetMapping("/api/bizCheck")
     public ResponseEntity<?> check(@RequestParam String bizNo) {
         System.out.println("bizNo: " + bizNo);
+        System.out.println("✅ encodedKey: " + encodedKey);
         // 요청 JSON 구성
         Map<String, Object> body = new HashMap<>();
         body.put("b_no", List.of(bizNo));
@@ -58,11 +61,14 @@ public class UserCsController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        String url = "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + encodedKey;
+        URI uri = UriComponentsBuilder.fromHttpUrl("https://api.odcloud.kr/api/nts-businessman/v1/status")
+                .queryParam("serviceKey", encodedKey)
+                .build(true)  // encodedKey가 이미 인코딩되어 있음
+                .toUri();
 
         try {
             ResponseEntity<BizStatusDto> response = restTemplate.exchange(
-                    url,
+                    uri,
                     HttpMethod.POST,
                     entity,
                     BizStatusDto.class
@@ -70,6 +76,7 @@ public class UserCsController {
             System.out.println("API 응답: " + response.getBody());
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("API 오류: " + e.getMessage());
         }
@@ -77,9 +84,21 @@ public class UserCsController {
     }
     // 공지 관련
     @GetMapping("")
-    public String list(Model model){
-        List<AncListDto> ancListDtoList = ancService.list();
+    public String list(Model model,@AuthenticationPrincipal CustomUserDetails userDetails){
+        Member member = userDetails.getMember();
+        Role role = member.getRole();
+        List<AncListDto> ancListDtoList;
+
+        if(role == Role.ADMIN){
+            ancListDtoList = ancService.list();
+            model.addAttribute("isAdmin", true);
+        } else if(role == Role.USER){
+            ancListDtoList = ancService.findByRole(Role.USER);
+        } else {
+            ancListDtoList = ancService.findByRole(Role.DESIGNER);
+        }
         model.addAttribute("ancListDto", ancListDtoList);
+        model.addAttribute("userRole", role.name());
         return "admin/announcement";
     }
     @GetMapping("/detail")
@@ -208,6 +227,12 @@ public class UserCsController {
                                 @RequestParam("file") MultipartFile file){
         Long memberId = userDetails.getMember().getId();
         csService.applyBanner(bannerApplyDto, memberId, file);
-        return "redirect:/admin/cs/apply";
+        return "redirect:/";
+    }
+    @GetMapping("/bannerList")
+    public String bannerList(Model model){
+        List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
+        model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
+        return "admin/bannerList";
     }
 }

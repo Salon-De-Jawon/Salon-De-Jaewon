@@ -1,6 +1,7 @@
 package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.Role;
 import com.salon.dto.BizStatusDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
@@ -9,10 +10,12 @@ import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.shop.Shop;
+import com.salon.repository.MemberRepo;
 import com.salon.repository.management.DesignerRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
 import com.salon.repository.shop.ShopRepo;
+import com.salon.service.admin.AncService;
 import com.salon.service.admin.CsService;
 import com.salon.service.admin.DesApplyService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +48,13 @@ public class CsController {
     private final ShopDesignerRepo shopDesignerRepo;
     private final DesignerRepo designerRepo;
     private final ShopRepo shopRepo;
-
+    private final AncService ancService;
     private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping("/api/bizCheck")
     public ResponseEntity<?> check(@RequestParam String bizNo) {
         System.out.println("bizNo: " + bizNo);
+        System.out.println("✅ encodedKey: " + encodedKey);
         // 요청 JSON 구성
         Map<String, Object> body = new HashMap<>();
         body.put("b_no", List.of(bizNo));
@@ -58,11 +64,14 @@ public class CsController {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
-        String url = "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + encodedKey;
+        URI uri = UriComponentsBuilder.fromHttpUrl("https://api.odcloud.kr/api/nts-businessman/v1/status")
+                .queryParam("serviceKey", encodedKey)
+                .build(true)  // encodedKey가 이미 인코딩되어 있음
+                .toUri();
 
         try {
             ResponseEntity<BizStatusDto> response = restTemplate.exchange(
-                    url,
+                    uri,
                     HttpMethod.POST,
                     entity,
                     BizStatusDto.class
@@ -70,6 +79,7 @@ public class CsController {
             System.out.println("API 응답: " + response.getBody());
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("API 오류: " + e.getMessage());
         }
@@ -79,7 +89,25 @@ public class CsController {
     private final CsService csService;
 
     private final DesApplyService desApplyService;
+    @GetMapping("")
+    public String list(Model model){
+        List<AncListDto> ancListDtoList = ancService.list();
+        model.addAttribute("ancListDto", ancListDtoList);
+        return "admin/announcement";
+    }
 
+    @GetMapping("/questionList")
+    public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<CsListDto> csListDtoList = csService.List();
+        Member member = userDetails.getMember();
+        if(member.getRole() == Role.ADMIN){
+            csListDtoList = csService.findAll();
+        } else {
+            csListDtoList = csService.findByMember(member);
+        }
+        model.addAttribute("csListDtoList", csListDtoList);
+        return "admin/csList";
+    }
     @GetMapping("/reply")
     public String reply(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @RequestParam Long id,
@@ -126,5 +154,29 @@ public class CsController {
                              @AuthenticationPrincipal CustomUserDetails userDetails){
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
+    }
+    @GetMapping("/bannerList")
+    public String bannerList(Model model){
+        List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
+        model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
+        return "admin/bannerList";
+    }
+    @GetMapping("/bannerDetail")
+    public String bannerDetail(@RequestParam Long id, Model model){
+        CouponBannerDetailDto couponBannerDetailDto = csService.bannerDetail(id);
+        model.addAttribute("couponBannerDetailDto", couponBannerDetailDto);
+        return "admin/bannerDetail";
+    }
+    @PostMapping("/couponBanner/approve")
+    public String bannerApprove(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member admin = userDetails.getMember();
+        csService.bannerApprove(id, admin);
+        return "redirect:/admin/cs/bannerList";
+    }
+    @PostMapping("/couponBanner/reject")
+    public String bannerReject(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
+        Member admin = userDetails.getMember();
+        csService.bannerReject(id, admin);
+        return "redirect:/admin/cs/bannerList";
     }
 }
