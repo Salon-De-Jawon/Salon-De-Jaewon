@@ -309,7 +309,7 @@ public class ReservationService {
 
 
     // 예약 작성 완료 후 entity에 저장하는 메서드
-    public void saveReservation(ReservationRequestDto requestDto){
+    public Long saveReservation(ReservationRequestDto requestDto){
 
         // 예약자 정보
         Member member = memberRepo.findById(requestDto.getMemberId())
@@ -345,6 +345,9 @@ public class ReservationService {
 
         // 저장
         reservationRepo.save(reservation);
+
+        // 웹 알림 저장용 아이디 반환
+        return reservation.getId();
     }
 
     

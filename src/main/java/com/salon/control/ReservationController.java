@@ -1,18 +1,24 @@
 package com.salon.control;
 
 
+import com.salon.config.CustomUserDetails;
 import com.salon.constant.ServiceCategory;
+import com.salon.constant.WebTarget;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.MemberCouponDto;
 import com.salon.dto.shop.*;
 import com.salon.entity.Member;
+import com.salon.entity.admin.WebNotification;
 import com.salon.entity.management.ShopDesigner;
 import com.salon.repository.MemberRepo;
+import com.salon.repository.WebNotificationRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.ShopServiceRepo;
+import com.salon.service.WebNotificationService;
 import com.salon.service.shop.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +41,8 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final ShopDesignerRepo shopDesignerRepo;
     private final MemberRepo memberRepo;
+    private final WebNotificationRepo webNotificationRepo;
+    private final WebNotificationService webNotificationService;
 
 
 
@@ -78,6 +87,8 @@ public class ReservationController {
             model.addAttribute("availableTimeSlot", timeSlotDto);
         }
 
+
+
         return "shop/reservationSelect";
     }
 
@@ -107,9 +118,20 @@ public class ReservationController {
 
     // 예약 작성 Post -> 예약 내역 페이지로
     @PostMapping("/new")
-    public String confirmReservation(@ModelAttribute ReservationRequestDto requestDto){
+    public String confirmReservation(@ModelAttribute ReservationRequestDto requestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
-        reservationService.saveReservation(requestDto);
+        // 알림용 아이디  반환
+        Long targetId = reservationService.saveReservation(requestDto);
+
+        Long receiverId = userDetails.getId();
+
+
+        webNotificationService.notify(
+                receiverId,
+                "예약이 완료되었습니다.",
+                WebTarget.RESERVATION,
+                targetId
+        );
 
         return "redirect:/myPage/reservation";
     }
