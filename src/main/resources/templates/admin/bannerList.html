@@ -14,30 +14,21 @@
         <tr>
             <th>번호</th>
             <th>미용실 이름</th>
+            <th>쿠폰 이름</th>
             <th>지역</th>
-            <th>시작일</th>
-            <th>종료일</th>
+            <th>이벤트 기간</th>
             <th>상세보기</th>
-            <th th:if="${isAdmin}">관리</th>
+            <th>상태</th>
         </tr>
     <tbody>
     <tr th:each="banner, iterStat : ${couponBannerListDtoList}">
         <td th:text="${iterStat.count}"></td>
         <td th:text="${banner.shopName}"></td>
+        <td th:text="${banner.couponName}"></td>
         <td th:text="${banner.region}"></td>
-        <td th:text="${#temporals.format(banner.startDate, 'yyyy-MM-dd')}"></td>
-        <td th:text="${#temporals.format(banner.endDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${#temporals.format(banner.startDate, 'yyyy-MM-dd ') + '~' + #temporals.format(banner.endDate, ' yyyy-MM-dd')}"></td>
         <td><a th:href="@{/admin/cs/bannerDetail(id=${banner.id})}">상세보기</a></td>
-        <td th:if="${isAdmin}">
-            <form th:action="@{/admin/cs/couponBanner/approve}" method="post" style="display:inline;">
-                <input type="hidden" name="id" th:value="${banner.id}">
-                <button type="submit">승인</button>
-            </form>
-            <form th:action="@{/admin/cs/couponBanner/reject}" method="post" style="display:inline; margin-left:5px;">
-                <input type="hidden" name="id" th:value="${banner.id}">
-                <button type="submit">거절</button>
-            </form>
-        </td>
+        <td th:text="${banner.status}"></td>
     </tr>
     </tbody>
     </table>
