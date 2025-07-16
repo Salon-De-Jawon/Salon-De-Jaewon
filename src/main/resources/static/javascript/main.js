@@ -251,17 +251,39 @@ function loadAreaResources(region1) {
 const randomItems = (arr, n) => arr.slice().sort(() => 0.5 - Math.random()).slice(0, n);
 
 function renderAdBannerSlides(banners) {
+
+  if (banners.length < 5) {
+    const dummy = {
+      imgUrl: '/images/coupon-default.jpg',
+      shopId: 0,
+      alt   : '진행중인 광고가 없습니다.'
+    };
+    while (banners.length < 5) banners.push(dummy);
+  }
+
+
   const wrapper = dqs('.ad-banner-swiper .swiper-wrapper');
   if (!wrapper) return;
   wrapper.innerHTML = '';
   banners.forEach(b => {
-    wrapper.insertAdjacentHTML('beforeend', `
-      <div class="swiper-slide">
-        <a href="/shop/${b.shopId}">
-          <img src="${b.imgUrl}" alt="배너" style="width:100%;border-radius:12px;" />
-        </a>
-      </div>
-    `);
+    if (b.shopId === 0) {
+      /* ── 더미 슬라이드 ── */
+      wrapper.insertAdjacentHTML('beforeend', `
+        <div class="swiper-slide ad-dummy-slide">
+          <img src="${b.imgUrl}" alt="${b.alt}" class="dummy-bg">
+          <span class="dummy-text">${b.alt}</span>
+        </div>
+      `);
+    } else {
+      /* ── 실제 배너 ── */
+      wrapper.insertAdjacentHTML('beforeend', `
+        <div class="swiper-slide">
+          <a href="/shop/${b.shopId}">
+            <img src="${b.imgUrl}" alt="배너" style="width:100%;border-radius:12px;">
+          </a>
+        </div>
+      `);
+    }
   });
   window.adBannerSwiper?.update();
 }
@@ -375,7 +397,7 @@ function renderDesignerBubble(d) {
     }
 
 
-  const review = d.reviewImgList?.[0]?.imgUrl || '/images/default.png';
+  const review = d.reviewImg || '/images/default.png';
   bubble.innerHTML = `
     <div class="bubble-tall"></div>
     <div class="bubble-content">

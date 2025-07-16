@@ -48,37 +48,37 @@ html, body {
   box-sizing: border-box;
 }
 
-/* 상단 검색 영역 (Top Bar) - 기존 스타일 유지 및 추가 */
+/* 상단 검색 영역 (Top Bar) */
 .top-bar {
   padding: 20px;
   background-color: #fff;
-  border-bottom: 1px solid #eee;
   display: flex;
+  margin-top: 30px;
   justify-content: center; /* 내부 header-content를 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
   min-height: 80px; /* 전환될 콘텐츠를 수용할 최소 높이 확보 */
   box-sizing: border-box; /* 패딩 포함 계산 */
 }
 
-/* 새로 추가된 header-content 컨테이너 */
+
 .header-content {
   width: 100%;
-  max-width: 1200px; /* location-area와 동일한 최대 너비 사용 */
-  position: relative; /* 자식 absolute 요소들의 기준점 */
-  min-height: 48px; /* 내부 검색창/위치창의 높이와 유사하게 설정 */
+  max-width: 900px;
+  position: relative;
+  min-height: 48px;
 }
 
 .initial-display,
 .shop-search-expanded-area,
 .address-input-area {
-  position: static; /* header-content를 기준으로 위치 */
+  position: static;
   top: 0;
   left: 0;
   width: 100%;
-  opacity: 1; /* 기본적으로 보임 */
-  visibility: visible; /* 기본적으로 보임 */
-  height: auto; /* 콘텐츠 높이에 따라 조절 */
-  padding: 0; /* 기본 패딩 없음 (각 모드에서 필요에 따라 추가) */
+  opacity: 1;
+  visibility: visible;
+  height: auto; /
+  padding: 0;
   box-sizing: border-box;
   transition: opacity 0.3s ease-out, visibility 0.3s ease-out,
     height 0.3s ease-out, padding 0.3s ease-out; /* 부드러운 전환 효과 */
@@ -88,40 +88,40 @@ html, body {
 .hidden {
   opacity: 0;
   visibility: hidden;
-  height: 0; /* 높이를 0으로 만들어 공간 차지 안 함 */
-  overflow: hidden; /* 내용이 넘치지 않도록 */
-  padding: 0 !important; /* hidden 상태에서는 패딩도 제거 */
-  pointer-events: none; /* 숨겨진 요소에 대한 마우스 이벤트 비활성화 */
+  height: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  pointer-events: none;
 }
 
-/* 초기 상태 (미용실 검색 + 현재 위치 표시) */
+
 .initial-display {
-  display: flex; /* 자식 요소들을 가로로 배치 */
-  justify-content: space-between; /* 양 끝으로 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  gap: 50px; /* 기존 search-area의 gap 유지 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
 }
 
-/* 기존 shop-search-box 스타일 유지 및 readonly cursor 추가 */
+
 .initial-display .shop-search-box {
   flex-grow: 1;
   height: 48px;
-  border: 1px solid #007bff;
   border-radius: 24px;
   display: flex;
   align-items: center;
   padding: 0 20px;
-  cursor: pointer; /* 클릭 가능함을 시각적으로 나타냄 */
-  background-color: #f5f5f5; /* 기본 배경색 */
-  /* 기존 ::after는 input을 사용하기 때문에 제거하거나 input placeholder로 대체 */
+  cursor: pointer;
+  background-color: #f5f5f5;
+
 }
 
-/* 기존 search-icon img 스타일 유지 */
+
 .initial-display .search-icon img {
   width: 24px;
   height: 24px;
   opacity: 0.8;
-  margin-right: 10px;
+  margin-top: 4px;
+  margin-top: 5px;
 }
 
 /* 미용실 검색 인풋 필드 스타일 (초기 상태용) */
@@ -131,34 +131,36 @@ html, body {
   outline: none;
   width: 100%;
   font-size: 1.1em;
-  color: #555; /* 텍스트 색상 */
-  cursor: pointer; /* readonly 상태에서도 클릭 가능하도록 */
-  padding: 0; /* 기본 input 패딩 제거 */
+  color: #555;
+  cursor: pointer;
+  padding: 0;
 }
 
-/* 기존 location-search-area 스타일 유지 */
+
 .initial-display .location-search-area {
   display: flex;
   align-items: center;
   gap: 8px;
   white-space: nowrap;
-  cursor: pointer; /* 클릭 가능함을 시각적으로 나타냄 */
-  padding: 5px 10px; /* 클릭 영역 확보 */
-  border-radius: 15px; /* 시각적 효과 */
-  background-color: #e0f2f7; /* 배경색 */
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background-color: #e0f2f7;
+  font-size: 20px;
+  justify-content: center;
 }
 
-/* 기존 location-icon img 스타일 유지 */
+
 .initial-display .location-icon img {
   width: 24px;
   height: 24px;
   opacity: 0.8;
 }
 
-/* 기존 location-now 스타일 유지 */
 .initial-display .location-now {
   font-size: 1.1em;
   font-weight: bold;
+  margin-bottom: 5px;
   color: #333;
 }
 
@@ -390,6 +392,11 @@ html, body {
   z-index: 1; /* 이미지 위에 겹친다면 조절 */
 }
 
+.map-word-box {
+    display:flex;
+    align-items: center;
+}
+
 .main-content-area > img {
   display: block;
   width: 100%;
@@ -397,7 +404,52 @@ html, body {
   object-fit: cover;
 }
 
-#map      { width: 100%; height: 100%; }
+.map-word {
+    margin: auto;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+}
+
+.color-box {
+    height: 30px;
+    margin-right: 5px;
+    width: 20px;
+    background: lightBlue;
+}
+
+#map {
+  margin: auto;
+  width: 80%;
+  height: 80%;
+  border-radius: 10px;
+  border: 3px solid lightBlue;
+ }
+
+
+ /* 더미 */
+ .ad-dummy-slide {
+   position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+
+ .ad-dummy-slide .dummy-bg {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 12px;
+ }
+
+ .ad-dummy-slide .dummy-text {
+   position: absolute;
+   color: lightGray;
+   font-size: 20px;
+   font-weight: bold;
+   text-align: center;
+   pointer-events: none;         /* 클릭 막힘 방지 */
+ }
 
 /* 스플릿 */
 
@@ -453,8 +505,14 @@ img.sizer {
 
 /* 메인 맵 위치 관련 */
 
-.main-map            { z-index: 1; opacity: 0; transition: opacity .4s ease; }
-.main-map.front      { z-index: 3; }   /* 애니 끝난 뒤에만 붙임 */
+.main-map            { z-index: 1; opacity: 0; transition: opacity .4s ease;
+     display: flex;
+     flex-direction: column;
+ }
+.main-map.front      {
+    z-index: 3;
+
+ }
 
 .split-overlay       { z-index: 2; }
 .split-overlay.open  { /* 애니메이션만 담당, 지도 z-index는 건드리지 않음 */ }
@@ -464,126 +522,127 @@ img.sizer {
 
 /* 광고 배너 */
 .ad-banner-swiper {
-  width: 100%; /* 반응형 */
-  height: 180px; /* 높이 조절 */
+  width: 100%;
+  height: 180px;
   margin: 50px 0;
-  padding: 0 20px; /* 좌우 미리보기 여백 조절 */
+  padding: 0 20px;
   box-sizing: border-box;
 }
 
 .ad-banner-swiper .swiper-slide {
-  background: var(--main-color); /* 색상 변경 */
-  color: var(--font-white); /* 폰트 색상 변경 */
-  border-radius: 12px; /* 모서리 둥글게 */
+  background: var(--main-color);
+  color: var(--font-white);
+  border-radius: 12px;
   text-align: center;
   font-weight: bold;
-  font-size: 20px; /* 폰트 크기 조절 */
-  display: flex; /* 내부 콘텐츠 중앙 정렬을 위해 flex 사용 */
+  font-size: 20px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 8px var(--box-shadow); /* 그림자 추가 */
+  box-shadow: 0 4px 8px var(--box-shadow);
 }
 
 /* 샵 추천 타이틀 */
 .best-shops-area {
   display: flex;
   flex-direction: column;
-  margin: 80px 0; /* 마진 조절 */
+  margin: 80px 0;
   width: 100%;
 }
 
 .best-shops-title-box {
   display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  font-size: 28px; /* 폰트 크기 조절 */
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 28px;
   font-weight: bold;
-  margin-bottom: 25px; /* 마진 조절 */
+  margin-bottom: 25px;
   color: var(--dark-gray);
 }
 
 .best-shops-icon > img {
-  width: 32px; /* 아이콘 크기 조절 */
+  width: 32px;
   height: 32px;
-  margin-left: 12px; /* 마진 조절 */
+  margin-left: 12px;
+  margin-top: 10px;
 }
 
 /* 샵 리스트 */
 .shopSwiper {
-  width: 100%; /* 반응형 */
-  padding: 0 40px; /* 좌우 잘린 카드 미리보기 여백 조절 */
+  width: 100%;
+  padding: 0 40px;
   box-sizing: border-box;
 }
 
 .shop-slider .swiper-slide {
-  width: 320px !important; /* 슬라이드 너비 조절 */
+  width: 320px !important;
   flex-shrink: 0;
-  transition: transform 0.3s ease; /* 호버 효과 */
+  transition: transform 0.3s ease;
 }
 
 .shop-slider .swiper-slide:hover {
-  transform: translateY(-5px); /* 호버 시 살짝 위로 */
+  transform: translateY(-5px);
 }
 
 .shop-content {
-  transform: skew(-8deg); /* 기울기 조절 */
-  background: white; /* 배경색 변경 */
-  padding: 20px; /* 패딩 조절 */
+  transform: skew(-8deg);
+  background: white;
+  padding: 20px;
   max-width: 360px;
-  height: 420px; /* 높이 조절 */
+  height: 420px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 12px; /* 모서리 둥글게 */
-  overflow: hidden; /* 스큐로 인한 넘침 방지 */
-  box-shadow: 0 5px 15px var(--box-shadow); /* 그림자 추가 */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px var(--box-shadow);
 }
 
 .skew-box {
   width: 100%;
-  height: 250px; /* 높이 조절 */
-  background: var(--light-gray); /* 색상 변경 */
-  margin-bottom: 15px; /* 마진 조절 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  /* 여기에 실제 샵 이미지를 위한 스타일 추가 (예: background-image) */
+  height: 250px;
+  background: var(--light-gray);
+  margin-bottom: 15px;
+  border-radius: 8px;
+
 }
 
 .shop-info {
   text-align: center;
   font-size: 14px;
-  transform: skew(8deg); /* 텍스트 역변환 */
-  width: 100%; /* 정보 영역 너비 */
+  transform: skew(8deg);
+  width: 100%;
 }
 
 .shop-info-detail {
   display: flex;
   position: relative;
   justify-content: space-between;
-  align-items: flex-end; /* 하단 정렬 유지 */
-  margin-bottom: 8px; /* 마진 조절 */
+  align-items: flex-end;
+  margin-bottom: 8px;
 }
 
 .shop-name {
-  font-size: 22px; /* 폰트 크기 조절 */
+  font-size: 22px;
   font-weight: bold;
   color: var(--point-color);
 }
 
 .shop-distance {
-  font-size: 15px; /* 폰트 크기 조절 */
+  font-size: 15px;
   color: var(--medium-gray);
 }
 
 .shop-review-detail {
   display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: flex-start;
+  align-items: center;
   color: var(--medium-gray);
 }
 
 .shop-review-detail img {
-  width: 18px; /* 아이콘 크기 조절 */
+  width: 18px;
   height: 18px;
   margin-right: 4px;
 }
@@ -604,21 +663,21 @@ img.sizer {
 
 .best-designer-title-box {
   display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  margin-bottom: 25px; /* 마진 조절 */
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
 .best-designer-title {
-  font-size: 28px; /* 폰트 크기 조절 */
+  font-size: 28px;
   font-weight: bolder;
   color: var(--dark-gray);
 }
 
 .best-designer-title-box > img {
-  width: 32px; /* 아이콘 크기 조절 */
+  width: 32px;
   height: 32px;
-  transform: rotate(90deg); /* 회전 유지 */
+  transform: rotate(90deg);
   margin-right: 15px;
   margin-left: 12px;
 }
@@ -628,7 +687,7 @@ img.sizer {
   margin: 50px 0;
   display: flex;
   flex-direction: column;
-  height: 700px;
+  height: 800px;
 
 }
 
@@ -661,7 +720,7 @@ img.sizer {
 .best-designer-list-box {
   overflow-y: scroll;
   display: flex;
-  height:460px;
+  height: 100%;
   flex-direction: column;
   gap: 20px;
   overflow: auto;
@@ -683,7 +742,7 @@ img.sizer {
 }
 
 .best-designer-box.selected {
-  border: 2px solid var(--point-color); /* 원하는 색상으로 변경 */
+  border: 2px solid var(--point-color);
   border-radius: 8px;
 
 }
@@ -692,7 +751,7 @@ img.sizer {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  overflow: hidden;     /* ★ 어디서든 잘라냄 */
+  overflow: hidden;
   background: #eee;
   flex-shrink: 0;
   display: flex;
@@ -703,7 +762,7 @@ img.sizer {
 .designer-profile-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;    /* ★ 박스를 꽉 채우고 crop */
+  object-fit: cover;
   display: block;
 }
 .designer-info-box {
@@ -733,7 +792,7 @@ img.sizer {
 }
 .designer-name-row {
   display: flex;
-  justify-content: space-between;  /* 🔥 양쪽 정렬 핵심 */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -761,15 +820,29 @@ img.sizer {
   background: white;
   border-radius: 15px;
   padding: 20px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  margin: 0 auto;
 }
 
 .review-img {
   background: var(--light-gray);
-  height: 300px;
+  height: 380px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.review-img > img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit:cover;
 }
 
 .review-info-area {
@@ -795,8 +868,8 @@ img.sizer {
   color: gray;
 }
 
-.img-fit.portrait  { height: 100%; width: auto;  object-fit: cover; }
-.img-fit.landscape { width: 100%;  height: auto; object-fit: cover; }
+.img-fit.portrait  { width: 100%; height: 100%;  object-fit: cover; }
+.img-fit.landscape { height: 100%;  width: 100%; object-fit: cover; }
 
 img.img-fit {
   width: 100%;
@@ -879,20 +952,7 @@ img.img-fit {
   }
 
   .search-area {
-    justify-content: center; /* 중앙 정렬 */
-  }
-
-  .shop-search-box {
-    max-width: 100%; /* 태블릿에서는 검색창 너비를 100%로 */
-    order: 2; /* 아래로 이동 */
-  }
-
-  .location-search-area {
-    width: 100%;
-    justify-content: center; /* 중앙 정렬 */
-    margin-left: 0;
-    margin-bottom: 20px; /* 검색창 위로 마진 */
-    order: 1; /* 위로 이동 */
+    justify-content: center;
   }
 
   .location-now {
@@ -900,7 +960,7 @@ img.img-fit {
   }
 
   .main-content-area {
-    height: auto; /* 이미지가 알아서 비율 유지 */
+    height: auto;
   }
 
   .ad-banner-swiper {
@@ -943,18 +1003,15 @@ img.img-fit {
 .best-designer-container {
   display: flex;
   height: 600px;
-  gap: 20px;
+  gap: 10px;
   background-color: var(--light-gray);
-  padding: 40px;
+  padding: 20px;
   border-radius: 15px;
-
-
 }
 
 .best-designer-list-box {
   width: 50%;
   overflow-y: scroll;
-  height: 400px;
   padding-right: 10px;
   display: flex;
   flex-direction: column;
@@ -974,8 +1031,10 @@ img.img-fit {
   }
 
   .review-img {
-    height: 300px;
+    height: 380px;
   }
+
+
 }
 
 /* 모바일 (767px 이하) */
@@ -988,15 +1047,19 @@ img.img-fit {
     margin-top: 20px;
   }
 
+  .initial-display {
+    gap: 10px;
+  }
+
   .search-area {
-    flex-direction: column; /* 세로로 정렬 */
+    flex-direction: column;
     gap: 15px;
   }
 
-  .shop-search-box,
+
   .location-search-area {
-    width: 100%;
-    max-width: 100%;
+    width: 30%;
+    max-width: 30%;
     margin-left: 0;
     justify-content: center;
   }
@@ -1048,7 +1111,7 @@ img.img-fit {
   }
 
   .shop-slider .swiper-slide {
-    width: 260px !important; /* 모바일에서 슬라이드 너비 조절 */
+    width: 260px !important;
   }
 
   .shop-content {
@@ -1078,14 +1141,21 @@ img.img-fit {
   }
 
   .best-designer-container {
+    display: flex;
     padding: 20px;
     height: 600px;
-    gap: 20px;
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .best-designer-list-box {
+    width:100%;
   }
 
   .best-designer-box {
     height: 100px;
-    overflow-y: auto;
+
     padding: 10px;
   }
 
@@ -1127,32 +1197,6 @@ img.img-fit {
   }
 
   .designer-bubble {
-    grid-template-columns: 1fr; /* 모바일에서 버블 한 줄로 */
-  }
-
-  .bubble-tall {
-    display: none; /* 모바일에서 막대 숨기기 */
-  }
-
-  .bubble-content {
-    padding: 20px;
-  }
-
-  .review-img {
-    height: 250px;
-    margin-bottom: 15px;
-  }
-
-  .review-rating-box {
-    font-size: 18px;
-  }
-
-  .review-rating-box > img {
-    width: 20px;
-    height: 20px;
-  }
-
-  .review-create-at {
-    font-size: 13px;
+    display: none !important;
   }
 }

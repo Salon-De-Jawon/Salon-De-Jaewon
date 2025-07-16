@@ -1,6 +1,7 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.ServiceCategory;
 import com.salon.dto.shop.RecommendDesignerDto;
 import com.salon.dto.shop.ShopListDto;
 import com.salon.dto.user.*;
@@ -210,6 +211,7 @@ public class MainController {
 
         List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
         model.addAttribute("compareResults", compareResults);
+        model.addAttribute("serviceCategories", ServiceCategory.values());
 
         return "/user/compare";
     }
