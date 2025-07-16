@@ -1,8 +1,32 @@
 import { initAddressSearchToggle } from '/javascript/user/addressSearchUtil.js';
 import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
+import { renderStars } from '/javascript/ratingStarUtil.js';
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("안녕 헤어샵 페이지 나야 js");
+
+    console.log("🌟 DOMContentLoaded 실행됨");
+
+    const stars = document.querySelectorAll(".rating-stars");
+    console.log("⭐ .rating-stars 찾은 개수:", stars.length);
+
+    stars.forEach(el => {
+      const ratingStr = el.dataset.rating;
+      const rating = parseFloat(ratingStr);
+      console.log("➡️ 대상:", el, " | data-rating:", ratingStr, " | 해석:", rating);
+
+      if (isNaN(rating)) {
+        console.warn("❗ rating이 숫자가 아님, 무시됨:", ratingStr);
+      } else {
+        renderStars(rating, el);
+        console.log("✅ 별 렌더링 완료");
+      }
+    });
+
+  document.querySelectorAll(".rating-stars").forEach(el => {
+    const rating = parseFloat(el.dataset.rating || "0");
+    renderStars(rating, el);
+  });
 
   /* ─────── 전역 변수 ─────── */
   const currentUserId = window.currentUserId ?? null;
@@ -239,7 +263,10 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="select-box ${selectedShops.includes(String(shop.id)) ? 'selected' : ''}"></div>
             </div>
             <div class="shop-info-content">
-              <p class="shop-rating">★★★★★ <span class="rating-count">${shop.rating} (${shop.reviewCount})</span></p>
+              <p class="shop-rating">
+                        <span class="rating-stars" data-rating="${shop.rating}"></span>
+                        <span class="rating-count">${shop.rating} (${shop.reviewCount})</span>
+               </p>
               <p class="shop-address">${shop.address}</p>
               <p class="shop-time">${shop.openTime} ~ ${shop.closeTime}</p>
               <p class="shop-distance">${formatDistance(shop.distance)}</p>
@@ -258,6 +285,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       container.appendChild(card);
+
+      const ratingContainer = card.querySelector(".shop-rating .rating-stars");
+      if (ratingContainer) {
+        const rating = parseFloat(ratingContainer.dataset.rating || '0');
+        renderStars(rating, ratingContainer);
+      }
     });
 
     document.querySelectorAll(".icon-circle img").forEach(img => {
@@ -270,6 +303,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     updateSelectedShopUI();
+
+    document.querySelectorAll(".rating-stars").forEach(star => {
+      const rating = parseFloat(star.dataset.rating || "0");
+      renderStars(rating, star);
+    });
   }
 
   function formatDistance(distance) {

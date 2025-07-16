@@ -19,8 +19,21 @@
     <link rel="stylesheet" href="/css/admin/userMenu.css">
 
 
+    <style>
+        html, body {
+            overflow: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
 
-    <th:block layout:fragment="css"></th:block>
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <th:block layout:fragment="css">
+
+    </th:block>
 
 </head>
 

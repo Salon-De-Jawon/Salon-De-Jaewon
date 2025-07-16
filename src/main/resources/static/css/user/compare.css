@@ -223,13 +223,17 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.service-img {
-  width: 50px; /* 서비스 아이콘/이미지 크기 */
-  height: 50px;
-  background-color: #e0e0e0; /* 서비스 이미지 플레이스홀더 */
-  border-radius: 4px;
-  margin-right: 10px;
-  flex-shrink: 0; /* 크기 줄어들지 않게 */
+.service-img-box {
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
 .service-info {
