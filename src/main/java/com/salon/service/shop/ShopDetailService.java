@@ -2,6 +2,7 @@ package com.salon.service.shop;
 
 
 
+import com.google.type.Decimal;
 import com.salon.constant.LikeType;
 import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerListDto;
@@ -70,7 +71,8 @@ public class ShopDetailService {
         int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP,shopId);
 
         // 미용실 평균 평점 조회
-        float avgRating = reviewRepo.averageRatingByShopId(shopId);
+        float floatRating = reviewRepo.averageRatingByShopId(shopId);
+        float avgRating = Math.round(floatRating * 10f) / 10f;
 
 
         // Shop Entity -> ShopDetailDto로 변환
@@ -217,7 +219,7 @@ public class ShopDetailService {
 
         // 미용실에 소속된 디자이너 id 추출
         List<ShopDesigner> shopDesignerList = shopDesignerRepo.findByShopIdAndIsActiveTrue(shopId);
-
+        System.out.println("디자이너 id : " + shopDesignerList);
 
 
         //  디자이너들의 예약 정보 조회
@@ -237,8 +239,11 @@ public class ShopDetailService {
                 .map(Reservation::getId)
                 .toList();
 
+        System.out.println("예약 id : " + reservationIds);
         //  리뷰 조회
         List<Review> reviews = reviewRepo.findByReservation_ShopDesigner_Designer_Id(designerId);
+
+        System.out.println("리뷰 : " + reviews );
 
         //  카테고리 필터링
         if (category != null) {

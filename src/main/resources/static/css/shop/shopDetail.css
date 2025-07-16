@@ -55,6 +55,7 @@ body, html {
   padding-top: 16px;
   padding-bottom: 16px;
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
+
 }
 
 /* 공통 버튼 및 아이콘 영역 스타일 */
@@ -83,10 +84,11 @@ body, html {
   color: #8c9ed9;
   transition: color 0.3s ease;
   margin-right: 4px;
+  font-size: 16px;
 }
 .shop-btn .text small {
   margin-left: 12px;
-  font-size: 12px;
+  font-size: 14px;
   color: #333;
 }
 
@@ -174,7 +176,7 @@ body, html {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: normal;
   color: #666;
 }
@@ -182,14 +184,16 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  font-size: 16px;
 }
 .shop-icon .icon {
-  font-size: 18px;
+  font-size: 16px;
   color: #544a8e;
 }
 .shop-icon .text small {
-  font-size: 12px;
+  font-size: 14px;
   color: #544a8e;
+
 }
 
 /* 미용실 이름 및 평점 */
@@ -221,7 +225,7 @@ body, html {
 }
 /* 매장 운영시간 */
 .shop-info-box h3 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: blod;
   margin-bottom: 10px;
   color: #333;
@@ -233,8 +237,8 @@ body, html {
 }
 
 /* 이용 전 안내  */
-.shop-info-box .notice strong {
-  font-size: 20px;
+.shop-info-box .shop-description strong {
+  font-size: 22px;
   font-weight: 700;
   color: #333;
 }
@@ -242,13 +246,22 @@ body, html {
 .shop-info-box .red {
   color: #d34b57;
   font-weight: bold;
+  font-size:15px;
 }
 
-.notice ul {
+.shop-info-box span{
   list-style-type: none;
   margin: 0;
   padding-left: 20px;
-  font-size: 13px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.shop-description p {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 16px;
   line-height: 1.6;
 }
 

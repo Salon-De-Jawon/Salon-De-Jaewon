@@ -99,7 +99,9 @@
       <h3>✔ 매장 운영시간 ✔</h3>
       <p>
         <span class="red" th:text="|휴무일 : ${shop?.dayOffText ?: '정보 없음'}|">휴무일 안내</span><br/>
-        ⏰ 평일운영 10:00~20:00 <br/> ⏰ 주말운영 10:00~20:00
+        <span th:text="|운영시간 : ${#temporals.format(shop.openTime, 'HH:mm')} ~ ${#temporals.format(shop.closeTime, 'HH:mm')}|">
+                 매장 운영시간 : 10:00 ~ 20:00
+        </span>
       </p>
       <div class="shop-description">
         <p><strong>✔ 매장 소개 ✔</strong></p>

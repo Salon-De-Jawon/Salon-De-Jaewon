@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.Period;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,7 +39,9 @@ public class DesignerController {
         Long shopId = detailDto.getShopId();
         var serviceMap = designerDetailService.getServiceListByDesigner(shopDesignerId,shopId);
 
-
+        // 디자이너 연차 계산
+        int careerYears = Period.between(detailDto.getStartAt(), LocalDate.now()).getYears();
+        detailDto.setCareerYears(careerYears);
 
         model.addAttribute("detail", detailDto);
         model.addAttribute("home", homeDto);

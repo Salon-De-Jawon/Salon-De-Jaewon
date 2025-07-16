@@ -33,6 +33,7 @@ public class DesignerDetailDto {
     private String description; // 디자이너 소개
 
 
+    private int careerYears; // 디자이너 연차 계산
 
     private MultipartFile designerProfile;
     private List<ReviewListDto> reviewList;

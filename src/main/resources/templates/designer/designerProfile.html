@@ -26,11 +26,19 @@
                         <p th:text="${detail?.expertise ?: '전문분야 없음'}">전문분야</p>
                         <div class="designer-salon">
                             <i class="fa-solid fa-scissors"></i>
-                            <span th:text="${detail?.shopName ?: '@소속 미용실'}">@Salon</span>
+                            <a th:href="@{'/shop/' + ${detail.shopId}}">
+                                <span th:text="${detail?.shopName ?: '@소속 미용실'}">@Salon</span>
+                            </a>
                         </div>
-                        <p class="off-day" th:text="|📅 근무기간: ${#temporals.format(detail?.startAt, 'yyyy.MM.dd') ?: '정보 없음'}~현재|">근무기간</p>
-                        <button class="toggle-description">더보기 <i class="fa-solid fa-chevron-down"></i></button>
+                        <p class="off-day" th:text="'📅 디자이너 ' + ${detail.careerYears} + '년차'">근무기간</p>
+                        <span class="working-hours" th:text="|근무시간 : ${#temporals.format(detail.scheduledStartTime, 'HH:mm')} ~ ${#temporals.format(detail.scheduleEndTime, 'HH:mm')}|">
+                                근무시간 : 11:00 ~ 20:00
+                        </span>
+                        <div class="more-button-wrapper">
+                            <button class="toggle-description">더보기 <i class="fa-solid fa-chevron-down"></i></button>
+                        </div>
                     </div>
+
 
                     <div class="designer-description">
                         <p th:text="${detail?.description ?: '소개글이 없습니다.'}">소개글</p>
