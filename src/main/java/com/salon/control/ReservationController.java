@@ -41,7 +41,6 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final ShopDesignerRepo shopDesignerRepo;
     private final MemberRepo memberRepo;
-    private final WebNotificationRepo webNotificationRepo;
     private final WebNotificationService webNotificationService;
 
 
@@ -125,10 +124,20 @@ public class ReservationController {
 
         Long receiverId = userDetails.getId();
 
+        ShopDesigner shopDesigner = shopDesignerRepo.getReferenceById(requestDto.getShopDesignerId());
+
+        Long designerId = shopDesigner.getDesigner().getMember().getId();
 
         webNotificationService.notify(
                 receiverId,
                 "예약이 완료되었습니다.",
+                WebTarget.RESERVATION,
+                targetId
+        );
+
+        webNotificationService.notify(
+                designerId,
+                "새로운 예약이 생겼습니다",
                 WebTarget.RESERVATION,
                 targetId
         );

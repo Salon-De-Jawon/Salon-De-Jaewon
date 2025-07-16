@@ -2,6 +2,7 @@ package com.salon.control.admin;
 
 import com.salon.config.CustomUserDetails;
 import com.salon.constant.Role;
+import com.salon.constant.WebTarget;
 import com.salon.dto.BizStatusDto;
 import com.salon.dto.admin.*;
 import com.salon.entity.Member;
@@ -11,10 +12,12 @@ import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
 import com.salon.entity.shop.Shop;
 import com.salon.repository.MemberRepo;
+import com.salon.repository.WebNotificationRepo;
 import com.salon.repository.management.DesignerRepo;
 import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
 import com.salon.repository.shop.ShopRepo;
+import com.salon.service.WebNotificationService;
 import com.salon.service.admin.AncService;
 import com.salon.service.admin.CsService;
 import com.salon.service.admin.DesApplyService;
@@ -50,6 +53,8 @@ public class CsController {
     private final ShopRepo shopRepo;
     private final AncService ancService;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final WebNotificationService webNotificationService;
+    private final MemberRepo memberRepo;
 
     @GetMapping("/api/bizCheck")
     public ResponseEntity<?> check(@RequestParam String bizNo) {
@@ -108,6 +113,7 @@ public class CsController {
         model.addAttribute("csListDtoList", csListDtoList);
         return "admin/csList";
     }
+
     @GetMapping("/reply")
     public String reply(@AuthenticationPrincipal CustomUserDetails userDetails,
                         @RequestParam Long id,
@@ -123,6 +129,7 @@ public class CsController {
         model.addAttribute("isAdmin", isAdmin);
         return "admin/reply";
     }
+
     @PostMapping("/reply")
     public String replySave(@AuthenticationPrincipal CustomUserDetails userDetails,
                             @ModelAttribute CsDetailDto csDetailDto){
@@ -131,8 +138,21 @@ public class CsController {
         CsListDto csListDto = csService.list(id);
         csDetailDto.setLoginId(userDetails.getUsername());
         csService.replySave(csDetailDto, csCreateDto, csListDto);
+
+        Member member = memberRepo.findByLoginId(csDetailDto.getLoginId());
+
+        Long receiverId = member.getId();
+
+        webNotificationService.notify(
+                receiverId,
+                "고객문의 답변이 도착했습니다",
+                WebTarget.DESAPPLY,
+                id
+        );
+
         return "redirect:/admin/cs/questionList";
     }
+
     @GetMapping("/shopList")
     public String shopList(Model model){
         List<Apply> list = csService.listShop();
@@ -143,40 +163,47 @@ public class CsController {
         model.addAttribute("shopApplyList", list);
         return "admin/shopList";
     }
+
     @PostMapping("/approve/{id}")
     public String approveShop(@PathVariable Long id,
                               @AuthenticationPrincipal CustomUserDetails userDetails){
         csService.approveShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
+
     @PostMapping("/reject/{id}")
     public String rejectShop(@PathVariable Long id,
                              @AuthenticationPrincipal CustomUserDetails userDetails){
         csService.rejectShop(id, userDetails.getMember());
         return "redirect:/admin/cs/shopList";
     }
+
     @GetMapping("/bannerList")
     public String bannerList(Model model){
         List<CouponBannerListDto> couponBannerListDtoList = csService.bannerList();
         model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
         return "admin/bannerList";
     }
+
     @GetMapping("/bannerDetail")
     public String bannerDetail(@RequestParam Long id, Model model){
         CouponBannerDetailDto couponBannerDetailDto = csService.bannerDetail(id);
         model.addAttribute("couponBannerDetailDto", couponBannerDetailDto);
         return "admin/bannerDetail";
     }
+
     @PostMapping("/couponBanner/approve")
     public String bannerApprove(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
         csService.bannerApprove(id, admin);
         return "redirect:/admin/cs/bannerList";
     }
+
     @PostMapping("/couponBanner/reject")
     public String bannerReject(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
         csService.bannerReject(id, admin);
         return "redirect:/admin/cs/bannerList";
     }
+
 }
