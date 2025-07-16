@@ -72,4 +72,98 @@
             });
         });
       }
+
+
+        const badgeEl   = document.getElementById("notification-badge");  // 헤더에 이미 있는 배지 span
+        const userId    = window.currentUserId || null;                    // 컨트롤러가 내려준 JS 전역
+        const initCnt   = Number(badgeEl?.dataset.count || 0);             // data-count 속성
+
+        function showBadge(cnt){
+            if(!badgeEl) return;
+            if(cnt>0){
+                badgeEl.style.display='flex';
+                badgeEl.textContent  = cnt;
+                badgeEl.dataset.count= cnt;
+            }else{
+                badgeEl.style.display='none';
+                badgeEl.dataset.count= 0;
+            }
+        }
+        showBadge(initCnt);   // 최초 표시
+
+        // 알림 클릭 처리
+        const container = document.getElementById("sidebar-alert-container");
+          if (container) {
+            container.addEventListener("click", function (e) {
+              const card = e.target.closest(".sidebar-alert");
+              if (!card) return;
+
+              const target = card.dataset.target;
+              const id     = card.dataset.id;
+
+              fetch("/api/notification/read", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken,
+                },
+                body: JSON.stringify({
+                  webTarget: target,
+                  targetId : id
+                })
+              })
+              .then(res => {
+                if (!res.ok) throw new Error("HTTP " + res.status);
+
+                if (["DESAPPLY", "SHOPAPPLY", "BANNER"].includes(target)) {
+                  card.remove();
+                  const remain = container.querySelectorAll(".sidebar-alert").length;
+                  showBadge(remain);
+                }
+              })
+              .catch(err => console.error("읽음 처리 실패", err));
+            });
+          }
+
+        // WebSocket 구독으로 실시간 갱신
+        if(userId){
+            const sock  = new SockJS('/ws');
+            const stomp = Stomp.over(sock);
+            stomp.connect({}, ()=>{
+                stomp.subscribe(`/topic/notify/${userId}`, msg=>{
+                    const { unreadTotal } = JSON.parse(msg.body); // 서비스에서 넣어준 값
+                    const data = JSON.parse(msg.body);
+                    showBadge(data.unreadTotal);
+                    addAlertCard(data);
+                });
+            });
+        }
+
+
+      function addAlertCard(data) {
+          const container = document.getElementById("sidebar-alert-container");
+          if (!container) return;
+
+          const card = document.createElement("div");
+          card.className = "sidebar-alert";
+          card.dataset.target = data.webTarget;
+          card.dataset.id = data.targetId;
+
+          const content = document.createElement("span");
+          content.className = "alert-content";
+          content.textContent = data.message;
+
+          const date = document.createElement("span");
+          date.className = "alert-date";
+          date.textContent = data.createAt || "방금 전";
+
+          card.append(content, date);
+          container.prepend(card);
+
+          // 최대 3개 유지
+          while (container.children.length > 3) {
+            container.removeChild(container.lastChild);
+          }
+        }
+
   });

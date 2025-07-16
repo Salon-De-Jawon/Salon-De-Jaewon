@@ -20,6 +20,8 @@ public class WebNotificationDto {
     private Long targetId; // 대상 아이디
     private Long receiverId; // 받는 사람 아이디
 
+    private Long unreadTotal;
+
     public static WebNotificationDto from (WebNotification entity) {
         WebNotificationDto dto = new WebNotificationDto();
 
@@ -46,4 +48,5 @@ public class WebNotificationDto {
 
         return entity;
     }
+
 }

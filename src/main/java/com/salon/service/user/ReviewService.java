@@ -51,17 +51,44 @@ public class ReviewService {
 
     // 이미지가 있는 최신 리뷰 1건 조회(디자이너기준)
     public Optional<Review> getRecentReviewWithImageByDesigner(Long designerId) {
-        List<Review> recentReviews = reviewRepo.findTop10ByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(designerId);
+        List<Review> recent =
+                reviewRepo.findTop10ByReservation_ShopDesigner_Designer_IdOrderByCreateAtDesc(designerId);
 
-        for (Review review : recentReviews) {
-            boolean hasImage = reviewImageRepo.existsByReview_Id(review.getId());
+        return recent.stream()
+                .filter(r -> reviewImageRepo.existsByReview_Id(r.getId()))
+                .findFirst();
+    }
 
-            if (hasImage) {
-                return Optional.of(review);  // 이미지 있는 리뷰 찾으면 바로 반환
-            }
-        }
-        return Optional.empty();
+    // 조회한 리뷰 보내주기
 
+    public Optional<ReviewListDto> getRecentReviewDtoWithImageByDesigner(Long designerId) {
+
+        Optional<Review> optReview = getRecentReviewWithImageByDesigner(designerId);
+        if (optReview.isEmpty()) return Optional.empty();
+
+        Review review = optReview.get();
+
+        // 디자이너/샵 정보
+        ShopDesigner shopDesigner =
+                shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
+        if (shopDesigner == null) return Optional.empty();
+
+        // 리뷰 이미지 DTO (전부 or 첫 장만 필요시 limit(1))
+        List<ReviewImageDto> imageDtos = getReviewImages(review.getId());
+
+        Reservation res       = review.getReservation();
+        Long memberId         = res.getMember().getId();
+        Long shopId           = shopDesigner.getShop().getId();
+        int  visitCount       = reservationRepo.countVisitByMemberAndShop(memberId, shopId);
+        ReviewReplyDto reply  =
+                (review.getReplyComment() != null && review.getReplyAt() != null)
+                        ? ReviewReplyDto.from(review)
+                        : null;
+
+        ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, visitCount, reply);
+        dto.setMemberName(res.getMember().getName());
+
+        return Optional.of(dto);
     }
 
 

@@ -14,7 +14,10 @@ function handleAddressSelect(addr, lat, lon, onSelectAddress, setMode, addressIn
     .then(res => res.json())
     .then(addressData => {
       const detail = addressData.documents?.[0]?.address;
-      const region1 = detail?.region_1depth_name || "미확인";
+      let region1 = detail?.region_1depth_name || "미확인";
+
+      //광역시 빼는 코드
+      region1 = region1.replace(/(광역시|특별시|자치시|시|도)$/, "");
       const region2 = detail?.region_2depth_name || "미확인";
 
       console.log("📍 상세 지역 정보:", region1, region2);

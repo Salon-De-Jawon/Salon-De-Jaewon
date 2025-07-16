@@ -11,7 +11,7 @@
 </head>
 <body>
 <div layout:fragment="main" id="main">
-    <div class="container">
+    <div class="main-container">
         <div class="main-wrap">
 
             <!--  검색 영역   -->
@@ -94,7 +94,13 @@
                         class="split-overlay"
                         data-img="/images/background3x.png"
                 ></div>
-                <div class="main-map"><div id="map" style="background: red;"></div></div>
+                <div class="main-map">
+                    <div id="map" style="background: red;"></div>
+                    <div class="map-word-box">
+
+                        <div class="map-word"><div class="color-box"></div><span> 내 근처의 샵을 한 눈에 확인하세요!</span></div>
+                    </div>
+                </div>
                 <img
                         class="sizer"
                         src="/images/background3x.png"
@@ -105,11 +111,11 @@
 
             <div class="swiper ad-banner-swiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">배너 광고1</div>
-                    <div class="swiper-slide">배너 광고2</div>
-                    <div class="swiper-slide">배너 광고3</div>
-                    <div class="swiper-slide">배너 광고4</div>
-                    <div class="swiper-slide">배너 광고5</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
+                    <div class="swiper-slide" style="background-image: url('/images/coupon-default.jpg');">진행중인 광고가 없습니다.</div>
                 </div>
             </div>
 
@@ -123,23 +129,24 @@
 
                 <div class="swiper shopSwiper">
                     <div class="swiper-wrapper shop-slider">
-                        <!-- 슬라이드 항목 -->
                         <div class="swiper-slide">
-                            <div class="shop-content">
-                                <div class="skew-box"></div>
-                                <div class="shop-info">
-                                    <div class="shop-info-detail">
-                                        <div class="shop-name">0001미용실</div>
-                                        <div class="shop-distance">120m</div>
-                                    </div>
-                                    <div class="shop-review-detail">
-                                        <img src="/images/pointed-star.png" alt="별점" />
-                                        <div class="shop-rating">5.0</div>
-                                        <img src="/images/comment.png" alt="리뷰" />
-                                        <div class="shop-review-count">1,548</div>
-                                    </div>
-                                </div>
-                            </div>
+<!--                            <div class="shop-content" style="display: hidden;">-->
+<!--                                <div class="skew-box"></div>-->
+<!--                                <div class="shop-info">-->
+<!--                                    <div class="shop-info-detail">-->
+<!--                                        <div class="shop-name">0001미용실</div>-->
+<!--                                        <div class="shop-distance">120m</div>-->
+<!--                                    </div>-->
+<!--                                    <div class="shop-review-detail">-->
+<!--                                        <img src="/images/pointed-star.png" alt="별점" />-->
+<!--                                        <div class="shop-rating">5.0</div>-->
+<!--                                        <img src="/images/comment.png" alt="리뷰" />-->
+<!--                                        <div class="shop-review-count">1,548</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+                            <div> 이 지역에 등록된 미용실이 없습니다. </div>
                         </div>
 
                         <!-- 총 8개 슬라이드 생성 -->
@@ -156,36 +163,43 @@
                 <div class="best-designer-container">
                     <div class="best-designer-list-box" id="designer-recommend-box">
                         <div class="best-designer-box">
-                            <div class="designer-profile-box">
-                                <img src="" class="designer-photo" alt="디자이너프로필" />
-                            </div>
-                            <div class="designer-info-box">
-                                <div class="designer-name">000 원장</div>
-                                <div class="designer-shop">000 미용실</div>
-                                <div class="designer-specialty-area">
-                                    <div class="designer-specialty-tag">커트</div>
-                                </div>
-                            </div>
+<!--                            <div class="designer-profile-box">-->
+<!--                                <img src="" class="designer-photo" alt="디자이너프로필" />-->
+<!--                            </div>-->
+
+<!--                            <div class="reviewComment" ></div>-->
+<!--                            <div class="designer-info-box">-->
+<!--                                <div class="designer-name-row">-->
+<!--                                    <div class="designer-name">000 원장</div>-->
+<!--                                    <a href="">보러가기</a>-->
+<!--                                </div>-->
+<!--                                <div class="designer-shop">000 미용실</div>-->
+<!--                                <div class="designer-specialty-area">-->
+<!--                                    <div class="designer-specialty-tag">커트</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div> 이 지역에 등록된 디자이너가 없습니다. </div>-->
                         </div>
                     </div>
 
                     <div class="designer-bubble">
-                        <div class="bubble-tall"></div>
-                        <div class="bubble-content">
-                            <div class="review-img">
-                                <img src="" alt="리뷰이미지" />
-                            </div>
+<!--                        <div class="bubble-content">-->
+<!--                            <div class="review-img">-->
+<!--                                <img src="" alt="리뷰이미지" />-->
+<!--                            </div>-->
 
-                            <div class="review-info-area">
-                                <div class="review-rating-box">
-                                    <img src="/images/pointed-star.png" alt="별" />
-                                    <div class="review-rating">5.0</div>
-                                </div>
+<!--                            <div class="review-info-area">-->
+<!--                                <div class="review-rating-box">-->
+<!--                                    <img src="/images/pointed-star.png" alt="별" />-->
+<!--                                    <div class="review-rating">5.0</div>-->
+<!--                                </div>-->
 
-                                <div class="review-create-at">2025.06.21</div>
-                            </div>
-                        </div>
+<!--                                <div class="review-create-at">2025.06.21</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
+
+
                 </div>
             </div>
         </div>
@@ -214,10 +228,6 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
     <script th:inline="javascript">
-        window.currentUserId = [[${#authorization.expression('isAuthenticated()') ? #authentication.principal.id : 'null'}]];
-        if (window.currentUserId === 'null') window.currentUserId = null;
-        window.userAgreeLocation = [[${userAgreeLocation}]];
-
 
           // 배너 스와이퍼 코드
           window.adBannerSwiper = new Swiper(".ad-banner-swiper", {
@@ -231,7 +241,7 @@
           new Swiper(".shopSwiper", {
             loop: true,
             slidesPerView: "auto",
-            centeredSlides: true,
+            centeredSlides: false,
             spaceBetween: 16,
             grabCursor: true,
           });
