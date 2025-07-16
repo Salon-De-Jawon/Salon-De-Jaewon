@@ -249,6 +249,26 @@
     <!-- 시술 리스트 -->
     <div class="container">
       <!-- 카테고리 반복 -->
+      <h3> 추천 시술</h3>
+      <div class="service-section">
+        <ul class="service=list" th:each="recommended : ${recommendedService}">
+          <li class="service-card">
+            <div class="service-img" th:if="${recommended.imgUrl != null}">
+              <img th:src="${recommended.imgUrl}">
+            </div>
+            <div class="service-content">
+              <strong class="service-name" th:text="${recommended.name}"></strong>
+              <div class="service-price">
+              <span class="original"
+                    th:text="${recommended?.price != null ? #numbers.formatInteger(recommended.price, 3, 'COMMA') + '원' : '가격 미정'}">
+              </span>
+              <div class="service-extra" th:text="${recommended.description}">커트 포함</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <i class="chevron fa-solid fa-chevron-down"></i>
       <div th:each="category : ${T(com.salon.constant.ServiceCategory).values()}"
            class="category-section"
            th:id="${category.name().toLowerCase()}">
@@ -257,7 +277,9 @@
 
         <ul class="service-list">
           <li class="service-card" th:each="svc : ${serviceSection.categoryMap[T(com.salon.constant.ServiceCategory).valueOf(category.name())]}">
-
+            <div class="service-img" th:if="${svc.imgUrl != null}">
+              <img th:src="${svc.imgUrl}">
+            </div>
           <div class="service-content">
             <strong class="service-name"
                     th:text="${svc?.name ?: '시술명 없음'}">시술명</strong>
@@ -270,17 +292,17 @@
         </span>
 
             </div>
-            <div class="service-extra">커트 포함</div>
+            <div class="service-extra" th:text="${svc.description}">커트 포함</div>
             </div>
           </li>
         </ul>
 
         <!-- 더보기 버튼 -->
         <div class="service-more">
-          <button class="more-btn">
-            <span class="label">더보기</span>
-            <i class="chevron fa-solid fa-chevron-down"></i>
-          </button>
+<!--          <button class="more-btn">-->
+<!--            <span class="label">더보기</span>-->
+<!--          </button>-->
+          <i class="chevron fa-solid fa-chevron-down"></i>
         </div>
 
       </div>
@@ -301,12 +323,7 @@
             </div>
           </li>
         </ul>
-        <div class="service-more">
-          <button class="more-btn">
-            <span class="label">더보기</span>
-            <i class="chevron fa-solid fa-chevron-down"></i>
-          </button>
-        </div>
+        <i class="chevron fa-solid fa-chevron-down"></i>
       </div>
     </div>
   </section>
@@ -408,6 +425,7 @@
 
         <!-- 리뷰 리스트 -->
         <ul class="r-list" th:if="${reviewList != null and !reviewList.isEmpty()}">
+
           <li class="r-item"   th:each="review : ${reviewList}"  th:data-category="${review.category}" >
 
             <div class="r-item-header">
@@ -418,6 +436,13 @@
             <div class="r-rating"
                  th:text="${review.rating}">
               ★★★★☆ 4.0
+            </div>
+
+            <div class="review-images">
+              <div class="photo" th:each="imageDto : ${review.imageDtos}"
+                   th:if="${imageDto != null && imageDto.imgUrl != null}">
+                <img th:src="${imageDto.imgUrl}">
+              </div>
             </div>
 
             <div class="r-content">
