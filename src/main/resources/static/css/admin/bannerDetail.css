@@ -56,3 +56,38 @@ img.banner{
     background-color: #566A8E;
     color: #ffffff;
 }
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 4px;
+}
+
+/* ✅ 버튼 공통 스타일 */
+button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* ✅ 승인 버튼 (Primary) */
+form[action*="approve"] button {
+  background-color: #D63384;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+/* ✅ 거절 버튼 (Secondary) */
+form[action*="reject"] button {
+  background-color: transparent;
+  color: #444;
+  border: 1px solid #bbb;
+}
+
+.back-link-wrapper{
+    display: flex;
+    justify-content: flex-end;
+}
