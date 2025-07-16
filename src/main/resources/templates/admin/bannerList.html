@@ -27,7 +27,7 @@
         <td th:text="${banner.region}"></td>
         <td th:text="${#temporals.format(banner.startDate, 'yyyy-MM-dd')}"></td>
         <td th:text="${#temporals.format(banner.endDate, 'yyyy-MM-dd')}"></td>
-        <td><a th:href="@{/admin/couponBanner/detail(id=${banner.id})}">상세보기</a></td>
+        <td><a th:href="@{/admin/cs/bannerDetail(id=${banner.id})}">상세보기</a></td>
         <td th:if="${isAdmin}">
             <form th:action="@{/admin/cs/couponBanner/approve}" method="post" style="display:inline;">
                 <input type="hidden" name="id" th:value="${banner.id}">

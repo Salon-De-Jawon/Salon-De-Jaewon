@@ -154,16 +154,22 @@ public class CsController {
         model.addAttribute("couponBannerListDtoList", couponBannerListDtoList);
         return "admin/bannerList";
     }
+    @GetMapping("/bannerDetail")
+    public String bannerDetail(@RequestParam Long id, Model model){
+        CouponBannerDetailDto couponBannerDetailDto = csService.bannerDetail(id);
+        model.addAttribute("couponBannerDetailDto", couponBannerDetailDto);
+        return "admin/bannerDetail";
+    }
     @PostMapping("/couponBanner/approve")
     public String bannerApprove(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
         csService.bannerApprove(id, admin);
-        return "admin/bannerList";
+        return "redirect:/admin/cs/bannerList";
     }
     @PostMapping("/couponBanner/reject")
     public String bannerReject(@RequestParam Long id, @AuthenticationPrincipal CustomUserDetails userDetails){
         Member admin = userDetails.getMember();
         csService.bannerReject(id, admin);
-        return "admin/bannerList";
+        return "redirect:/admin/cs/bannerList";
     }
 }

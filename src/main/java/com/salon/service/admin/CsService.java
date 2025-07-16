@@ -248,6 +248,13 @@ public class CsService {
                 .collect(Collectors.toList());
     }
 
+    public CouponBannerDetailDto bannerDetail(Long id) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).get();
+        CouponBannerListDto couponBannerListDto = CouponBannerListDto.from(couponBanner);
+        CouponBannerDetailDto couponBannerDetailDto = CouponBannerDetailDto.from(couponBanner, couponBannerListDto);
+        return couponBannerDetailDto;
+    }
+
     public void bannerApprove(Long id, Member admin) {
         CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
         couponBanner.setRegisterDate(LocalDateTime.now());

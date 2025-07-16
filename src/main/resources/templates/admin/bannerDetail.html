@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragment/default}">
+<head>
+    <th:block layout:fragment="css"></th:block>
+</head>
+<body>
+<div layout:fragment="main" id="main">
+    <h1>쿠폰 배너 상세 정보</h1>
+    <div class="info">
+        <label>등록 관리자:</label>
+        <span th:text="${couponBannerDetailDto.adminName}"></span>
+    </div>
+    <div class="info">
+        <label>등록일:</label>
+        <span th:text="${#temporals.format(couponBannerDetailDto.registerDate, 'yyyy-MM-dd')}"></span>
+    </div>
+    <div class="info">
+        <label>배너 이미지:</label>
+        <img class="banner" th:src="@{${couponBannerDetailDto.imgUrl}}" alt="배너 이미지">
+    </div>
+    <hr style="margin: 30px 0;">
+    <div class="info">
+        <label>샵 이름:</label>
+        <span th:text="${couponBannerDetailDto.shopName}"></span>
+    </div>
+    <div class="info">
+        <span th:text="${couponBannerDetailDto.startDate}"></span>
+        ~
+        <span th:text="${couponBannerDetailDto.region}"></span>
+    </div>
+    <div class="info">
+        <lable>지역:</lable>
+        <span th:text="${couponBannerDetailDto.region}"></span>
+    </div>
+    <a class="back-link" href="/admin/cs/bannerList">목록으로 돌아가기</a>
+</div>
+<th:block layout:fragment="script"></th:block>
+</body>
+</html>
