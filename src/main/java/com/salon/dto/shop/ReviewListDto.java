@@ -58,7 +58,7 @@ public class ReviewListDto {
         reviewListDto.setServiceName(service != null ? service.getName() : null);
 
         // 디자이너 정보
-        String designerInfo = "By " + shopDesigner.getDesigner().getMember().getName() + " " + shopDesigner.getPosition();
+        String designerInfo = "By " + shopDesigner.getPosition() + " " + shopDesigner.getDesigner().getMember().getName();
         reviewListDto.setDesignerName(designerInfo);
         reviewListDto.setDesignerWorkingYears(shopDesigner.getDesigner().getWorkingYears());
 

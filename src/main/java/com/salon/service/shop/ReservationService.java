@@ -30,6 +30,7 @@ import com.salon.util.DayOffUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -309,6 +310,7 @@ public class ReservationService {
 
 
     // 예약 작성 완료 후 entity에 저장하는 메서드
+    @Transactional
     public void saveReservation(ReservationRequestDto requestDto){
 
         // 예약자 정보
