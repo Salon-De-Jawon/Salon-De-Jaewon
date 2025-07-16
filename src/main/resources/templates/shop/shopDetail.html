@@ -371,11 +371,13 @@
       <div class="r-tabs-wrapper">
         <div class="r-tabs">
           <button class="r-tab active" data-category="all">전체</button>
-          <button class="r-tab" data-category="cut">커트</button>
-          <button class="r-tab" data-category="perm-w">여성펌</button>
-          <button class="r-tab" data-category="perm-m">남성펌</button>
-          <button class="r-tab" data-category="style">스타일링</button>
-          <button class="r-tab" data-category="clinic">클리닉</button>
+          <button class="r-tab" data-category="커트">커트</button>
+          <button class="r-tab" data-category="염색">염색</button>
+          <button class="r-tab" data-category="펌">펌</button>
+          <button class="r-tab" data-category="업스타일">업스타일</button>
+          <button class="r-tab" data-category="드라이">드라이</button>
+          <button class="r-tab" data-category="붙임머리">붙임머리</button>
+          <button class="r-tab" data-category="클리닉">클리닉</button>
         </div>
       </div>
 
@@ -406,33 +408,28 @@
 
         <!-- 리뷰 리스트 -->
         <ul class="r-list" th:if="${reviewList != null and !reviewList.isEmpty()}">
-          <li class="r-item"
-              th:each="review : ${reviewList}"
-              th:attr="data-category=${review != null and review.category != null ? review.category.name().toLowerCase() : 'unknown'}">
+          <li class="r-item"   th:each="review : ${reviewList}"  th:data-category="${review.category}" >
 
             <div class="r-item-header">
               <strong th:text="${review != null and review.serviceName != null ? review.serviceName : '서비스명 없음'}">서비스명</strong>
-              <span class="chevron">&gt;</span>
+              <span class="chevron">&gt</span>
             </div>
 
             <div class="r-rating"
-                 th:text="${review != null and review.rating != null ?
-                '★'.repeat(T(java.lang.Math).round(review.rating)) +
-                '☆'.repeat(5 - T(java.lang.Math).round(review.rating)) +
-                ' ' + #numbers.formatDecimal(review.rating, 1, 1) : '평점 없음'}">
+                 th:text="${review.rating}">
               ★★★★☆ 4.0
             </div>
 
             <div class="r-content">
-              <p th:text="${review != null and review.content != null ? review.content : '리뷰 내용이 없습니다.'}">
+              <p th:text="${ review.comment }">
                 리뷰 내용
               </p>
               <div class="r-meta"
-                   th:text="${(review != null and review.memberMaskedName != null ? review.memberMaskedName : '익명') +
+                   th:text="${(review.memberName ) +
                             ' · ' +
-                            (review != null and review.createdAt != null ? #temporals.format(review.createdAt, 'yyyy.MM.dd') : '작성일 없음') +
+                            ( #temporals.format(review.createAt, 'yyyy.MM.dd') ) +
                             ' · ' +
-                            (review != null and review.visitCount != null ? review.visitCount + '번째 방문' : '')}">
+                            ( review.visitCount + '번째 방문')}">
                 이*나 · 2025.06.28 · 3번째 방문
               </div>
             </div>
@@ -452,6 +449,64 @@
     </div>
   </section>
   </div>
+
+  <script>
+    let reviewRatings = document.getElementsByClassName("r-rating");
+    for(var idx in reviewRatings){
+        var rating = reviewRatings[idx].innerText;
+        rating = parseInt(rating);
+        var temp='';
+        for(var i=1; i<=5; i++){
+        if( i > rating)
+          temp +='☆';
+        else
+          temp +='★';
+        }
+        reviewRatings[idx].innerText = temp;
+    }
+
+
+    // 리뷰 카테고리 클릭  처리 이다
+    // 모든 탭 버튼을 가져옵니다.
+    const tabButtons = document.querySelectorAll('.r-tab');
+    // 모든 리뷰 항목을 가져옵니다.
+    const reviewItems = document.querySelectorAll('.r-item');
+
+    // 각 탭 버튼에 클릭 이벤트 리스너를 추가합니다.
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // 1. 현재 활성화된 탭에서 'active' 클래스 제거
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // 2. 클릭된 버튼에 'active' 클래스 추가
+            this.classList.add('active');
+
+            // 3. 클릭된 버튼의 data-category 값을 가져옵니다.
+            const selectedCategory = this.dataset.category; // data-category 속성 접근
+
+            // 4. 모든 리뷰 항목을 순회하며 필터링합니다.
+            reviewItems.forEach(item => {
+                const itemCategory = item.dataset.category; // 각 리뷰 항목의 data-category 값
+
+                // 'all' 탭이 선택되었거나, 항목의 카테고리가 선택된 카테고리와 일치하면
+                // 해당 항목을 보여주고, 그렇지 않으면 숨깁니다.
+                if (selectedCategory === 'all' || itemCategory === selectedCategory) {
+                    item.style.display = ''; // 기본 display 속성으로 (보이게)
+                } else {
+                    item.style.display = 'none'; // 숨김
+                }
+            });
+        });
+    });
+
+    // 페이지 로드 시 'all' 탭을 자동으로 클릭하여 모든 항목을 보여줍니다.
+    // 또는 초기 'active' 탭에 따라 초기 필터링을 수행할 수 있습니다.
+    // 여기서는 'all' 탭을 찾아 클릭하는 방식으로 초기화합니다.
+    const allTabButton = document.querySelector('.r-tab[data-category="all"]');
+    if (allTabButton) {
+        allTabButton.click(); // 'all' 탭 클릭 이벤트를 강제로 발생시켜 초기 상태 설정
+    }
+  </script>
 </div>
 
 
