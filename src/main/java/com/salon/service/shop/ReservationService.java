@@ -2,6 +2,7 @@ package com.salon.service.shop;
 
 
 import com.salon.constant.LikeType;
+import com.salon.constant.ReservationStatus;
 import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.MemberCouponDto;
@@ -324,6 +325,8 @@ public class ReservationService {
         reservation.setShopDesigner(designer);
         reservation.setShopService(service);
         reservation.setReservationDate(requestDto.getDateTime());
+        reservation.setStatus(ReservationStatus.RESERVED);
+        reservation.setServiceName(service.getName());
 
         // 고객 요청사항
         reservation.setComment(requestDto.getRequestMemo());

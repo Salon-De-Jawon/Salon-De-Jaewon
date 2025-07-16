@@ -105,55 +105,45 @@ public class ReservationController {
         return reservationService.getAvailableTimeSlots(designerId, date);
     }
 
-//    // 예약 작성 Post -> 예약 확인 페이지로
+    // 예약 작성 Post -> 예약 내역 페이지로
+    @PostMapping("/new")
+    public String confirmReservation(@ModelAttribute ReservationRequestDto requestDto){
+
+        reservationService.saveReservation(requestDto);
+
+        return "redirect:/myPage/reservation";
+    }
+
+//    // 예약 확인 페이지 Get
 //    @PostMapping("/confirm")
-//    public String confirmReservation(@ModelAttribute ReservationRequestDto requestDto, Principal principal, Model model){
+//    public String confirmReservationPage(@ModelAttribute ReservationRequestDto requestDto,Principal principal ,Model model){
 //
 //        // 예약자 정보 조회
 //        String loginId = principal.getName();
 //        Member member = memberRepo.findByLoginId(loginId);
+//        model.addAttribute("member", member);
 //
 //
-//        // 예약확인용 dto 구성
+//        // 예약 정보 요약 (디자이너, 시술, 날짜 등)
+//        ReservationPreviewDto preview = reservationService.getReservationPreview(requestDto.getMemberId(),requestDto.getShopDesignerId(),
+//                requestDto.getShopServiceId(),requestDto.getDateTime().toLocalDate(), requestDto.getDateTime().toLocalTime());
+//
+//        // 확인용 금액 정보 dto 생성
 //        ReservationCheckDto checkDto = reservationService.bulidReservationCheck(requestDto);
 //
-//        model.addAttribute("member",member); // 예약자 정보
-//        model.addAttribute("checkDto", checkDto); // 예약 확인 화면에 보여줄 dto
-//        model.addAttribute("requestDto", requestDto); // 이후 저장시 그대로 넘길 원본 dto
+//
+//        // 사용가능한 쿠폰 / 티켓
+//        MemberCouponDto couponAndTicket = reservationService.getAvailableCouponAndTicket(requestDto.getMemberId(),
+//                preview.getSelectedDesigner().getShopId());
+//
+//        model.addAttribute("preview",preview);
+//        model.addAttribute("checkDto", checkDto);
+//        model.addAttribute("requestDto", requestDto);
+//        model.addAttribute("couponDto", couponAndTicket);
 //
 //        return "shop/reCheckCoupon";
+//
 //    }
-
-    // 예약 확인 페이지 Get
-    @PostMapping("/confirm")
-    public String confirmReservationPage(@ModelAttribute ReservationRequestDto requestDto,Principal principal ,Model model){
-
-        // 예약자 정보 조회
-        String loginId = principal.getName();
-        Member member = memberRepo.findByLoginId(loginId);
-        model.addAttribute("member", member);
-
-
-        // 예약 정보 요약 (디자이너, 시술, 날짜 등)
-        ReservationPreviewDto preview = reservationService.getReservationPreview(requestDto.getMemberId(),requestDto.getShopDesignerId(),
-                requestDto.getShopServiceId(),requestDto.getDateTime().toLocalDate(), requestDto.getDateTime().toLocalTime());
-
-        // 확인용 금액 정보 dto 생성
-        ReservationCheckDto checkDto = reservationService.bulidReservationCheck(requestDto);
-
-
-        // 사용가능한 쿠폰 / 티켓
-        MemberCouponDto couponAndTicket = reservationService.getAvailableCouponAndTicket(requestDto.getMemberId(),
-                preview.getSelectedDesigner().getShopId());
-
-        model.addAttribute("preview",preview);
-        model.addAttribute("checkDto", checkDto);
-        model.addAttribute("requestDto", requestDto);
-        model.addAttribute("couponDto", couponAndTicket);
-
-        return "shop/reCheckCoupon";
-
-    }
 
     // 예약 확정 및 저장 (post)
     @PostMapping("/complete")
@@ -162,7 +152,7 @@ public class ReservationController {
         // 예약자 정보 조회
         String loginId = principal.getName();
         Member member = memberRepo.findByLoginId(loginId);
-        model.addAttribute("memeber",member); // 예약자 정보
+        model.addAttribute("member",member); // 예약자 정보
 
 
         reservationService.saveReservation(requestDto);

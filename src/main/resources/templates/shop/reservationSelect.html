@@ -80,7 +80,7 @@
   </section>
 
 
-  <form th:action="@{/reservation/confirm}" method="post" id="reservationForm">
+  <form th:action="@{/reservation/new}" method="post" id="reservationForm">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
     <input type="hidden" name="memberId" th:value="${member.id}" />
