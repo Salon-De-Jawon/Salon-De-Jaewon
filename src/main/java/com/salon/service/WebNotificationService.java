@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -85,5 +86,15 @@ public class WebNotificationService {
                 .stream()
                 .map(WebNotificationDto::from)
                 .toList();
+    }
+
+    public void notify(Long receiverId, String message, WebTarget target, Long targetId, Map<String, String> extraData) {
+        WebNotification noti = new WebNotification();
+        noti.setMemberId(receiverId);
+        noti.setMessage(message);
+        noti.setWebTarget(target);
+        noti.setTargetId(targetId);
+
+        webNotificationRepo.save(noti);
     }
 }

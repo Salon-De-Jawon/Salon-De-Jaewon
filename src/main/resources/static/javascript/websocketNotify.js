@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     stomp.subscribe(`/topic/notify/${userId}`, (msg) => {
       const data = JSON.parse(msg.body);   // { message, webTarget, targetId, unreadTotal }
-
+        console.log("알림 수신:", msg.body);
       /* 배지 숫자를 서버가 보내준 unreadTotal 로 갱신 */
       const badge = document.getElementById("notification-badge");
       if (badge) {
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 console.log("지우려 시도는 함");
 
-                if(["DESAPPLY", "SHOPAPPLY", "BANNER"].includes(data.webTarget)) {
+                if(["DESAPPLY", "BANNER"].includes(data.webTarget)) {
                     card.remove();
                     const unreadLeft =
                       container.querySelectorAll(".sidebar-alert").length;
@@ -83,6 +83,32 @@ document.addEventListener("DOMContentLoaded", () => {
                     badge.textContent   = unreadLeft;
                     badge.style.display = unreadLeft > 0 ? "inline-block" : "none";
 
+                }
+
+                let redirectUrl = null;
+
+                console.log("웹 타겟 타이" + data.webTarget);
+
+                switch (data.webTarget) {
+                    case "CS":
+                        redirectUrl = `/myPage/myQuestionList`;
+                        break;
+
+                    case "RESER_DES":
+                        if(data.date) {
+                            redirectUrl = `/manage/reservations?date=${encodeURIComponent(data.date)}`;
+                        } else {
+                            redirectUrl = `/manage/reservations`;
+                        }
+                        break;
+
+                    case "RESER_USER":
+                        redirectUrl = `/myPage/reservation`;
+                        break;
+                }
+
+                if(redirectUrl) {
+                    window.location.href = redirectUrl;
                 }
               })
               .catch(err => console.error("읽음 처리 실패:", err));
