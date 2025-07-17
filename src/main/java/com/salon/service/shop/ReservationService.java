@@ -311,8 +311,7 @@ public class ReservationService {
 
     // 예약 작성 완료 후 entity에 저장하는 메서드
     @Transactional
-    public void saveReservation(ReservationRequestDto requestDto){
-
+    public Long saveReservation(ReservationRequestDto requestDto){
 
         // 예약자 정보
         Member member = memberRepo.findById(requestDto.getMemberId())

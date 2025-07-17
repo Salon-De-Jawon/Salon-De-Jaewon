@@ -98,7 +98,7 @@ public class CsService {
         return csListDto;
     }
 
-    public void replySave(CsDetailDto csDetailDto, CsCreateDto csCreateDto, CsListDto csListDto) {
+    public Long replySave(CsDetailDto csDetailDto, CsCreateDto csCreateDto, CsListDto csListDto) {
         Member admin = memberRepo.findByLoginId(csDetailDto.getLoginId());
 
         CsCustomer customer = csCustomerRepo.findById(csDetailDto.getId())
@@ -108,6 +108,7 @@ public class CsService {
         customer.setStatus(CsStatus.COMPLETED);
         customer.setAdmin(admin);
         csCustomerRepo.save(customer);
+        return customer.getId();
     }
 
     public CsDetailDto detail(Long id) {
@@ -170,7 +171,7 @@ public class CsService {
         return applyRepo.findByApplyTypeAndStatus(ApplyType.SHOP, ApplyStatus.WAITING);
     }
 
-    public void approveShop(Long id, Member admin) {
+    public Long approveShop(Long id, Member admin) {
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
         apply.setStatus(ApplyStatus.APPROVED);
@@ -204,15 +205,19 @@ public class CsService {
 
         memberRepo.save(member);
         applyRepo.save(apply);
+
+        return member.getId();
     }
 
-    public void rejectShop(Long id, Member admin) {
+    public Long rejectShop(Long id, Member admin) {
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
         apply.setStatus(ApplyStatus.REJECTED);
         apply.setApproveAt(LocalDateTime.now());
         apply.setAdmin(admin);
         applyRepo.save(apply);
+
+        return apply.getMember().getId();
     }
 
     public void applyBanner(BannerApplyDto bannerApplyDto, Long memberId, MultipartFile file) {
@@ -247,6 +252,12 @@ public class CsService {
         couponBannerRepo.save(couponBanner);
     }
 
+    public CouponBannerDetailDto bannerDetail(Long id) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        CouponBannerDetailDto couponBannerDetailDto = CouponBannerDetailDto.from(couponBanner);
+        return couponBannerDetailDto;
+    }
+
     public List<CsListDto> findAll() {
         return csCustomerRepo.findAll().stream()
                 .map(CsListDto::from)
@@ -258,5 +269,63 @@ public class CsService {
         return csCustomerList.stream()
                 .map(CsListDto::from)
                 .collect(Collectors.toList());
+    }
+
+    public List<CouponBannerListDto> bannerList() {
+        List<CouponBanner> couponBannerList = couponBannerRepo.findAll();
+        List<CouponBannerListDto> couponBannerListDtoList = new ArrayList<>();
+        for(CouponBanner couponBanner : couponBannerList){
+            CouponBannerListDto couponBannerListDto = CouponBannerListDto.from(couponBanner);
+            couponBannerListDtoList.add(couponBannerListDto);
+        }
+        return couponBannerListDtoList;
+    }
+
+    public Long bannerApprove(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.APPROVED);
+        couponBanner.setAdmin(admin);
+        couponBannerRepo.save(couponBanner);
+
+        // 웹 알림 관련 코드
+        Long shopId = couponBanner.getCoupon().getShop().getId();
+
+        ShopDesigner shopDesigner = shopDesignerRepo.findFirstByShopIdAndIsActiveTrueAndDesigner_Member_Role(shopId, Role.MAIN_DESIGNER);
+
+        if (shopDesigner == null) {
+            throw new RuntimeException("MAINDESIGNER 역할의 디자이너가 없습니다.");
+        }
+
+
+        Long receiverId = shopDesigner.getDesigner().getMember().getId();
+
+
+        return receiverId;
+    }
+
+    public Long bannerReject(Long id, Member admin) {
+        CouponBanner couponBanner = couponBannerRepo.findById(id).orElseThrow();
+        couponBanner.setRegisterDate(LocalDateTime.now());
+        couponBanner.setStatus(ApplyStatus.REJECTED);
+        couponBanner.setAdmin(admin);
+
+
+        // 웹 알림 관련 코드
+        Long shopId = couponBanner.getCoupon().getShop().getId();
+
+        ShopDesigner shopDesigner = shopDesignerRepo.findFirstByShopIdAndIsActiveTrueAndDesigner_Member_Role(shopId, Role.MAIN_DESIGNER);
+
+        if (shopDesigner == null) {
+            throw new RuntimeException("MAINDESIGNER 역할의 디자이너가 없습니다.");
+        }
+
+
+        Long receiverId = shopDesigner.getDesigner().getMember().getId();
+
+
+        couponBannerRepo.save(couponBanner);
+
+        return receiverId;
     }
 }
