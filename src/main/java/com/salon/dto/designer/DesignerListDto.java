@@ -37,7 +37,7 @@ public class DesignerListDto {
 
         String name = shopDesigner.getDesigner().getMember().getName();
         String position = shopDesigner.getPosition();
-        designerListDto.setName(name + " " + position + " 디자이너");
+        designerListDto.setName(position + " " + name);
 
         int workingYears = shopDesigner.getDesigner().getWorkingYears();
         designerListDto.setWorkingYear(workingYears);

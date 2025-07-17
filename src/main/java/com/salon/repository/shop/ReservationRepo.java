@@ -22,7 +22,8 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
             SELECT COUNT(r)
             FROM Reservation r
             WHERE r.member.id = :memberId
-            AND r.shopDesigner.shop.id = :shopId
+            AND r.shopDesigner.shop.id = :shopId 
+            AND r.status = 'COMPLETED'
             """)
     int countVisitByMemberAndShop(@Param("memberId") Long memberId, @Param("shopId") Long shopId);
 

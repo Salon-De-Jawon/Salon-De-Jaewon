@@ -48,8 +48,9 @@ public class CsService {
     private final CouponRepo couponRepo;
     private final FileService fileService;
     private final CouponBannerRepo couponBannerRepo;
-    private final DesignerRepo designerRepo;
+    private final ShopRepo shopRepo;
     private final ShopDesignerRepo shopDesignerRepo;
+    private final DesignerRepo designerRepo;
 
 
 
@@ -140,6 +141,7 @@ public class CsService {
                 + ", issuedDate=" + apply.getIssuedDate()
                 + ", memberId=" + (apply.getMember() != null ? apply.getMember().getId() : "null"));
         applyRepo.save(apply);
+
     }
 
     private BizStatusDto.BizInfo bizApiCheck(String bizNo) {
@@ -177,6 +179,23 @@ public class CsService {
         Member member = apply.getMember();
         member.setRole(Role.MAIN_DESIGNER);
         apply.setApplyType(ApplyType.SHOP);
+
+        Shop shop = new Shop();
+        shop.setName("");
+        shop.setTel("");
+        shop.setDayOff(127);
+        shopRepo.save(shop);
+
+        ShopDesigner shopDesigner = new ShopDesigner();
+        shopDesigner.setShop(shop);
+        Designer designer = designerRepo.findByMember_Id(member.getId());
+        shopDesigner.setDesigner(designer);
+        shopDesigner.setActive(true);
+        shopDesigner.setPosition("원장");
+
+
+
+
         memberRepo.save(member);
         applyRepo.save(apply);
 

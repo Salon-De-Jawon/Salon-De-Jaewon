@@ -254,10 +254,9 @@ public class ShopDetailService {
                 if (member == null) continue;
                 ShopDesigner shopDesigner = reservation.getShopDesigner();
 
-                // 방문 횟수 (같은 미용실 + 같은 회원 기준)
-//                int visitCount = (int) reservations.stream()
-//                        .filter(r -> r.getMember().getId().equals(member.getId()))
-//                        .count();
+                int visitCount = reservationRepo.countVisitByMemberAndShop(member.getId(), shopDesigner.getShop().getId());
+
+                System.out.println("방문횟수 : " + visitCount);
 
                 // 리뷰 이미지 최대 8장
                 List<ReviewImageDto> imageDtos = reviewImageRepo.findAllByReview_Id(review.getId()).stream()
@@ -269,7 +268,7 @@ public class ShopDetailService {
                 ReviewReplyDto replyDto = ReviewReplyDto.from(review);
 
                 // DTO 변환 및 추가
-                ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, 1, replyDto);
+                ReviewListDto dto = ReviewListDto.from(review, shopDesigner, imageDtos, visitCount, replyDto);
                 result.add(dto);
             }
         }
