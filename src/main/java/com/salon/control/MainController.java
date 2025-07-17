@@ -206,7 +206,7 @@ public class MainController {
         }
 
         if (selectedShopIds.isEmpty()) {
-            return "redirect:/shopList";
+            return "redirect:/salon/shopList";
         }
 
         List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);

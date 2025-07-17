@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // 로그아웃시 회원 세션 모두 삭제
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/shop/**","/shopList/**").permitAll()
+                        .requestMatchers("/","/shop/**","/shopList/**","/api/**", "/salon/api/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
