@@ -138,7 +138,7 @@
                 <p class="shop-address" th:text="${'주소' + shop.address}">
                   주소 대전광역시 대덕구 신짱구미용실
                 </p>
-                <p class="shop-time" th:text="${shop.openTime + '~' + shop.closeTime}">9:00 ~ 20:00</p>
+                <span th:text="${#temporals.format(shop.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(shop.closeTime, 'HH:mm')}"></span>
               </div>
             </div>
             <div class="profile-icons-wrapper">

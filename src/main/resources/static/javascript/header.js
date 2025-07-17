@@ -4,6 +4,9 @@
      const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : null;
      const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : null;
 
+     console.log("csrfHeader:", csrfHeader);
+     console.log("csrfToken:", csrfToken);
+
 
     const loginHamburger = document.getElementById("loginHamburger");
     const sidebar = document.getElementById("sidebar");
@@ -95,11 +98,17 @@
         const container = document.getElementById("sidebar-alert-container");
           if (container) {
             container.addEventListener("click", function (e) {
+
+            console.log("클릭이벤트 잡힘");
               const card = e.target.closest(".sidebar-alert");
               if (!card) return;
 
               const target = card.dataset.target;
               const id     = card.dataset.id;
+
+              console.log("💬 dataset.target =", target);
+              console.log("💬 dataset.id =", id);
+              console.log("💬 dataset.date =", card.dataset.date);
 
               fetch("/api/notification/read", {
                 method: "POST",
@@ -115,29 +124,52 @@
               .then(res => {
                 if (!res.ok) throw new Error("HTTP " + res.status);
 
-                if (["DESAPPLY", "SHOPAPPLY", "BANNER"].includes(target)) {
+                if (["DESAPPLY", "BANNER"].includes(target)) {
                   card.remove();
                   const remain = container.querySelectorAll(".sidebar-alert").length;
                   showBadge(remain);
                 }
+
+                 let redirectUrl = null;
+                    switch (target) {
+                      case "CS":
+                        redirectUrl = "/myPage/myQuestionList";
+                        break;
+                      case "RESER_USER":
+                        redirectUrl = "/myPage/reservation";
+                        break;
+                      case "RESER_DES":
+                        redirectUrl = card.dataset.date
+                          ? `/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
+                          : "/manage/reservations";
+                        break;
+
+                      case "RESER_USER":
+                           redirectUrl = `/myPage/reservation`;
+                           break;
+
+                       case "SHOPAPPROVE":
+                              redirectUrl = `/master/shop-edit`;
+                              break;
+
+                       case "SHOPREJECT":
+                              redirectUrl = `/manage`;
+                             break;
+
+
+
+                    }
+
+                    if (redirectUrl) {
+                       window.location.href = redirectUrl;
+                     }
               })
               .catch(err => console.error("읽음 처리 실패", err));
             });
           }
 
         // WebSocket 구독으로 실시간 갱신
-        if(userId){
-            const sock  = new SockJS('/ws');
-            const stomp = Stomp.over(sock);
-            stomp.connect({}, ()=>{
-                stomp.subscribe(`/topic/notify/${userId}`, msg=>{
-                    const { unreadTotal } = JSON.parse(msg.body); // 서비스에서 넣어준 값
-                    const data = JSON.parse(msg.body);
-                    showBadge(data.unreadTotal);
-                    addAlertCard(data);
-                });
-            });
-        }
+
 
 
       function addAlertCard(data) {
@@ -152,6 +184,7 @@
           const content = document.createElement("span");
           content.className = "alert-content";
           content.textContent = data.message;
+          card.dataset.date = data.date || "";
 
           const date = document.createElement("span");
           date.className = "alert-date";

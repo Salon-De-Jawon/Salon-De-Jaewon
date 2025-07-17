@@ -27,10 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,7 +38,6 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final ShopDesignerRepo shopDesignerRepo;
     private final MemberRepo memberRepo;
-    private final WebNotificationRepo webNotificationRepo;
     private final WebNotificationService webNotificationService;
 
 
@@ -125,12 +121,29 @@ public class ReservationController {
 
         Long receiverId = userDetails.getId();
 
+        ShopDesigner shopDesigner = shopDesignerRepo.getReferenceById(requestDto.getShopDesignerId());
+
+        Long designerId = shopDesigner.getDesigner().getMember().getId();
 
         webNotificationService.notify(
                 receiverId,
                 "예약이 완료되었습니다.",
-                WebTarget.RESERVATION,
+                WebTarget.RESER_USER,
                 targetId
+        );
+
+        LocalDateTime reservationDateTime = requestDto.getDateTime();
+
+        String dateStr = reservationDateTime != null
+                ? reservationDateTime.toLocalDate().toString()
+                : "";  // 또는 null, 혹은 skip할 수도 있음
+
+        webNotificationService.notify(
+                designerId,
+                "새로운 예약이 생겼습니다",
+                WebTarget.RESER_DES,
+                targetId,
+                Map.of("date", dateStr)
         );
 
         return "redirect:/myPage/reservation";

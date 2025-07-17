@@ -1,234 +1,275 @@
-.shop-list-wrap {
-  max-width: 1280px;
-  margin: 20px auto;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  color: #333;
+/* 기본 스타일 */
+body {
+    font-family: 'Noto Sans KR', sans-serif; /* 한글 폰트 추가 */
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
+/* 메인 래퍼 */
+.shop-list-wrap {
+    max-width: 1280px;
+    margin: 30px auto; /* 상하 여백 늘림 */
+    padding: 25px; /* 패딩 늘림 */
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 12px; /* 모서리 더 둥글게 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); /* 그림자 강화 */
+}
+
+/* 헤더 섹션 */
 .shop-list-head {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 20px; /* 간격 늘림 */
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0; /* 연한 회색 테두리 */
 }
 
 .compare-title {
-  font-size: 24px;
-  font-weight: bold;
-  width: 210px;
-  color: #333;
-  margin-right: 20px;
+    font-size: 28px; /* 글자 크기 키움 */
+    font-weight: 700; /* 더 굵게 */
+    color: #2c3e50; /* 진한 남색 계열 */
+    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 */
 }
 
-.gender-options {
-  display: flex;
-  width: 195px;
-  gap: 10px;
+/* 성별 및 서비스 카테고리 버튼 (주석 처리되어 있어 참고용) */
+.gender-options, .service-cate-list {
+    display: flex;
+    gap: 10px;
 }
 
-.gender-options button {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  color: #555;
-  transition: all 0.3s ease;
-  white-space: nowrap;
+.gender-options button,
+.service-cate {
+    padding: 10px 18px; /* 패딩 늘림 */
+    border: 1px solid #dcdcdc; /* 연한 테두리 */
+    border-radius: 25px; /* 더 둥근 버튼 */
+    background-color: #f8f8f8; /* 약간 밝은 배경 */
+    cursor: pointer;
+    font-size: 15px;
+    color: #555;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 미묘한 그림자 */
 }
 
-.gender-options button:hover {
-  background-color: #e0e0e0;
+.gender-options button:hover,
+.service-cate:hover {
+    background-color: #e6e6e6;
+    border-color: #c0c0c0;
 }
 
-.gender-options button.active {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
+.gender-options button.active,
+.service-cate.active {
+    background-color: #4a90e2; /* 활성 버튼 색상 (파란 계열) */
+    color: #fff;
+    border-color: #4a90e2;
+    box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3); /* 활성 버튼 그림자 */
 }
 
+/* 검색 섹션 (주석 처리되어 있어 참고용) */
 .shop-list-head > div:nth-of-type(3) {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto; /* 오른쪽 정렬 */
 }
 
 .search-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  vertical-align: middle;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    vertical-align: middle;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.search-icon:hover {
+    opacity: 1;
 }
 
 .search-input {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-  display: none;
-  box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    width: 200px; /* 적절한 너비 설정 */
 }
 
-.service-cate-list {
-  display: flex;
-  gap: 10px;
-  flex-grow: 1;
-  margin-left: auto;
-  width: 100%; /* 부모의 랩핑을 위해 100% 설정 */
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
 
-.service-cate {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  background-color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  color: #555;
-  transition: all 0.3s ease;
-  white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 */
-}
-
-.service-cate:hover {
-  background-color: #e0e0e0;
-}
-
-/* 선택된 카테고리 버튼 스타일 (예시) */
-.service-cate.active {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
-
+/* 샵 카드 컨테이너 */
 .shop-card-container {
-  display: grid;
-  /* max-width: 1280px 내에서 3열 레이아웃을 유지하면서 반응형으로 변경 */
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(300px, 1fr)
-  ); /* 최소 300px, 가능한 만큼 균등하게 */
-  gap: 20px; /* 카드 간의 간격 */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* 최소 너비 320px로 조정 */
+    gap: 30px; /* 카드 간격 늘림 */
 }
 
 .compare-area {
-  background-color: #f9f9f9; /* 각 샵 카드 배경색 */
-  border: 1px solid #eee;
-  border-radius: 8px;
-  overflow: hidden; /* 모서리 둥글게 */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
+    background-color: #ffffff; /* 카드 배경색 흰색 */
+    border: 1px solid #e8e8e8; /* 연한 테두리 */
+    border-radius: 10px; /* 모서리 둥글게 */
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 그림자 강화 */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* 호버 효과 추가 */
+}
+
+.compare-area:hover {
+    transform: translateY(-5px); /* 살짝 위로 뜨는 효과 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* 그림자 더 강하게 */
 }
 
 .compare-box {
-  padding: 15px;
-  flex-grow: 1; /* 내용을 채우도록 확장 */
-  display: flex;
-  flex-direction: column;
+    padding: 20px; /* 패딩 늘림 */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
+/* 샵 이미지 */
 .shop-img {
-  width: 100%;
-  height: 200px; /* 이미지 높이 고정 */
-  background-color: #ddd; /* 이미지 플레이스홀더 색상 */
-  border-radius: 6px;
-  margin-bottom: 15px;
-  /* 실제 이미지가 들어갈 경우 background-image: url('...'); background-size: cover; background-position: center; 등 사용 */
+    width: 100%;
+    height: 220px; /* 이미지 높이 늘림 */
+    background-color: #f0f0f0;
+    border-radius: 8px; /* 이미지 자체 모서리 둥글게 */
+    margin-bottom: 20px;
+    overflow: hidden; /* 이미지가 둥근 모서리 밖으로 나가지 않도록 */
 }
 
 .shop-img img {
     width: 100%;
-    height: 200px; /* 원하는 고정 높이 */
-    object-fit: cover;
-    border-radius: 8px;
+    height: 100%;
+    object-fit: cover; /* 이미지가 잘리지 않고 채워지도록 */
+    display: block; /* 이미지 하단 공백 제거 */
 }
 
+/* 샵 정보 */
 .shop-title {
-  margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .shop-name {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
+    font-size: 22px; /* 글자 크기 키움 */
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
 }
 
 .shop-running-time {
-  font-size: 14px;
-  color: #777;
+    font-size: 15px;
+    color: #7f8c8d; /* 더 부드러운 회색 */
 }
 
+/* 리뷰 및 별점 (기존 CSS 유지) */
 .rating-area {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .rating-stars {
-  color: #ffd700; /* 황금색 별 */
-  font-size: 18px;
-  margin-right: 5px;
+    color: #8c9ed9;
+    font-size: 18px;
+    margin-right: 5px;
 }
 
 .rating {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin-right: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 5px;
 }
 
 .review-count {
-  font-size: 14px;
-  color: #777;
+    font-size: 14px;
+    color: #777;
 }
 
+.rating-area.no-review {
+    color: #999;
+    font-style: italic;
+    font-size: 15px;
+}
+
+/* 서비스 리스트 */
 .service-list {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
-    height: 300px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    gap: 10px;
+    overflow-y: auto; /* 스크롤바 유지 */
+    height: 350px; /* 높이 조정 */
+    scrollbar-width: thin; /* Firefox 스크롤바 스타일 */
+    scrollbar-color: #a7a7a7 #f1f1f1; /* Firefox 스크롤바 색상 */
+    gap: 15px; /* 서비스 항목 간 간격 늘림 */
+    padding-right: 5px; /* 스크롤바 공간 확보 */
 }
 
+/* 웹킷 기반 브라우저 스크롤바 */
 .service-list::-webkit-scrollbar {
-    display: none;
+    width: 8px;
 }
 
+.service-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.service-list::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border-radius: 10px;
+}
+
+.service-list::-webkit-scrollbar-thumb:hover {
+    background: #a7a7a7;
+}
+
+
+/* 서비스 카테고리 박스 */
+.service-cate-box {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e0e0e0; /* 점선 테두리 */
+}
+
+.service-cate-box:last-of-type {
+    border-bottom: none; /* 마지막 카테고리는 테두리 없음 */
+}
+
+.service-cate-title {
+    font-size: 18px; /* 카테고리 제목 크기 */
+    font-weight: 600; /* 약간 굵게 */
+    color: #2c3e50;
+    margin-bottom: 12px;
+    padding-left: 5px;
+    border-left: 4px solid #4a90e2; /* 왼쪽 강조 선 */
+}
+
+/* 개별 서비스 항목 */
 .service-box {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #eee;
-  border-radius: 6px;
-  transition: box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    padding: 12px; /* 패딩 늘림 */
+    background-color: #fefefe; /* 더 밝은 배경색 */
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
 }
 
 .service-box:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
 }
 
 .service-img-box {
-    width: 50px;
-    height: 50px;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    margin-right: 10px;
+    width: 60px; /* 이미지 박스 크기 키움 */
+    height: 60px;
+    background-color: #eef1f5; /* 밝은 배경 */
+    border-radius: 6px;
+    margin-right: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -236,123 +277,175 @@
     flex-shrink: 0;
 }
 
-.service-info {
-  flex-grow: 1; /* 정보가 남은 공간을 차지하도록 */
+.service-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.serivce-name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 3px;
+.service-info {
+    flex-grow: 1;
+}
+
+.service-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 5px;
 }
 
 .service-price-area {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap; /* 가격 정보가 길어질 경우 줄바꿈 허용 */
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    font-size: 16px;
 }
 
 .price {
-  font-size: 18px;
-  font-weight: bold;
-  color: #007bff; /* 할인 가격 강조 */
-  margin-right: 8px;
-  white-space: nowrap; /* 가격이 줄바꿈되지 않도록 */
+    font-size: 20px; /* 가격 크기 키움 */
+    font-weight: bold;
+    color: #e74c3c; /* 할인 가격 강조 (붉은색) */
+    margin-right: 10px;
+    white-space: nowrap;
 }
 
 .original-price {
-  font-size: 14px;
-  color: #999;
-  text-decoration: line-through; /* 원가에 취소선 */
-  white-space: nowrap; /* 가격이 줄바꿈되지 않도록 */
+    font-size: 15px;
+    color: #95a5a6; /* 회색 원가 */
+    text-decoration: line-through;
+    white-space: nowrap;
 }
 
-img.portrait {
-  height: 100%;
-  width: auto;
-  object-fit: cover;
+/* 더미 영역 (비교 대상이 3개 미만일 때 빈 공간 채우기용) */
+.dummy-area {
+    background-color: #fdfdfd;
+    border: 1px dashed #e0e0e0; /* 점선 테두리 */
+    box-shadow: none;
 }
 
-img.landscape {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .shop-card-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
 }
 
-/* 반응형 디자인을 위한 미디어 쿼리 */
 @media (max-width: 768px) {
-  .shop-list-head {
-    flex-direction: column; /* 작은 화면에서는 세로로 정렬 */
-    align-items: flex-start;
-    gap: 10px; /* 헤더 요소 간 간격 조절 */
-  }
+    .shop-list-wrap {
+        padding: 20px;
+        margin: 20px auto;
+    }
 
-  .compare-title {
-    margin-right: 0;
-    margin-bottom: 0; /* flex-gap으로 대체 */
-  }
+    .shop-list-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
 
-  .gender-options {
-    width: 100%; /* 전체 너비 차지 */
-    justify-content: flex-start;
-    margin-bottom: 0; /* flex-gap으로 대체 */
-  }
+    .compare-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
 
-  .shop-list-head > div:nth-of-type(3) {
-    /* 검색 아이콘/인풋 컨테이너 */
-    width: 100%;
-    margin-bottom: 10px; /* 아래로 여백 */
-  }
+    .gender-options, .service-cate-list {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto; /* 가로 스크롤 가능하게 */
+        padding-bottom: 5px; /* 스크롤바 공간 확보 */
+    }
+    .service-cate-list::-webkit-scrollbar {
+        height: 6px;
+    }
+    .service-cate-list::-webkit-scrollbar-thumb {
+        background: #dcdcdc;
+        border-radius: 6px;
+    }
 
-  .service-cate-list {
-    width: 100%; /* 전체 너비 차지 */
-    margin-left: 0;
-    justify-content: flex-start; /* 왼쪽 정렬 */
-  }
+    .shop-list-head > div:nth-of-type(3) {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end; /* 검색창 오른쪽 정렬 */
+    }
 
-  .shop-card-container {
-    grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나의 카드만 */
-  }
+    .shop-card-container {
+        grid-template-columns: 1fr; /* 작은 화면에서는 한 줄에 하나의 카드만 */
+        gap: 20px;
+    }
+
+    .shop-img {
+        height: 180px;
+    }
+
+    .service-list {
+        height: 250px; /* 모바일에서 서비스 리스트 높이 조정 */
+    }
 }
 
 @media (max-width: 480px) {
-  .shop-list-wrap {
-    padding: 15px; /* 작은 화면에서 패딩 줄이기 */
-  }
+    .shop-list-wrap {
+        padding: 15px;
+        margin: 15px auto;
+        border-radius: 8px;
+    }
 
-  .compare-title {
-    font-size: 20px;
-  }
+    .compare-title {
+        font-size: 22px;
+    }
 
-  .gender-options button,
-  .service-cate {
-    font-size: 13px;
-    padding: 6px 12px;
-  }
+    .gender-options button,
+    .service-cate {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
 
-  .shop-img {
-    height: 150px;
-  }
+    .shop-img {
+        height: 160px;
+        margin-bottom: 15px;
+    }
 
-  .shop-name {
-    font-size: 18px;
-  }
+    .shop-name {
+        font-size: 20px;
+    }
 
-  .rating,
-  .review-count {
-    font-size: 13px;
-  }
+    .shop-running-time {
+        font-size: 14px;
+    }
 
-  .service-name {
-    font-size: 15px;
-  }
+    .rating,
+    .review-count {
+        font-size: 13px;
+    }
 
-  .price {
-    font-size: 16px;
-  }
+    .service-cate-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
 
-  .original-price {
-    font-size: 12px;
-  }
+    .service-name {
+        font-size: 16px;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+
+    .original-price {
+        font-size: 13px;
+    }
+
+    .service-img-box {
+        width: 50px;
+        height: 50px;
+        margin-right: 12px;
+    }
+
+    .compare-box {
+        padding: 15px;
+    }
+
+    .service-list {
+        height: 200px; /* 더 작은 화면에서 서비스 리스트 높이 조정 */
+        gap: 10px;
+    }
 }

@@ -268,7 +268,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="rating-count">${shop.rating} (${shop.reviewCount})</span>
                </p>
               <p class="shop-address">${shop.address}</p>
-              <p class="shop-time">${shop.openTime} ~ ${shop.closeTime}</p>
+              <p class="day-off"></p>
+              <p class="shop-time">영업시간 : ${shop.openTime.substring(0,5)} ~ ${shop.closeTime.substring(0,5)}</p>
               <p class="shop-distance">${formatDistance(shop.distance)}</p>
             </div>
           </div>
