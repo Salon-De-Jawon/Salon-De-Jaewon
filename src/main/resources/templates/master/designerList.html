@@ -20,7 +20,9 @@
 
     <div class="designer-card-list" id="designerCardList">
       <div class="designer-card" th:each="designer : ${designerList}">
-        <img th:src="${designer.imgUrl}" alt="디자이너 사진" class="designer-photo" />
+        <img th:src="${designer.imgUrl != null && !designer.imgUrl.isEmpty() ? designer.imgUrl : '/images/default_profile.jpg'}"
+             alt="디자이너 사진"
+             class="designer-photo" />
         <div class="designer-info">
           <p class="designer-title" th:text="${designer.name}">수석디자이너 진섭</p>
           <p class="designer-desc" th:text="${designer.profileSummary}">복구펌/복구열펌/스타일전문(12년)</p>

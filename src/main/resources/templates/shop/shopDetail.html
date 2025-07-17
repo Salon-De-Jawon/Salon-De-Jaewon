@@ -393,7 +393,7 @@
         <!-- 리뷰 썸네일 -->
         <div class="r-thumbnails">
           <th:block th:if="${reviewList != null and !reviewList.isEmpty()}">
-            <th:block th:each="review : ${reviewLists}">
+            <th:block th:each="review : ${reviewList}">
               <div th:if="${review != null and review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb" th:remove="tag">
                 <img th:src="${review.imageDtos[0].imgUrl != null ? review.imageDtos[0].imgUrl : '/images/default.png'}" alt="리뷰 이미지" />
                 <img src="/images/blank.png" alt="더보기 이미지" />

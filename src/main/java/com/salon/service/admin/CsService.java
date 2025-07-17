@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,6 +184,9 @@ public class CsService {
         shop.setName("");
         shop.setTel("");
         shop.setDayOff(127);
+        shop.setTimeBeforeClosing(0);
+        shop.setOpenTime(LocalTime.of(9,0));
+        shop.setCloseTime(LocalTime.of(18,0));
         shopRepo.save(shop);
 
         ShopDesigner shopDesigner = new ShopDesigner();
@@ -191,6 +195,9 @@ public class CsService {
         shopDesigner.setDesigner(designer);
         shopDesigner.setActive(true);
         shopDesigner.setPosition("원장");
+        shopDesigner.setScheduledStartTime(shop.getOpenTime());
+        shopDesigner.setScheduledEndTime(shop.getCloseTime());
+        shopDesignerRepo.save(shopDesigner);
 
 
 

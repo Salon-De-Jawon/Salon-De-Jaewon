@@ -52,7 +52,6 @@ public class ShopController {
 
         // 리뷰 목록
         List<ReviewListDto> reviewLists = shopDetailService.getFilteredReviews(designerLists,category,sort);
-        System.out.println(reviewLists.get(0).getComment());
         model.addAttribute("reviewList", reviewLists);
 
 
