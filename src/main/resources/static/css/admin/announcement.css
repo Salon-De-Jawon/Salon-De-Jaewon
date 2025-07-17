@@ -68,3 +68,8 @@ tr:hover {
   text-align: right;
   margin-bottom
 }
+a {
+  color: #1a73e8; /* 링크 색상 (구글 블루처럼 자주 쓰임) */
+  text-decoration: none; /* 밑줄 제거 */
+  transition: color 0.2s; /* 마우스 오버 시 부드러운 색상 전환 */
+}

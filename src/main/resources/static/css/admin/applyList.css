@@ -28,6 +28,10 @@ thead{
     background-color: #8C9ED9;
     color: white;
 }
+th{
+    background-color: #8C9ED9;
+    color: white;
+}
 table th, table td{
     padding: 14px 16px;
     text-align: center;
@@ -60,6 +64,7 @@ td[colspan]{
 }
 /* ✅ 승인 버튼 (Primary) */
 form[action*="approve"] button {
+  border-radius : 4px;
   background-color: #D63384;
   color: #fff;
   border: 1px solid #fff;
@@ -68,6 +73,7 @@ form[action*="approve"] button {
 
 /* ✅ 거절 버튼 (Secondary) */
 form[action*="reject"] button {
+  border-radius : 4px;
   background-color: transparent;
   color: #444;
   border: 1px solid #bbb;
