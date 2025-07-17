@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         queryParams.append('tel', searchTel);
       }
 
-      const response = await fetch(`/master/designer-search?${queryParams.toString()}`);
+      const response = await fetch(`/salon/master/designer-search?${queryParams.toString()}`);
       console.log('Backend response status:', response.status); // 응답 상태 코드 확인
       console.log('Backend response OK:', response.ok);       // 응답 성공 여부 확인
 
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           designerItem.innerHTML = `
-            <img src="${designer.imgUrl || '/images/default_designer.jpg'}" alt="${designer.designerName} 사진" />
+            <img src="${designer.imgUrl || '/salon/images/default_designer.jpg'}" alt="${designer.designerName} 사진" />
             <div class="search-result-info">
               <p class="name">${designer.designerName}</p>
               <p>경력: ${designer.workingYears}년차</p>
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
          const addParams = new URLSearchParams();
          addParams.append('designerId', selectedDesigner.id); // Designer 엔티티의 ID 사용
 
-         const response = await fetch(`/master/add-designer?${addParams.toString()}`, {
+         const response = await fetch(`/salon/master/add-designer?${addParams.toString()}`, {
            method: 'POST',
            headers: {
              // CSRF 토큰 사용 시 필요:
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
          newDesignerCard.classList.add('designer-card');
          // Thymeleaf의 ${designer.name} 대신 newDesignerData.name을 사용해야 함
          newDesignerCard.innerHTML = `
-           <img src="${newDesignerData.imgUrl || '/images/default_designer.jpg'}" alt="${newDesignerData.name} 사진" class="designer-photo" />
+           <img src="${newDesignerData.imgUrl || '/salon/images/default_designer.jpg'}" alt="${newDesignerData.name} 사진" class="designer-photo" />
            <div class="designer-info">
              <p class="designer-title">${newDesignerData.name}</p>
              <p class="designer-desc">${newDesignerData.profileSummary}</p>
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                <span>💬 ${newDesignerData.reviewCount}</span>
              </div>
            </div>
-           <a href="/shop/designer/${newDesignerData.id}" class="btn-book">관리</a>
+           <a href="/salon/shop/designer/${newDesignerData.id}" class="btn-book">관리</a>
          `;
          designerCardList.appendChild(newDesignerCard);
 

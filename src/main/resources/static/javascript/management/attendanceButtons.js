@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 출근 상태 확인 API 호출
-  fetch('/manage/attendance/status', {
+  fetch('/salon/manage/attendance/status', {
     headers: {
       'Content-Type': 'application/json',
       [header]: token
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!isWorking) {
           if (!confirm('출근하시겠습니까?')) return;
 
-          fetch('/manage/attendance/START', {
+          fetch('/salon/manage/attendance/START', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           if (!confirm('퇴근하시겠습니까?')) return;
 
-          fetch('/manage/attendance/END', {
+          fetch('/salon/manage/attendance/END', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

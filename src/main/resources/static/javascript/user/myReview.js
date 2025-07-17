@@ -1,6 +1,6 @@
-import { autoBindDragScroll, resetAllDragScrollState } from '/javascript/dragScroll.js';
-import { renderStars } from '/javascript/ratingStarUtil.js';
-import { adjustImageFit } from '/javascript/imageFitUtil.js';
+import { autoBindDragScroll, resetAllDragScrollState } from '/salon/javascript/dragScroll.js';
+import { renderStars } from '/salon/javascript/ratingStarUtil.js';
+import { adjustImageFit } from '/salon/javascript/imageFitUtil.js';
 
 let page = 1; // 초기 페이지 (0번은 서버 렌더링됨)
 let isLoading = false;
@@ -215,7 +215,7 @@ function fillModal(d) {
 
   const reply = document.getElementById('modal-reply');
   if (d.replyComment && d.replyComment.trim() !== "") {
-    _attr('modal-designer-img', 'src', d.designerImgUrl || '/images/no-photo.svg');
+    _attr('modal-designer-img', 'src', d.designerImgUrl || '/salon/images/no-photo.svg');
     _txt('modal-reply-name', d.designerName);
     _txt('modal-reply-at', d.replyAt);
     _txt('modal-reply-comment', d.replyComment);

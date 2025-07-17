@@ -1,6 +1,6 @@
-import { initAddressSearchToggle } from '/javascript/user/addressSearchUtil.js';
-import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
-import { renderStars } from '/javascript/ratingStarUtil.js';
+import { initAddressSearchToggle } from '/salon/javascript/user/addressSearchUtil.js';
+import { setStoredLocation, getStoredLocation } from '/salon/javascript/user/locationUtil.js';
+import { renderStars } from '/salon/javascript/ratingStarUtil.js';
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("안녕 헤어샵 페이지 나야 js");
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
       const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
-      fetch('/api/member/location-consent', {
+      fetch('/salon/api/member/location-consent', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', [csrfHeader]: csrfToken }
       })
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
 
-        fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+        fetch(`/salon/api/coord-to-address?x=${lon}&y=${lat}`)
           .then(res => res.json())
           .then(data => {
             if (data.userAddress) {
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("🔍 호출 region:", region, "위도:", userLat, "경도:", userLon);
 
-    fetch(`/api/shop-list?region=${region}&lat=${userLat}&lon=${userLon}&page=${page}&size=${size}`)
+    fetch(`/salon/api/shop-list?region=${region}&lat=${userLat}&lon=${userLon}&page=${page}&size=${size}`)
       .then(res => res.json())
       .then(shopList => {
         if (shopList.length === 0) {
@@ -243,17 +243,17 @@ document.addEventListener("DOMContentLoaded", function () {
       card.dataset.id = shop.id;
       card.dataset.name = shop.shopName;
 
-      const couponHtml = shop.hasCoupon ? `<div class="shop-coupon"><img src="/images/coupon.png" alt="쿠폰" /></div>` : "";
+      const couponHtml = shop.hasCoupon ? `<div class="shop-coupon"><img src="/salon/images/coupon.png" alt="쿠폰" /></div>` : "";
       const designersHtml = (shop.designerList || []).map(d => `
         <div class="icon-circle">
-          <a href="/designer/${d.designerId}">
-            <img src="${d.imgUrl || '/images/default_profile.jpg'}" alt="디자이너 이미지" />
+          <a href="/salon/designer/${d.designerId}">
+            <img src="${d.imgUrl || '/salon/images/default_profile.jpg'}" alt="디자이너 이미지" />
           </a>
         </div>
       `).join("");
 
       card.innerHTML = `
-        <div class="shop-img" style="background-image: url('${shop.shopImageDto && shop.shopImageDto.imgUrl ? shop.shopImageDto.imgUrl : '/images/default.png'}'); background-size: cover;"></div>
+        <div class="shop-img" style="background-image: url('${shop.shopImageDto && shop.shopImageDto.imgUrl ? shop.shopImageDto.imgUrl : '/salon/images/default.png'}'); background-size: cover;"></div>
 
         <div class="shop-info-area">
           <div class="shop-info">
@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       card.addEventListener("click", (e) => {
         if (!e.target.closest(".select-box")) {
-          location.href = `/shop/${shop.id}`;
+          location.href = `/salon/shop/${shop.id}`;
         }
       });
 
@@ -393,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
       const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
-      fetch("/api/saveSelectedShops", {
+      fetch("/salon/api/saveSelectedShops", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -403,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then(res => {
           if (res.ok) {
-            location.href = "/compare";
+            location.href = "/salon/compare";
           } else {
             alert("서버에 선택 정보 저장 실패");
           }

@@ -63,7 +63,7 @@ public class AdminAncController {
         Member member = userDetails.getMember();
 
         ancService.registration(ancCreateDto, member, files);
-        return "redirect:/";
+        return "redirect:/salon";
     }
     @GetMapping("/update")
     public String updateForm(@RequestParam("id") Long id, Model model){
@@ -76,11 +76,11 @@ public class AdminAncController {
                          @ModelAttribute AncCreateDto ancCreateDto){
         Member member = userDetails.getMember();
         ancService.update(ancCreateDto, member);
-        return "redirect:/";
+        return "redirect:/salon";
     }
     @PostMapping("/delete")
     public String delete(@RequestParam("id") Long id){
         ancService.delete(id);
-        return "redirect:/";
+        return "redirect:/salon";
     }
 }

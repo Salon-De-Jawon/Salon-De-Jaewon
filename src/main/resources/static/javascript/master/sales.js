@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 데이터 가져오기 및 렌더링 함수
     const fetchAndRenderSalesData = async (year, month) => {
-        const url = `/master/sales-dashboard?year=${year}&month=${month}`;
+        const url = `/salon/master/sales-dashboard?year=${year}&month=${month}`;
 
         let salesData;
 

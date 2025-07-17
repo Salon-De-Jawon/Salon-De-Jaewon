@@ -20,7 +20,7 @@
 
     <div class="designer-card-list" id="designerCardList">
       <div class="designer-card" th:each="designer : ${designerList}">
-        <img th:src="${designer.imgUrl != null && !designer.imgUrl.isEmpty() ? designer.imgUrl : '/images/default_profile.jpg'}"
+        <img th:src="${designer.imgUrl != null && !designer.imgUrl.isEmpty() ? designer.imgUrl : '/salon/images/default_profile.jpg'}"
              alt="디자이너 사진"
              class="designer-photo" />
         <div class="designer-info">
@@ -31,7 +31,7 @@
             <span th:text="|💬 ${designer.reviewCount}|">💬 102</span>
           </div>
         </div>
-        <a href="/shop/designer/1" class="btn-book">관리</a>
+        <a href="/salon/shop/designer/1" class="btn-book">관리</a>
       </div>
     </div>
   </div>

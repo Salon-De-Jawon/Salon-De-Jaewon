@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".designer-card").forEach((card) => {
     card.addEventListener("click", () => {
     const shopDesignerId = item.dataset.id;
-      location.href = "/designerProfile/${shopDesignerId}";
+      location.href = "/salon/designerProfile/${shopDesignerId}";
     });
   });
   document.querySelectorAll(".designer-card .btn-reserve").forEach((btn) => {
@@ -145,7 +145,7 @@ categoryButtons.forEach((button) => {
   document.querySelectorAll(".designer-card").forEach((card) => {
      card.addEventListener("click", () => {
        const shopDesignerId = card.dataset.id;
-       location.href = `/designerProfile/${shopDesignerId}`;
+       location.href = `/salon/designerProfile/${shopDesignerId}`;
      });
    });
 
@@ -153,7 +153,7 @@ categoryButtons.forEach((button) => {
   document.querySelectorAll(".btn-book").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      location.href = "/reservation/write";
+      location.href = "/salon/reservation/write";
     });
   });
 
@@ -161,7 +161,7 @@ categoryButtons.forEach((button) => {
    * 7. 리뷰 탭 기능
    */
   document.querySelector(".r-photo-btn")?.addEventListener("click", () => {
-    location.href = "/review/write";
+    location.href = "/salon/review/write";
   });
 
   const rTabs = document.querySelectorAll(".r-tab");
@@ -252,7 +252,7 @@ categoryButtons.forEach((button) => {
   document
     .querySelector(".fixed-reserve .reserve-btn")
     ?.addEventListener("click", () => {
-      location.href = `/reservation/write`;
+      location.href = `/salon/reservation/write`;
     });
 });
 
@@ -262,7 +262,7 @@ document.querySelectorAll(".designer-item").forEach((item) => {
   item.addEventListener("click", () => {
     const designerId = item.dataset.id;
     if (designerId) {
-      window.location.href = `/designerProfile/${designerId}`;
+      window.location.href = `/salon/designerProfile/${designerId}`;
     }
   });
 });

@@ -58,7 +58,7 @@ public class AdminDesignerController {
         );
 
 
-        return "redirect:/admin/designer/list";
+        return "redirect:/salon/admin/designer/list";
     }
 
     @PostMapping("/reject/{id}")
@@ -83,7 +83,7 @@ public class AdminDesignerController {
                 id  // targetId는 desApplyId 등 처리 대상 ID
         );
 
-        return "redirect:/admin/designer/list";
+        return "redirect:/salon/admin/designer/list";
     }
 
 }

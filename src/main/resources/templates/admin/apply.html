@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/admin/apply.css">
+    <link rel="stylesheet" th:href="@{/css/admin/apply.css}">
   </th:block>
 </head>
 <body>
@@ -31,7 +31,7 @@
     </div>
     <div class="form-buttons">
       <button type="submit">승인 요청</button>
-      <a href="/" style="margin-left: 10px;"></a>
+      <a href="/salon" style="margin-left: 10px;"></a>
     </div>
   </form>
 </div>

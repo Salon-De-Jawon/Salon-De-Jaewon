@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/admin/reply.css">
+        <link rel="stylesheet" th:href="@{/css/admin/reply.css}">
     </th:block>
 </head>
 <body>
@@ -46,7 +46,7 @@
 
     <!-- 뒤로가기 -->
     <div class="button" style="margin-top: 20px;">
-        <a href="/admin/cs/questionList">
+        <a href="/salon/admin/cs/questionList">
             <button class="secondary-btn">목록으로</button>
         </a>
     </div>

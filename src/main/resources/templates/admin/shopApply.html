@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/admin/shopApply.css">
+    <link rel="stylesheet" th:href="@{/css/admin/shopApply.css}">
   </th:block>
 </head>
 <body>
@@ -58,7 +58,7 @@
       resultMessage.style.color = 'black';
       resultMessage.textContent = "조회 중... 잠시만 기다려 주세요.";
 
-      const url = `/admin/cs/api/bizCheck?bizNo=${encodeURIComponent(bizNo)}`;
+      const url = `/salon/admin/cs/api/bizCheck?bizNo=${encodeURIComponent(bizNo)}`;
 
       fetch(url)
         .then(response => {

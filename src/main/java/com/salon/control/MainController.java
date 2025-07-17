@@ -245,7 +245,7 @@ public class MainController {
         memberService.register(dto);
 
         session.removeAttribute("authSuccess"); // 인증 정보 제거 (1회용)
-        return "redirect:/login";
+        return "redirect:/salon/login";
     }
 
 

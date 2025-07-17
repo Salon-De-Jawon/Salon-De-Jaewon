@@ -34,31 +34,31 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         registry
-                .addResourceHandler("/desImg/**")
+                .addResourceHandler("/salon/desImg/**")
                 .addResourceLocations(desImgPath);
 
         registry
-                .addResourceHandler("/shopImg/**")
+                .addResourceHandler("/salon/shopImg/**")
                 .addResourceLocations(shopImgPath);
 
         registry
-                .addResourceHandler("/shopServiceImg/**")
+                .addResourceHandler("/salon/shopServiceImg/**")
                 .addResourceLocations(shopServiceImgPath);
 
         registry
-                .addResourceHandler("/reviewImg/**")
+                .addResourceHandler("/salon/reviewImg/**")
                 .addResourceLocations(reviewImgPath);
 
         registry
-                .addResourceHandler("/bannerImg/**")
+                .addResourceHandler("/salon/bannerImg/**")
                 .addResourceLocations(bannerImgPath);
 
         registry
-                .addResourceHandler("/ancFile/**")
+                .addResourceHandler("/salon/ancFile/**")
                 .addResourceLocations(ancFilePath);
 
         registry
-                .addResourceHandler("/csFile/**")
+                .addResourceHandler("/salon/csFile/**")
                 .addResourceLocations(csFilePath);
     }
 

@@ -49,7 +49,7 @@ public class MyPageController {
     @PostMapping("/review/create")
     public String reviewSave(@ModelAttribute ReviewCreateDto dto) {
         reviewService.saveReview(dto);
-        return "redirect:/myPage/reservation";
+        return "redirect:/salon/myPage/reservation";
     }
 
     // 내쿠폰/정액권

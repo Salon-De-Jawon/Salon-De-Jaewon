@@ -324,7 +324,7 @@ function fetchAvailableTimes(dateStr, explicitDesignerId = null) {
 
     warning.innerHTML = ``; // 디자이너 ID가 있으면 경고 메시지 초기화
 
-    fetch(`/reservation/designers/${designerId}/available-times?date=${dateStr}`)
+    fetch(`/salon/reservation/designers/${designerId}/available-times?date=${dateStr}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -380,7 +380,7 @@ function resetServiceSection() {
 }
 
 function updateServiceAndDateTimeForDesigner(designerId) {
-    fetch(`/reservation/designers/${designerId}/services`)
+    fetch(`/salon/reservation/designers/${designerId}/services`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);
@@ -396,7 +396,7 @@ function updateServiceAndDateTimeForDesigner(designerId) {
 }
 
 function fetchServicesForShop(shopId) {
-    fetch(`/reservation/shop-services?shopId=${shopId}`)
+    fetch(`/salon/reservation/shop-services?shopId=${shopId}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error(`HTTP error! status: ${res.status}`);

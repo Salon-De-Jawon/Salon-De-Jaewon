@@ -159,7 +159,7 @@
         <div class="designer-card" th:each="designer : ${designerLists}">
           <!-- 디자이너 프로필 사진 -->
           <div class="designer-img">
-          <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.jpg'}" alt="디자이너 프로필"/>
+          <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/salon/images/default-profile.jpg'}" alt="디자이너 프로필"/>
           </div>
             <p>
           <div class="designer-info">
@@ -172,7 +172,7 @@
             <span>🤍 <span th:text="${designer?.likeCount != null ? designer.likeCount : 0}">1,547</span></span>
           </div>
           <button class="btn-book"
-                  th:onclick="'location.href=\'/reservation/designer/' + (designer.id != null ? designer.id : 0) + '\';'">
+                  th:onclick="'location.href=\'/salon/reservation/designer/' + (designer.id != null ? designer.id : 0) + '\';'">
             예약
           </button>
         </div>
@@ -193,7 +193,7 @@
 
         <div th:if="${review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="review-images">
           <div class="r-thumb">
-            <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
+            <img th:src="${review.imageDtos[0]?.imgUrl ?: '/salon/images/placeholder.png'}" alt="리뷰 이미지" />
           </div>
         </div>
         <span th:text="${review.comment}">리뷰</span>
@@ -347,7 +347,7 @@
           <div class="designer-book">
             <button class="btn-book"
                     th:if="${designer != null and designer.id != null}"
-                    th:onclick="|location.href='/reservation/designer/${designer.id}'|">
+                    th:onclick="|location.href='/salon/reservation/designer/${designer.id}'|">
               <i class="fa fa-calendar-days"></i>예약
             </button>
             <button class="btn-book" th:unless="${designer != null and designer.id != null}" disabled>
@@ -396,7 +396,7 @@
             <th:block th:each="review : ${reviewList}">
               <div th:if="${review != null and review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb" th:remove="tag">
                 <img th:src="${review.imageDtos[0].imgUrl != null ? review.imageDtos[0].imgUrl : '/images/default.png'}" alt="리뷰 이미지" />
-                <img src="/images/blank.png" alt="더보기 이미지" />
+                <img src="/salon/images/blank.png" alt="더보기 이미지" />
                 <span class="r-plus">+ 더보기</span>
               </div>
             </th:block>

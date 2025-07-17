@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await fetch("/auth/email/check", {
+            const res = await fetch("/salon/auth/email/check", {
                 method: "post",
                 headers: {"Content-Type": "application/json",
                     [csrfHeader]: csrfToken
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             verifyBtn.disabled = false;
 
-            fetch("/auth/email/send", {
+            fetch("/salon/auth/email/send", {
               method: "POST",
               headers: {
                 "Content-Type" : "application/json",
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch("/auth/email/verify", {
+        fetch("/salon/auth/email/verify", {
             method:"POST",
             headers: {"Content-Type":"application/json"},
             credentials: "include",
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
         step2.style.display = "block";
 
         try {
-         const res = await fetch("/auth/email/find-id", {
+         const res = await fetch("/salon/auth/email/find-id", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-        const res = await fetch("/auth/email/check", {
+        const res = await fetch("/salon/auth/email/check", {
             method: "post",
             headers: {"Content-Type": "application/json",
                 [csrfHeader]: csrfToken
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         pwVerifyBtn.disabled = false;
 
-        fetch("/auth/email/send", {
+        fetch("/salon/auth/email/send", {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json",
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-          const res = await fetch("/auth/email/verify", {
+          const res = await fetch("/salon/auth/email/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -478,7 +478,7 @@ document.getElementById("changePwForm").addEventListener("submit", async functio
   document.getElementById("changePwResult").style.display = "block";
 
   try {
-    const response = await fetch("/auth/email/editPw", {
+    const response = await fetch("/salon/auth/email/editPw", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

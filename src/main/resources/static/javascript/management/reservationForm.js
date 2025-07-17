@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadReservationData(id) {
       try {
           // 백엔드 API 엔드포인트에 맞게 수정
-          const response = await fetch(`/manage/reservations/${id}`);
+          const response = await fetch(`/salon/manage/reservations/${id}`);
           if (!response.ok) {
               const errorText = await response.text();
               console.error('예약 정보를 불러오는 데 실패했습니다:', response.status, errorText);
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ticketAmountInput.value = reservationData.ticketUsedAmount || 0;
 
           if (reservationData.memberId) {
-             const memberRes = await fetch(`/manage/members/${reservationData.memberId}/coupons`); // 정액권 잔액을 위해 동일 API 호출
+             const memberRes = await fetch(`/salon/manage/members/${reservationData.memberId}/coupons`); // 정액권 잔액을 위해 동일 API 호출
              const memberData = await memberRes.json();
              const prepaid = memberData.ticketBalance || 0;
              ticketAmountInput.setAttribute("data-max", prepaid); // 정액권 입력 필드의 최대값 설정
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!memberId) return; // memberId가 없으면 쿠폰 로드하지 않음
 
       try {
-          const res = await fetch(`/manage/members/${memberId}/coupons`);
+          const res = await fetch(`/salon/manage/members/${memberId}/coupons`);
           const data = await res.json();
 
           data.coupons.forEach(coupon => {
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      const res = await fetch(`/manage/members/search?keyword=${encodeURIComponent(keyword)}`);
+      const res = await fetch(`/salon/manage/members/search?keyword=${encodeURIComponent(keyword)}`);
       const members = await res.json();
 
       memberSearchResultsDiv.innerHTML = '';
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 회원 선택 시 쿠폰/정액권 다시 로드
     try {
         await loadMemberCouponsAndSetSelected(memberId, null); // 신규 회원이므로 선택된 쿠폰 ID는 없으므로 null
-        const res = await fetch(`/manage/members/${memberId}/coupons`); // 정액권 잔액을 위해 다시 호출
+        const res = await fetch(`/salon/manage/members/${memberId}/coupons`); // 정액권 잔액을 위해 다시 호출
         const data = await res.json();
         const prepaid = data.ticketBalance || 0;
         ticketAmountInput.setAttribute("data-max", prepaid);
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     try {
-      const res = await fetch(`/manage/services/search?keyword=${encodeURIComponent(keyword)}`);
+      const res = await fetch(`/salon/manage/services/search?keyword=${encodeURIComponent(keyword)}`);
       const services = await res.json();
 
       serviceSearchResultsDiv.innerHTML = '';

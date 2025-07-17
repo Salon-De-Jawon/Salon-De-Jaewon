@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.addEventListener("click", (e) => {
               console.log("클릭 잡힙", e.target);
               /* 읽음 처리 */
-              fetch("/api/notification/read", {
+              fetch("/salon/api/notification/read", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -91,28 +91,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 switch (data.webTarget) {
                     case "CS":
-                        redirectUrl = `/myPage/myQuestionList`;
+                        redirectUrl = `/salon/myPage/myQuestionList`;
                         break;
 
                     case "RESER_USER":
-                        redirectUrl = "/myPage/reservation";
+                        redirectUrl = "/salon/myPage/reservation";
                         break;
                       case "RESER_DES":
                         redirectUrl = card.dataset.date
-                          ? `/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
-                          : "/manage/reservations";
+                          ? `/salon/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
+                          : "/salon/manage/reservations";
                         break;
 
                     case "RESER_USER":
-                        redirectUrl = `/myPage/reservation`;
+                        redirectUrl = `/salon/myPage/reservation`;
                         break;
 
                     case "SHOPAPPROVE":
-                        redirectUrl = `/master/shop-edit`;
+                        redirectUrl = `/salon/master/shop-edit`;
                         break;
 
                     case "SHOPREJECT":
-                        redirectUrl = `/manage`;
+                        redirectUrl = `/salon/manage`;
                         break;
                 }
 

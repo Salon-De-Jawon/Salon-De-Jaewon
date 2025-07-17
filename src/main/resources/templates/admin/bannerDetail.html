@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/admin/bannerDetail.css">
+        <link rel="stylesheet" th:href="@{/css/admin/bannerDetail.css}">
     </th:block>
 </head>
 <body>
@@ -48,7 +48,7 @@
         </form>
     </div>
     <div class="back-link-wrapper">
-        <a class="back-link" href="/admin/cs/bannerList">목록으로 돌아가기</a>
+        <a class="back-link" href="/salon/admin/cs/bannerList">목록으로 돌아가기</a>
     </div>
 </div>
 <th:block layout:fragment="script"></th:block>

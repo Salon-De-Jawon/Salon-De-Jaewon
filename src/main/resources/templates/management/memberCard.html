@@ -86,7 +86,7 @@
     // 서버에서 회원 목록 데이터를 가져와 렌더링하는 비동기 함수
     async function fetchAndRenderMemberList() {
       try {
-        const response = await fetch('/manage/members'); // API 엔드포인트: /api/members
+        const response = await fetch('/salon/manage/members'); // API 엔드포인트: /api/members
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -207,7 +207,7 @@
       const memoContent = encodeURIComponent(memberMemoInput.value); // URL에 포함하기 위해 인코딩
       if (currentMemberId) {
         try {
-          const response = await fetch(`/manage/members/${currentMemberId}/memo?memo=${memoContent}`, {
+          const response = await fetch(`/salon/manage/members/${currentMemberId}/memo?memo=${memoContent}`, {
             method: 'PUT', // PUT 메서드 사용
              headers: {
               [csrfHeader]: csrfToken // CSRF 토큰 헤더 추가
@@ -234,7 +234,7 @@
       const memoContent = encodeURIComponent(cardMemoInput.value); // URL에 포함하기 위해 인코딩
       if (currentPaymentId) { // 현재 Payment ID가 유효한지 확인
         try {
-          const response = await fetch(`/manage/membercards/${currentPaymentId}/memo?memo=${memoContent}`, {
+          const response = await fetch(`/salon/manage/membercards/${currentPaymentId}/memo?memo=${memoContent}`, {
             method: 'PUT', // PUT 메서드 사용
             headers: {
               [csrfHeader]: csrfToken // CSRF 토큰 헤더 추가

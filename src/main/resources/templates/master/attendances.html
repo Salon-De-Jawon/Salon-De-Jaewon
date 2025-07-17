@@ -63,7 +63,7 @@
 
     async function fetchAndRenderDesigners() {
       try {
-        const response = await fetch('/master/attDes');
+        const response = await fetch('/salon/master/attDes');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -88,7 +88,7 @@
         li.classList.add('designer-item');
         li.dataset.designerId = designer.designerId;
 
-        const imgSrc = designer.imgUrl || '/images/default_profile.jpg';
+        const imgSrc = designer.imgUrl || '/salon/images/default_profile.jpg';
         li.innerHTML = `
           <img src="${imgSrc}" alt="${designer.name} 프로필" class="designer-img">
           <div class="designer-info">

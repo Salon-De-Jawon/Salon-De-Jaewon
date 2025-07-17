@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const method = serviceId ? 'PUT' : 'POST';
-        const url = serviceId ? `/master/services/${serviceId}` : '/master/services';
+        const url = serviceId ? `/salon/master/services/${serviceId}` : '/salon/master/services';
 
         // FormData 객체 생성 (파일 업로드 포함)
         const formData = new FormData();
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (confirm('정말로 이 시술을 삭제하시겠습니까?')) {
                 try {
-                    const response = await fetch(`/master/services/${serviceId}`, {
+                    const response = await fetch(`/salon/master/services/${serviceId}`, {
                         method: 'DELETE',
                         headers: {
                             ...(csrfHeader && csrfToken && { [csrfHeader]: csrfToken }),
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // 특정 시술의 상세 정보를 백엔드에서 가져옵니다.
-                const response = await fetch(`/master/services/${serviceId}`);
+                const response = await fetch(`/salon/master/services/${serviceId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch service details: ${response.status}`);
                 }
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // 특정 시술의 상세 정보를 백엔드에서 가져옵니다.
-                const response = await fetch(`/master/services/${serviceId}`);
+                const response = await fetch(`/salon/master/services/${serviceId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch service details: ${response.status}`);
                 }

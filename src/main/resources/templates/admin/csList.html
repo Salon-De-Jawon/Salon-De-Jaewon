@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/admin/csList.css">
+        <link rel="stylesheet" th:href="@{/css/admin/csList.css}">
     </th:block>
 </head>
 <body>
@@ -32,7 +32,7 @@
         </tbody>
     </table>
     <div class="button-wrapper" sec:authorize="!hasRole('ADMIN')">
-        <a href="/admin/cs/question" id="button">
+        <a href="/salon/admin/cs/question" id="button">
             <button class="primary-btn">문의 작성하기</button>
         </a>
     </div>

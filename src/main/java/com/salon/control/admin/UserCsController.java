@@ -124,12 +124,12 @@ public class UserCsController {
         System.out.println("file: " + (file != null ? file.getOriginalFilename() : "없음"));
         Member member = userDetails.getMember();
         if(member == null){
-            return "redirect:/";
+            return "redirect:/salon";
         }
         try{
             desApplyService.Apply(applyDto, member, file);
             model.addAttribute("message", "디자이너 승인 요청이 완료되었습니다.");
-            return "redirect:/";
+            return "redirect:/salon";
         } catch (Exception e){
             model.addAttribute("error", "요청 처리 중 오류가 발생했습니다." + e.getMessage());
             model.addAttribute("ocrApiKey", ocrApiKey);
@@ -150,7 +150,7 @@ public class UserCsController {
                                @RequestParam("files") List<MultipartFile> files){
         Member member = userDetails.getMember();
         csService.questionSave(csCreateDto, member, files);
-        return "redirect:/myPage/myQuestionList";
+        return "redirect:/salon/myPage/myQuestionList";
     }
     @GetMapping("/questionList")
     public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
@@ -187,7 +187,7 @@ public class UserCsController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/shopApply";
         }
-        return "redirect:/";
+        return "redirect:/salon";
     }
     // 배너 신청 폼을 보여주는 GET 요청
     @GetMapping("/apply")
@@ -232,7 +232,7 @@ public class UserCsController {
                                 @RequestParam("file") MultipartFile file){
         Long memberId = userDetails.getMember().getId();
         csService.applyBanner(bannerApplyDto, memberId, file);
-        return "redirect:/";
+        return "redirect:/salon";
     }
     @GetMapping("/bannerList")
     public String bannerList(Model model){

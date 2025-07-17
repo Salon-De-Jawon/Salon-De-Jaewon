@@ -54,7 +54,7 @@
           }
 
           // 서버 세션에 저장 요청 후 compare로 이동
-          fetch("/api/saveSelectedShops", {
+          fetch("/salon/api/saveSelectedShops", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -67,7 +67,7 @@
                 throw new Error("서버 응답 실패");
               }
               // 세션 저장 성공 후 이동
-              location.href = "/compare";
+              location.href = "/salon/compare";
             })
             .catch(err => {
               console.error("세션 저장 실패", err);
@@ -110,7 +110,7 @@
               console.log("💬 dataset.id =", id);
               console.log("💬 dataset.date =", card.dataset.date);
 
-              fetch("/api/notification/read", {
+              fetch("/salon/api/notification/read", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -133,27 +133,27 @@
                  let redirectUrl = null;
                     switch (target) {
                       case "CS":
-                        redirectUrl = "/myPage/myQuestionList";
+                        redirectUrl = "/salon/myPage/myQuestionList";
                         break;
                       case "RESER_USER":
-                        redirectUrl = "/myPage/reservation";
+                        redirectUrl = "/salon/myPage/reservation";
                         break;
                       case "RESER_DES":
                         redirectUrl = card.dataset.date
-                          ? `/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
-                          : "/manage/reservations";
+                          ? `/salon/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
+                          : "/salon/manage/reservations";
                         break;
 
                       case "RESER_USER":
-                           redirectUrl = `/myPage/reservation`;
+                           redirectUrl = `/salon/myPage/reservation`;
                            break;
 
                        case "SHOPAPPROVE":
-                              redirectUrl = `/master/shop-edit`;
+                              redirectUrl = `/salon/master/shop-edit`;
                               break;
 
                        case "SHOPREJECT":
-                              redirectUrl = `/manage`;
+                              redirectUrl = `/salon/manage`;
                              break;
 
 

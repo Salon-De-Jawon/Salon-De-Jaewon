@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        fetch(`/check-id?loginId=${loginId}`)
+        fetch(`/salon/check-id?loginId=${loginId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.exists) {
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-           const res = await fetch("/auth/email/check", {
+           const res = await fetch("/salon/auth/email/check", {
            method: "POST",
            headers: {"Content-Type": "application/json",
                [csrfHeader]: csrfToken
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
            codeInput.focus();
 
 
-           fetch("/auth/email/send", {
+           fetch("/salon/auth/email/send", {
              method: "POST",
              headers: {
                 "Content-Type" : "application/json",
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
        }
 
-       fetch("/auth/email/verify", {
+       fetch("/salon/auth/email/verify", {
           method:"POST",
           headers: {"Content-Type":"application/json"},
           credentials: "include",

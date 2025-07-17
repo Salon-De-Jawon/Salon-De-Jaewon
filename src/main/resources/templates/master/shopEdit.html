@@ -370,13 +370,13 @@
             console.log('삭제 ID 목록:', deletedImageIds);
             console.log('선택된 파일들:', selectedFiles);
 
-            fetch('/master/shop-edit/update', {
+            fetch('/salon/master/shop-edit/update', {
                 method: 'POST',
                 body: formData
             }).then(response => {
                 if (response.ok) {
                     alert('저장 성공!');
-                    location.href = '/master';
+                    location.href = '/salon/master';
                 } else {
                     alert('저장 실패');
                 }

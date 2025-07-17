@@ -146,7 +146,7 @@ public class ReservationController {
                 Map.of("date", dateStr)
         );
 
-        return "redirect:/myPage/reservation";
+        return "redirect:/salon/myPage/reservation";
     }
 
 //    // 예약 확인 페이지 Get
@@ -194,7 +194,7 @@ public class ReservationController {
 
 
         redirect.addFlashAttribute("message", "예약이 성공적으로 완료 되었습니다");
-        return "redirect:/shop/complete";
+        return "redirect:/salon/shop/complete";
     }
 
 }

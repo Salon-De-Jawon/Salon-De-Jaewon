@@ -1,8 +1,8 @@
 
 
-import { initAddressSearchToggle }  from '/javascript/user/addressSearchUtil.js';
-import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
-import { adjustImageFitAll }        from '/javascript/imageFitUtil.js';
+import { initAddressSearchToggle }  from '/salon/javascript/user/addressSearchUtil.js';
+import { setStoredLocation, getStoredLocation } from '/salon/javascript/user/locationUtil.js';
+import { adjustImageFitAll }        from '/salon/javascript/imageFitUtil.js';
 
 /* ───────────── 전역 상태 ───────────── */
 let region  = '';
@@ -221,7 +221,7 @@ function updateMarkersInViewport() {
 
     kakao.maps.event.addListener(marker, 'mouseover', () => info.open(map, marker));
     kakao.maps.event.addListener(marker, 'mouseout', () => info.close());
-    kakao.maps.event.addListener(marker, 'click', () => location.href = `/shop/${shop.id}`);
+    kakao.maps.event.addListener(marker, 'click', () => location.href = `/salon/shop/${shop.id}`);
 
     markers.push(marker);
   });
@@ -254,7 +254,7 @@ function renderAdBannerSlides(banners) {
 
   if (banners.length < 5) {
     const dummy = {
-      imgUrl: '/images/coupon-default.jpg',
+      imgUrl: '/salon/images/coupon-default.jpg',
       shopId: 0,
       alt   : '진행중인 광고가 없습니다.'
     };
@@ -278,7 +278,7 @@ function renderAdBannerSlides(banners) {
       /* ── 실제 배너 ── */
       wrapper.insertAdjacentHTML('beforeend', `
         <div class="swiper-slide">
-          <a href="/shop/${b.shopId}">
+          <a href="/salon/shop/${b.shopId}">
             <img src="${b.imgUrl}" alt="배너" style="width:100%;border-radius:12px;">
           </a>
         </div>
@@ -306,9 +306,9 @@ function renderRecommendShopSlides(shops) {
   shops.forEach(s => {
     wrapper.insertAdjacentHTML('beforeend', `
       <div class="swiper-slide">
-        <div class="shop-content" onclick="location.href='/shop/${s.id}'">
+        <div class="shop-content" onclick="location.href='/salon/shop/${s.id}'">
           <div class="skew-box">
-            <img src="${s.shopImageDto?.imgUrl || '/images/default.png'}" class="img-fit" alt="" />
+            <img src="${s.shopImageDto?.imgUrl || '/salon/images/default.png'}" class="img-fit" alt="" />
           </div>
           <div class="shop-info">
             <div class="shop-info-detail">
@@ -316,9 +316,9 @@ function renderRecommendShopSlides(shops) {
               ${s.distance != null ? `<div class="shop-distance">${s.distance}km</div>` : ''}
             </div>
             <div class="shop-review-detail">
-              <img src="/images/pointed-star.png" alt="">
+              <img src="/salon/images/pointed-star.png" alt="">
               <div class="shop-rating">${s.avgRating}</div>
-              <img src="/images/comment.png" alt="">
+              <img src="/salon/images/comment.png" alt="">
               <div class="shop-review-count">${s.reviewCount.toLocaleString()}</div>
             </div>
           </div>
@@ -349,12 +349,12 @@ function renderRecommendedDesigners(list) {
     wrapper.classList.add('best-designer-box');
     wrapper.innerHTML = `
       <div class="designer-profile-box">
-        <img src="${d.profileImgUrl || '/images/default_profile.jpg'}" class="designer-photo img-fit" alt="">
+        <img src="${d.profileImgUrl || '/salon/images/default_profile.jpg'}" class="designer-photo img-fit" alt="">
       </div>
       <div class="designer-info-box">
         <div class="designer-name-box">
             <div class="designer-name">${d.position} ${d.designerName}</div>
-            <a href='/shop/${d.shopId}' class="go-view">보러가기</a>
+            <a href='/salon/shop/${d.shopId}' class="go-view">보러가기</a>
         </div>
 
         <div class="designer-shop">${d.shopName}</div>
@@ -408,7 +408,7 @@ function renderDesignerBubble(d) {
       <div class="">
         <div class="review-info-area">
                 <div class="review-rating-box">
-                  <img src="/images/pointed-star.png" alt="">
+                  <img src="/salon/images/pointed-star.png" alt="">
                   <div class="review-rating">${d.reviewRating?.toFixed?.(1) ?? '5.0'}</div>
                 </div>
                 <div class="review-create-at">${d.createAt ?? ''}</div>

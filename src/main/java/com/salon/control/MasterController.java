@@ -233,7 +233,7 @@ public class MasterController {
 
         masterService.saveShopEdit(dto, files, deletedImageIds, thumbnailImageId);
 
-        return "redirect:/master";
+        return "redirect:/salon/master";
     }
 
     // 쿠폰 관리
@@ -252,7 +252,7 @@ public class MasterController {
 
         masterService.saveCoupon(dto, userDetails.getMember().getId());
 
-        return "redirect:/master/coupons";
+        return "redirect:/salon/master/coupons";
     }
 
 }

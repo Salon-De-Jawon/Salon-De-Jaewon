@@ -177,7 +177,7 @@ public class ManageController {
 
         manageService.savePayment(form, userDetails.getMember().getId());
 
-        return "redirect:/manage/sales";
+        return "redirect:/salon/manage/sales";
     }
 
     // 결제 상세페이지
@@ -250,7 +250,7 @@ public class ManageController {
         // reservationForm.setId(id); // PathVariable의 ID를 DTO에 설정 (필요한 경우)
         manageService.saveReservation(reservationForm, userDetails.getId()); // 서비스에서 예약 수정 로직 호출
         redirectAttributes.addFlashAttribute("message", "예약이 성공적으로 수정되었습니다.");
-        return "redirect:/manage/reservations"; // 수정 후 예약 목록 페이지로 리다이렉트
+        return "redirect:/salon/manage/reservations"; // 수정 후 예약 목록 페이지로 리다이렉트
     }
 
     // 시술 검색 api
@@ -285,7 +285,7 @@ public class ManageController {
 
         manageService.saveReservation(newRes, userDetails.getMember().getId());
 
-        return "redirect:/manage/reservations";
+        return "redirect:/salon/manage/reservations";
     }
 
     // 회원관리카드

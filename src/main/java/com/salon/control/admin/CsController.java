@@ -152,7 +152,7 @@ public class CsController {
                 id
         );
 
-        return "redirect:/admin/cs/questionList";
+        return "redirect:/salon/admin/cs/questionList";
     }
 
     @GetMapping("/shopList")
@@ -179,7 +179,7 @@ public class CsController {
         );
 
 
-        return "redirect:/admin/cs/shopList";
+        return "redirect:/salon/admin/cs/shopList";
     }
 
     @PostMapping("/reject/{id}")
@@ -194,7 +194,7 @@ public class CsController {
                 id
         );
 
-        return "redirect:/admin/cs/shopList";
+        return "redirect:/salon/admin/cs/shopList";
     }
 
     @GetMapping("/bannerList")
@@ -224,7 +224,7 @@ public class CsController {
                 WebTarget.BANNER,
                 id
         );
-        return "redirect:/admin/cs/bannerList";
+        return "redirect:/salon/admin/cs/bannerList";
     }
 
     @PostMapping("/couponBanner/reject")
@@ -239,7 +239,7 @@ public class CsController {
                 id
         );
 
-        return "redirect:/admin/cs/bannerList";
+        return "redirect:/salon/admin/cs/bannerList";
     }
 
 }
