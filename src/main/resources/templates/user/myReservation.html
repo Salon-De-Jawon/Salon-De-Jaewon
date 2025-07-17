@@ -301,13 +301,13 @@
                                 <div class="btn-box">
                                     <button class="reservation-change cancel-btn"
                                             th:if="${res.status.name() == 'RESERVED'}"
-                                            th:attr="data-reservation-id=${res.id}"
-                                    >취소하기</button>
-                                    <button class="re-reservation"
-                                            th:if="${res.status.name() == 'COMPLETED' or
-                                            res.status.name() == 'CANCELED' or
-                                            res.status.name() == 'NOSHOW'}"
-                                            href="">재예약하기</button>
+                                            th:attr="data-reservation-id=${res.reservationId}">
+                                    취소하기</button>
+                                    <a class="re-reservation"
+                                       th:if="${res.status.name() == 'COMPLETED' or res.status.name() == 'CANCELED' or res.status.name() == 'NOSHOW'}"
+                                       th:href="@{'/reservation/write?shopId=' + ${res.shopId}}">
+                                        재예약하기
+                                    </a>
                                     <button th:if="${res.canWriteReview}"
                                             class="review-create"
                                             th:onclick="|openCreateReviewModal(${res.reservationId})|">

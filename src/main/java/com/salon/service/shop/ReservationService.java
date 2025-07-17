@@ -10,6 +10,7 @@ import com.salon.dto.management.master.CouponDto;
 import com.salon.dto.management.master.TicketInfoDto;
 import com.salon.dto.shop.*;
 import com.salon.dto.user.MemberDto;
+import com.salon.dto.user.ReReservationFormDto;
 import com.salon.entity.Member;
 import com.salon.entity.management.MemberCoupon;
 import com.salon.entity.management.ShopDesigner;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -352,5 +354,20 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    
+
+    // 예약 취소
+    public void cancelReservation(Long reservationId, Long memberId) {
+        Reservation reservation = reservationRepo.findByIdAndMemberId(reservationId, memberId).orElseThrow(() ->
+                new IllegalArgumentException("예약 없음"));
+
+        if(reservation.getStatus() != ReservationStatus.RESERVED) {
+            throw new IllegalArgumentException("이미 취소된 예약입니다.");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELED);
+
+        reservationRepo.save(reservation);
+
+    }
+
 }

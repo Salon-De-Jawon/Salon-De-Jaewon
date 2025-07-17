@@ -7,9 +7,11 @@ import com.salon.constant.WebTarget;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.MemberCouponDto;
 import com.salon.dto.shop.*;
+import com.salon.dto.user.ReReservationFormDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.WebNotification;
 import com.salon.entity.management.ShopDesigner;
+import com.salon.entity.shop.Reservation;
 import com.salon.repository.MemberRepo;
 import com.salon.repository.WebNotificationRepo;
 import com.salon.repository.management.ShopDesignerRepo;
@@ -18,6 +20,7 @@ import com.salon.service.WebNotificationService;
 import com.salon.service.shop.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -142,12 +145,28 @@ public class ReservationController {
                 designerId,
                 "새로운 예약이 생겼습니다",
                 WebTarget.RESER_DES,
-                targetId,
-                Map.of("date", dateStr)
+                targetId
         );
 
         return "redirect:/myPage/reservation";
     }
+
+
+    //예약 취소
+    @PostMapping("/cancel/{reservationId}")
+    @ResponseBody
+    public ResponseEntity<?> cancelReservation(@PathVariable Long reservationId,
+                                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            reservationService.cancelReservation(reservationId, userDetails.getId());
+            return ResponseEntity.ok().body(Map.of("result", "success"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+
+
 
 //    // 예약 확인 페이지 Get
 //    @PostMapping("/confirm")
