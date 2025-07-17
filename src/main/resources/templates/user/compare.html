@@ -75,23 +75,25 @@
                                 커트
                             </div>
 
+                            <a th:href="@{'/shop/' + ${compareResult.shopListDto.id}}" class="service-box-link">
 
-                            <div class="service-box"
-                                 th:each="service : ${compareResult.categorizedServices.get(category)}"
-                            >
+                                <div class="service-box"
+                                     th:each="service : ${compareResult.categorizedServices.get(category)}"
+                                >
 
-                                <div class="service-img-box"
-                                    th:if="${service.imgUrl != null}">
-                                    <img th:src="@{${service.imgUrl}}" class="service-img" alt="서비스 이미지" />
-                                </div>
-                                <div class="service-info">
-                                    <div class="service-name" th:text="${service.name}">커트</div>
-                                    <div class="service-price-area">
-                                        <div class="price" th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">20,000</div>
-                                        <!-- 원가 없을 수도 있으니 조건부 표시 -->
+                                    <div class="service-img-box"
+                                        th:if="${service.imgUrl != null}">
+                                        <img th:src="@{${service.imgUrl}}" class="service-img" alt="서비스 이미지" />
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name" th:text="${service.name}">커트</div>
+                                        <div class="service-price-area">
+                                            <div class="price" th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">20,000</div>
+                                            <!-- 원가 없을 수도 있으니 조건부 표시 -->
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
