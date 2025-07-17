@@ -98,7 +98,7 @@ public class DesApplyService {
     }
 
     @Transactional
-    public void approve(Long id, Member member) {
+    public Long approve(Long id, Member member) {
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
         apply.setStatus(ApplyStatus.APPROVED);
@@ -112,6 +112,8 @@ public class DesApplyService {
         designerRepo.save(designer);
         applicant.setRole(Role.DESIGNER);
 //        return apply.getMember().getId();
+
+        return apply.getMember().getId();
     }
 
     // 원래 void 였던거 반환 타입 Apply로 변경 -

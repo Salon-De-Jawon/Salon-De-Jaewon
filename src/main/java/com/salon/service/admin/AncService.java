@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -145,5 +147,13 @@ public class AncService {
             announcementFileRepo.delete(file);
         }
         announcementRepo.delete(announcement);
+    }
+
+
+    public List<AncListDto> findByRole(Role role) {
+        return announcementRepo.findByRole(role)
+                .stream()
+                .map(AncListDto::from)
+                .collect(Collectors.toList());
     }
 }

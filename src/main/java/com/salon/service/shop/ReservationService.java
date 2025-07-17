@@ -313,6 +313,7 @@ public class ReservationService {
     @Transactional
     public void saveReservation(ReservationRequestDto requestDto){
 
+
         // 예약자 정보
         Member member = memberRepo.findById(requestDto.getMemberId())
                 .orElseThrow(() -> new EntityNotFoundException("회원 정보 없음"));
@@ -347,6 +348,9 @@ public class ReservationService {
 
         // 저장
         reservationRepo.save(reservation);
+
+        // 웹 알림 저장용 아이디 반환
+        return reservation.getId();
     }
 
     
