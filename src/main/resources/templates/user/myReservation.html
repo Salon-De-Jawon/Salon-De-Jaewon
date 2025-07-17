@@ -64,7 +64,7 @@
                                         <div class="service-price">
                                             <div class="price-box">
                                                 <span>시술가격</span>
-                                                <span th:text="${res.servicePrice}">30000</span>
+                                                <span th:text="${#numbers.formatInteger(res.servicePrice, 3, 'COMMA')}">30000</span>
                                             </div>
                                             <div class="coupon-icon-area"></div>
                                         </div>
@@ -72,7 +72,7 @@
 
                                             <div class="price-box">
                                                 <span>할인가격</span>
-                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.couponDiscount, 3, 'COMMA')}">-5000</span>
                                             </div>
                                             <div class="coupon-icon-area">
                                                 <div class="coupon-container">
@@ -94,10 +94,10 @@
                                                         <div>
                                                             <div>
                                                                 <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).PERCENT}"><span th:text="${res.discountValue}">15</span>%</strong>
-                                                                <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).AMOUNT}"><span th:text="${res.discountValue}">2000</span>원</strong>
+                                                                <strong class="coupon-discount" th:if="${res.couponType == T(com.salon.constant.CouponType).AMOUNT}"><span th:text="${#numbers.formatInteger(res.discountValue, 3, 'COMMA')}">2000</span>원</strong>
                                                             </div>
                                                             <div class="tooltip-min">
-                                                                최소 금액 : <span th:text="${res.couponMin}">20,000</span></div>
+                                                                최소 금액 : <span th:text="${#numbers.formatInteger(res.couponMin, 3, 'COMMA')}">20,000</span></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -106,7 +106,7 @@
                                         <div class="ticket-used-amount" th:if="${res.ticketUsed}">
                                             <div class="price-box">
                                                 <span>사용금액</span>
-                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.ticketUsedAmount, 3, 'COMMA')}">-25000</span>
                                             </div>
                                             <div class="coupon-icon-area">
                                                 <div class="coupon-container">
@@ -118,22 +118,22 @@
                                                     <div class="tooltip">
                                                         <div>
                                                             <strong><strong th:text="${res.shopName}">000샵</strong> 정액권</strong>
-                                                            <div th:text="${res.ticketTotalAmount}">100,000</div>
+                                                            <div th:text="${#numbers.formatInteger(res.ticketTotalAmount, 3, 'COMMA')}">100,000</div>
                                                         </div>
                                                         <div>
                                                             <strong>현재 잔액</strong>
-                                                            <div th:text="${res.ticketNowAmount}">70,000</div>
+                                                            <div th:text="${#numbers.formatInteger(res.ticketNowAmount, 3, 'COMMA')}">70,000</div>
                                                         </div>
                                                         <div>
                                                             <strong>결제 예정액</strong>
-                                                            <div th:text="${'-' + res.ticketUsedAmount}">-25,000</div>
+                                                            <div th:text="${'-' + #numbers.formatInteger(res.ticketNowAmount, 3, 'COMMA')}">-25,000</div>
                                                         </div>
 
                                                         <div></div>
 
                                                         <div>
                                                             <strong>예정 잔액</strong>
-                                                            <div th:text="${res.ticketFinalAmount}">45,000</div>
+                                                            <div th:text="${#numbers.formatInteger(res.ticketFinalAmount, 3, 'COMMA')}">45,000</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -142,7 +142,7 @@
                                         <div class="final-price">
                                             <div class="price-box">
                                                 <span>지불 예정액</span>
-                                                <span th:text="${res.finalPrice}">0</span>
+                                                <span th:text="${#numbers.formatInteger(res.finalPrice, 3, 'COMMA')}">0</span>
                                             </div>
                                             <div class="coupon-icon-area">
                                             </div>
@@ -155,31 +155,31 @@
 
                                             <!--  결제 전  -->
 
-                                            <div style="display:block;" th:text="'예약 내역 (' + ${res.serviceName} + ')'" class="complete-reservation">
+                                            <div style="display:block;" th:text="'예약 내역 (' + ${#numbers.formatInteger(res.serviceName, 3, 'COMMA')} + ')'" class="complete-reservation">
                                             </div>
                                             <div class="service-price">
                                                 <div class="price-box price-complete">
                                                     <span>시술가격</span>
-                                                    <span th:text="${res.servicePrice}">30000</span>
+                                                    <span th:text="${#numbers.formatInteger(res.servicePrice, 3, 'COMMA')}">30000</span>
                                                 </div>
                                             </div>
                                             <div class="coupon-discount" th:if="${res.couponUsed}">
 
                                                 <div class="price-box price-complete">
                                                     <span>할인가격</span>
-                                                    <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                                    <span th:text="'-' + ${#numbers.formatInteger(res.couponDiscount, 3, 'COMMA')}">-5000</span>
                                                 </div>
                                             </div>
                                             <div class="ticket-used-amount" th:if="${res.ticketUsed}">
                                                 <div class="price-box price-complete">
                                                     <span>사용금액</span>
-                                                    <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                                    <span th:text="'-' + ${#numbers.formatInteger(res.ticketUsedAmount, 3, 'COMMA')}">-25000</span>
                                                 </div>
                                             </div>
                                             <div class="final-price">
                                                 <div class="price-box price-complete">
                                                     <span>지불 예정액</span>
-                                                    <span th:text="${res.finalPrice}">0</span>
+                                                    <span th:text="${#numbers.formatInteger(res.finalPrice, 3, 'COMMA')}">0</span>
                                                 </div>
 
                                             </div>
@@ -188,32 +188,32 @@
                                         <!--  결제후  -->
 
                                         <div style="display:block;" class="price-details payment-before">
-                                            <div th:text="'결제 내역 (' + ${res.myPaymentDto.payServiceName} + ')'" class="complete-reservation">
+                                            <div th:text="'결제 내역 (' + ${#numbers.formatInteger(res.myPaymentDto.payServiceName, 3, 'COMMA')} + ')'" class="complete-reservation">
                                             </div>
 
                                             <div class="service-price">
 
                                                 <div class="price-box price-complete">
                                                     <span>시술가격</span>
-                                                    <span th:text="${res.myPaymentDto.totalPrice}">30000</span>
+                                                    <span th:text="${#numbers.formatInteger(res.myPaymentDto.totalPrice, 3, 'COMMA')}">30000</span>
                                                 </div>
                                             </div>
                                             <div class="coupon-discount">
                                                 <div class="price-box price-complete" th:if="${res.myPaymentDto != null}">
                                                     <span>할인가격</span>
-                                                    <span th:text="${res.myPaymentDto.couponDiscountPrice}">-5000</span>
+                                                    <span th:text="${#numbers.formatInteger(res.myPaymentDto.couponDiscountPrice, 3, 'COMMA')}">-5000</span>
                                                 </div>
                                             </div>
                                             <div class="ticket-used-amount">
                                                 <div class="price-box price-complete">
                                                     <span>정액권</span>
-                                                    <span th:text="${res.myPaymentDto.ticketUsedPrice}">-25000</span>
+                                                    <span th:text="${#numbers.formatInteger(res.myPaymentDto.ticketUsedPrice, 3, 'COMMA')}">-25000</span>
                                                 </div>
                                             </div>
                                             <div class="final-price">
                                                 <div class="price-box price-complete">
                                                     <span>결제액</span>
-                                                    <span th:text="${res.myPaymentDto.finalPrice} + ' (' + ${res.myPaymentDto.paymentType.getLabel()} + ')'">0</span>
+                                                    <span th:text="${#numbers.formatInteger(res.myPaymentDto.finalPrice, 3, 'COMMA')} + ' (' + ${res.myPaymentDto.paymentType.getLabel()} + ')'">0</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -227,26 +227,26 @@
                                         <div class="service-price">
                                             <div class="price-box price-complete">
                                                 <span>시술가격</span>
-                                                <span th:text="${res.servicePrice}">30000</span>
+                                                <span th:text="${#numbers.formatInteger(res.servicePrice, 3, 'COMMA')}">30000</span>
                                             </div>
                                         </div>
                                         <div class="coupon-discount" th:if="${res.couponUsed}">
 
                                             <div class="price-box price-complete">
                                                 <span>할인가격</span>
-                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.couponDiscount, 3, 'COMMA')}">-5000</span>
                                             </div>
                                         </div>
                                         <div class="ticket-used-amount" th:if="${res.ticketUsed}">
                                             <div class="price-box price-complete">
                                                 <span>사용금액</span>
-                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.ticketUsedAmount, 3, 'COMMA')}">-25000</span>
                                             </div>
                                         </div>
                                         <div class="final-price">
                                             <div class="price-box price-complete">
                                                 <span>지불 예정액</span>
-                                                <span th:text="${res.finalPrice}">0</span>
+                                                <span th:text="${#numbers.formatInteger(res.finalPrice, 3, 'COMMA')}">0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -258,27 +258,27 @@
                                         <div class="service-price">
                                             <div class="price-box">
                                                 <span>시술가격</span>
-                                                <span th:text="${res.servicePrice}">30000</span>
+                                                <span th:text="${#numbers.formatInteger(res.servicePrice, 3, 'COMMA')}">30000</span>
                                             </div>
                                         </div>
-                                        <div class="coupon-discount" th:if="${res.couponUsed}">
+                                        <div class="coupon-discount" th:if="${#numbers.formatInteger(res.couponUsed, 3, 'COMMA')}">
 
                                             <div class="price-box">
                                                 <span>할인가격</span>
-                                                <span th:text="'-' + ${res.couponDiscount}">-5000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.couponDiscount, 3, 'COMMA')}">-5000</span>
                                             </div>
 
                                         </div>
                                         <div class="ticket-used-amount" th:if="${res.ticketUsed}">
                                             <div class="price-box">
                                                 <span>사용금액</span>
-                                                <span th:text="'-' + ${res.ticketUsedAmount}">-25000</span>
+                                                <span th:text="'-' + ${#numbers.formatInteger(res.ticketUsedAmount, 3, 'COMMA')}">-25000</span>
                                             </div>
                                         </div>
                                         <div class="final-price">
                                             <div class="price-box">
                                                 <span>지불 예정액</span>
-                                                <span th:text="${res.finalPrice}">0</span>
+                                                <span th:text="${#numbers.formatInteger(res.finalPrice, 3, 'COMMA')}">0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -299,7 +299,10 @@
                                     </div>
                                 </div>
                                 <div class="btn-box">
-                                    <button class="reservation-change" th:if="${res.status.name() == 'RESERVED'}" href="">변경하기</button>
+                                    <button class="reservation-change cancel-btn"
+                                            th:if="${res.status.name() == 'RESERVED'}"
+                                            th:attr="data-reservation-id=${res.id}"
+                                    >취소하기</button>
                                     <button class="re-reservation"
                                             th:if="${res.status.name() == 'COMPLETED' or
                                             res.status.name() == 'CANCELED' or
