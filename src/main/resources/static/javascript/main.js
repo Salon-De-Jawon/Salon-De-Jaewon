@@ -349,7 +349,7 @@ function renderRecommendedDesigners(list) {
     wrapper.classList.add('best-designer-box');
     wrapper.innerHTML = `
       <div class="designer-profile-box">
-        <img src="${d.profileImgUrl || '/images/default-profile.png'}" class="designer-photo img-fit" alt="">
+        <img src="${d.profileImgUrl || '/images/default_profile.jpg'}" class="designer-photo img-fit" alt="">
       </div>
       <div class="designer-info-box">
         <div class="designer-name-box">

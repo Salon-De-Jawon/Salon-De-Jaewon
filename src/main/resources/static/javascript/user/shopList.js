@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const designersHtml = (shop.designerList || []).map(d => `
         <div class="icon-circle">
           <a href="/designer/${d.designerId}">
-            <img src="${d.imgUrl || '/images/default-profile.png'}" alt="디자이너 이미지" />
+            <img src="${d.imgUrl || '/images/default_profile.jpg'}" alt="디자이너 이미지" />
           </a>
         </div>
       `).join("");
