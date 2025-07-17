@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
 <head>
-  <link rel="stylesheet" href="/css/user/signUp.css">
+  <link rel="stylesheet" th:href="@{/css/user/signUp.css}">
   <th:block layout:fragment="css"></th:block>
 </head>
 <body>
@@ -13,7 +13,7 @@
   <div class="signUp-container">
     <h2>회원가입</h2>
 
-    <form method="post" action="/signUp" th:object="${signUpDto}" id="signUpDto" class="signUp-form"  novalidate>
+    <form method="post" th:action="@{/signUp}" th:object="${signUpDto}" id="signUpDto" class="signUp-form"  novalidate>
       <input
               type="hidden"
               th:name="${_csrf.parameterName}"
@@ -198,7 +198,7 @@
 
 
 <th:block layout:fragment="script">
-  <script src="/javascript/user/signUp.js"></script>
+  <script th:src="@{/javascript/user/signUp.js}"></script>
 </th:block>
 </body>
 </html>

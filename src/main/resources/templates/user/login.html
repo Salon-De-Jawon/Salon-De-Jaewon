@@ -18,10 +18,10 @@
 <div layout:fragment="main" id="main">
   <div class="login-container">
     <div class="login-wrap">
-      <form method="post" action="/login" class="login-form">
+      <form method="post" th:action="@{/login}" class="login-form">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="loginPage">
-          <spon>LOGIN</spon>
+          <span>LOGIN</span>
         </div>
         <div class="login-area">
           <div class="input-area">
