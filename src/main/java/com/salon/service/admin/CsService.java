@@ -10,13 +10,19 @@ import com.salon.entity.admin.Apply;
 import com.salon.entity.admin.CouponBanner;
 import com.salon.entity.admin.CsCustomer;
 import com.salon.entity.admin.CsFile;
+import com.salon.entity.management.Designer;
+import com.salon.entity.management.ShopDesigner;
 import com.salon.entity.management.master.Coupon;
+import com.salon.entity.shop.Shop;
 import com.salon.repository.MemberRepo;
 import com.salon.repository.admin.ApplyRepo;
 import com.salon.repository.admin.CouponBannerRepo;
 import com.salon.repository.admin.CsCustomerFileRepo;
 import com.salon.repository.admin.CsCustomerRepo;
+import com.salon.repository.management.DesignerRepo;
+import com.salon.repository.management.ShopDesignerRepo;
 import com.salon.repository.management.master.CouponRepo;
+import com.salon.repository.shop.ShopRepo;
 import com.salon.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +50,11 @@ public class CsService {
     private final CouponRepo couponRepo;
     private final FileService fileService;
     private final CouponBannerRepo couponBannerRepo;
+    private final ShopRepo shopRepo;
+    private final ShopDesignerRepo shopDesignerRepo;
+    private final DesignerRepo designerRepo;
+
+
     public void questionSave(CsCreateDto csCreateDto, Member member, List<MultipartFile> files) {
         CsCustomer csCustomer = CsCreateDto.to(csCreateDto, member);
         csCustomer = csCustomerRepo.save(csCustomer);
@@ -129,6 +140,7 @@ public class CsService {
                 + ", issuedDate=" + apply.getIssuedDate()
                 + ", memberId=" + (apply.getMember() != null ? apply.getMember().getId() : "null"));
         applyRepo.save(apply);
+
     }
 
     private BizStatusDto.BizInfo bizApiCheck(String bizNo) {
@@ -166,6 +178,23 @@ public class CsService {
         Member member = apply.getMember();
         member.setRole(Role.MAIN_DESIGNER);
         apply.setApplyType(ApplyType.SHOP);
+
+        Shop shop = new Shop();
+        shop.setName("");
+        shop.setTel("");
+        shop.setDayOff(127);
+        shopRepo.save(shop);
+
+        ShopDesigner shopDesigner = new ShopDesigner();
+        shopDesigner.setShop(shop);
+        Designer designer = designerRepo.findByMember_Id(member.getId());
+        shopDesigner.setDesigner(designer);
+        shopDesigner.setActive(true);
+        shopDesigner.setPosition("원장");
+
+
+
+
         memberRepo.save(member);
         applyRepo.save(apply);
     }

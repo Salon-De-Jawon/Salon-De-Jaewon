@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <title>디자이너 목록</title>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/master/designerList.css" />
+    <link rel="stylesheet" th:href="@{/css/master/designerList.css}" />
   </th:block>
 </head>
 
@@ -58,7 +58,7 @@
 </div>
 
 <th:block layout:fragment="script">
-  <script src="/javascript/master/designerList.js"></script>
+  <script th:src="@{/javascript/master/designerList.js}"></script>
 </th:block>
 
 </body>

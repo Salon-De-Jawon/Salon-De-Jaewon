@@ -5,7 +5,7 @@
 
 <head>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/shop/reservationSelect.css">
+    <link rel="stylesheet" th:href="@{/css/shop/reservationSelect.css}">
   </th:block>
 </head>
 <body>
@@ -106,7 +106,7 @@
     const GLOBAL_SHOP_ID = [[${shopId}]];
     const GLOBAL_INITIAL_DATE = [[${date != null ? "'" + date.toString() + "'" : "''"}]];
   </script>
-  <script src="/javascript/shop/reservation.js" defer></script>
+  <script th:src="@{/javascript/shop/reservation.js}" defer></script>
 </th:block>
 </body>
 </html>

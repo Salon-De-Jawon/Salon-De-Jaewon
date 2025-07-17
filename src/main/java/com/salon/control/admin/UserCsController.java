@@ -163,7 +163,7 @@ public class UserCsController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/shopApply";
         }
-        return "redirect:/admin/cs/shopList";
+        return "redirect:/";
     }
     // 배너 신청 폼을 보여주는 GET 요청
     @GetMapping("/apply")

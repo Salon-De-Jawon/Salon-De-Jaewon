@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <title>시술 목록 관리</title>
   <th:block layout:fragment="css">
-    <link rel="stylesheet" href="/css/master/services.css" />
+    <link rel="stylesheet" th:href="@{/css/master/services.css}" />
   </th:block>
 </head>
 <body>
@@ -98,7 +98,7 @@
   </div>
 </div>
 <th:block layout:fragment="script">
-  <script src="/javascript/master/services.js"></script>
+  <script th:src="@{/javascript/master/services.js}"></script>
 </th:block>
 </body>
 </html>
