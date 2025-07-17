@@ -354,7 +354,7 @@ function renderRecommendedDesigners(list) {
       <div class="designer-info-box">
         <div class="designer-name-box">
             <div class="designer-name">${d.position} ${d.designerName}</div>
-            <a href='/designer/${d.id}' class="go-view">보러가기</a>
+            <a href='/shop/${d.shopId}' class="go-view">보러가기</a>
         </div>
 
         <div class="designer-shop">${d.shopName}</div>
