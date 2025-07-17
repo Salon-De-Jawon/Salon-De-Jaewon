@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 public class RecommendDesignerDto {
     private Long designerId;
+    private Long shopId;
     private String designerName;
     private String shopName;
     private float rating;
@@ -26,6 +27,7 @@ public class RecommendDesignerDto {
     public static RecommendDesignerDto from(ShopDesigner designer, float rating, int reviewCount) {
         RecommendDesignerDto dto = new RecommendDesignerDto();
         dto.setDesignerId(designer.getDesigner().getId());
+        dto.setShopId(designer.getShop().getId());
         dto.setDesignerName(designer.getDesigner().getMember().getName());
         dto.setShopName(designer.getShop().getName());
         dto.setProfileImgUrl(designer.getDesigner().getImgUrl());

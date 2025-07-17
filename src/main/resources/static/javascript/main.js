@@ -349,12 +349,12 @@ function renderRecommendedDesigners(list) {
     wrapper.classList.add('best-designer-box');
     wrapper.innerHTML = `
       <div class="designer-profile-box">
-        <img src="${d.profileImgUrl || '/images/default-profile.png'}" class="designer-photo img-fit" alt="">
+        <img src="${d.profileImgUrl || '/images/default_profile.jpg'}" class="designer-photo img-fit" alt="">
       </div>
       <div class="designer-info-box">
         <div class="designer-name-box">
             <div class="designer-name">${d.position} ${d.designerName}</div>
-            <a href='/designer/${d.id}' class="go-view">보러가기</a>
+            <a href='/shop/${d.shopId}' class="go-view">보러가기</a>
         </div>
 
         <div class="designer-shop">${d.shopName}</div>

@@ -27,7 +27,7 @@
           <p class="service-desc" th:text="${service.description}">깔끔한 기본 컷</p>
           <div class="service-details">
             <span class="service-category" th:text="${service.category.label}">커트</span>
-            <span class="service-price" th:text="${service.price} + '원'">20,000원</span>
+            <span class="service-price" th:text="${#numbers.formatInteger(service.price, 0, 'COMMA') + '원'}">20,000원</span>
             <span class="service-recommended" th:if="${service.recommended}">추천</span>
           </div>
         </div>
