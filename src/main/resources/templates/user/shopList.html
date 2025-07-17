@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragment/default}">
 <head>
-  <link rel="stylesheet" href="/css/user/shopList.css">
+  <link rel="stylesheet" th:href="@{/css/user/shopList.css}">
   <th:block layout:fragment="css"></th:block>
 
   <meta name="_csrf" th:content="${_csrf.token}" />
@@ -19,7 +19,7 @@
           <div class="initial-display active">
             <div class="shop-search-box" id="initialShopSearchBox">
               <div class="search-icon">
-                <img src="/images/search.png" alt="돋보기" />
+                <img th:src="@{/images/search.png}" alt="돋보기" />
               </div>
               <input
                       type="text"
@@ -32,7 +32,7 @@
 
             <div class="location-search-area" id="initialLocationSearchArea">
               <div class="location-icon">
-                <img src="/images/location.png" alt="위치아이콘" />
+                <img th:src="@{/images/location.png}" alt="위치아이콘" />
               </div>
               <div class="location-now" id="user-region">대전 광역시청</div>
             </div>
@@ -44,7 +44,7 @@
           >
             <div class="expanded-search-box-centered">
               <div class="search-icon">
-                <img src="/images/search.png" alt="돋보기" />
+                <img th:src="@{/images/search.png}" alt="돋보기" />
               </div>
               <input
                       type="text"
@@ -65,7 +65,7 @@
           >
             <div class="location-now-centered">
               <div class="location-icon">
-                <img src="/images/location.png" alt="위치아이콘" />
+                <img th:src="@{/images/location.png}" alt="위치아이콘" />
               </div>
               <div class="location-now-text">현재 위치 선택</div>
             </div>
@@ -126,7 +126,7 @@
               <div class="shop-header">
                 <h3 class="shop-name" th:text="${shop.name}">0000 미용실</h3>
                 <div class="shop-coupon">
-                  <img src="/images/coupon.png" alt="쿠폰" />
+                  <img th:src="@{/images/coupon.png}" alt="쿠폰" />
                 </div>
                 <button class="select-box"></button>
               </div>
@@ -218,7 +218,7 @@
 
   </script>
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <script type="module" src="/javascript/user/shopList.js"></script>
+  <script type="module" th:src="@{/javascript/user/shopList.js}"></script>
 </th:block>
 </body>
 </html>
