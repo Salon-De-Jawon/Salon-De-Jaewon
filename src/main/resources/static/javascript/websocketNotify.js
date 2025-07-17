@@ -87,23 +87,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 let redirectUrl = null;
 
-                console.log("웹 타겟 타이" + data.webTarget);
+                console.log("웹 타겟 타입" + data.webTarget);
 
                 switch (data.webTarget) {
                     case "CS":
                         redirectUrl = `/myPage/myQuestionList`;
                         break;
 
-                    case "RESER_DES":
-                        if(data.date) {
-                            redirectUrl = `/manage/reservations?date=${encodeURIComponent(data.date)}`;
-                        } else {
-                            redirectUrl = `/manage/reservations`;
-                        }
+                    case "RESER_USER":
+                        redirectUrl = "/myPage/reservation";
+                        break;
+                      case "RESER_DES":
+                        redirectUrl = card.dataset.date
+                          ? `/manage/reservations?date=${encodeURIComponent(card.dataset.date)}`
+                          : "/manage/reservations";
                         break;
 
                     case "RESER_USER":
                         redirectUrl = `/myPage/reservation`;
+                        break;
+
+                    case "SHOPAPPROVE":
+                        redirectUrl = `/master/shop-edit`;
+                        break;
+
+                    case "SHOPREJECT":
+                        redirectUrl = `/manage`;
                         break;
                 }
 

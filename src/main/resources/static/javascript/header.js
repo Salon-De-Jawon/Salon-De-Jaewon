@@ -144,9 +144,19 @@
                           : "/manage/reservations";
                         break;
 
-                      case "SHOPAPPLY":
-                        redirectUrl = "";
-                        break;
+                      case "RESER_USER":
+                           redirectUrl = `/myPage/reservation`;
+                           break;
+
+                       case "SHOPAPPROVE":
+                              redirectUrl = `/master/shop-edit`;
+                              break;
+
+                       case "SHOPREJECT":
+                              redirectUrl = `/manage`;
+                             break;
+
+
 
                     }
 
@@ -159,18 +169,7 @@
           }
 
         // WebSocket 구독으로 실시간 갱신
-        if(userId){
-            const sock  = new SockJS('/ws');
-            const stomp = Stomp.over(sock);
-            stomp.connect({}, ()=>{
-                stomp.subscribe(`/topic/notify/${userId}`, msg=>{
-                    const { unreadTotal } = JSON.parse(msg.body); // 서비스에서 넣어준 값
-                    const data = JSON.parse(msg.body);
-                    showBadge(data.unreadTotal);
-                    addAlertCard(data);
-                });
-            });
-        }
+
 
 
       function addAlertCard(data) {

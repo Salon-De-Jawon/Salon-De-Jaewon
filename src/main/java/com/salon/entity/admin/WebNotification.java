@@ -23,8 +23,9 @@ public class WebNotification {
 
     private String message; // 메세지
 
+
     @Enumerated(EnumType.STRING)
-    @Column(name="web_target")
+    @Column(name = "web_target", length = 30)
     private WebTarget webTarget;  // 알림 종류
     private Long targetId;     // 해당 알림이 발생한 테이블의 아이디
 

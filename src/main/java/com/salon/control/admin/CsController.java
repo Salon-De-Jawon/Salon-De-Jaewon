@@ -148,7 +148,7 @@ public class CsController {
         webNotificationService.notify(
                 receiverId,
                 "고객문의 답변이 도착했습니다",
-                WebTarget.DESAPPLY,
+                WebTarget.CS,
                 id
         );
 
@@ -174,7 +174,7 @@ public class CsController {
         webNotificationService.notify(
                 receiverId,
                 "미용실 신청이 승인되었습니다.",
-                WebTarget.SHOPAPPLY,
+                WebTarget.SHOPAPPROVE,
                 id
         );
 
@@ -190,7 +190,7 @@ public class CsController {
         webNotificationService.notify(
                 receiverId,
                 "미용실 신청이 거절되었습니다.",
-                WebTarget.SHOPAPPLY,
+                WebTarget.SHOPREJECT,
                 id
         );
 
