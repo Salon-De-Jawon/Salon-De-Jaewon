@@ -27,9 +27,9 @@ table {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
-thead {
-  background-color: #8C9ED9;
-  color: white;
+thead{
+    background-color: #8C9ED9;
+    color: white;
 }
 
 th, td {

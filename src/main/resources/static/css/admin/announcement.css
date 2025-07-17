@@ -37,27 +37,39 @@ button:hover {
 }
 table {
   width: 100%;
-  margin-top: 20px;
-  background: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 th,
 td {
-  padding: 12px 10px;
-  border: none;
-  text-align: left;
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid #e2e7e4;
+  font-size: 15px;
 }
 th {
-  background-color: #f2f2f2;
-  color: #566A8E;
+  background-color: #8C9ED9;
+  color: white;
   font-weight: 600;
 }
+thead {
+  background-color: #8C9ED9;
+  color: white;
+}
 tr:hover {
-  background-color: #f5f8ff;
+  background-color: #f2f5ff;
 }
 #button{
   display: block;
   margin-top: 20px;
   text-align: right;
   margin-bottom
+}
+a {
+  color: #1a73e8; /* 링크 색상 (구글 블루처럼 자주 쓰임) */
+  text-decoration: none; /* 밑줄 제거 */
+  transition: color 0.2s; /* 마우스 오버 시 부드러운 색상 전환 */
 }
