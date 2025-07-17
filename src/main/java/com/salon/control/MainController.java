@@ -52,7 +52,7 @@ public class MainController {
     private final MainCouponBannerService mainCouponBannerService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String mainpage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         if (userDetails == null) {
             model.addAttribute("userAgreeLocation", false);
@@ -131,7 +131,7 @@ public class MainController {
     }
 
     // 디자이너 추천
-    @GetMapping("/api/salon/designers/recommend")
+    @GetMapping("/api/designers/recommend")
     @ResponseBody
     public ResponseEntity<List<RecommendDesignerDto>> getRecommendedDesigners(
             @RequestParam("region") String region1depth

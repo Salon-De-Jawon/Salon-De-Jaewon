@@ -5,9 +5,6 @@
 <head>
   <link rel="stylesheet" th:href="@{/css/user/shopList.css}">
   <th:block layout:fragment="css"></th:block>
-
-  <meta name="_csrf" th:content="${_csrf.token}" />
-  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
 <div layout:fragment="main" id="main">
@@ -218,7 +215,7 @@
 
   </script>
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <script type="module" th:src="{/javascript/user/shopList.js}"></script>
+  <script type="module" th:src="@{/javascript/user/shopList.js}"></script>
 </th:block>
 </body>
 </html>

@@ -129,7 +129,7 @@ function openConsentModal() {
 function patchMemberConsent() {
   const token  = dqs('meta[name="_csrf"]')?.content;
   const header = dqs('meta[name="_csrf_header"]')?.content;
-  fetch('/api/member/location-consent', {
+  fetch('/salon/api/member/location-consent', {
     method : 'PATCH',
     headers: { 'Content-Type':'application/json', [header]: token },
   })
@@ -142,7 +142,7 @@ function detectAndSaveLocation() {
     pos => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
-      fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+      fetch(`/salon/api/coord-to-address?x=${lon}&y=${lat}`)
         .then(r => r.json())
         .then(({ userAddress, region1depth, region2depth }) => {
           applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth });
@@ -177,7 +177,7 @@ function applyDetectedLocation({ lat, lon, userAddress, region1depth, region2dep
 
 /* ───────────── 샵 마커 / 뷰포트 ───────────── */
 function loadShopMarkers(lat, lon) {
-  fetch(`/api/shops?lat=${lat}&lon=${lon}`)
+  fetch(`/salon/api/shops?lat=${lat}&lon=${lon}`)
     .then(r => r.json())
     .then(list => {
       allShops = Array.isArray(list) ? list : [];
@@ -231,17 +231,17 @@ function clearMarkers() { markers.splice(0).forEach(m => m.setMap(null)); }
 
 /* ───────────── 지역별 리소스 ───────────── */
 function loadAreaResources(region1) {
-  fetch(`/api/main-banners?region=${encodeURIComponent(region1)}`)
+  fetch(`/salon/api/main-banners?region=${encodeURIComponent(region1)}`)
     .then(r => r.json())
     .then(b => Array.isArray(b) && b.length && renderAdBannerSlides(randomItems(b, 5)))
     .catch(console.error);
 
-  fetch(`/api/recommend-shops?region=${encodeURIComponent(region1)}`)
+  fetch(`/salon/api/recommend-shops?region=${encodeURIComponent(region1)}`)
     .then(r => r.json())
     .then(s => Array.isArray(s) && s.length && renderRecommendShopSlides(s))
     .catch(console.error);
 
-  fetch(`/api/salon/designers/recommend?region=${encodeURIComponent(region1)}`)
+  fetch(`/salon/api/designers/recommend?region=${encodeURIComponent(region1)}`)
     .then(r => r.json())
     .then(d => Array.isArray(d) && d.length && renderRecommendedDesigners(d))
     .catch(console.error);
@@ -397,7 +397,7 @@ function renderDesignerBubble(d) {
     }
 
 
-  const review = d.reviewImg || '/images/default.png';
+  const review = d.reviewImg || '/salon/images/default.png';
   bubble.innerHTML = `
     <div class="bubble-tall"></div>
     <div class="bubble-content">

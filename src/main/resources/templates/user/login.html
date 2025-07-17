@@ -18,7 +18,7 @@
 <div layout:fragment="main" id="main">
   <div class="login-container">
     <div class="login-wrap">
-      <form method="post" action="/login" class="login-form">
+      <form method="post" action="/salon/login" class="login-form">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="loginPage">
           <spon>LOGIN</spon>
@@ -189,7 +189,7 @@
       <!-- step 2 : change pw -->
 
       <div class="modal-main" id="findPwStep2" style="display:none;">
-        <form action="auth/email/editPw" method="post" id="changePwForm">
+        <form action="/salon/auth/email/editPw" method="post" id="changePwForm">
           <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
           <input type="hidden" name="email" id="changePwEmail"/>
           <div class="input-box editPw-box">

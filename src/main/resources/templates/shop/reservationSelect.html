@@ -27,7 +27,7 @@
                style="display: none;"
                th:checked="${selectedDesignerId != null and designer.id == selectedDesignerId}" />
 
-        <img th:src="${designer.imgUrl} ?: @{/images/default.png}" alt="프로필 이미지" />
+        <img th:src="${designer.imgUrl != null && !designer.imgUrl.isEmpty() ? designer.imgUrl : '/salon/images/default_profile.jpg'}" />
         <div class="designer-info">
           <div class="designer-name-title">
             <h3 th:text="${designer.name ?: '이름 없음'}" >이름</h3>

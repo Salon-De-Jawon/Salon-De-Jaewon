@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* 웹소켓 연결 - */
-  const sock   = new SockJS("/ws");
+  const sock   = new SockJS("/salon/ws");
   const stomp  = Stomp.over(sock);
 
   stomp.connect({}, () => {
     console.log("웹소켓 연결 성공");
 
-    stomp.subscribe(`/topic/notify/${userId}`, (msg) => {
+    stomp.subscribe(`/salon/topic/notify/${userId}`, (msg) => {
       const data = JSON.parse(msg.body);   // { message, webTarget, targetId, unreadTotal }
         console.log("알림 수신:", msg.body);
       /* 배지 숫자를 서버가 보내준 unreadTotal 로 갱신 */

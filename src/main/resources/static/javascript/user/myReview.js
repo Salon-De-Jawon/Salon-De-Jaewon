@@ -88,7 +88,7 @@ function setupInfiniteScroll() {
     if (entry.isIntersecting && !isLoading && !isLastPage) {
       isLoading = true;
       try {
-        const res = await fetch(`/myPage/review/page?page=${page}&size=9`);
+        const res = await fetch(`/salon/myPage/review/page?page=${page}&size=9`);
         if (!res.ok) throw new Error("리뷰 불러오기 실패");
 
         const data = await res.json();
@@ -168,7 +168,7 @@ async function openModal(card) {
 }
 
 async function fetchDetail(id) {
-  const res = await fetch(`/myPage/review/${id}`);
+  const res = await fetch(`/salon/myPage/review/${id}`);
   if (!res.ok) throw new Error('서버 오류');
   return res.json();
 }

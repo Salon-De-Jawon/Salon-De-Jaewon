@@ -42,25 +42,26 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // 로그아웃시 회원 세션 모두 삭제
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/","/shop/**","/shopList/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
-                        .anyRequest().permitAll()
+                        .requestMatchers("/admin/**", "admin/cs/**", "admin/anc/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
                 .csrf(
                         cr -> cr
                                 .ignoringRequestMatchers(
-                                        "/auth/email/check",
-                                        "/auth/email/send",
-                                        "/auth/email/verify",
-                                        "/auth/email/reset-complete",
-                                        "/auth/email/find-id",
-                                        "/master/shop-edit/update",
-                                        "/ws/**",  // 웹소켓
-                                        "/master/add-designer"
+                                        "/salon/auth/email/check",
+                                        "/salon/auth/email/send",
+                                        "/salon/auth/email/verify",
+                                        "/salon/auth/email/reset-complete",
+                                        "/salon/auth/email/find-id",
+                                        "/salon/master/shop-edit/update",
+                                        "/salon/ws/**",  // 웹소켓
+                                        "/salon/master/add-designer"
                                 )
                                 .csrfTokenRepository(
                                                 CookieCsrfTokenRepository.withHttpOnlyFalse())
