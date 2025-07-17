@@ -1,8 +1,12 @@
 package com.salon.control;
 
 import com.salon.config.CustomUserDetails;
+import com.salon.constant.Role;
+import com.salon.dto.admin.CsListDto;
 import com.salon.dto.shop.CouponListDto;
 import com.salon.dto.user.*;
+import com.salon.entity.Member;
+import com.salon.service.admin.CsService;
 import com.salon.service.user.MyReservationService;
 import com.salon.service.user.MypageService;
 import com.salon.service.user.ReviewService;
@@ -27,6 +31,7 @@ public class MyPageController {
     private final MyReservationService myReservationService;
     private final ReviewService reviewService;
     private final MypageService mypageService;
+    private final CsService csService;
 
 
     @GetMapping("/reservation")
@@ -133,6 +138,20 @@ public class MyPageController {
         Long memberId = userDetails.getMember().getId();
         MyReviewDetailDto dto = mypageService.getMyReviewDetail(reviewId, memberId);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/myQuestionList")
+    public String myQuestionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        List<CsListDto> csListDtoList = csService.List();
+        Member member = userDetails.getMember();
+        if(member.getRole() == Role.ADMIN){
+            csListDtoList = csService.findAll();
+        } else {
+            csListDtoList = csService.findByMember(member);
+        }
+        model.addAttribute("csListDtoList", csListDtoList);
+        return "user/myQuestionList";
     }
 
 }

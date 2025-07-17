@@ -2,6 +2,7 @@ package com.salon.entity.admin;
 
 import com.salon.constant.ApplyStatus;
 import com.salon.constant.ApplyType;
+import com.salon.constant.CsCategory;
 import com.salon.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -37,6 +38,18 @@ public class Apply {
     @Enumerated(EnumType.STRING)
     @Column(name="apply_status")
     private ApplyStatus status;
+
+    public String getStatusLabel(){
+        return status != null ? status.getLabel() : "";
+    }
+
+    public ApplyStatus getStatus(){
+        return status;
+    }
+
+    public void setApplyStatus(ApplyStatus status){
+        this.status = status;
+    }
 
     private LocalDateTime approveAt;
 

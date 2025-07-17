@@ -172,14 +172,15 @@ html, body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   justify-content: center;
   align-items: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s;
+  transition: opacity 0.3s ease-in-out;
 }
+
 .modal.show {
   opacity: 1;
   pointer-events: auto;
@@ -192,9 +193,11 @@ html, body {
   background: #fff;
   border-radius: 12px;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  animation: modal-pop 0.25s ease-out forwards;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  animation: modal-pop 0.3s ease-out forwards;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modal-pop {
@@ -208,23 +211,45 @@ html, body {
   }
 }
 
+.modal-review-area {
+  width: 100%;
+  padding: 0;
+}
+
 .review-box-modal {
   width: 100%;
   box-shadow: none;
   transform: none;
   cursor: default;
+  display: flex;
+  flex-direction: column;
 }
 
 .review-header-modal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
 }
 
 .review-header-modal .review-date {
-  font-size: 20px;
-  color: #666;
+  font-size: 18px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.review-header-modal .close {
+  font-size: 28px;
+  font-weight: 300;
+  color: #a0a0a0;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.review-header-modal .close:hover {
+  color: #e74c3c;
 }
 
 .review-img-modal-slider {
@@ -235,6 +260,7 @@ html, body {
   -ms-overflow-style: none; /* IE/Edge */
   scrollbar-width: none;
 }
+
 .modal-slider-wrapper::-webkit-scrollbar {
   display: none;
 }
@@ -264,54 +290,120 @@ html, body {
 }
 
 /* 정보 박스 */
-.review-info-box > *:not(:last-child) {
-  margin-bottom: 10px;
+.review-info-box {
+  padding-top: 15px; /* 정보 박스 상단 패딩 */
+}
+
+.review-info-box > div {
+  margin-bottom: 12px; /* 정보 항목 간 간격 늘림 */
 }
 
 .designer-name,
 .shop-name,
-.service-name,
-.visit-date,
-.rating {
-  font-size: 16px;
+.service-name {
+  font-size: 17px;
   font-weight: 600;
-  color: #333;
+  color: #34495e; /* 진한 회색 */
+}
+
+.shop-name {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.service-name {
+    font-size: 15px;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+
+.visit-date {
+  font-size: 15px;
+  color: #95a5a6; /* 연한 회색 */
+  margin-bottom: 18px; /* 날짜와 별점 간격 */
 }
 
 .rating {
-  color: #ffb400;
+  font-size: 18px; /* 별점 텍스트 크기 */
+  font-weight: bold;
+  color: #ffb400; /* 황금색 별점 */
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0; /* 별점 아래 구분선 */
 }
 
-/* 댓글(답글) */
-.reply-area {
-  display: none;
-  gap: 12px;
-  margin-top: 30px;
+.comment {
+  font-size: 16px;
+  line-height: 1.6; /* 줄 간격 늘림 */
+  color: #34495e; /* 진한 회색 */
+  margin-bottom: 25px; /* 댓글과 답글 영역 간격 */
+  background-color: #fcfcfc; /* 배경색 살짝 추가 */
   padding: 15px;
-  background: #f8f9fa;
   border-radius: 8px;
+  border: 1px solid #e9e9e9;
+}
+
+/* 답글 영역 */
+.reply-area {
+  display: flex; /* hidden 속성을 Javascript로 토글하므로 flex 유지 */
+  align-items: flex-start; /* 상단 정렬 */
+  gap: 15px; /* 요소 간 간격 늘림 */
+  margin-top: 30px;
+  padding: 20px; /* 패딩 늘림 */
+  background: #eef4f8; /* 배경색 변경 (옅은 파란색 계열) */
+  border-radius: 12px; /* 모서리 더 둥글게 */
+  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05); /* 내부 그림자 */
+  border: 1px solid #dde7ee; /* 테두리 추가 */
 }
 
 .reply-area.show {
-  display: flex;
+  display: flex; /* JS에서 hidden 속성을 제거하면 이 스타일이 적용됨 */
 }
 
-.reply-area img {
+.desgioner-img {
+  flex-shrink: 0; /* 이미지 축소 방지 */
+  text-align: center; /* 디자이너 이름/날짜 가운데 정렬을 위해 */
+}
 
-  width: 55px;
-  height: 55px;
+.desgioner-img img {
+  width: 60px; /* 디자이너 이미지 크기 키움 */
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #aab7c6; /* 테두리 색상 변경 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px; /* 이미지와 텍스트 간격 */
 }
+
+.desginer-reply-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 텍스트 중앙 정렬 */
+}
+
 .reply-designer-name {
   font-weight: 700;
-  margin-bottom: 4px;
-  font-size: 15px;
+  font-size: 16px; /* 폰트 크기 조정 */
+  color: #2c3e50; /* 진한 색상 */
+  margin-bottom: 2px;
 }
+
+.reply-at {
+  font-size: 13px; /* 날짜 폰트 크기 조정 */
+  color: #95a5a6;
+}
+
 .reply-content {
-  font-size: 14px;
+  flex-grow: 1;
+  font-size: 15px; /* 폰트 크기 조정 */
   color: #555;
-  line-height: 1.4;
+  line-height: 1.5; /* 줄 간격 늘림 */
+  background-color: #fdfdfd; /* 답글 내용 배경색 */
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 

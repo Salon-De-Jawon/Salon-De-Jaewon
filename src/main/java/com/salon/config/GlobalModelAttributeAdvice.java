@@ -32,6 +32,7 @@ public class GlobalModelAttributeAdvice {
         if (userDetails == null || userDetails.getMember() == null) {
             return null;
         }
+        System.out.println("==> userRole: " + userDetails.getMember().getRole().name());
         return userDetails.getMember().getRole().name(); // Enum → String
     }
 
