@@ -66,9 +66,12 @@ tr:hover {
   display: block;
   margin-top: 20px;
   text-align: right;
-  margin-bottom
+  margin-bottom: 8px;
 }
 a {
   text-decoration: none;
   color: inherit; /* 부모 요소의 글자색 상속 */
+}
+#searchButton{
+    margin-bottom: 8px;
 }
