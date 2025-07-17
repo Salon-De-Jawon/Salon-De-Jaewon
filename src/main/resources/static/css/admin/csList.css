@@ -24,7 +24,10 @@ table{
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
-
+a {
+  text-decoration: none;
+  color: inherit; /* 부모 요소의 글자색 상속 */
+}
 thead{
     background-color: #8C9ED9;
     color: white;
