@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
       // 모달열고 닫기
+});
 
       function openCreateReviewModal(reservationId) {
         document.getElementById("reservationIdInput").value = reservationId;
@@ -141,4 +142,3 @@ document.addEventListener("DOMContentLoaded", function () {
       function closeCreateReviewModal() {
         document.getElementById("createReviewModal").style.display = "none";
       }
-});

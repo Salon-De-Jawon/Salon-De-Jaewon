@@ -155,7 +155,7 @@
 
                                             <!--  결제 전  -->
 
-                                            <div style="display:block;" th:text="'예약 내역 (' + ${#numbers.formatInteger(res.serviceName, 3, 'COMMA')} + ')'" class="complete-reservation">
+                                            <div style="display:block;" th:text="'예약 내역 (' + ${res.serviceName} + ')'" class="complete-reservation">
                                             </div>
                                             <div class="service-price">
                                                 <div class="price-box price-complete">
@@ -188,7 +188,8 @@
                                         <!--  결제후  -->
 
                                         <div style="display:block;" class="price-details payment-before">
-                                            <div th:text="'결제 내역 (' + ${#numbers.formatInteger(res.myPaymentDto.payServiceName, 3, 'COMMA')} + ')'" class="complete-reservation">
+                                            <div th:text="${res.myPaymentDto != null ? '결제 내역 (' + res.myPaymentDto.payServiceName + ')' : '결제 정보 없음'}"
+                                                 class="complete-reservation">
                                             </div>
 
                                             <div class="service-price">
@@ -261,7 +262,7 @@
                                                 <span th:text="${#numbers.formatInteger(res.servicePrice, 3, 'COMMA')}">30000</span>
                                             </div>
                                         </div>
-                                        <div class="coupon-discount" th:if="${#numbers.formatInteger(res.couponUsed, 3, 'COMMA')}">
+                                        <div class="coupon-discount" th:if="${res.couponUsed}">
 
                                             <div class="price-box">
                                                 <span>할인가격</span>

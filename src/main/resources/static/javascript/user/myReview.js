@@ -219,9 +219,9 @@ function fillModal(d) {
     _txt('modal-reply-name', d.designerName);
     _txt('modal-reply-at', d.replyAt);
     _txt('modal-reply-comment', d.replyComment);
-    reply.classList.add('show');
+    reply.hidden = false;
   } else {
-    reply.classList.remove('show');
+    reply.hidden = true;
   }
 }
 
