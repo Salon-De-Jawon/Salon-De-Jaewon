@@ -16,4 +16,10 @@ public class ShopImageService {
                 .map(ShopImageDto::from)
                 .orElse(null);
     }
+
+    public ShopImageDto findFirstImageByShopId(Long shopId) {
+        return shopImageRepo.findFirstByShopIdOrderByIdAsc(shopId)
+                .map(ShopImageDto::from)
+                .orElse(null);
+    }
 }

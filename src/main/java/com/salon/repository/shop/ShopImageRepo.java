@@ -20,4 +20,6 @@ public interface ShopImageRepo extends JpaRepository<ShopImage,Long> {
     @Modifying
     @Query("UPDATE ShopImage si SET si.isThumbnail = false WHERE si.shop.id = :shopId")
     void updateAllThumbnailFalse(@Param("shopId") Long shopId);
+
+    Optional<ShopImage> findFirstByShopIdOrderByIdAsc(Long shopId);
 }
