@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -237,5 +238,40 @@ public class SalonService {
         return result.size() > 8 ? result.subList(0, 8) : result;
     }
 
+    // 검색
+    public List<ShopListDto> searchByName(String keyword) {
+        List<Shop> shopList = shopRepo.findByNameContainingIgnoreCase(keyword);
+        List<ShopListDto> result = new ArrayList<>();
 
+        for (Shop shop : shopList) {
+            ShopImageDto imageDto = shopImageService.findThumbnailByShopId(shop.getId());
+            float rating = reviewService.getAverageRatingByShop(shop.getId());
+            int reviewCount = reviewService.getReviewCountByShop(shop.getId());
+            boolean hasCoupon = couponService.hasActiveCoupon(shop.getId());
+
+            ShopListDto dto = ShopListDto.from(shop, imageDto, rating, reviewCount, hasCoupon);
+
+            dto.setLatitude(shop.getLatitude());
+            dto.setLongitude(shop.getLongitude());
+
+            List<ShopDesigner> designers = shopDesignerRepo.findByShopIdAndIsActiveTrue(shop.getId());
+
+            List<ShopDesignerProfileDto> designerProfileDtos = designers.stream()
+                    .map(designer -> {
+                        ShopDesignerProfileDto profileDto = new ShopDesignerProfileDto();
+                        profileDto.setDesignerId(designer.getDesigner().getId());
+                        profileDto.setImgUrl(designer.getDesigner().getImgUrl());
+                        return profileDto;
+                    })
+                    .toList();
+
+            if (!designerProfileDtos.isEmpty()) {
+                dto.setDesignerList(designerProfileDtos);
+            }
+
+            result.add(dto);
+        }
+
+        return result;
+    }
 }
