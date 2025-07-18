@@ -1,5 +1,6 @@
 .designer-menu-bar {
-  margin: 0 auto;
+  margin-top: 30px;
+  transform: translateX(25%);
   max-width: 1280px;
   background-color: var(--main-color);
   padding: 12px 0;
