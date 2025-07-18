@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/ws/**", "cs/**", "/desImg/**").permitAll()
-                        .requestMatchers("/shopImg/**","/shopServiceImg/**").permitAll()
+                        .requestMatchers("/shopImg/**","/shopServiceImg/**", "/reviewImg/**").permitAll()
                         .requestMatchers("/shopList/**", "/shop/**", "/compare/**").permitAll()
                         .requestMatchers("/api/**", "/api/shop-list/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
