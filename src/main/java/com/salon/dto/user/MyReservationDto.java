@@ -81,7 +81,8 @@ public class MyReservationDto {
         dto.setPosition(reservation.getShopDesigner().getPosition());
 
         dto.setShopName(reservation.getShopDesigner().getShop().getName());
-        dto.setServiceName(reservation.getServiceName());
+
+        dto.setServiceName(reservation.getShopService() != null ? reservation.getShopService().getName() : reservation.getServiceName());
         dto.setReservationDate(reservation.getReservationDate());
         dto.setStatus(reservation.getStatus());
 
@@ -151,7 +152,8 @@ public class MyReservationDto {
         paymentRepo.findByReservationId(reservation.getId()).ifPresent(payment -> {
             MyPaymentDto paymentDto = new MyPaymentDto();
             paymentDto.setReservationId(reservation.getId());
-            paymentDto.setPayServiceName(payment.getServiceName()); // 실제 결제된 시술명
+            paymentDto.setPayServiceName(payment.getReservation() != null  ?
+                    payment.getReservation().getShopService().getName() : payment.getServiceName()); // 실제 결제된 시술명
             paymentDto.setCouponDiscountPrice(payment.getCouponDiscountPrice());
             paymentDto.setTicketUsedPrice(payment.getTicketUsedPrice());
             paymentDto.setFinalPrice(payment.getFinalPrice());

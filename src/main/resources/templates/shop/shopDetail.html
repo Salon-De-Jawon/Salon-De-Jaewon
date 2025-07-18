@@ -159,7 +159,7 @@
         <div class="designer-card" th:each="designer : ${designerLists}">
           <!-- 디자이너 프로필 사진 -->
           <div class="designer-img">
-          <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/images/default-profile.jpg'}" alt="디자이너 프로필"/>
+          <img th:src="${designer != null and designer.imgUrl != null ? designer.imgUrl : '/images/default_profile.jpg'}" alt="디자이너 프로필"/>
           </div>
             <p>
           <div class="designer-info">
