@@ -1,5 +1,6 @@
 package com.salon.repository.management;
 
+import com.salon.constant.Role;
 import com.salon.entity.management.Designer;
 import com.salon.entity.management.ShopDesigner;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
     // 미용실 소속 디자이너 목록 가져오기
     List<ShopDesigner> findByShopIdAndIsActiveTrue(Long shopId);
 
+
     // MemberId 로 디자이너 정보 가져오기
     ShopDesigner findByDesigner_Member_IdAndIsActiveTrue(Long memberId);
 
@@ -30,4 +32,10 @@ public interface ShopDesignerRepo extends JpaRepository<ShopDesigner, Long> {
 
     // 이미 미용실 소속된 디자이너인지 확인
     boolean existsByDesigner_Id(Long designerId);
+
+    // 샵 아이디로 가져오기
+    ShopDesigner findFirstByShopIdAndIsActiveTrueAndDesigner_Member_Role(Long shopId, Role role);
+
+
+
 }

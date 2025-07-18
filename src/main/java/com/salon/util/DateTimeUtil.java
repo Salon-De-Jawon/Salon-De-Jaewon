@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 public class DateTimeUtil {
 
     public static String getTimeAgo(LocalDateTime createAt, boolean shortFormat) {
+        if (createAt == null) return "방금 전";
+
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(createAt, now);
 

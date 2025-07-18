@@ -142,13 +142,15 @@ public class UserCsController {
         model.addAttribute("csCreateDto", new CsCreateDto());
         return "admin/question";
     }
+
+
     @PostMapping("/question")
     public String questionSave(@AuthenticationPrincipal CustomUserDetails userDetails,
                                CsCreateDto csCreateDto,
                                @RequestParam("files") List<MultipartFile> files){
         Member member = userDetails.getMember();
         csService.questionSave(csCreateDto, member, files);
-        return "redirect:/admin/cs/questionList";
+        return "redirect:/myPage/myQuestionList";
     }
     @GetMapping("/questionList")
     public String questionList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails){
@@ -162,11 +164,14 @@ public class UserCsController {
         model.addAttribute("csListDtoList", csListDtoList);
         return "admin/csList";
     }
+
+
     @GetMapping("/shopApply")
     public String shopApply(Model model){
         model.addAttribute("applyDto", new ApplyDto());
         return "admin/shopApply";
     }
+
     @PostMapping("/shopApply")
     public String shopRegistration(@AuthenticationPrincipal CustomUserDetails userDetails,
                                    @ModelAttribute ApplyDto applyDto,
@@ -182,7 +187,7 @@ public class UserCsController {
             model.addAttribute("errorMessage", e.getMessage());
             return "admin/shopApply";
         }
-        return "redirect:/admin/cs/shopList";
+        return "redirect:/";
     }
     // 배너 신청 폼을 보여주는 GET 요청
     @GetMapping("/apply")

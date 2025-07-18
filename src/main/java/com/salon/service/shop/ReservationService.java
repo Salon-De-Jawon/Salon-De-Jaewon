@@ -2,6 +2,7 @@ package com.salon.service.shop;
 
 
 import com.salon.constant.LikeType;
+import com.salon.constant.ReservationStatus;
 import com.salon.constant.ServiceCategory;
 import com.salon.dto.designer.DesignerListDto;
 import com.salon.dto.management.MemberCouponDto;
@@ -29,6 +30,7 @@ import com.salon.util.DayOffUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -77,8 +79,40 @@ public class ReservationService {
         return dtos;
     }
 
+    // 매장 전체 시술 , 카테고리 리스트
+    public List<DesignerServiceCategoryDto> getAllServiceCategories(Long shopId) {
+        List<ShopService> allShopServices = shopServiceRepo.findByShopId(shopId);
+
+        Set<ServiceCategory> allCategoriesInShop = new HashSet<>();
+        for (ShopService service : allShopServices) {
+            allCategoriesInShop.add(service.getCategory());
+        }
+
+        Map<ServiceCategory, List<ShopServiceDto>> categoryMap = new HashMap<>();
+        for (ShopService shopService : allShopServices) {
+            ServiceCategory category = shopService.getCategory();
+            categoryMap.computeIfAbsent(category, k -> new ArrayList<>()).add(ShopServiceDto.from(shopService));
+        }
+
+            List<DesignerServiceCategoryDto> dtos = new ArrayList<>();
+            List<ServiceCategory> sortedCategories = new ArrayList<>(allCategoriesInShop);
+
+            for (ServiceCategory cate : sortedCategories) {
+                DesignerServiceCategoryDto dto = new DesignerServiceCategoryDto();
+                dto.setCategory(cate);
+                // 맵에서 해당 카테고리에 해당하는 시술 리스트(ShopServiceDto 리스트)를 가져오고, 없으면 빈 리스트를 반환
+                dto.setServices(categoryMap.getOrDefault(cate, new ArrayList<>()));
+                dtos.add(dto);
+            }
+
+            // 5. 최종 DTO 리스트 반환
+            return dtos;
+
+    }
+
+
     // 선택한 디자이너 전문 시술 분야 카테고리 및 시술 리스트
-    public List<DesignerServiceCategoryDto> getDesignerServiceCategoeies(Long shopDesignerId) {
+    public List<DesignerServiceCategoryDto> getDesignerServiceCategories(Long shopDesignerId) {
 
         // 디자이너의 서비스 구성 정보 조회
         DesignerService designerService = designerServiceRepo.findByShopDesignerId(shopDesignerId)
@@ -276,7 +310,8 @@ public class ReservationService {
 
 
     // 예약 작성 완료 후 entity에 저장하는 메서드
-    public void saveReservation(ReservationRequestDto requestDto){
+    @Transactional
+    public Long saveReservation(ReservationRequestDto requestDto){
 
         // 예약자 정보
         Member member = memberRepo.findById(requestDto.getMemberId())
@@ -292,6 +327,8 @@ public class ReservationService {
         reservation.setShopDesigner(designer);
         reservation.setShopService(service);
         reservation.setReservationDate(requestDto.getDateTime());
+        reservation.setStatus(ReservationStatus.RESERVED);
+        reservation.setServiceName(service.getName());
 
         // 고객 요청사항
         reservation.setComment(requestDto.getRequestMemo());
@@ -310,6 +347,10 @@ public class ReservationService {
 
         // 저장
         reservationRepo.save(reservation);
+
+        // 웹 알림 저장용 아이디 반환
+        return reservation.getId();
     }
 
+    
 }

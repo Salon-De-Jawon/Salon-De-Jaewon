@@ -6,7 +6,9 @@ import com.salon.constant.Role;
 import com.salon.dto.admin.ApplyDto;
 import com.salon.entity.Member;
 import com.salon.entity.admin.Apply;
+import com.salon.entity.management.Designer;
 import com.salon.repository.admin.ApplyRepo;
+import com.salon.repository.management.DesignerRepo;
 import com.salon.util.OcrRestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -27,10 +30,12 @@ import java.util.UUID;
 public class DesApplyService {
 
     private final ApplyRepo applyRepo;
+    private final DesignerRepo designerRepo;
 
     @Value("${ocr.api}")
     private String ocrApiKey;
 
+    @Transactional
     public void Apply(ApplyDto applyDto, Member member, MultipartFile file) {
 
         Apply apply = new Apply();
@@ -93,7 +98,7 @@ public class DesApplyService {
     }
 
     @Transactional
-    public void approve(Long id, Member member) {
+    public Long approve(Long id, Member member) {
         Apply apply = applyRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("신청 정보를 찾을 수 없습니다."));
         apply.setStatus(ApplyStatus.APPROVED);
@@ -101,8 +106,14 @@ public class DesApplyService {
         apply.setAdmin(member);
 
         Member applicant = apply.getMember();
+        Designer designer = new Designer();
+        designer.setMember(applicant);
+        designer.setWorkingYears(new Random().nextInt(10)+1);
+        designerRepo.save(designer);
         applicant.setRole(Role.DESIGNER);
 //        return apply.getMember().getId();
+
+        return apply.getMember().getId();
     }
 
     // 원래 void 였던거 반환 타입 Apply로 변경 -

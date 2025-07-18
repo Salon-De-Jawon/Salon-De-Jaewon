@@ -10,28 +10,28 @@
 <div layout:fragment="main" id="main">
     <div class="shop-list-wrap">
         <div class="shop-list-head">
-            <div class="compare-title">가격비교하기</div>
-            <div class="gender-options">
-                <button type="button">전체</button>
-                <button type="button">여성</button>
-                <button type="button">남성</button>
-            </div>
+            <div class="compare-title">한눈에 보기</div>
+<!--            <div class="gender-options">-->
+<!--                <button type="button">전체</button>-->
+<!--                <button type="button">여성</button>-->
+<!--                <button type="button">남성</button>-->
+<!--            </div>-->
 
-            <div>
-                <img class="search-icon" src="/images/search.png" />
-                <input class="search-input" style="display: none" />
-            </div>
+<!--            <div>-->
+<!--                <img class="search-icon" src="/images/search.png" />-->
+<!--                <input class="search-input" style="display: none" />-->
+<!--            </div>-->
 
-            <div class="service-cate-list">
-                <!-- 헤어 카테고리 -->
-                <button class="service-cate">커트</button>
-                <button class="service-cate">펌</button>
-                <button class="service-cate">염색</button>
-                <button class="service-cate">업스타일</button>
-                <button class="service-cate">드라이</button>
-                <button class="service-cate">붙임머리</button>
-                <button class="service-cate">클리닉</button>
-            </div>
+<!--            <div class="service-cate-list">-->
+<!--                &lt;!&ndash; 헤어 카테고리 &ndash;&gt;-->
+<!--                <button class="service-cate">커트</button>-->
+<!--                <button class="service-cate">펌</button>-->
+<!--                <button class="service-cate">염색</button>-->
+<!--                <button class="service-cate">업스타일</button>-->
+<!--                <button class="service-cate">드라이</button>-->
+<!--                <button class="service-cate">붙임머리</button>-->
+<!--                <button class="service-cate">클리닉</button>-->
+<!--            </div>-->
         </div>
 
         <div class="shop-card-container">
@@ -41,7 +41,8 @@
 
                 <div class="compare-box">
                     <div class="shop-img">
-                        <img th:src="@{${compareResult.shopListDto.shopImageDto.imgUrl}}" alt="미용실 이미지" />
+                        <img th:src="${compareResult.shopListDto.shopImageDto != null ? compareResult.shopListDto.shopImageDto.imgUrl : '/images/default.png'}"
+                             alt="미용실 이미지" />
                     </div>
                     <div class="shop-title">
                         <div class="shop-name" th:text="${compareResult.shopListDto.shopName}">미용실 이름</div>
@@ -51,24 +52,48 @@
                         </div>
                     </div>
 
-                    <div class="rating-area">
+                    <!-- 리뷰 0개 -->
+
+                    <div class="rating-area no-review"
+                         th:if="${compareResult.shopListDto.reviewCount == 0}">
+                        리뷰가 없습니다
+                    </div>
+
+                    <div class="rating-area"
+                         th:if="${compareResult.shopListDto.reviewCount > 0}"
+                         th:attr="data-rating=${compareResult.shopListDto.rating}">
                         <div class="rating-stars">★★★★★</div> <!-- 별점 UI 커스터마이징 가능 -->
                         <div class="rating" th:text="${compareResult.shopListDto.rating}">5.0</div>
                         <div class="review-count" th:text="'(' + ${compareResult.shopListDto.reviewCount} + ')'">(1,500)</div>
                     </div>
 
                     <div class="service-list">
-                        <div class="service-box" th:each="service : ${compareResult.serviceForms}">
-                            <div class="service-img">
-                                <img th:src="@{${service.imgUrl}}" alt="서비스 이미지" />
+                        <div class="service-cate-box"
+                             th:each="category : ${serviceCategories}"
+                             th:if="${!#lists.isEmpty(compareResult.categorizedServices.get(category))}">
+                            <div class="service-cate-title" th:text="${category.label}">
+                                커트
                             </div>
-                            <div class="service-info">
-                                <div class="service-name" th:text="${service.name}">커트</div>
-                                <div class="service-price-area">
-                                    <div class="price" th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">20,000</div>
-                                    <!-- 원가 없을 수도 있으니 조건부 표시 -->
+
+                            <a th:href="@{'/shop/' + ${compareResult.shopListDto.id}}" class="service-box-link">
+
+                                <div class="service-box"
+                                     th:each="service : ${compareResult.categorizedServices.get(category)}"
+                                >
+
+                                    <div class="service-img-box"
+                                        th:if="${service.imgUrl != null}">
+                                        <img th:src="@{${service.imgUrl}}" class="service-img" alt="서비스 이미지" />
+                                    </div>
+                                    <div class="service-info">
+                                        <div class="service-name" th:text="${service.name}">커트</div>
+                                        <div class="service-price-area">
+                                            <div class="price" th:text="${#numbers.formatInteger(service.price, 3, 'COMMA')}">20,000</div>
+                                            <!-- 원가 없을 수도 있으니 조건부 표시 -->
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -86,7 +111,7 @@
 </div>
 <th:block layout:fragment="script">
 
-    <script src="/javascript/user/compare.js"></script>
+    <script type="module" src="/javascript/user/compare.js"></script>
 </th:block>
 </body>
 </html>

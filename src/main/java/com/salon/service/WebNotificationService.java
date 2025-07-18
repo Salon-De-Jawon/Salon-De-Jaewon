@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +38,10 @@ public class WebNotificationService {
     // 웹 알림 발생하는 시점에서 receiverId 저장해서(받는 유저) 넘기기
     public void sendWebSocketNotification(Long receiverId, WebNotification entity) {
         String destination = "/topic/notify/" + receiverId;
+
+        long unreadCnt = countUnreadByMemberId(receiverId);
         WebNotificationDto dto = WebNotificationDto.from(entity);
+        dto.setUnreadTotal(unreadCnt);
 
         System.out.println("웹소켓 알림 전송 시도 → 대상: " + destination);
         System.out.println("알림 내용: " + dto.getMessage());
@@ -67,5 +71,30 @@ public class WebNotificationService {
         }
 
         webNotificationRepo.saveAll(notifications);
+    }
+
+
+    // 회원별 미읽음 알림 건수
+
+    public long countUnreadByMemberId(Long memberId) {
+        return webNotificationRepo.countByMemberIdAndIsReadFalse(memberId);
+    }
+
+    public List<WebNotificationDto> getUnreadTop3(Long memberId) {
+        return webNotificationRepo
+                .findTop3ByMemberIdAndIsReadFalseOrderByCreateAtDesc(memberId)
+                .stream()
+                .map(WebNotificationDto::from)
+                .toList();
+    }
+
+    public void notify(Long receiverId, String message, WebTarget target, Long targetId, Map<String, String> extraData) {
+        WebNotification noti = new WebNotification();
+        noti.setMemberId(receiverId);
+        noti.setMessage(message);
+        noti.setWebTarget(target);
+        noti.setTargetId(targetId);
+
+        webNotificationRepo.save(noti);
     }
 }

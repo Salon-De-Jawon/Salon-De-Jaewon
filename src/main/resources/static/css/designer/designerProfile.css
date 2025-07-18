@@ -14,74 +14,6 @@ body {
   box-sizing: border-box;
 }
 
-/* 헤더 영역 */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #ddd;
-}
-
-/* 로고 */
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #8c9ed9; /* 메인 컬러 */
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-}
-
-/* 메뉴 바 */
-.menu-bar ul {
-  display: flex;
-  gap: 50px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* 헤더 메뉴바에 마우스를 갖다 놓을 시 */
-.menu-bar a:hover {
-  color: #8c9ed9;
-}
-
-/* 메뉴바 반응형 */
-@media (max-width: 768px) {
-  .menu-bar ul {
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-/* 로그인 버튼 */
-.login {
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.menu-bar ul li a {
-  text-decoration: none;
-  color: #000000;
-  font-size: 16px;
-  font-weight: 500;
-  transition: color 0.3s;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-}
-
-.menu-bar ul li a:hover {
-  color: #566a8e; /* 포인트 컬러 */
-}
-
-/* 로그인 텍스트 */
-.login {
-  font-size: 15px;
-  color: #000000;
-  cursor: pointer;
-  font-family: "Pretendard", "Noto Sans KR", sans-serif;
-}
-
 /* 디자이너 프로필 섹션 */
 .designer-profile-top {
   padding: 40px 0;
@@ -141,7 +73,7 @@ body {
 
 /* 소속 미용실 테그 */
 .designer-salon {
-  font-size: 14px;
+  font-size: 16px;
   color: #8c9ed9;
   display: flex;
   align-items: center;
@@ -149,25 +81,37 @@ body {
 }
 
 .off-day {
-  font-size: 13px;
+  font-size: 14px;
   color: #566a8e;
   margin-top: 6px;
+}
+
+.working-hours {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.more-button-wrapper {
+  margin-top: 4px;
+
 }
 
 .toggle-description {
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
   color: #8c9ed9;
   margin-top: 8px;
   cursor: pointer;
 }
 
+
 /* 상세 설명 */
 .designer-description {
   display: none;
   margin-top: 16px;
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.7;
   color: #333;
   white-space: pre-line;
@@ -200,7 +144,7 @@ body {
   border: none;
   padding: 0;
   color: #8c9ed9;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -372,75 +316,78 @@ body {
   box-sizing: border-box;
 }
 
-/* 시술 리스트 */
+/* 시술 리스트 전체 */
 .service-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 20px;
-  margin-bottom: 24px;
+  padding: 0;
+  list-style: none;
+  margin-top: 20px;
 }
 
-.service-item {
+/* 시술 하나를 감싸는 박스 */
+.service-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 16px;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.service-list li:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* 좌측 이미지 영역 */
+.service-img {
+  flex: 0 0 200px;
   background-color: #f9f9f9;
 }
+
 .service-img img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  display: block;
 }
+
+/* 우측 정보 영역 */
 .service-info {
+  flex: 1;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  text-align: right;
-  align-items: flex-start;
-  gap: 6px;
-  flex: 1;
+  justify-content: center;
 }
 
+/* 시술명 */
 .service-name {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
   color: #333;
-}
-.service-price {
-  font-size: 14px;
-  color: #333;
-}
-.service-price.no-discount .original {
-  text-decoration: none;
-  color: #333;
-}
-.discount {
-  color: #ff5a5a;
-  margin-right: 6px;
-}
-.original {
-  text-decoration: line-through;
-  color: #999;
-  margin-right: 6px;
+  margin-bottom: 8px;
 }
 
-.final {
-  font-weight: bold;
-  color: #e74c3c;
+/* 가격 정보 */
+.service-price {
+  margin-bottom: 10px;
 }
+
+.service-price .original {
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+}
+
 .service-extra {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #566a8e;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
 }
+
 
 /* 리뷰 섹션 */
 .designer-review-section {
@@ -617,71 +564,7 @@ body {
   border-radius: 12px;
   background-color: #f9f9f9;
 }
-.service-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 8px;
-  flex: 1;
-}
 
-/* 시술항목 */
-.service-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: #333;
-}
-.service-price {
-  font-size: 15px;
-  color: #333;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.service-price.original {
-  text-decoration: line-through;
-  margin-left: 6px;
-  color: #999;
-}
-.service-price.no-discount .original {
-  text-decoration: none;
-  color: #333;
-}
-.service-price .final {
-  font-weight: bold;
-}
-
-/* 커트포함 ,기장추가 등등 */
-.service-extra {
-  font-size: 14px;
-  color: #777;
-  margin-top: 6px;
-}
-
-/* 더보기 버튼  */
-.service-more {
-  display: flex;
-  justify-content: center;
-  margin-top: 12px;
-}
-.more-btn {
-  background: none;
-  border: none;
-  color: #566a8e;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.more-btn::after {
-  content: "▼";
-  font-size: 12px;
-}
 
 /* 리뷰 섹션 */
 .r-toolbar {
@@ -862,4 +745,26 @@ body {
 }
 .r-toggle-btn .arrow {
   font-size: 12px;
+}
+
+.profileUpdate {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.profileUpdate-btn {
+  background-color: #8C9ED9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profileUpdate-btn:hover {
+  background-color: #566A8E;
 }

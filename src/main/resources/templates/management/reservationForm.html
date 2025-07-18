@@ -4,7 +4,7 @@
       layout:decorate="~{fragment/default}">
 <head>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" href="/css/management/reservationForm.css">
+        <link rel="stylesheet" th:href="@{/css/management/reservationForm.css}">
     </th:block>
 </head>
 <body>
@@ -16,7 +16,7 @@
         <form id="reservationForm" class="reservation-form"
               th:action="${reservationId} != null ? @{/manage/reservations/update/{id}(id=${reservationId})} : @{/manage/reservations/save}"
               method="post"
-              th:object="${newRes}"> <input type="hidden" name="_method" th:if="${reservationId} != null" value="put" />
+              th:object="${newRes}">
             <input type="hidden" name="id" th:if="${reservationId} != null" th:value="${reservationId}">
 
 

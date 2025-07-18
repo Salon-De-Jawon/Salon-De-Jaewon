@@ -1,5 +1,6 @@
 package com.salon.service.user;
 
+import com.salon.constant.ServiceCategory;
 import com.salon.dto.management.ServiceForm;
 import com.salon.dto.management.master.ShopImageDto;
 import com.salon.dto.shop.ShopListDto;
@@ -15,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +48,24 @@ public class CompareService {
                     .map(ServiceForm::from)
                     .collect(Collectors.toList());
 
+            System.out.println("🔍 shopId: " + shopId + " → 서비스 수: " + serviceForms.size());
+            serviceForms.forEach(s -> System.out.println("🧾 서비스: " + s.getName() + ", 카테고리: " + s.getCategory()));
+
+            // 카테고리별로 시술 분류
+
+            Map<ServiceCategory, List<ServiceForm>> categorized = new EnumMap<>(ServiceCategory.class);
+            for (ServiceCategory category : ServiceCategory.values()) {
+                categorized.put(category,
+                        serviceForms.stream()
+                                .filter(s -> s.getCategory() == category)
+                                .collect(Collectors.toList()));
+            }
+
+            // Dto 생성
+
+
             ShopCompareResultDto dto = ShopCompareResultDto.from(shop, shopListDto, serviceForms);
+            dto.setCategorizedServices(categorized);
 
             result.add(dto);
         }

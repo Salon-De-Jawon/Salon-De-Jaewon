@@ -47,19 +47,17 @@ public class AdminDesignerController {
                           HttpSession session,
                           @AuthenticationPrincipal CustomUserDetails userDetails){
         Member member = userDetails.getMember();
-        desApplyService.approve(id, member);
 
-//        WebNotification webNotification = new WebNotification();
-//
-//        webNotification.setMessage("디자이너 신청이 승인되었습니다.");
-//        webNotification.setWebTarget(WebTarget.DESAPPLY);
-//        webNotification.setTargetId(receiverId);
-//        webNotification.setRead(false);
-//        webNotification.setCreateAt(LocalDateTime.now());
-//
-//        webNotificationRepo.save(webNotification);
-//
-//        webNotificationService.sendWebSocketNotification(receiverId, webNotification);
+        Long receiverId = desApplyService.approve(id, member);
+
+        webNotificationService.notify(
+                receiverId,
+                "디자이너 신청이 승인 되었습니다.",
+                WebTarget.DESAPPLY,
+                id
+        );
+
+
         return "redirect:/admin/designer/list";
     }
 
