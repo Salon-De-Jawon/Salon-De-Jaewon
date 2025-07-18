@@ -415,5 +415,42 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+
+
+  //검색 (추가)
+
+  const searchInput = document.querySelector(".shop-search-input-expanded");
+
+    if (searchInput) {
+      searchInput.addEventListener("input", debounce(async (e) => {
+        const keyword = e.target.value.trim();
+
+        if (keyword === "") {
+          page = 0;
+          endOfList = false;
+          document.querySelector("#shop-list").innerHTML = "";
+          getShopList();
+          return;
+        }
+        try {
+          const res = await fetch(`/api/shop-list/search?keyword=${encodeURIComponent(keyword)}`);
+          const shops = await res.json();
+          renderShopList(shops, false); // 기존 리스트 비우고 새로 렌더링
+          page = 0; // 검색일 경우 페이징 초기화 (필요 시)
+          endOfList = true; // 무한스크롤 막기 (검색 결과만 보여줄 경우)
+        } catch (err) {
+          console.error("검색 실패", err);
+        }
+      }, 300));
+    }
   /* ─────── THE END ─────── */
+
 });
+
+  function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }

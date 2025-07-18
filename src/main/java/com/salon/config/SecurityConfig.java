@@ -44,10 +44,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**").permitAll()
+                        .requestMatchers("/api/**", "/api/shop-list/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
-                        .anyRequest().permitAll()
+                        .requestMatchers("/admin/**","admin/cs/**", "admin/anc/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
                 .csrf(

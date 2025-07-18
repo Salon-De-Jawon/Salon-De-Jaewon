@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        const csrfToken  = document.querySelector('meta[name="_csrf"]').content;
+
+
         const boxes = document.querySelectorAll(".my-reservation-box");
 
         boxes.forEach((box) => {
@@ -94,7 +99,37 @@ document.addEventListener("DOMContentLoaded", function () {
           uploadedFiles.forEach((file) => dataTransfer.items.add(file));
           imageInput.files = dataTransfer.files;
         }
-      });
+
+        const cancelButtons = document.querySelectorAll(".cancel-btn");
+
+        cancelButtons.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation(); // 박스 열기 방지
+            const reservationId = btn.dataset.reservationId;
+
+            if (confirm("정말 예약을 취소하시겠습니까?")) {
+              fetch(`/reservation/cancel/${reservationId}`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  [csrfHeader]: csrfToken
+                }
+              })
+                .then(res => {
+                  if (res.ok) {
+                    alert("예약이 취소되었습니다.");
+                    location.reload();
+                  } else {
+                    alert("취소에 실패했습니다.");
+                  }
+                })
+                .catch(err => {
+                  console.error("에러 발생", err);
+                  alert("취소 요청 중 오류가 발생했습니다.");
+                });
+            }
+          });
+        });
 
       // 모달열고 닫기
 
@@ -106,3 +141,4 @@ document.addEventListener("DOMContentLoaded", function () {
       function closeCreateReviewModal() {
         document.getElementById("createReviewModal").style.display = "none";
       }
+});

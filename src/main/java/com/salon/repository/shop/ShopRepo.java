@@ -21,4 +21,6 @@ public interface ShopRepo extends JpaRepository<Shop, Long>{
     Page<Shop> findByAddressContaining(String region, Pageable pageable);
 
     List<Shop> findByAddressContaining(String region);
+
+    List<Shop> findByNameContainingIgnoreCase(String keyword);
 }

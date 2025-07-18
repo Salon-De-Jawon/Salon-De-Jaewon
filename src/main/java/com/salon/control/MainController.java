@@ -269,5 +269,14 @@ public class MainController {
     }
 
 
+    // 검색
+
+    @GetMapping("/api/shop-list/search")
+    @ResponseBody
+    public List<ShopListDto> searchShops(@RequestParam String keyword) {
+        return salonService.searchByName(keyword);
+    }
+
+
 
 }

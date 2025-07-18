@@ -24,6 +24,8 @@ public class MyReservationDto {
     private String designerName;  // 해당 예약이 잡힌 디자이너 이름
     private String position;
 
+    private Long shopId;
+
     private String shopName; // 샵 이름
     private String serviceName; // 시술 이름
     private LocalDateTime reservationDate; // 예약 날짜
@@ -70,6 +72,8 @@ public class MyReservationDto {
 
     public static MyReservationDto from(Reservation reservation, Review review, PaymentRepo paymentRepo) {
         MyReservationDto dto = new MyReservationDto();
+
+        dto.setShopId(reservation.getShopDesigner().getShop().getId());
 
         dto.setReservationId(reservation.getId());
 
