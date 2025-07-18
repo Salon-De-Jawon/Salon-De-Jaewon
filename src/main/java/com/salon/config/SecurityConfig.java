@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/shopList/**", "/shop/**").permitAll()
+                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**").permitAll()
                         .requestMatchers("/api/**", "/api/shop-list/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
