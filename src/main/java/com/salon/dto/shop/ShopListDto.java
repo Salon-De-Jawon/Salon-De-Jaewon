@@ -32,6 +32,7 @@ public class ShopListDto {
     private BigDecimal distance;
     private BigDecimal latitude;
     private BigDecimal longitude;
+    private String tel;
     private List<ShopDesignerProfileDto> designerList = new ArrayList<>();
     private DayOffShowDto dayOffShowDto;
     private OpenStatus openStatus;
@@ -51,6 +52,7 @@ public class ShopListDto {
         dto.setReviewCount(reviewCount);
         dto.setHasCoupon(hasCoupon);
         dto.setDayOffShowDto(dayOffShowDto);
+        dto.setTel(shop.getTel());
 
 
         DayOfWeek today = LocalDate.now().getDayOfWeek();

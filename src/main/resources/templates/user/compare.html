@@ -40,63 +40,75 @@
                  class="compare-area">
 
                 <div class="compare-box">
+
                     <div class="shop-img">
                         <img th:src="${compareResult.shopListDto.shopImageDto != null ? compareResult.shopListDto.shopImageDto.imgUrl : '/images/default.png'}"
-                             alt="미용실 이미지" />
+                                 alt="미용실 이미지" />
                     </div>
 
-                    <div class="shop-name-box">
-                        <div class="shop-name" th:text="${compareResult.shopListDto.shopName}">미용실 이름</div>
-                    </div>
-                    <div class="shop-title">
-                        <div class="shop-status" th:switch="${compareResult.shopListDto.openStatus}">
-                            <span th:case="${T(com.salon.constant.OpenStatus).OPEN}">
-                              <span class="dot-open"></span><span class="status-text">영업중</span>
-                            </span>
-                            <span th:case="${T(com.salon.constant.OpenStatus).CLOSED}">
-                              <span class="dot-closed"></span><span class="status-text">영업종료</span>
-                            </span>
-                            <span th:case="${T(com.salon.constant.OpenStatus).DAYOFF}">
-                                <span class="dot-holiday"></span><span class="status-text">휴무일</span>
-                            </span>
-                        </div>
-
-                        <div class="work-time-area">
-                            <span class="dayoff-text red" th:text="${compareResult.shopListDto.dayOffShowDto.dayOffText ?: '정보 없음'}"></span>
-                            <div class="shop-running-time"
-                                 th:text="'영업시간: ' + ${#temporals.format(compareResult.shopListDto.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(compareResult.shopListDto.closeTime, 'HH:mm')}">
-                                영업시간
+                    <div class="compare-shop-info-box">
+                        <div class="shop-name-box">
+                            <div class="shop-name" th:text="${compareResult.shopListDto.shopName}">미용실 이름</div>
+                            <div class="shop-coupon" th:if="${compareResult.shopListDto.hasCoupon}">
+                                <img th:src="@{/images/coupon.png}" alt="쿠폰" />
                             </div>
                         </div>
-
-                        <div class="address-box">
-                            <div class="address"
-                                 th:text="${compareResult.shopListDto.address} + ' ' + ${compareResult.shopListDto.addressDetail}">
-                                 대전 어쩌구
+                        <div class="shop-title">
+                            <div class="shop-status" th:switch="${compareResult.shopListDto.openStatus}">
+                                <span th:case="${T(com.salon.constant.OpenStatus).OPEN}">
+                                  <span class="dot-open"></span><span class="status-text">영업중</span>
+                                </span>
+                                <span th:case="${T(com.salon.constant.OpenStatus).CLOSED}">
+                                  <span class="dot-closed"></span><span class="status-text">영업종료</span>
+                                </span>
+                                <span th:case="${T(com.salon.constant.OpenStatus).DAYOFF}">
+                                    <span class="dot-holiday"></span><span class="status-text">휴무일</span>
+                                </span>
                             </div>
 
+                            <div class="work-time-area">
+                                <span class="dayoff-text red" th:text="${compareResult.shopListDto.dayOffShowDto.dayOffText ?: '정보 없음'}"></span>
+                                <div class="shop-running-time"
+                                     th:text="'영업시간: ' + ${#temporals.format(compareResult.shopListDto.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(compareResult.shopListDto.closeTime, 'HH:mm')}">
+                                    영업시간
+                                </div>
+                            </div>
+
+                            <div class="address-box">
+                                <div class="address"
+                                     th:text="${compareResult.shopListDto.address} + ' ' + ${compareResult.shopListDto.addressDetail}">
+                                     대전 어쩌구
+                                </div>
+
+
+                            </div>
                             <div class="distance-area"
                                  th:if="${compareResult.shopListDto.distance != null}">
-                                <span th:text="' (' + ${#numbers.formatDecimal(compareResult.shopListDto.distance.divide(1000), 1, 2)} + 'km )'"></span>
+                                <span style="color: lightGray;" th:text="' (' + ${#numbers.formatDecimal(compareResult.shopListDto.distance.divide(1000), 1, 2)} + 'km)'"></span>
 
                             </div>
-
+                            <div class="tel"
+                                 th:if="${compareResult.shopListDto.tel != null}"
+                                 th:text="'전화번호 : ' + ${compareResult.shopListDto.tel}"
+                            >010-1111-1524</div>
                         </div>
-                    </div>
 
-                    <!-- 리뷰 0개 -->
 
-                    <div class="rating-area no-review"
-                         th:if="${compareResult.shopListDto.reviewCount == 0}">
-                        평점이 없습니다
-                    </div>
 
-                    <div class="rating-area"
-                         th:if="${compareResult.shopListDto.reviewCount > 0}"
-                         th:attr="data-rating=${compareResult.shopListDto.rating}">
-                        <div class="rating-stars">★★★★★</div>
-                        <div class="rating" th:text="${compareResult.shopListDto.rating}">5.0</div>
-                        <div class="review-count" th:text="'(' + ${compareResult.shopListDto.reviewCount} + ')'">(1,500)</div>
+                        <!-- 리뷰 0개 -->
+
+                        <div class="rating-area no-review"
+                             th:if="${compareResult.shopListDto.reviewCount == 0}">
+                            평점이 없습니다
+                        </div>
+
+                        <div class="rating-area"
+                             th:if="${compareResult.shopListDto.reviewCount > 0}"
+                             th:attr="data-rating=${compareResult.shopListDto.rating}">
+                            <div class="rating-stars">★★★★★</div>
+                            <div class="rating" th:text="${compareResult.shopListDto.rating}">5.0</div>
+                            <div class="review-count" th:text="'(' + ${compareResult.shopListDto.reviewCount} + ')'">(1,500)</div>
+                        </div>
                     </div>
 
                     <div class="service-list">

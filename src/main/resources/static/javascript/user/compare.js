@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 복제해서 저장
     const originalBoxes = Array.from(serviceList.querySelectorAll('.service-cate-box'));
-    originalServiceOrders.set(shopId, originalBoxes.slice());
+    originalServiceOrders.set(shopId, originalBoxes.map(box => box.cloneNode(true)));
   });
 
 
@@ -80,6 +80,36 @@ document.addEventListener('DOMContentLoaded', () => {
       sortServiceCategoriesInEachShop(); // 서비스 목록 정렬 수정
     });
   });
+
+  // 전화번호 포멧
+
+  document.querySelectorAll('.tel').forEach(el => {
+    const raw = el.textContent.trim();
+    el.textContent = formatPhoneNumber(raw);
+  });
+
+  // 클릭시 전부 보임
+
+  document.querySelectorAll('.address').forEach(address => {
+    address.addEventListener('click', () => {
+      const isExpanded = address.dataset.expanded === 'true';
+
+      if (isExpanded) {
+        // 축소
+        address.style.whiteSpace = 'nowrap';
+        address.style.overflow = 'hidden';
+        address.style.textOverflow = 'ellipsis';
+        address.dataset.expanded = 'false';
+      } else {
+        // 확장
+        address.style.whiteSpace = 'normal';
+        address.style.overflow = 'visible';
+        address.style.textOverflow = 'unset';
+        address.dataset.expanded = 'true';
+      }
+    });
+  });
+
 
 //  DOC 끝
 });
@@ -135,9 +165,10 @@ function sortServiceCategoriesInEachShop() {
     if (!serviceList) return;
 
     if (selectedCategories.length === 0 && originalServiceOrders.has(shopId)) {
+      serviceList.innerHTML = '';
 
       const originalBoxes = originalServiceOrders.get(shopId);
-      originalBoxes.forEach(box => serviceList.appendChild(box));
+      originalBoxes.forEach(box => serviceList.appendChild(box.cloneNode(true)));
       return;
     }
 
@@ -155,4 +186,16 @@ function sortServiceCategoriesInEachShop() {
 
     boxes.forEach(box => serviceList.appendChild(box)); // 재배치
   });
+}
+
+function formatPhoneNumber(phone) {
+  const digits = phone.replace(/\D/g, '');
+
+  if (digits.length === 11) {
+    return digits.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+  } else if (digits.length === 10) {
+    return digits.replace(/(\d{2,3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+  } else {
+    return phone;
+  }
 }
