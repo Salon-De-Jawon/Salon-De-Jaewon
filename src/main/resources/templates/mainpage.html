@@ -90,7 +90,7 @@
             <!-- 메인 -->
 
             <div class="main-content-area">
-                <div
+                <div    id="img-box"
                         class="split-overlay"
                         th:attr="data-img=@{/images/background3x.png}"
                 ></div>
@@ -245,6 +245,21 @@
             spaceBetween: 16,
             grabCursor: true,
           });
+
+
+          const imageUrls = ["/images/background3x.png", "/images/background3x5.png"];
+            const container = document.getElementById("image-box");
+
+          imageUrls.forEach((url, index) => {
+          console.log("이미지관련");
+           setTimeout(() => {
+             const img = document.createElement("img");
+             img.src = url;
+                img.style.width = "100px";
+                img.style.marginRight = "10px";
+                container.appendChild(img);
+           }, index * 1000);  // 1초 간격
+           });
     </script>
 
     <!--  주소 관련 기능 주입  -->
