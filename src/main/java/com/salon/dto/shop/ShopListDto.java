@@ -1,5 +1,6 @@
 package com.salon.dto.shop;
 
+import com.salon.constant.OpenStatus;
 import com.salon.dto.DayOffShowDto;
 import com.salon.dto.management.master.ShopImageDto;
 import com.salon.entity.shop.Shop;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +34,10 @@ public class ShopListDto {
     private BigDecimal longitude;
     private List<ShopDesignerProfileDto> designerList = new ArrayList<>();
     private DayOffShowDto dayOffShowDto;
+    private OpenStatus openStatus;
 
-    public static ShopListDto from(Shop shop, ShopImageDto shopImageDto, float avgRating, int reviewCount, boolean hasCoupon) {
+    public static ShopListDto from(Shop shop, ShopImageDto shopImageDto, float avgRating, int reviewCount,
+                                   boolean hasCoupon, DayOffShowDto dayOffShowDto) {
         ShopListDto dto = new ShopListDto();
 
         dto.setId(shop.getId());
@@ -46,6 +50,24 @@ public class ShopListDto {
         dto.setRating(Math.round(avgRating * 10) / 10f);
         dto.setReviewCount(reviewCount);
         dto.setHasCoupon(hasCoupon);
+        dto.setDayOffShowDto(dayOffShowDto);
+
+
+        DayOfWeek today = LocalDate.now().getDayOfWeek();
+        List<DayOfWeek> offDays = DayOffUtil.decodeDayOff(shop.getDayOff());
+
+        if (offDays.contains(today)) {
+            dto.setOpenStatus(OpenStatus.DAYOFF); // 오늘은 쉬는 날
+        } else {
+            LocalTime now = LocalTime.now();
+            if (now.isBefore(shop.getOpenTime()) || now.isAfter(shop.getCloseTime())) {
+                dto.setOpenStatus(OpenStatus.CLOSED); // 시간상 종료
+            } else {
+                dto.setOpenStatus(OpenStatus.OPEN); // 영업중
+            }
+        }
+
+        System.out.println("🟢 openStatus = " + dto.getOpenStatus());
 
         return dto;
     }

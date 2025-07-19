@@ -1,6 +1,7 @@
 package com.salon.service.user;
 
 import com.salon.constant.ServiceCategory;
+import com.salon.dto.DayOffShowDto;
 import com.salon.dto.management.ServiceForm;
 import com.salon.dto.management.master.ShopImageDto;
 import com.salon.dto.shop.ShopListDto;
@@ -12,9 +13,11 @@ import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
 import com.salon.service.shop.ShopImageService;
 
+import com.salon.util.DistanceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -30,7 +33,7 @@ public class CompareService {
     private final ShopImageService shopImageService;
     private final ShopServiceRepo shopServiceRepo;
 
-    public List<ShopCompareResultDto> getCompareResults(List<Long> shopIds) {
+    public List<ShopCompareResultDto> getCompareResults(List<Long> shopIds, BigDecimal userLat, BigDecimal userLon) {
         List<ShopCompareResultDto> result = new ArrayList<>();
 
         for(Long shopId: shopIds) {
@@ -42,7 +45,9 @@ public class CompareService {
             boolean hasCoupon = couponService.hasActiveCoupon(shopId);
             ShopImageDto imageDto = shopImageService.findThumbnailByShopId(shopId);
 
-            ShopListDto shopListDto = ShopListDto.from(shop, imageDto, avgRating, reviewCount, hasCoupon);
+            DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
+
+            ShopListDto shopListDto = ShopListDto.from(shop, imageDto, avgRating, reviewCount, hasCoupon, dayOffShowDto);
 
             List<ServiceForm> serviceForms = shopServiceRepo.findByShopId(shopId).stream()
                     .map(ServiceForm::from)
@@ -50,6 +55,10 @@ public class CompareService {
 
             System.out.println("🔍 shopId: " + shopId + " → 서비스 수: " + serviceForms.size());
             serviceForms.forEach(s -> System.out.println("🧾 서비스: " + s.getName() + ", 카테고리: " + s.getCategory()));
+
+
+            BigDecimal distance = DistanceUtil.calculateDistance(userLat, userLon, shop.getLatitude(), shop.getLongitude());
+            shopListDto.setDistance(distance);
 
             // 카테고리별로 시술 분류
 

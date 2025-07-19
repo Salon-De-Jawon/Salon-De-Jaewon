@@ -1,5 +1,6 @@
 package com.salon.service.shop;
 
+import com.salon.dto.DayOffShowDto;
 import com.salon.dto.management.master.ShopImageDto;
 
 import com.salon.dto.shop.RecommendDesignerDto;
@@ -91,7 +92,9 @@ public class SalonService {
             int reviewCount = reviewService.getReviewCountByShop(shop.getId());
             float avgRating = reviewService.getAverageRatingByShop(shop.getId());
 
-            ShopListDto dto = ShopListDto.from(shop, shopImageDto, avgRating, reviewCount, hasCoupon);
+            DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
+
+            ShopListDto dto = ShopListDto.from(shop, shopImageDto, avgRating, reviewCount, hasCoupon, dayOffShowDto);
 
             // 거리 계산
             if (userLat != null && userLon != null &&
@@ -253,7 +256,9 @@ public class SalonService {
             int reviewCount = reviewService.getReviewCountByShop(shop.getId());
             boolean hasCoupon = couponService.hasActiveCoupon(shop.getId());
 
-            ShopListDto dto = ShopListDto.from(shop, imageDto, rating, reviewCount, hasCoupon);
+            DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
+
+            ShopListDto dto = ShopListDto.from(shop, imageDto, rating, reviewCount, hasCoupon, dayOffShowDto);
 
             dto.setLatitude(shop.getLatitude());
             dto.setLongitude(shop.getLongitude());
