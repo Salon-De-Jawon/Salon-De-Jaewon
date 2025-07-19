@@ -304,6 +304,7 @@ function renderRecommendShopSlides(shops) {
     }
 
   shops.forEach(s => {
+
     wrapper.insertAdjacentHTML('beforeend', `
       <div class="swiper-slide">
         <div class="shop-content" onclick="location.href='/shop/${s.id}'">

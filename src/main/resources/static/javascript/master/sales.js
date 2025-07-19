@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 designerCard.innerHTML = `
                     <p class="designer-name">${designer.designerName || '이름 없음'}</p>
-                    <p class="designer-total-amount">총 매출: ₩ <span>${formatNumberWithCommas(designer.totalSalesAmount || 0)}</span></p>
+                    <p class="designer-total-amount">총 매출: ₩ <span>${formatNumberWithCommas(designer.totalSales || 0)}</span></p>
                     <div class="category-breakdown">
                         <h5>카테고리별 매출</h5>
                         <ul>
