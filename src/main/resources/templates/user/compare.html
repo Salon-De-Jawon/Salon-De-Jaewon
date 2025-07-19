@@ -24,13 +24,13 @@
 
             <div class="service-cate-list">
                 <!-- 헤어 카테고리 -->
-                <button class="service-cate">커트</button>
-                <button class="service-cate">펌</button>
-                <button class="service-cate">염색</button>
-                <button class="service-cate">업스타일</button>
-                <button class="service-cate">드라이</button>
-                <button class="service-cate">붙임머리</button>
-                <button class="service-cate">클리닉</button>
+                <button class="service-cate"
+                        th:each="category : ${serviceCategories}"
+                        th:text="${category.label}"
+                        th:attr="data-category=${category.name()}">
+                    카테고리
+                </button>
+
             </div>
         </div>
 
