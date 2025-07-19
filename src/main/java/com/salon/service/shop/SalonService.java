@@ -154,7 +154,11 @@ public class SalonService {
             }
 
 
-            ShopImageDto shopImageDto = shopImageService.findThumbnailByShopId(shop.getId());
+            ShopImageDto shopImageDto = shopImageService.findFirstImageByShopId(shop.getId());
+            if (shopImageDto == null) {
+                shopImageDto = new ShopImageDto();
+                shopImageDto.setImgUrl("/images/default.png");
+            }
 
             dto.setShopImageDto(shopImageDto);
             dto.setId(shop.getId());
