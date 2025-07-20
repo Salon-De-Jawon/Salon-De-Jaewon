@@ -465,6 +465,169 @@ body {
 /* 셀렉트 토글 */
 
 
+.floating-toggle {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  position: fixed;
+  top: 200px;
+  right: 30px;
+  width: 80px;
+  background-color: #8ab1de;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: height 0.3s ease;
+}
+
+.floating-toggle.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.scissors-box {
+    background: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.scissors-box img {
+    width: 40px;
+    height: 40px;
+    rotate: -90deg;
+}
+
+.drop-down-btn {
+  background: none;
+  border: none;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.drop-down-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.toggle-dropdown {
+  display: none;
+  width: 100%;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.toggle-option {
+    width: 60px;
+    background-color: white;
+    text-align: center;
+    padding: 10px 0;
+    margin: 0 auto;
+    border-radius: 8px;
+    font-size: 20px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+.name-box {
+    display: none;
+    justify-content: space-between;
+    background-color: white;
+    text-align: center;
+    padding: 10px 0;
+    width: 200px;
+    margin: 0 auto;
+    border-radius: 8px;
+    font-size: 20px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.selected-shop-name {
+  display: inline-block;
+  max-width: 180px; /* X 버튼 남길 여유 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: bold;
+  color: #226633;
+}
+
+.toggle-option:hover {
+  background-color: #f0f0f0;
+}
+
+.remove-btn {
+  margin-left: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: #444;
+  font-size: 14px;
+}
+
+/* 두번째 열린 상태 */
+.shop-list-toggle {
+  position: fixed;
+  top: 200px;
+  right: 30px;
+  width: 240px;
+  background-color: #8ab1de;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 가위 + 화살표 정렬 */
+}
+
+.shop-list-box {
+  width: 100%;
+  background-color: transparent;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.shop-list-box div {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+
+.left-open-btn {
+  background: none;
+  border: none;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.left-open-btn img {
+  width: 16px;
+  rotate: -90deg;
+  margin-right: 13px;
+  height: 16px;
+}
 
 
 /* 미용실 카드 리스트 (Shop List) */

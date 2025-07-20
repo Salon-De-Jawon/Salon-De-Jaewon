@@ -4,11 +4,50 @@ import { renderStars } from '/javascript/ratingStarUtil.js';
 
 
 let sortOption = "distance";
+let toggleState = 1; // 1: 기본, 2: 드롭다운, 3: 가게리스트
+
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("안녕 헤어샵 페이지 나야 js");
 
     // 토글
+
+
+
+  const toggle = document.getElementById("floatingToggle");
+  const dropdown = document.getElementById("toggleDropdown");
+  const shopList = document.getElementById("shopListToggle");
+
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      if (toggleState === 1) {
+        dropdown.style.display = "block";
+        shopList.classList.remove("visible");
+        toggle.classList.add("visible");
+        toggleState = 2;
+      }
+    });
+  }
+
+  if (dropdown) {
+    dropdown.querySelectorAll("div").forEach((el) => {
+      el.addEventListener("click", () => {
+        dropdown.style.display = "none";
+        shopList.style.display = "flex";
+        shopList.classList.add("visible");
+        toggleState = 3;
+      });
+    });
+  }
+
+  function resetToggle() {
+    dropdown.style.display = "none";
+    shopList.style.display = "none";
+    toggleState = 1;
+  }
+
 
     // 정렬
     document.getElementById("sort-select")?.addEventListener("change", (e) => {
@@ -65,6 +104,43 @@ document.addEventListener("DOMContentLoaded", function () {
   let userLon = null;
   let allShops = [];
   let selectedShops = [];
+
+
+  function updateSelectedShopUI() {
+      const nameSpans = document.querySelectorAll(".selected-shop-name");
+      const boxes = document.querySelectorAll(".shop-list-box .name-box");
+
+      boxes.forEach((box, index) => {
+        if (selectedShops[index]) {
+          box.style.display = "flex";
+          nameSpans[index].textContent = selectedShops[index].name;
+        } else {
+          box.style.display = "none";
+          nameSpans[index].textContent = "";
+        }
+      });
+    }
+
+    function removeShop(index) {
+      selectedShops.splice(index, 1);
+      updateSelectedShopUI();
+      updateToggleDropdownUI();
+    }
+
+//    function updateToggleDropdownUI() {
+//      const toggleDropdown = document.getElementById("toggleDropdown");
+//      if (!toggleDropdown) return;
+//
+//      toggleDropdown.innerHTML = ""; // 초기화
+//
+//      selectedShops.forEach((shop, index) => {
+//        const div = document.createElement("div");
+//        div.className = "toggle-option";
+//        div.textContent = `${index + 1}`;
+//        div.addEventListener("click", openShopListToggle);
+//        toggleDropdown.appendChild(div);
+//      });
+//    }
 
   let page = 0;
   const size = 10;
@@ -361,6 +437,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ─────── 무한 스크롤 ─────── */
   window.addEventListener("scroll", () => {
+
+    const floatToggle = document.getElementById("floatingToggle");
+      if (!floatToggle) return;
+
+      // 특정 위치 이상에서 floatingToggle 보이게
+      if (window.scrollY > 400) {
+        floatToggle.classList.add("visible");
+      } else {
+        floatToggle.classList.remove("visible");
+      }
+
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
       getShopList();
     }
@@ -406,24 +493,81 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  function updateSelectedShopUI() {
-    const boxes = [
-      document.querySelector(".selected-shop-one"),
-      document.querySelector(".selected-shop-two"),
-      document.querySelector(".selected-shop-three"),
-    ];
 
-    boxes.forEach((box, idx) => {
-      const shopId = selectedShops[idx];
-      if (shopId) {
-        const shop = allShops.find(s => s.id == shopId);
-        box.style.display = "flex";
-        box.querySelector("span").textContent = shop ? shop.shopName : "알 수 없음";
-      } else {
-        box.style.display = "none";
-      }
-    });
-  }
+   const scissorsBox = document.querySelector("#floatingToggle .scissors-box");
+    if (scissorsBox) {
+      scissorsBox.addEventListener("click", () => {
+        if (selectedShops.length < 2) {
+          alert("비교할 미용실을 2개 이상 선택하세요.");
+          return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+        fetch("/api/saveSelectedShops", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken,
+          },
+          body: JSON.stringify(selectedShops)
+        })
+          .then(res => {
+            if (res.ok) {
+              location.href = "/compare";
+            } else {
+              alert("서버에 선택 정보 저장 실패");
+            }
+          })
+          .catch(err => {
+            console.error("비교 페이지 이동 오류", err);
+            alert("오류 발생");
+          });
+      });
+    }
+
+
+//
+//  function updateSelectedShopUI() {
+//    const boxes = [
+//      document.querySelector(".selected-shop-one"),
+//      document.querySelector(".selected-shop-two"),
+//      document.querySelector(".selected-shop-three"),
+//    ];
+//
+//    boxes.forEach((box, idx) => {
+//      const shopId = selectedShops[idx];
+//      if (shopId) {
+//        const shop = allShops.find(s => s.id == shopId);
+//        box.style.display = "flex";
+//
+//        const nameSpan = box.querySelector(".selected-shop-name");
+//        const removeSpan = box.querySelector(".remove-btn");
+//
+//        nameSpan.textContent = shop ? shop.shopName : "알 수 없음";
+//
+//        // X 버튼 클릭 시 제거
+//        removeSpan.onclick = () => {
+//          selectedShops = selectedShops.filter(id => id !== String(shop.id));
+//          saveSelectedShopsToSession();
+//          updateSelectedShopUI();
+//
+//          // 카드에서도 선택 해제 UI 반영
+//          document.querySelectorAll(".shop-card").forEach(card => {
+//            if (card.dataset.id === String(shop.id)) {
+//              card.querySelector(".select-box")?.classList.remove("selected");
+//            }
+//          });
+//        };
+//
+//      } else {
+//        box.style.display = "none";
+//      }
+//    });
+//
+//    updateToggleDropdownUI(); // 드롭다운 이름 표시 업데이트
+//  }
 
   const compareBtn = document.getElementById("compare-btn");
 
@@ -487,6 +631,71 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }, 300));
     }
+
+    // 토글
+
+    function updateToggleDropdownUI() {
+      const dropdown = document.getElementById("toggleDropdown");
+      dropdown.innerHTML = "";
+
+      selectedShops.forEach((_, i) => {
+        const div = document.createElement("div");
+        div.className = "toggle-option";
+        div.textContent = i + 1;
+        div.addEventListener("click", openShopListToggle);
+        dropdown.appendChild(div);
+      });
+    }
+
+    // 기존 updateSelectedShopUI 안에서 호출 추가
+    function updateSelectedShopUI() {
+      const compareBoxes = [
+        document.querySelector(".compare-panel.selected-shop-one"),
+        document.querySelector(".compare-panel.selected-shop-two"),
+        document.querySelector(".compare-panel.selected-shop-three"),
+      ];
+
+      const toggleBoxes = [
+        document.querySelector(".toggle-panel.selected-shop-one"),
+        document.querySelector(".toggle-panel.selected-shop-two"),
+        document.querySelector(".toggle-panel.selected-shop-three"),
+      ];
+
+      [compareBoxes, toggleBoxes].forEach(boxSet => {
+        boxSet.forEach((box, idx) => {
+          const shopId = selectedShops[idx];
+          if (shopId) {
+            const shop = allShops.find(s => s.id == shopId);
+            box.style.display = "flex";
+            const nameEl = box.querySelector(".selected-shop-name");
+            if (nameEl) nameEl.textContent = shop ? shop.shopName : "알 수 없음";
+
+            const removeBtn = box.querySelector(".remove-btn");
+            if (removeBtn) {
+              removeBtn.onclick = () => {
+                selectedShops = selectedShops.filter(id => id !== String(shop.id));
+                saveSelectedShopsToSession();
+                updateSelectedShopUI();
+                document.querySelectorAll(".shop-card").forEach(card => {
+                  if (card.dataset.id === String(shop.id)) {
+                    card.querySelector(".select-box")?.classList.remove("selected");
+                  }
+                });
+              };
+            }
+
+          } else {
+            box.style.display = "none";
+          }
+        });
+      });
+
+      updateToggleDropdownUI();
+    }
+
+
+
+
   /* ─────── THE END ─────── */
 
 });
@@ -566,9 +775,108 @@ document.addEventListener("DOMContentLoaded", function () {
     }, { passive: true });
   }
 
-  // ✅ shop 카드들에 개별 적용
+  // shop 카드들에 개별 적용
   function bindShopCardProfileIconScroll() {
     document.querySelectorAll(".shop-card .profile-icons").forEach(el => {
       enableShopCardProfileIconDragScroll(el);
     });
   }
+
+   window.openDropdown = function () {
+      const dropdown = document.getElementById("toggleDropdown");
+      if (!dropdown) return;
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    };
+
+
+  // shop-list-toggle 열기
+   window.openShopListToggle = function () {
+      document.getElementById("floatingToggle").style.display = "none";
+      document.getElementById("shopListToggle").style.display = "flex";
+    };
+
+    window.closeShopListToggle = function () {
+      document.getElementById("floatingToggle").style.display = "flex";
+      document.getElementById("shopListToggle").style.display = "none";
+    };
+
+
+  const scissorsBox = document.querySelector("#floatingToggle .scissors-box");
+    if (scissorsBox) {
+      scissorsBox.addEventListener("click", () => {
+        if (selectedShops.length < 2) {
+          alert("비교할 미용실을 2개 이상 선택하세요.");
+          return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+        fetch("/api/saveSelectedShops", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            [csrfHeader]: csrfToken,
+          },
+          body: JSON.stringify(selectedShops),
+        })
+          .then((res) => {
+            if (res.ok) {
+              location.href = "/compare";
+            } else {
+              alert("서버에 선택 정보 저장 실패");
+            }
+          })
+          .catch((err) => {
+            console.error("비교 페이지 이동 오류", err);
+            alert("오류 발생");
+          });
+      });
+    }
+
+     document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-btn")) {
+          const box = e.target.closest(".name-box");
+          const index = Array.from(box.parentElement.children).indexOf(box);
+          removeShop(index);
+        }
+      });
+
+      window.selectShop = function (name) {
+        if (selectedShops.length >= 3) return;
+        selectedShops.push({ name });
+        updateSelectedShopUI();
+        updateToggleDropdownUI();
+      };
+
+  // 가게 리스트 열기
+window.openShopList = function () {
+  const floatToggle = document.getElementById("floatingToggle");
+  const shopListToggle = document.getElementById("shopListToggle");
+  if (!floatToggle || !shopListToggle) return;
+
+  floatToggle.classList.remove("visible");
+  shopListToggle.style.display = "flex"; // ← 추가 필요!
+  shopListToggle.classList.add("visible");
+};
+
+  window.backToMain = function () {
+    const floatToggle = document.getElementById("floatingToggle");
+    const shopListToggle = document.getElementById("shopListToggle");
+    if (!floatToggle || !shopListToggle) return;
+
+    shopListToggle.style.display = "none";
+    floatToggle.classList.add("visible");
+    shopListToggle.classList.remove("visible");
+  };
+
+  window.closeShopListToggle = function () {
+    document.getElementById("shopListToggle").style.display = "none";
+    document.getElementById("floatingToggle").classList.add("visible");
+    document.getElementById("toggleDropdown").style.display = "block";
+    toggleState = 2;
+  };
+
+
+
+
