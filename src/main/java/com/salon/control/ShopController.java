@@ -63,6 +63,10 @@ public class ShopController {
         List<DesignerListDto> designerListsSection = shopDetailService.getDesignersByShop(shopId);
         model.addAttribute("designerListsSection", designerListsSection);
 
+        // 리뷰 8개 썸네일
+        List<String> reviewImageUrls = shopDetailService.getThumbReviewUrl(shopId);
+        model.addAttribute("reviewImgUrls", reviewImageUrls);
+
 
         // 부가적으로 필요한 모델 바인딩
 

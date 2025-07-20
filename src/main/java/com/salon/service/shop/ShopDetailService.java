@@ -34,6 +34,7 @@ import com.salon.repository.shop.ShopImageRepo;
 import com.salon.repository.shop.ShopRepo;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -274,6 +275,15 @@ public class ShopDetailService {
         }
 
         return result;
+    }
+
+    // 썸네일 이미지 8개만 가져오기
+    public List<String> getThumbReviewUrl(Long shopId){
+
+        PageRequest pageRequest = PageRequest.of(0, 8);
+
+        return reviewImageRepo.findTop8ThumbUrl(shopId, pageRequest);
+
     }
 
 

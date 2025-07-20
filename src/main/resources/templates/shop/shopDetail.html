@@ -392,16 +392,19 @@
 
         <!-- 리뷰 썸네일 -->
         <div class="r-thumbnails">
-          <th:block th:if="${reviewList != null and !reviewList.isEmpty()}">
-            <th:block th:each="review : ${reviewList}">
-              <div th:if="${review != null and review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="r-thumb" th:remove="tag">
-                <img th:src="${review.imageDtos[0].imgUrl != null ? review.imageDtos[0].imgUrl : '/images/default.png'}" alt="리뷰 이미지" />
-                <img src="/images/blank.png" alt="더보기 이미지" />
-                <span class="r-plus">+ 더보기</span>
-              </div>
+          <th:block th:if="${reviewImgUrls != null and !reviewImgUrls.isEmpty()}">
+            <div th:each="imgUrl, stat : ${reviewImgUrls}"
+                 th:classappend="${stat.index == 7 and #lists.size(reviewImgUrls) > 8 ? 'r-thumb-last' : 'r-thumb'}">
+              <img th:src="${imgUrl != null ? imgUrl : '/images/default.png'}" alt="리뷰 썸네일" />
+              <span th:if="${stat.index == 7 and #lists.size(reviewImgUrls) > 8}" class="r-plus">+ 더보기</span>
+            </div>
+
+            <th:block th:if="${#lists.size(reviewImgUrls) < 8}">
+              <div th:each="i : ${#numbers.sequence(#lists.size(reviewImgUrls), 7)}" class="r-thumb-empty"></div>
             </th:block>
+
           </th:block>
-          <p th:if="${reviewList == null or reviewList.isEmpty()}">등록된 리뷰 이미지가 없습니다.</p>
+          <p th:unless="${reviewImgUrls != null and !reviewImgUrls.isEmpty()}">등록된 리뷰 이미지가 없습니다.</p>
         </div>
 
         <!-- 리뷰 리스트 -->
