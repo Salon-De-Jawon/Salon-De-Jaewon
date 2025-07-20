@@ -477,7 +477,7 @@ body {
   border-radius: 10px; /* 모서리 둥글게 */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* 더 깊이 있는 그림자 */
   overflow: hidden;
-  height: 300px;
+  height: 350px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -495,9 +495,9 @@ body {
 
 .shop-img {
     margin: 0 auto;
-    width: 400px;
+    width: 480px;
     min-width: 280px;
-    height: 300px;
+    height: 350px;
     background-color: #e8e8e8;
     border-right: 1px solid #f0f0f0;
     flex-shrink: 0;
@@ -539,6 +539,7 @@ body {
 .shop-coupon {
   width: 28px; /* 쿠폰 아이콘 크기 조정 */
   height: 28px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -617,14 +618,35 @@ body {
 
 .profile-icons {
   display: flex;
+  overflow-x: auto;
   gap: 12px; /* 아이콘 간 간격 조정 */
   flex-wrap: nowrap;
   width: max-content;
 }
 
+.profile-icons.dragging {
+  cursor: grabbing;
+}
+
+.profile-icons a {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+[data-drag-scroll] {
+  cursor: grab;
+}
+[data-drag-scroll].dragging {
+  cursor: grabbing;
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
 .icon-circle {
-  width: 70px; /* 아이콘 크기 조정 */
-  height: 70px;
+  width: 120px; /* 아이콘 크기 조정 */
+  height: 120px;
   border-radius: 50%;
   overflow: hidden;
   position: relative;
@@ -643,13 +665,57 @@ body {
   transform: translate(-50%, -50%);
   height: 100%;
   width: auto;
-  object-fit: cover; /* 이미지가 원을 채우도록 */
+  object-fit: cover;
+
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto;
 }
 
 .icon-circle img.landscape {
   width: 100%;
   height: auto;
 }
+
+
+.dot-open {
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.dot-closed {
+  width: 10px;
+  height: 10px;
+  background-color: gray;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.dot-holiday {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.shop-time-area {
+    display: flex;
+    gap: 5px;
+}
+
+.shop-dayoff {
+    color: var(--red-msg);
+}
+
 
 /* 위치 동의 모달 */
 .modal {
@@ -762,7 +828,7 @@ body {
     }
 
   .shop-img {
-    width: 100%; /* 이미지 영역 너비를 100%로 */
+    width: 480px; /* 이미지 영역 너비를 100%로 */
     height: 240px; /* 모바일에서 이미지 높이 조정 */
     border-right: none;
     border-bottom: 1px solid #eee;

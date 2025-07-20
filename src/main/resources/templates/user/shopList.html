@@ -88,11 +88,12 @@
 
       <!-- 필터 + 가격비교 선택 -->
       <div class="shop-list-filter">
-        <select class="order-ops">
+        <select  id="sort-select" class="order-ops">
           <option value="" selected>정렬</option>
-          <option value="distance-orders">거리순</option>
-          <option value="distance-orders">평점순</option>
-          <option value="distance-orders">리뷰순</option>
+          <option value="distance">거리순</option>
+          <option value="rating">평점순</option>
+          <option value="review">리뷰순</option>
+          <option value="like">좋아요순</option>
         </select>
 
         <div class="select-compare-area">
@@ -141,7 +142,7 @@
                 <span th:text="${#temporals.format(shop.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(shop.closeTime, 'HH:mm')}"></span>
               </div>
             </div>
-            <div class="profile-icons-wrapper">
+            <div class="profile-icons-wrapper" data-drag-scroll>
               <div class="profile-icons">
                 <div class="icon-circle" th:each="i : ${numbers.sequence(1, shop.designerCount)}"></div>
 

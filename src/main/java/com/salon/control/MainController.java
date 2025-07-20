@@ -167,9 +167,16 @@ public class MainController {
             @RequestParam BigDecimal lat,
             @RequestParam BigDecimal lon,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "distance") String sort
+
     ) {
-        return salonService.getShopByRegion(region, lat, lon, page, size);
+        try {
+            return salonService.getShopByRegion(region, lat, lon, page, size, sort);
+        } catch (Exception e) {
+            e.printStackTrace();  // 콘솔에 에러 출력
+            throw e; // 다시 던져서 클라이언트에 500 응답
+        }
     }
 
     @PostMapping("/api/saveSelectedShops")

@@ -19,6 +19,4 @@ public interface SalonLikeRepo extends JpaRepository<SalonLike,Long> {
     // 특정 대상(디자이너, 매장)에 대한 찜 여부 확인
     boolean findByMemberIdAndTypeIdAndLikeType(Long memberId, Long typeId, LikeType likeType);
 
-
-
 }

@@ -36,6 +36,8 @@ public class ShopListDto {
     private List<ShopDesignerProfileDto> designerList = new ArrayList<>();
     private DayOffShowDto dayOffShowDto;
     private OpenStatus openStatus;
+    private int likeCount;
+
 
     public static ShopListDto from(Shop shop, ShopImageDto shopImageDto, float avgRating, int reviewCount,
                                    boolean hasCoupon, DayOffShowDto dayOffShowDto) {

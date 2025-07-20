@@ -2,8 +2,24 @@ import { initAddressSearchToggle } from '/javascript/user/addressSearchUtil.js';
 import { setStoredLocation, getStoredLocation } from '/javascript/user/locationUtil.js';
 import { renderStars } from '/javascript/ratingStarUtil.js';
 
+
+let sortOption = "distance";
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("안녕 헤어샵 페이지 나야 js");
+
+    // 정렬
+    document.getElementById("sort-select")?.addEventListener("change", (e) => {
+      const selected = e.target.value;
+      if (!selected) return;
+
+      sortOption = selected;
+      page = 0;
+      endOfList = false;
+      allShops = [];
+      document.querySelector("#shop-list").innerHTML = "";
+      getShopList();
+    });
 
     console.log("🌟 DOMContentLoaded 실행됨");
 
@@ -22,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("✅ 별 렌더링 완료");
       }
     });
+
 
   document.querySelectorAll(".rating-stars").forEach(el => {
     const rating = parseFloat(el.dataset.rating || "0");
@@ -212,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("🔍 호출 region:", region, "위도:", userLat, "경도:", userLon);
 
-    fetch(`/api/shop-list?region=${region}&lat=${userLat}&lon=${userLon}&page=${page}&size=${size}`)
+    fetch(`/api/shop-list?region=${region}&lat=${userLat}&lon=${userLon}&page=${page}&size=${size}&sort=${sortOption}`)
       .then(res => res.json())
       .then(shopList => {
         if (shopList.length === 0) {
@@ -244,11 +261,28 @@ document.addEventListener("DOMContentLoaded", function () {
       card.dataset.name = shop.shopName;
 
       const couponHtml = shop.hasCoupon ? `<div class="shop-coupon"><img src="/images/coupon.png" alt="쿠폰" /></div>` : "";
+
+       let statusHtml = "";
+        switch (shop.openStatus) {
+          case "OPEN":
+            statusHtml = `<div class="shop-status"><span class="dot-open"></span><span class="status-text">영업중</span></div>`;
+            break;
+          case "CLOSED":
+            statusHtml = `<div class="shop-status"><span class="dot-closed"></span><span class="status-text">영업종료</span></div>`;
+            break;
+          case "DAYOFF":
+            statusHtml = `<div class="shop-status"><span class="dot-holiday"></span><span class="status-text">휴무일</span></div>`;
+            break;
+          default:
+            statusHtml = `<div class="shop-status"><span class="status-text">정보 없음</span></div>`;
+        }
+
+
       const designersHtml = (shop.designerList || []).map(d => `
         <div class="icon-circle">
-          <a href="/designer/${d.designerId}">
-            <img src="${d.imgUrl || '/images/default_profile.jpg'}" alt="디자이너 이미지" />
-          </a>
+
+            <img src="${d.imgUrl ? d.imgUrl : '/images/default_profile.jpg'}" alt="디자이너 이미지" />
+
         </div>
       `).join("");
 
@@ -267,19 +301,24 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="rating-stars" data-rating="${shop.rating}"></span>
                         <span class="rating-count">${shop.rating} (${shop.reviewCount})</span>
                </p>
-              <p class="shop-address">${shop.address}</p>
-              <p class="day-off"></p>
-              <p class="shop-time">영업시간 : ${shop.openTime.substring(0,5)} ~ ${shop.closeTime.substring(0,5)}</p>
-              <p class="shop-distance">${formatDistance(shop.distance)}</p>
+              <p class="shop-address">주소 : ${shop.address} ${shop.addressDetail} (${formatDistance(shop.distance)})</p>
+              ${statusHtml}
+              <div class="shop-time-area">
+                <p class="shop-dayoff">${shop.dayOffShowDto.dayOffText}</p>
+                <p class="shop-time">영업시간 : ${shop.openTime.substring(0,5)} ~ ${shop.closeTime.substring(0,5)}</p>
+              </div>
             </div>
           </div>
           <div class="profile-icons-wrapper">
-            <div class="profile-icons">${designersHtml}</div>
+            <div class="profile-icons" data-drag-scroll>${designersHtml}</div>
           </div>
         </div>
       `;
 
+
       card.addEventListener("click", (e) => {
+        if (e.defaultPrevented) return;
+
         if (!e.target.closest(".select-box")) {
           location.href = `/shop/${shop.id}`;
         }
@@ -292,6 +331,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const rating = parseFloat(ratingContainer.dataset.rating || '0');
         renderStars(rating, ratingContainer);
       }
+
+
+      bindShopCardProfileIconScroll();
     });
 
     document.querySelectorAll(".icon-circle img").forEach(img => {
@@ -453,4 +495,78 @@ document.addEventListener("DOMContentLoaded", function () {
       clearTimeout(timeout);
       timeout = setTimeout(() => fn(...args), delay);
     };
+  }
+
+  // 드래그
+
+  function enableShopCardProfileIconDragScroll(target, { multiplier = 1.2, clickThreshold = 5 } = {}) {
+    if (!target || target.classList.contains("drag-bound")) return;
+
+    target.classList.add("drag-bound"); // ✅ 중복 방지
+
+    let isDown = false;
+    let startX = 0;
+    let scrollX = 0;
+    let moved = false;
+
+    function removeDragging() {
+      isDown = false;
+      document.body.style.userSelect = "auto";
+      if (moved) {
+        // 드래그된 경우 클릭 한 번 차단
+        const cancelClick = (e) => {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          target.removeEventListener("click", cancelClick, true);
+        };
+        target.addEventListener("click", cancelClick, true);
+      }
+      moved = false;
+      target.classList.remove("dragging");
+    }
+
+    target.addEventListener("mousedown", (e) => {
+      isDown = true;
+      moved = false;
+      startX = e.pageX;
+      scrollX = target.scrollLeft;
+      document.body.style.userSelect = "none";
+    });
+
+    target.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      const dx = e.pageX - startX;
+      if (Math.abs(dx) > clickThreshold) {
+        moved = true;
+        target.classList.add("dragging");
+      }
+      e.preventDefault();
+      target.scrollLeft = scrollX - dx * multiplier;
+    });
+
+    window.addEventListener("mouseup", removeDragging);
+    target.addEventListener("mouseleave", removeDragging);
+    window.addEventListener("blur", removeDragging);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") removeDragging();
+    });
+
+    // 터치 드래그
+    let touchStartX = 0;
+    target.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].pageX;
+      scrollX = target.scrollLeft;
+    }, { passive: true });
+
+    target.addEventListener("touchmove", (e) => {
+      const dx = e.touches[0].pageX - touchStartX;
+      target.scrollLeft = scrollX - dx * multiplier;
+    }, { passive: true });
+  }
+
+  // ✅ shop 카드들에 개별 적용
+  function bindShopCardProfileIconScroll() {
+    document.querySelectorAll(".shop-card .profile-icons").forEach(el => {
+      enableShopCardProfileIconDragScroll(el);
+    });
   }

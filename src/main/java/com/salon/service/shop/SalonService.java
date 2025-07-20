@@ -1,5 +1,6 @@
 package com.salon.service.shop;
 
+import com.salon.constant.LikeType;
 import com.salon.dto.DayOffShowDto;
 import com.salon.dto.management.master.ShopImageDto;
 
@@ -17,6 +18,8 @@ import com.salon.entity.shop.Shop;
 import com.salon.repository.ReviewImageRepo;
 import com.salon.repository.ReviewRepo;
 import com.salon.repository.management.ShopDesignerRepo;
+import com.salon.repository.shop.SalonLikeRepo;
+import com.salon.repository.shop.ShopListProjection;
 import com.salon.repository.shop.ShopRepo;
 import com.salon.service.management.master.CouponService;
 
@@ -26,6 +29,7 @@ import com.salon.util.DistanceUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
@@ -49,6 +53,7 @@ public class SalonService {
     private final ShopDesignerRepo shopDesignerRepo;
     private final ReviewRepo reviewRepo;
     private final ReviewImageRepo reviewImageRepo;
+    private final SalonLikeRepo salonLikeRepo;
 
 
 
@@ -76,35 +81,80 @@ public class SalonService {
                 .toList();
     }
 
-    // 사용자가 있는 지역 기반 샵 불러오기
-    public List<ShopListDto> getShopByRegion(String region, BigDecimal userLat, BigDecimal userLon, int page, int size) {
+    public List<ShopListDto> getShopByRegion(String region, BigDecimal userLat, BigDecimal userLon, int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Shop> shopPage = shopRepo.findByAddressContaining(region, pageable);
-
         List<ShopListDto> result = new ArrayList<>();
+
+        // 1. 평점 또는 리뷰 정렬 시 Projection 사용
+        if ("review".equals(sort) || "rating".equals(sort)) {
+            Page<ShopListProjection> projections =
+                    "review".equals(sort)
+                            ? shopRepo.findReviewRatingStatsByRegion(region, pageable)
+                            : shopRepo.findReviewRatingStatsByRegionOrderByRatingDesc(region, pageable); // <- rating용 쿼리도 위에서 정의했으면 이걸로
+
+            for (ShopListProjection proj : projections.getContent()) {
+                Shop shop = shopRepo.findById(proj.getId()).orElseThrow();
+
+                ShopImageDto shopImageDto = shopImageService.findThumbnailByShopId(shop.getId());
+                boolean hasCoupon = couponService.hasActiveCoupon(shop.getId());
+                DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
+
+                ShopListDto dto = ShopListDto.from(shop, shopImageDto,
+                        proj.getAvgRating() != null ? proj.getAvgRating() : 0f,
+                        proj.getReviewCount() != null ? proj.getReviewCount() : 0,
+                        hasCoupon, dayOffShowDto);
+
+                if (userLat != null && userLon != null &&
+                        shop.getLatitude() != null && shop.getLongitude() != null) {
+                    BigDecimal distance = DistanceUtil.calculateDistance(userLat, userLon, shop.getLatitude(), shop.getLongitude());
+                    dto.setDistance(distance.setScale(2, RoundingMode.HALF_UP));
+                }
+
+                dto.setLatitude(shop.getLatitude());
+                dto.setLongitude(shop.getLongitude());
+
+                List<ShopDesigner> designers = shopDesignerRepo.findByShopIdAndIsActiveTrue(shop.getId());
+                List<ShopDesignerProfileDto> designerDtos = designers.stream().map(designer -> {
+                    ShopDesignerProfileDto profileDto = new ShopDesignerProfileDto();
+                    profileDto.setDesignerId(designer.getDesigner().getId());
+                    profileDto.setImgUrl(designer.getDesigner().getImgUrl());
+                    return profileDto;
+                }).toList();
+                dto.setDesignerList(designerDtos);
+
+                int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP, shop.getId());
+                dto.setLikeCount(likeCount);
+
+                result.add(dto);
+            }
+
+            return result;
+        }
+
+        // 2. like 또는 기본 or 거리 정렬은 기존 방식 유지
+        Page<Shop> shopPage;
+        switch (sort) {
+            case "like":
+                shopPage = shopRepo.findByRegionOrderByLikeCountDesc(region, pageable);
+                break;
+            default:
+                shopPage = shopRepo.findByAddressContaining(region, pageable);
+                break;
+        }
 
         for (Shop shop : shopPage.getContent()) {
             ShopImageDto shopImageDto = shopImageService.findThumbnailByShopId(shop.getId());
             boolean hasCoupon = couponService.hasActiveCoupon(shop.getId());
-
-
             int reviewCount = reviewService.getReviewCountByShop(shop.getId());
             float avgRating = reviewService.getAverageRatingByShop(shop.getId());
-
             DayOffShowDto dayOffShowDto = new DayOffShowDto(shop.getDayOff());
 
             ShopListDto dto = ShopListDto.from(shop, shopImageDto, avgRating, reviewCount, hasCoupon, dayOffShowDto);
 
-            // 거리 계산
             if (userLat != null && userLon != null &&
                     shop.getLatitude() != null && shop.getLongitude() != null) {
-
-                BigDecimal distance = DistanceUtil.calculateDistance(
-                        userLat, userLon,
-                        shop.getLatitude(), shop.getLongitude()
-                );
-
+                BigDecimal distance = DistanceUtil.calculateDistance(userLat, userLon, shop.getLatitude(), shop.getLongitude());
                 dto.setDistance(distance.setScale(2, RoundingMode.HALF_UP));
             }
 
@@ -112,23 +162,23 @@ public class SalonService {
             dto.setLongitude(shop.getLongitude());
 
             List<ShopDesigner> designers = shopDesignerRepo.findByShopIdAndIsActiveTrue(shop.getId());
+            List<ShopDesignerProfileDto> designerDtos = designers.stream().map(designer -> {
+                ShopDesignerProfileDto profileDto = new ShopDesignerProfileDto();
+                profileDto.setDesignerId(designer.getDesigner().getId());
+                profileDto.setImgUrl(designer.getDesigner().getImgUrl());
+                return profileDto;
+            }).toList();
+            dto.setDesignerList(designerDtos);
 
-            List<ShopDesignerProfileDto> designerProfileDtos = designers.stream()
-                            .map(designer -> {
-                                ShopDesignerProfileDto profileDto = new ShopDesignerProfileDto();
-                                profileDto .setDesignerId(designer.getDesigner().getId());
-                                profileDto .setImgUrl(designer.getDesigner().getImgUrl());
-                                return profileDto ;
-                            }).toList();
-            if (!designerProfileDtos.isEmpty()) {
-                dto.setDesignerList(designerProfileDtos);
-            }
-
+            int likeCount = salonLikeRepo.countByLikeTypeAndTypeId(LikeType.SHOP, shop.getId());
+            dto.setLikeCount(likeCount);
 
             result.add(dto);
         }
 
-        result.sort(Comparator.comparing(ShopListDto::getDistance, Comparator.nullsLast(Comparator.naturalOrder())));
+        if ("distance".equals(sort)) {
+            result.sort(Comparator.comparing(ShopListDto::getDistance, Comparator.nullsLast(Comparator.naturalOrder())));
+        }
 
         return result;
     }
