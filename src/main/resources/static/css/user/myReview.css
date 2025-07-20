@@ -1,5 +1,25 @@
 /* 이미지 드래그 이벤트 막기 */
+/* 기본 스타일 */
 
+:root {
+  /* 벽자색 */
+  --main-color: #8c9ed9;
+  /* 설백색 */
+  --font-white: #e2e7e4;
+  /* 청현색 */
+  --point-color: #566a8e;
+
+  /* 경고의 빨간색 */
+  --red-msg: rgb(247, 50, 50);
+
+  /* 버튼 */
+  --pink-backgroud: rgb(252, 222, 227);
+  --light-gray: #999;
+
+  /* 폰트 */
+  --font-pretendard: "pretendard", sans-serif;
+  --font-noto-snas: "Noto Sans KR", sans-serif;
+}
 img {
   user-select: none;
   -webkit-user-drag: none;
@@ -82,13 +102,13 @@ html, body {
 }
 
 .my-page-menu .my-review {
-  background-color: #007bff;
+  background-color: var(--main-color);
   color: #fff;
   pointer-events: none;
 }
 
-.my-page-menu .my-review {
-  background-color: #007bff;
+.my-page-menu .my-review:hover {
+  background-color: var(--main-color);
   color: #fff;
 }
 
@@ -113,7 +133,7 @@ html, body {
   color: #333;
   margin-bottom: 30px;
   padding-bottom: 15px;
-  border-bottom: 3px solid #007bff;
+  border-bottom: 3px solid var(--main-color);
 }
 
 /* --- 변경되는 부분 --- */

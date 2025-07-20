@@ -75,11 +75,10 @@
             <div class="row">
                 <label>예약 상태</label>
                 <select id="status" name="status">
-                    <option th:value="RESERVED" th:selected="*{status} == 'RESERVED'">예약완료</option>
-                    <option th:value="VISITED" th:selected="*{status} == 'VISITED'">방문완료</option>
-                    <option th:value="CANCELLED" th:selected="*{status} == 'CANCELLED'">취소</option>
+                    <option th:value="RESERVED" th:selected="*{status} == 'RESERVED'">예약중</option>
+                    <option th:value="CANCELED" th:selected="*{status} == 'CANCELED'">취소</option>
                     <option th:value="NOSHOW" th:selected="*{status} == 'NOSHOW'">노쇼</option>
-                    <option th:value="COMPLETED" th:selected="*{status} == 'COMPLETED'">시술완료</option>
+                    <option th:value="COMPLETED" th:selected="*{status} == 'COMPLETED'">예약완료</option>
                 </select>
             </div>
 

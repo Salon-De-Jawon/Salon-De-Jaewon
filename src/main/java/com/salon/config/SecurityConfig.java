@@ -43,14 +43,16 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/shopImg/**","/shopServiceImg/**").permitAll()
-                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**").permitAll()
+                        .requestMatchers("/ws/**", "cs/**", "/desImg/**").permitAll()
+                        .requestMatchers("/shopImg/**","/shopServiceImg/**", "/reviewImg/**").permitAll()
+                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**", "/signUp").permitAll()
                         .requestMatchers("/api/**", "/api/shop-list/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
                         .requestMatchers("/admin/**","admin/cs/**", "admin/anc/**").hasRole("ADMIN")
+                        .requestMatchers("/auth/email/**").permitAll()
+                        .requestMatchers("/master/shop-edit/**", "/master/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

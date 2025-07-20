@@ -21,7 +21,7 @@ public class DayOffShowDto {
 
         private String generateDayOffText(int dayOffBit) {
             List<DayOfWeek> days = DayOffUtil.decodeDayOff(dayOffBit);
-            if(days.isEmpty()) return "휴무일 없음";
+            if(days.isEmpty()) return "연중무휴";
 
             return days.stream()
                     .map(DayOffUtil::getKoreanDay)
