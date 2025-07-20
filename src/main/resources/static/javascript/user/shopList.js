@@ -694,7 +694,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+  window.closeShopListToggle = function () {
+    const toggle = document.getElementById("floatingToggle");
+    const dropdown = document.getElementById("toggleDropdown");
+    const shopList = document.getElementById("shopListToggle");
 
+    shopList.style.display = "none";
+    toggle.style.display = "flex";
+    dropdown.style.display = "none";
+
+    toggleState = 1;
+  };
 
   /* ─────── THE END ─────── */
 
@@ -795,11 +805,6 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("shopListToggle").style.display = "flex";
     };
 
-    window.closeShopListToggle = function () {
-      document.getElementById("floatingToggle").style.display = "flex";
-      document.getElementById("shopListToggle").style.display = "none";
-    };
-
 
   const scissorsBox = document.querySelector("#floatingToggle .scissors-box");
     if (scissorsBox) {
@@ -870,12 +875,8 @@ window.openShopList = function () {
     shopListToggle.classList.remove("visible");
   };
 
-  window.closeShopListToggle = function () {
-    document.getElementById("shopListToggle").style.display = "none";
-    document.getElementById("floatingToggle").classList.add("visible");
-    document.getElementById("toggleDropdown").style.display = "block";
-    toggleState = 2;
-  };
+
+
 
 
 
