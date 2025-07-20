@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/ws/**", "cs/**", "/desImg/**").permitAll()
                         .requestMatchers("/shopImg/**","/shopServiceImg/**", "/reviewImg/**").permitAll()
-                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**").permitAll()
+                        .requestMatchers("/shopList/**", "/shop/**", "/compare/**", "/signUp").permitAll()
                         .requestMatchers("/api/**", "/api/shop-list/**").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/javascript/**").permitAll()
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
