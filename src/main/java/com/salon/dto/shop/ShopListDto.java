@@ -38,7 +38,6 @@ public class ShopListDto {
     private OpenStatus openStatus;
     private int likeCount;
 
-
     public static ShopListDto from(Shop shop, ShopImageDto shopImageDto, float avgRating, int reviewCount,
                                    boolean hasCoupon, DayOffShowDto dayOffShowDto) {
         ShopListDto dto = new ShopListDto();

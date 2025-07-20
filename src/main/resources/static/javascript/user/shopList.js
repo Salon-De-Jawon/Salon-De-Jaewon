@@ -8,6 +8,8 @@ let sortOption = "distance";
 document.addEventListener("DOMContentLoaded", function () {
   console.log("안녕 헤어샵 페이지 나야 js");
 
+    // 토글
+
     // 정렬
     document.getElementById("sort-select")?.addEventListener("change", (e) => {
       const selected = e.target.value;
