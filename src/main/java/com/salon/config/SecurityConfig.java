@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/manage/**").hasAnyRole("DESIGNER", "MAIN_DESIGNER") // 디자이너 페이지
                         .requestMatchers("/master/**").hasRole("MAIN_DESIGNER") // 메인디자이너 페이지
                         .requestMatchers("/admin/**","admin/cs/**", "admin/anc/**").hasRole("ADMIN")
+                        .requestMatchers("/auth/email/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
