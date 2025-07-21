@@ -756,7 +756,7 @@ body, html {
 }
 
 /* 리뷰 텍스트 */
-.review-text {
+.review-comment {
   font-size: 15px;
   line-height: 1.6;
   margin-bottom: 16px;

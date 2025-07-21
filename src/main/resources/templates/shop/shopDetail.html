@@ -188,17 +188,15 @@
             <span th:text="${review.serviceName}">시술명</span>
           </div>
           <span th:text="${review.designerName}">디자이너명</span>
-      </span>
         </h4>
 
         <div th:if="${review.imageDtos != null and #lists.size(review.imageDtos) > 0}" class="review-images">
-          <div class="r-thumb">
-            <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" />
-          </div>
+          <img th:src="${review.imageDtos[0]?.imgUrl ?: '/images/placeholder.png'}" alt="리뷰 이미지" class="photo" />
         </div>
-        <span th:text="${review.comment}">리뷰</span>
 
-        <div class="review-meta">
+
+        <div class="r-content">
+          <p class="review-comment" th:text="${review.comment}">리뷰 내용</p>
           <span th:text="${review.rating}" class="r-rating">5.0</span> ·
           <span th:text="${review.memberName}">익명</span> ·
           <span th:text="${#temporals.format(review.createAt, 'yyyy.MM.dd')}">X일 전</span> ·
