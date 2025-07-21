@@ -472,14 +472,16 @@ public class ManageService {
     @Transactional
     public void writeMemberMemo(Long memberId, Long designerId, String newMemoContent) {
 
-        MemberMemo memberMemo = memberMemoRepo.findByMemberIdAndShopDesignerId(memberId, designerId).orElse(null);
+        // 디자이너 ShopDesigner 객체
+        ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
+
+        MemberMemo memberMemo = memberMemoRepo.findByMemberIdAndShopDesignerId(memberId, designer.getId()).orElse(null);
         if(memberMemo != null){
             memberMemo.setMemo(newMemoContent);
             memberMemoRepo.save(memberMemo);
         } else{
             MemberMemo memo = new MemberMemo();
             Member member = memberRepo.findById(memberId).orElseThrow();
-            ShopDesigner designer = shopDesignerRepo.findByDesigner_Member_IdAndIsActiveTrue(designerId);
             memo.setMember(member);
             memo.setShopDesigner(designer);
             memo.setMemo(newMemoContent);

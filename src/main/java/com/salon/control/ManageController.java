@@ -305,10 +305,10 @@ public class ManageController {
     }
 
     // 회원 개인메모 작성
-    @PutMapping("/members/{memberId}/memo")
+    @PutMapping("/members/{memberId}/personal-memo")
     public ResponseEntity<Void> updateMemberMemo(
             @PathVariable Long memberId,
-            @RequestParam("memo") String newMemoContent,
+            @RequestParam("personal-memo") String newMemoContent,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails.getId() == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -324,10 +324,10 @@ public class ManageController {
     }
 
     // 회원 관리카드 메모
-    @PutMapping("/membercards/{paymentId}/memo")
+    @PutMapping("/members/{paymentId}/card-memo")
     public ResponseEntity<Void> updateMemberCardMemo(
             @PathVariable Long paymentId,
-            @RequestParam("memo") String newMemoContent) {
+            @RequestParam("card-memo") String newMemoContent) {
         try {
             manageService.writeMemberCardMemo(paymentId, newMemoContent);
             return new ResponseEntity<>(HttpStatus.OK);

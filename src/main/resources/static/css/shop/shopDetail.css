@@ -1189,40 +1189,83 @@ body, html {
 }
 
 /* 리뷰 썸네일 */
+/* 리뷰 썸네일 컨테이너 */
 .r-thumbnails {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+  gap: 8px; /* 썸네일 간 간격 */
   margin-bottom: 20px;
 }
-.r-thumb {
+
+/* 개별 리뷰 썸네일 (기본 스타일) */
+.r-thumb,
+.r-thumb-last,
+.r-thumb-empty {
+  width: 100%;
+  padding-bottom: 100%; /* 1:1 비율 유지 */
   position: relative;
-  width: 100px;
-  height: 100px;
-  aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 6px;
+  background-color: #f0f0f0; /* 이미지가 없을 때 기본 배경색 */
 }
-.r-thumb img {
+
+/* 빈칸 채우기 스타일 (reviewImgUrls가 8개 미만일 때) */
+.r-thumb-empty {
+  background-color: #f9f9f9;
+  border: 1px dashed #e0e0e0;
+}
+
+/* 썸네일 내부 이미지 스타일 */
+.r-thumb img,
+.r-thumb-last img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
-.r-thumb.last::before {
+
+/* 마지막 썸네일 (8번째) 에만 적용될 스타일 */
+.r-thumb-last::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.2);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* 이미지 위에 어두운 반투명 오버레이 */
+  z-index: 1;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
+
+/* + 더보기 텍스트 스타일 */
 .r-plus {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 16px;
+  color: white;
+  font-size: 1.5em;
   font-weight: bold;
-  z-index: 1;
+  z-index: 2;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* (기존 리뷰 상세 카드 내의 이미지 리스트 스타일은 유지) */
+.r-item .review-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.r-item .review-images .photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
 }
 
 /* 리뷰 작성버튼  */

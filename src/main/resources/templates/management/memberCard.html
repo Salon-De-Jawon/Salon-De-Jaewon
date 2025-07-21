@@ -207,7 +207,7 @@
       const memoContent = encodeURIComponent(memberMemoInput.value); // URL에 포함하기 위해 인코딩
       if (currentMemberId) {
         try {
-          const response = await fetch(`/manage/members/${currentMemberId}/memo?memo=${memoContent}`, {
+          const response = await fetch(`/manage/members/${currentMemberId}/personal-memo?personal-memo=${memoContent}`, {
             method: 'PUT', // PUT 메서드 사용
              headers: {
               [csrfHeader]: csrfToken // CSRF 토큰 헤더 추가
@@ -234,7 +234,7 @@
       const memoContent = encodeURIComponent(cardMemoInput.value); // URL에 포함하기 위해 인코딩
       if (currentPaymentId) { // 현재 Payment ID가 유효한지 확인
         try {
-          const response = await fetch(`/manage/membercards/${currentPaymentId}/memo?memo=${memoContent}`, {
+          const response = await fetch(`/manage/members/${currentPaymentId}/card-memo?card-memo=${memoContent}`, {
             method: 'PUT', // PUT 메서드 사용
             headers: {
               [csrfHeader]: csrfToken // CSRF 토큰 헤더 추가
