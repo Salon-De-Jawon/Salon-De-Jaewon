@@ -29,16 +29,16 @@ public class EmailAuthService {
 
         switch (context) {
             case "find" -> {
-                subject = "SalonLog 아이디 찾기 인증번호 안내";
-                text = "아이디 찾기 인증 번호입니다. 아이디를 찾으시려면 아래의 인증번호를 입력하세요.\n\n[ " + code + " ]";
+                subject = "SalonDeMoment 아이디 찾기 인증번호 안내";
+                text = "SalonDeMoment 아이디 찾기 인증 번호입니다. 아이디를 찾으시려면 아래의 인증번호를 입력하세요.\n\n[ " + code + " ]";
             }
             case "pw" -> {
-                subject = "SalonLog 비밀번호 찾기 인증번호 안내";
+                subject = "SalonDeMoment 비밀번호 찾기 인증번호 안내";
                 text = "비밀번호 찾기 인증 번호입니다. 비밀번호를 변경하시려면 아래의 인증번호를 입력하세요.\n\n[ " + code + " ]";
             }
             case "signUp_chk" -> {
-                subject = "SalonLog 회원가입 이메일 인증번호 안내";
-                text = "나의 완벽한 순간을 남기다. SalonLog에 가입하시려면 아래의 인증번호를 입력하여주세요.\n\n[ " + code + " ]";
+                subject = "SalonDeMoment 회원가입 이메일 인증번호 안내";
+                text = "나의 완벽한 순간을 남기다. SalonDeMoment에 가입하시려면 아래의 인증번호를 입력하여주세요.\n\n[ " + code + " ]";
             } default ->  {
                 System.out.println("[WARN] 알 수 없는 context: " + context);
                 return false;
@@ -57,8 +57,8 @@ public class EmailAuthService {
 
     // 비밀번호 변경 성공 후 전송되는 이메일
     public boolean sendPasswordResetNoticeEmail(String email) {
-        String subject = "SalonLog 비밀번호가 변경되었습니다.";
-        String text = "안녕하세요. SalonLog입니다. \n 요청하신 비밀번호가 성공적으로 변경되었습니다. \n\n" + "만약 본인이 비밀번호 변경을 요청한게 아닐시에는 즉시 비밀번호를 재변경하고 고객센터에 문의하여주십시오.";
+        String subject = "SalonDeMoment 비밀번호가 변경되었습니다.";
+        String text = "안녕하세요. SalonDeMoment입니다. \n 요청하신 비밀번호가 성공적으로 변경되었습니다. \n\n" + "만약 본인이 비밀번호 변경을 요청한게 아닐시에는 즉시 비밀번호를 재변경하고 고객센터에 문의하여주십시오.";
 
         return send(email, subject, text);
     }

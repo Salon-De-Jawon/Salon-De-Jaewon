@@ -69,13 +69,13 @@
 
 /* '내 예약 내역' 메뉴의 활성 상태 */
 .my-page-menu .my-like-page {
-  background-color: #007bff;
+  background-color: var(--main-color);
   color: #fff;
   pointer-events: none;
 }
 
 .my-page-menu .my-like-page {
-  background-color: #007bff;
+  background-color: var(--main-color);
   color: #fff;
 }
 
@@ -106,7 +106,7 @@
   color: #333;
   margin-bottom: 30px;
   padding-bottom: 15px; /* 밑줄과의 간격 */
-  border-bottom: 3px solid #007bff; /* 두꺼운 파란색 밑줄 */
+  border-bottom: 3px solid var(--main-color);
 }
 
 /* --- 변경되는 부분 --- */

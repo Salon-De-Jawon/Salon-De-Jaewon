@@ -11,6 +11,7 @@ import com.salon.service.user.CompareService;
 import com.salon.service.user.KakaoMapService;
 import com.salon.service.user.MainCouponBannerService;
 import com.salon.service.user.MemberService;
+import com.salon.util.DistanceUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -166,9 +167,16 @@ public class MainController {
             @RequestParam BigDecimal lat,
             @RequestParam BigDecimal lon,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "distance") String sort
+
     ) {
-        return salonService.getShopByRegion(region, lat, lon, page, size);
+        try {
+            return salonService.getShopByRegion(region, lat, lon, page, size, sort);
+        } catch (Exception e) {
+            e.printStackTrace();  // 콘솔에 에러 출력
+            throw e; // 다시 던져서 클라이언트에 500 응답
+        }
     }
 
     @PostMapping("/api/saveSelectedShops")
@@ -187,7 +195,9 @@ public class MainController {
 
 
     @GetMapping("/compare")
-    public String comparePage(HttpSession session, Model model) {
+    public String comparePage(HttpSession session, Model model,
+                              @RequestParam(required = false) BigDecimal userLat,
+                              @RequestParam(required = false) BigDecimal userLon) {
 
         //List<Long> selectedShopIds = (List<Long>) session.getAttribute("selectedShopIds"); 이걸로 하려다
         //타입 안정성이 보장 되지 않아서 경고 멘트가 떠서
@@ -209,9 +219,14 @@ public class MainController {
             return "redirect:/shopList";
         }
 
-        List<ShopCompareResultDto> compareResults = compareService.getCompareResults(selectedShopIds);
+        List<ShopCompareResultDto> compareResults = compareService.getCompareResults(
+                selectedShopIds,
+                userLat != null ? userLat : BigDecimal.ZERO,
+                userLon != null ? userLon : BigDecimal.ZERO
+        );
         model.addAttribute("compareResults", compareResults);
         model.addAttribute("serviceCategories", ServiceCategory.values());
+
 
         return "/user/compare";
     }

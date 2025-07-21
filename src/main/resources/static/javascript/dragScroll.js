@@ -40,38 +40,39 @@ export function enableDragScroll(
   });
 
   // PC: 마우스 해제
-  const onMouseUp = (e) => {
-    if (!isDown) return;
+  target.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
 
-    removeDragging();
+      const dx = e.pageX - startX;
+      if (!moved && Math.abs(dx) > clickThreshold) {
+        moved = true;
+        target.classList.add("dragging");
+      }
 
-    // ✅ 드래그 중이면 강제로 커서 초기화
-    document.body.style.cursor = '';
-    target.style.cursor = '';
-
-    // ✅ 마우스가 DOM 바깥에서 떼졌을 가능성 → 안전하게 제거
-    if (!target.contains(e.target)) {
-      target.classList.remove("dragging");
-    }
-
-    if (moved) {
-      const cancel = (ev) => {
-        ev.stopImmediatePropagation();
-        ev.preventDefault();
-        target.removeEventListener("click", cancel, true);
-      };
-      target.addEventListener("click", cancel, true);
-      return;
-    }
-
-    const clickEvt = new MouseEvent("click", {
-      bubbles: true,
-      cancelable: true,
-      clientX: e.clientX,
-      clientY: e.clientY,
+      e.preventDefault();
+      target.scrollLeft = scrollX - dx * multiplier;
     });
-    e.target.dispatchEvent(clickEvt);
-  };
+
+
+    const onMouseUp = (e) => {
+      if (!isDown) return;
+
+      removeDragging();
+
+
+      if (moved) {
+
+        const preventClick = (clickEvent) => {
+          clickEvent.stopImmediatePropagation();
+          clickEvent.preventDefault();
+          target.removeEventListener("click", preventClick, true);
+        };
+
+        setTimeout(() => {
+          target.addEventListener("click", preventClick, true);
+        }, 0);
+      }
+    };
 
 
   window.addEventListener("mouseup", onMouseUp);

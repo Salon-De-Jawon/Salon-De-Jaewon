@@ -58,7 +58,7 @@
       resultMessage.style.color = 'black';
       resultMessage.textContent = "조회 중... 잠시만 기다려 주세요.";
 
-      const url = `/admin/cs/api/bizCheck?bizNo=${encodeURIComponent(bizNo)}`;
+      const url = `/cs/api/bizCheck?bizNo=${encodeURIComponent(bizNo)}`;
 
       fetch(url)
         .then(response => {

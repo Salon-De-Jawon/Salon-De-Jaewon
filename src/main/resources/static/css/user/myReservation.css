@@ -57,21 +57,21 @@
   color: #007bff; /* 호버 시 파란색 텍스트 */
 }
 
-/* '내 예약 내역' 메뉴의 활성 상태 */
+
 .my-page-menu .my-reservation {
-  background-color: #007bff; /* 활성 상태 배경색 */
-  color: #fff; /* 활성 상태 텍스트 색상 */
-  pointer-events: none; /* 클릭 비활성화 (현재 페이지이므로) */
+  background-color:var(--main-color);
+  color: #fff;
+  pointer-events: none;
 }
 
 .my-page-menu .my-reservation:hover {
-  background-color: #007bff; /* 활성 상태는 호버해도 색상 유지 */
+  background-color: var(--main-color);
   color: #fff;
 }
 
 /* --- 마이페이지 컨텐츠 영역 --- */
 .my-page-content-area {
-  flex-grow: 1; /* 남은 공간 모두 차지 */
+  flex-grow: 1;
   padding: 30px;
 }
 
@@ -90,7 +90,7 @@
   color: #333;
   margin-bottom: 30px;
   padding-bottom: 15px; /* 밑줄과의 간격 */
-  border-bottom: 3px solid #007bff; /* 두꺼운 파란색 밑줄 */
+  border-bottom: 3px solid var(--main-color);
 }
 
 /* --- 예약 목록 --- */

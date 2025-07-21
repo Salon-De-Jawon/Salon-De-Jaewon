@@ -88,31 +88,36 @@
 
       <!-- 필터 + 가격비교 선택 -->
       <div class="shop-list-filter">
-        <select class="order-ops">
+        <select  id="sort-select" class="order-ops">
           <option value="" selected>정렬</option>
-          <option value="distance-orders">거리순</option>
-          <option value="distance-orders">평점순</option>
-          <option value="distance-orders">리뷰순</option>
+          <option value="distance">거리순</option>
+          <option value="rating">평점순</option>
+          <option value="review">리뷰순</option>
+          <option value="like">좋아요순</option>
         </select>
 
         <div class="select-compare-area">
-          <button class="select-compare-title" id="compare-btn">가격비교</button>
+          <button class="select-compare-title" id="compare-btn">한 눈에 보기</button>
+
+
           <div class="selected-shop-boxs">
-            <div class="selected-shop-one" style="display:none;">
-              <span>가게 1</span>
+            <div class="selected-shop-one compare-panel" style="display:none;">
+              <span class="selected-shop-name">가게 1</span>
               <button class="remove-btn">x</button>
             </div>
-            <div class="selected-shop-two" style="display:none;">
-              <span>가게 2</span>
+            <div class="selected-shop-two compare-panel" style="display:none;">
+              <span class="selected-shop-name">가게 2</span>
               <button class="remove-btn">x</button>
             </div>
-            <div class="selected-shop-three" style="display:none;">
-              <span>가게 3</span>
+            <div class="selected-shop-three compare-panel" style="display:none;">
+              <span class="selected-shop-name">가게 3</span>
               <button class="remove-btn">x</button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- 가격 비교 패널 -->
 
       <!-- 미용실 카드 리스트 -->
       <div id="shop-list" class="shop-list">
@@ -141,7 +146,7 @@
                 <span th:text="${#temporals.format(shop.openTime, 'HH:mm')} + ' ~ ' + ${#temporals.format(shop.closeTime, 'HH:mm')}"></span>
               </div>
             </div>
-            <div class="profile-icons-wrapper">
+            <div class="profile-icons-wrapper" data-drag-scroll>
               <div class="profile-icons">
                 <div class="icon-circle" th:each="i : ${numbers.sequence(1, shop.designerCount)}"></div>
 
@@ -169,6 +174,48 @@
       </div>
     </div>
   </div>
+
+  <!-- 우측 고정 토글 -->
+  <div class="floating-toggle" id="floatingToggle">
+    <div class="scissors-box">
+      <img src="/images/scissors.png" alt="toggle" />
+    </div>
+    <button class="drop-down-btn" onclick="openDropdown()">
+      <img src="/images/down.png" />
+    </button>
+
+    <div class="toggle-dropdown" id="toggleDropdown">
+      <div class="toggle-option">1</div>
+      <div class="toggle-option">2</div>
+      <div class="toggle-option">3</div>
+    </div>
+  </div>
+
+  <div class="shop-list-toggle" id="shopListToggle" style="display: none;">
+    <div class="scissors-box">
+      <img src="/images/scissors.png" alt="toggle" />
+    </div>
+    <button class="left-open-btn" onclick="closeShopListToggle()">
+      <img src="/images/down.png" />
+    </button>
+    <div class="shop-list-box">
+      <div class="name-box selected-shop-one toggle-panel">
+        <span class="selected-shop-name"></span>
+        <span class="remove-btn">X</span>
+      </div>
+      <div class="name-box selected-shop-two toggle-panel">
+        <span class="selected-shop-name"></span>
+        <span class="remove-btn">X</span>
+      </div>
+      <div class="name-box selected-shop-three toggle-panel">
+        <span class="selected-shop-name"></span>
+        <span class="remove-btn">X</span>
+      </div>
+    </div>
+  </div>
+
+
+
 
 
 <!-- fragment end -->
@@ -215,6 +262,10 @@
    wrapper.scrollLeft = scrollLeft - walk;
  });
 }
+
+
+    // 토글 js
+
 
   </script>
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

@@ -27,15 +27,17 @@
       });
     }
 
-    document.addEventListener("click", (e) => {
-      if (
-        sidebar.classList.contains("active") &&
-        !sidebar.contains(e.target) &&
-        !(loginHamburger && loginHamburger.contains(e.target))
-      ) {
-        sidebar.classList.remove("active");
-      }
-    });
+    if (sidebar && loginHamburger) {
+      document.addEventListener("click", (e) => {
+        if (
+          sidebar.classList.contains("active") &&
+          !sidebar.contains(e.target) &&
+          !loginHamburger.contains(e.target)
+        ) {
+          sidebar.classList.remove("active");
+        }
+      });
+    }
 
     // 헤더 클릭하면 세션스토리지에 있는 정보를 세션에 저장하기.
     const headerCompareLink = document.getElementById("compare-header-link");
