@@ -147,8 +147,8 @@
 }
 
 .designer-name {
-  color: #007bff; /* 디자이너 이름 강조 */
-  margin-right: 5px;
+    color: var(--point-color);
+    margin-right: 5px;
 }
 
 .shop-name {
@@ -175,12 +175,12 @@
 }
 
 .reservation-status {
-  font-size: 16px;
-  font-weight: bold;
-  color: #28a745; /* 진행중 상태 초록색 */
-  padding: 5px 10px;
-  border-radius: 5px;
-  background-color: #e6ffe6; /* 연한 초록색 배경 */
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--main-color);
 }
 
 /* --- 예약 상세 정보 (초기에는 숨김) --- */

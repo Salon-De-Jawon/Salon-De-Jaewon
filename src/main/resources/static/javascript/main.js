@@ -138,21 +138,35 @@ function patchMemberConsent() {
 }
 
 function detectAndSaveLocation() {
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
-        .then(r => r.json())
-        .then(({ userAddress, region1depth, region2depth }) => {
-          applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth });
-        })
-        .catch(() => alert('주소 변환 실패'));
-    },
-    () => alert('위치 정보 접근 거부'),
-    { enableHighAccuracy: true, timeout: 10000 }
-  );
+//  navigator.geolocation.getCurrentPosition(
+//    pos => {
+///     const lat = pos.coords.latitude;
+//      const lon = pos.coords.longitude;
+//
+//      fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+//        .then(r => r.json())
+//        .then(({ userAddress, region1depth, region2depth }) => {
+//          applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth });
+//        })
+//        .catch(() => alert('주소 변환 실패'));
+//    },
+//    () => alert('위치 정보 접근 거부'),
+//    { enableHighAccuracy: true, timeout: 10000 }
+//  );
+
+  // 강제고정 코드
+  const lat = 36.374922;  // 발표장 위도
+  const lon = 127.38313; // 발표장 경도
+
+  fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+    .then(r => r.json())
+    .then(({ userAddress, region1depth, region2depth }) => {
+      applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth });
+    })
+    .catch(() => alert('주소 변환 실패'));
+
 }
+
 
 function applyDetectedLocation({ lat, lon, userAddress, region1depth, region2depth }) {
   region  = region1depth;

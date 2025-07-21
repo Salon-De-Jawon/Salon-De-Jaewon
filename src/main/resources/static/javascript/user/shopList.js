@@ -194,37 +194,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ─────── 위치 감지 및 주소 변환 ─────── */
   function detectAndConvertLocation(callback) {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+//    navigator.geolocation.getCurrentPosition(
+//      position => {
+//        const lat = position.coords.latitude;
+//        const lon = position.coords.longitude;
+//
+//        fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+//          .then(res => res.json())
+//          .then(data => {
+//            if (data.userAddress) {
+//              callback({
+//                lat,
+//                lon,
+//                userAddress: data.userAddress,
+//                region1depth: data.region1depth,
+//                region2depth: data.region2depth
+//              });
+//            } else {
+//              alert("주소 정보를 불러올 수 없습니다.");
+//            }
+//          })
+//          .catch(err => {
+//            alert("주소 변환 실패");
+//            console.error(err);
+//          });
+//      },
+//      err => {
+//        alert("위치 정보 접근이 거부되었습니다.");
+//        console.error(err);
+//      },
+//      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+//    );
 
-        fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.userAddress) {
-              callback({
-                lat,
-                lon,
-                userAddress: data.userAddress,
-                region1depth: data.region1depth,
-                region2depth: data.region2depth
-              });
-            } else {
-              alert("주소 정보를 불러올 수 없습니다.");
-            }
-          })
-          .catch(err => {
-            alert("주소 변환 실패");
-            console.error(err);
-          });
-      },
-      err => {
-        alert("위치 정보 접근이 거부되었습니다.");
-        console.error(err);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+      //강제 고정코드
+      const lat = 36.374922;
+      const lon = 127.38313;
+
+      fetch(`/api/coord-to-address?x=${lon}&y=${lat}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.userAddress) {
+            callback({
+              lat,
+              lon,
+              userAddress: data.userAddress,
+              region1depth: data.region1depth,
+              region2depth: data.region2depth
+            });
+          } else {
+            alert("주소 정보를 불러올 수 없습니다.");
+          }
+        })
+        .catch(err => {
+          alert("주소 변환 실패");
+          console.error(err);
+        });
+
   }
 
   /* ─────── 위치 정보 적용 및 샵 리스트 초기화 ─────── */

@@ -81,7 +81,7 @@ body {
 .initial-display .shop-search-box {
   flex-grow: 1;
   height: 50px; /* 높이 약간 증가 */
-  border: 1px solid #a7d9ff; /* 더 부드러운 파란색 테두리 */
+  border: 1px solid var(--main-color); /* 더 부드러운 파란색 테두리 */
   border-radius: 25px; /* 더 둥글게 */
   display: flex;
   align-items: center;
@@ -425,12 +425,11 @@ body {
 .selected-shop-three {
   display: flex;
   align-items: center;
-  background-color: #e8f5e9; /* 부드러운 녹색 계열 (선택된 항목 느낌) */
-  border: 1px solid #c8e6c9;
+  background-color: var(--main-color);
   border-radius: 20px;
   padding: 6px 14px; /* 패딩 조정 */
   font-size: 0.9em;
-  color: #388e3c; /* 녹색 글씨 */
+  color: white; /* 녹색 글씨 */
   gap: 6px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -448,7 +447,7 @@ body {
 .selected-shop-three .remove-btn {
   background: none;
   border: none;
-  color: #888;
+  color: white;
   font-size: 1.1em;
   cursor: pointer;
   padding: 0 3px;
@@ -459,7 +458,7 @@ body {
 .selected-shop-one .remove-btn:hover,
 .selected-shop-two .remove-btn:hover,
 .selected-shop-three .remove-btn:hover {
-  color: #333;
+  color: white;
 }
 
 /* 셀렉트 토글 */
@@ -569,11 +568,15 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: bold;
-  color: #226633;
+  color: white;
 }
 
 .toggle-option:hover {
   background-color: #f0f0f0;
+}
+
+.toggle-panel span {
+    color: black;
 }
 
 .remove-btn {

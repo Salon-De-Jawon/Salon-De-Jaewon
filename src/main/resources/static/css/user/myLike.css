@@ -162,6 +162,11 @@
   border-radius: 50%;
 }
 
+.designer-img > img {
+    width: 100%;
+    height: 100%;
+}
+
 .designer-name {
   font-size: 20px;
   font-weight: bolder;
@@ -195,10 +200,28 @@
 }
 
 .shop-img {
-  border: 1px solid;
-  width: 260px;
+  width: 270px;
   height: 180px;
   margin-right: 10px;
+
+}
+
+button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 7px;
+    gap: 2px;
+    background: var(--main-color);
+}
+
+.btn-area {
+display: flex;
+gap: 2px;
+justify-content: space-between;
+}
+
+.shop-img > img {
+    height:100%;
 }
 
 .shop-info {

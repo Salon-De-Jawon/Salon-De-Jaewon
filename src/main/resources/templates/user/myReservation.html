@@ -200,13 +200,13 @@
                                                 </div>
                                             </div>
                                             <div class="coupon-discount">
-                                                <div class="price-box price-complete" th:if="${res.myPaymentDto != null}">
+                                                <div class="price-box price-complete" th:if="${res.myPaymentDto.couponDiscountPrice != 0}">
                                                     <span>할인가격</span>
                                                     <span th:text="${#numbers.formatInteger(res.myPaymentDto.couponDiscountPrice, 3, 'COMMA')}">-5000</span>
                                                 </div>
                                             </div>
                                             <div class="ticket-used-amount">
-                                                <div class="price-box price-complete">
+                                                <div class="price-box price-complete" th:if="${res.myPaymentDto.ticketUsedPrice != 0}">
                                                     <span>정액권</span>
                                                     <span th:text="${#numbers.formatInteger(res.myPaymentDto.ticketUsedPrice, 3, 'COMMA')}">-25000</span>
                                                 </div>
